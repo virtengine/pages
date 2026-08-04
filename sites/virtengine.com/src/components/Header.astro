@@ -1,0 +1,110 @@
+---
+import { NAV, SITE } from "@data/site";
+import Lockup from "@components/brand/Lockup.astro";
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => current === href || current.startsWith(href + "/");
+---
+
+<header class="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-sm">
+  <div class="container-site flex h-16 items-center justify-between gap-6">
+    <a href="/" class="flex shrink-0 items-center" aria-label="VirtEngine home">
+      <Lockup size={30} />
+    </a>
+
+    <nav aria-label="Primary" class="hidden lg:block">
+      <ul class="flex items-center gap-0.5">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={current === item.href ? "page" : undefined}
+                class:list={[
+                  "rounded-sm px-3 py-2 text-sm font-medium transition-colors",
+                  isActive(item.href)
+                    ? "text-green-dark"
+                    : "text-slate hover:text-ink",
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="hidden items-center gap-3 lg:flex">
+      <a
+        href={SITE.docs}
+        class="rounded-sm border border-line-strong px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-green-deep hover:text-green-dark"
+      >
+        Docs
+      </a>
+      <a
+        href={SITE.github}
+        rel="noopener"
+        class="clip-corner rounded-sm bg-green-deep px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-green-dark"
+      >
+        GitHub
+      </a>
+    </div>
+
+    <button
+      id="nav-toggle"
+      type="button"
+      class="flex h-10 w-10 items-center justify-center rounded-sm border border-line text-ink lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Open navigation menu"
+    >
+      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path class="icon-open" d="M2.5 5.5h15M2.5 10h15M2.5 14.5h15"></path>
+        <path class="icon-close hidden" d="M4 4l12 12M16 4L4 16"></path>
+      </svg>
+    </button>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Primary mobile" hidden class="border-t border-line bg-paper lg:hidden">
+    <ul class="container-site flex flex-col gap-1 py-4">
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={current === item.href ? "page" : undefined}
+              class:list={[
+                "block rounded-sm px-3 py-2.5 text-base font-medium",
+                isActive(item.href) ? "text-green-dark" : "text-slate hover:text-ink",
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a href="/faq" class="block rounded-sm px-3 py-2.5 text-base font-medium text-slate hover:text-ink">FAQ</a>
+      </li>
+      <li class="mt-2 flex gap-3 px-3 pb-2">
+        <a href={SITE.docs} class="flex-1 rounded-sm border border-line-strong px-4 py-2.5 text-center text-sm font-semibold text-ink">Docs</a>
+        <a href={SITE.github} rel="noopener" class="flex-1 rounded-sm bg-green-deep px-4 py-2.5 text-center text-sm font-semibold text-white">GitHub</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  // Minimal mobile-nav toggle; the site is otherwise zero client JS.
+  const toggle = document.getElementById("nav-toggle");
+  const nav = document.getElementById("mobile-nav");
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    toggle.setAttribute("aria-label", open ? "Open navigation menu" : "Close navigation menu");
+    if (nav) nav.hidden = open;
+    toggle.querySelector(".icon-open")?.classList.toggle("hidden", !open);
+    toggle.querySelector(".icon-close")?.classList.toggle("hidden", open);
+  });
+</script>

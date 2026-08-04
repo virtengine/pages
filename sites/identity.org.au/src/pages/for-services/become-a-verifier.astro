@@ -1,0 +1,116 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import Steps from "@components/Steps.astro";
+import { FOR_SERVICES_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "For services", href: "/for-services" },
+  { name: "Become a verifier", href: "/for-services/become-a-verifier" },
+];
+
+const steps = [
+  {
+    title: "Understand tiers — and pick your minimum",
+    body: "Before any integration work, decide the lowest verification level that manages your actual risk. Most services need Standard; many need only Basic or a single proof such as over-18. Over-asking erodes user trust, adds liability and gains you nothing.",
+    detail: [
+      "Read the verification levels reference — what evidence backs each tier.",
+      "If your question is yes/no (age, residency, score threshold), plan to request a proof rather than a tier.",
+    ],
+  },
+  {
+    title: "Register your service on the network",
+    body: "Your organisation registers an on-chain identity that users' wallets display whenever you make a request. Users always see exactly who is asking — anonymous verifiers do not exist in this system.",
+    detail: [
+      "Registration establishes your service's keys and display identity.",
+      "Verifier-side infrastructure versions are approved through on-chain governance (the x/veidregistry module), so users are never verified by unvetted code.",
+    ],
+  },
+  {
+    title: "Integrate the verification request flow",
+    body: "Your service constructs requests naming the scope, the required tier or proof, and a plain-language purpose. The user's wallet presents this to them for approval — build your UX around the fact that the user can decline.",
+    detail: [
+      "Requests are structured; free-form data collection has no API.",
+      "Test against the open-source reference stack before going live.",
+    ],
+  },
+  {
+    title: "Handle the tier and score response",
+    body: "You receive a cryptographically verifiable result: the user's tier, a pass/fail against your threshold, or a zero-knowledge proof. Verify the signature or proof — never build logic that asks for underlying documents, because no such response exists.",
+    detail: [
+      "Treat a declined or expired consent as a normal flow, not an error.",
+      "Store the result, not a re-request loop: repeated verification of the same fact is a design smell.",
+    ],
+  },
+  {
+    title: "Meet your consent and receipt obligations",
+    body: "Every result you receive is tied to a consent record. You must honour revocation (no future requests after revocation until re-granted), respect expiry, and retain consent receipts so your processing is auditable.",
+    detail: [
+      "Revocation stops future access; results you lawfully received while consent stood remain valid history.",
+      "Your service sees only its own grants — never a user's wider consent ledger.",
+    ],
+  },
+  {
+    title: "Go live on the VirtEngine network",
+    body: "With integration tested and obligations in place, your service operates as a verifier: users present proofs, you get assurance, and neither side accumulates an archive.",
+    detail: [
+      "Talk to us before building production dependencies — the stack is reference infrastructure rolling out with the network.",
+    ],
+  },
+];
+---
+
+<Guide
+  title="Become a verifier"
+  metaTitle="Become a verifier — step by step | identity.org.au"
+  description="The step-by-step path for organisations: understand tiers, register on the VirtEngine network, integrate verification requests, handle tier and score responses, meet consent obligations, and go live."
+  lede="The full path from “we need to verify users” to operating as a verifier on the VirtEngine network — six steps, each with the obligations attached."
+  eyebrow="For services"
+  breadcrumbs={crumbs}
+  sectionLabel="For services"
+  sectionNav={FOR_SERVICES_NAV}
+>
+  <div class="prose-service">
+    <p>
+      A <strong>verifier</strong> is a service that relies on wallet verification instead of
+      collecting identity documents: you ask a structured question, the user consents, and you
+      receive a cryptographic answer. This page is the operational path. For the technical
+      request/response concepts, see the
+      <a href="/for-services/integration-overview">integration overview</a>.
+    </p>
+  </div>
+
+  <Steps steps={steps} class="mt-8" />
+
+  <Callout title="What you never handle" class="mt-6">
+    <p>
+      Verifiers receive tiers, results and proofs — never document images, never biometric data,
+      never unconsented claims. This is enforced by the protocol rather than promised by policy,
+      which means it also protects you: there is no identity archive on your side to breach,
+      secure or regret. The full table is on the
+      <a href="/for-services" class="link-plain">for-services overview</a>.
+    </p>
+  </Callout>
+
+  <div class="prose-service mt-10">
+    <h2>The rules, restated as commitments</h2>
+    <ul>
+      <li><strong>State your purpose honestly.</strong> Every request carries a purpose string shown to the user. Misleading purposes are grounds for removal as a verifier.</li>
+      <li><strong>Ask for the minimum.</strong> Request the lowest tier or narrowest proof that manages your risk — the <a href="/insights/verification-tiers-and-proportionality">proportionality principle</a> is a protocol design rule, not advice.</li>
+      <li><strong>Respect the consent lifecycle.</strong> Expired and revoked consents fail closed. Build for it.</li>
+      <li><strong>No side-channel collection.</strong> Reconstructing or retaining more than the user consented to violates the terms that govern verifiers.</li>
+    </ul>
+  </div>
+
+  <Alert tone="info" title="Ready to start?" class="mt-8">
+    <p>
+      Engineering documentation — the VEID module, consent framework specification and APIs — is
+      at <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain">docs.virtengine.com</a>.
+      For onboarding conversations, email
+      <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a>.
+    </p>
+  </Alert>
+</Guide>

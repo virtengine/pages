@@ -1,0 +1,138 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
+import { WALLET_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Wallet", href: "/wallet" },
+  { name: "Wallet security", href: "/wallet/security" },
+];
+---
+
+<Guide
+  title="Wallet security"
+  metaTitle="Wallet security — the model in plain terms | identity.org.au"
+  description="The Identity Wallet security model: on-device processing, envelope encryption before anything moves, key handling, consent revocation, real deletion by key destruction, and the lost-device path."
+  lede="Security here is architectural, not promissory: evidence is processed and encrypted on your device, keys stay in secure hardware, and there is no central archive to breach."
+  eyebrow="The service"
+  breadcrumbs={crumbs}
+  sectionLabel="The wallet"
+  sectionNav={WALLET_NAV}
+>
+  <div class="prose-service">
+    <p>
+      Most security pages ask you to trust the operator. This one describes properties you can
+      check in the <a href="/about/open-source">open-source code</a>: where data is processed,
+      what is encrypted when, who holds keys, and what happens when things go wrong. The
+      site-wide <a href="/security">security policy</a> covers reporting and response; this page
+      covers the wallet itself.
+    </p>
+
+    <h2>On-device processing</h2>
+    <p>
+      Capture, liveness analysis and template creation run on your phone. At the Trusted level,
+      fingerprint and iris capture happen inside your device's secure hardware — the enclave the
+      operating system itself cannot read into — and the device proves its own integrity through
+      Google Play Integrity or Apple App Attest. The principle, and why edge processing beats
+      cloud matching categorically, is argued in
+      <a href="/insights/biometrics-on-device-vs-in-the-cloud">biometrics: on-device vs in the
+      cloud</a>.
+    </p>
+
+    <h2>Encryption before movement</h2>
+    <p>
+      Nothing leaves your device in the clear. Payloads — document data, biometric templates,
+      attestation material — are sealed with envelope encryption
+      (<strong>X25519-XSalsa20-Poly1305</strong>) on the phone, travel over TLS 1.3, and rest
+      under AES-256 with key rotation. The network stores encrypted payloads it cannot browse;
+      the chain records encrypted references and signed results, never readable evidence.
+    </p>
+
+    <h2>Trusted processing units</h2>
+    <p>
+      Verification itself runs inside hardware-sealed enclaves — AMD SEV-SNP confidential VMs,
+      Intel SGX, AWS Nitro — whose attestation the chain verifies before any data is released
+      to them. The decryption key is derived inside the hardware and never exists outside it,
+      so no operator, provider or foundation staff member has an access path. Raw data is
+      destroyed when scoring ends; only the result leaves.
+    </p>
+  </div>
+
+  <DataLifecycle class="mt-6" />
+
+  <div class="prose-service mt-6">
+    <p>
+      The full explainer — the vault metaphor, what attestation proves, and the destruction
+      timetable — is at <a href="/privacy/trusted-processing">trusted processing: the lock and
+      the key</a>.
+    </p>
+
+    <h2>Key handling</h2>
+    <p>
+      Your wallet is anchored by key pairs generated on your device, with private keys held in
+      platform secure hardware where the design never exports them. Signing in to
+      <a href="/wallet/web-wallet">my.identity.org.au</a> uses passkeys or device-bound
+      credentials — a signature from that hardware, not a password. No shared secret exists, so
+      there is nothing to phish, reuse or crack offline.
+    </p>
+
+    <h2>Revocation and deletion</h2>
+    <p>
+      Every consent is revocable at any time, immediately effective for all future processing,
+      and recorded with a timestamp — the mechanics are in
+      <a href="/help/revoking-consent">revoking consent</a>. Deletion is real because it is
+      cryptographic: when you <a href="/help/deleting-your-identity">delete your identity</a>,
+      data leaves active systems within 30 days and backups within the rotation period (typically
+      90 days), and <strong>encryption keys are destroyed</strong> — which makes any remaining
+      ciphertext, including on-chain references, permanently unreadable.
+    </p>
+
+    <h2>If your device is lost or stolen</h2>
+    <p>
+      A thief holding your phone does not hold your identity. Biometric checks gate the wallet;
+      keys sit in hardware they cannot extract; and from any browser you can sign in to the web
+      wallet and end every session. On a new phone you re-establish control by re-verifying —
+      fresh liveness against your enrolled identity — rather than by anyone's password reset.
+    </p>
+  </div>
+
+  <div class="mt-8 grid gap-4 md:grid-cols-2">
+    <CardLink
+      href="/get-started/lost-or-new-device"
+      tag="Guide"
+      title="Lost or new device"
+      description="The full recovery path, step by step, including what to do in the first hour."
+    />
+    <CardLink
+      href="/help/how-your-biometrics-are-protected"
+      tag="Help"
+      title="How your biometrics are protected"
+      description="The four promises that never change, and the retention schedule in numbers."
+    />
+    <CardLink
+      href="/help/device-security-checklist"
+      tag="Help"
+      title="Device security checklist"
+      description="Practical hardening for the phone that carries your wallet."
+    />
+    <CardLink
+      href="/security"
+      tag="Policy"
+      title="Security policy and reporting"
+      description="Coordinated disclosure, response targets, and how to reach the security team."
+    />
+  </div>
+
+  <Alert tone="info" title="What a breach could and could not expose" class="mt-10">
+    <p>
+      The system is designed so that a full compromise of its server-side infrastructure yields
+      ciphertext without keys, verification results and consent records — not documents, not
+      biometrics. No design makes attacks impossible; this one makes the worst case survivable.
+      If a breach ever involved biometric data, affected people would be notified within 72 hours
+      under the published <a href="/help/data-breach-response" class="link-plain">breach response</a> commitments.
+    </p>
+  </Alert>
+</Guide>

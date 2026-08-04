@@ -1,0 +1,74 @@
+---
+/**
+ * Provider economics: usage meter → collector → settlement pipeline →
+ * chain submitter → x/settlement → escrow payout, with the 24h dispute window.
+ * Decorative inside DiagramFrame — the frame carries the aria-label.
+ */
+---
+
+<svg viewBox="0 0 680 330" class="diagram-svg h-auto w-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <marker id="set-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--color-teal)"></path>
+    </marker>
+  </defs>
+
+  <!-- provider side -->
+  <rect x="16" y="16" width="312" height="298" rx="12" fill="var(--color-panel)" stroke="var(--color-hairline)"></rect>
+  <text x="36" y="44" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-text)">Provider daemon</text>
+
+  <g font-family="var(--font-mono)" font-size="10.5">
+    <rect x="36" y="60" width="272" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="52" y="79" fill="var(--color-teal-bright)">usage meter</text>
+    <text x="52" y="95" fill="var(--color-text-muted)" font-family="var(--font-sans)">per-workload resource metrics</text>
+
+    <rect x="36" y="126" width="272" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="52" y="145" fill="var(--color-teal-bright)">scheduled collector</text>
+    <text x="52" y="161" fill="var(--color-text-muted)" font-family="var(--font-sans)">hourly usage records</text>
+
+    <rect x="36" y="192" width="272" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="52" y="211" fill="var(--color-teal-bright)">settlement pipeline</text>
+    <text x="52" y="227" fill="var(--color-text-muted)" font-family="var(--font-sans)">batching &#183; anomaly detection</text>
+
+    <rect x="36" y="258" width="272" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="52" y="277" fill="var(--color-teal-bright)">chain submitter</text>
+    <text x="52" y="293" fill="var(--color-text-muted)" font-family="var(--font-sans)">signed MsgRecordUsage batches</text>
+  </g>
+
+  <g stroke="var(--color-teal)" stroke-width="1.5">
+    <path class="flow-dash" d="M172 104 V 120" marker-end="url(#set-arrow)"></path>
+    <path class="flow-dash" d="M172 170 V 186" marker-end="url(#set-arrow)" style="animation-delay:-0.3s"></path>
+    <path class="flow-dash" d="M172 236 V 252" marker-end="url(#set-arrow)" style="animation-delay:-0.6s"></path>
+  </g>
+
+  <!-- cross to chain -->
+  <path class="flow-dash" d="M308 280 H 372" stroke="var(--color-teal)" stroke-width="1.8" marker-end="url(#set-arrow)" style="animation-delay:-0.9s"></path>
+
+  <!-- chain side -->
+  <rect x="376" y="16" width="288" height="298" rx="12" fill="var(--color-teal-dim)" fill-opacity="0.28" stroke="var(--color-teal)" stroke-opacity="0.6"></rect>
+  <text x="396" y="44" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-teal-glow)">On-chain</text>
+
+  <g font-family="var(--font-mono)" font-size="10.5">
+    <rect x="396" y="60" width="248" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="412" y="79" fill="var(--color-teal-bright)">x/settlement</text>
+    <text x="412" y="95" fill="var(--color-text-muted)" font-family="var(--font-sans)">usage &#8594; billable line items</text>
+
+    <rect x="396" y="126" width="248" height="44" rx="8" fill="none" stroke="var(--color-amber)" stroke-dasharray="4 4"></rect>
+    <text x="412" y="145" fill="var(--color-amber)">dispute window</text>
+    <text x="412" y="161" fill="var(--color-text-muted)" font-family="var(--font-sans)">24h correction &amp; dispute period</text>
+
+    <rect x="396" y="192" width="248" height="44" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="412" y="211" fill="var(--color-teal-bright)">x/escrow</text>
+    <text x="412" y="227" fill="var(--color-text-muted)" font-family="var(--font-sans)">funds held against the lease</text>
+
+    <rect x="396" y="258" width="248" height="44" rx="8" fill="var(--color-teal-dim)" stroke="var(--color-teal)"></rect>
+    <text x="412" y="277" fill="var(--color-teal-glow)">payout</text>
+    <text x="412" y="293" fill="var(--color-text-muted)" font-family="var(--font-sans)">provider paid, 0% marketplace commission</text>
+  </g>
+
+  <g stroke="var(--color-teal)" stroke-width="1.5">
+    <path class="flow-dash" d="M520 104 V 120" marker-end="url(#set-arrow)" style="animation-delay:-0.2s"></path>
+    <path class="flow-dash" d="M520 170 V 186" marker-end="url(#set-arrow)" style="animation-delay:-0.5s"></path>
+    <path class="flow-dash" d="M520 236 V 252" marker-end="url(#set-arrow)" style="animation-delay:-0.8s"></path>
+  </g>
+</svg>

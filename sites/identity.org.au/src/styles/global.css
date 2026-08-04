@@ -1,0 +1,348 @@
+@import "tailwindcss";
+
+/*
+  identity.org.au — government-service-grade design tokens.
+  See DESIGN.md for the full system (contrast table, type scale, components).
+  White surfaces, near-black ink, one action blue, one supporting accent.
+*/
+@theme {
+  /* surfaces */
+  --color-paper: #ffffff;
+  --color-alt: #f3f5f6;
+  --color-tint: #e9f1f7;
+  --color-hairline: #d5dde2;
+  --color-hairline-strong: #a3b2bb;
+
+  /* text */
+  --color-ink: #17262e;
+  --color-body: #32424c;
+  --color-muted: #576a75;
+  --color-inverse: #f4f8fa;
+
+  /* action + accents */
+  --color-action: #14558f;
+  --color-action-hover: #0d3d68;
+  --color-steel: #4c7094;
+  --color-accent: #0f7a5c;
+
+  /* structural navy (header rule, footer, mark) */
+  --color-navy: #17293a;
+  --color-navy-panel: #22374c;
+  --color-navy-hairline: #33485d;
+  --color-navy-muted: #a7b8c6;
+
+  /* status */
+  --color-info-bg: #e9f1f7;
+  --color-info-rule: #14558f;
+  --color-warn: #7a4a0e;
+  --color-warn-bg: #fbf2e2;
+  --color-warn-rule: #b8801f;
+  --color-success-bg: #e7f4ee;
+  --color-success-rule: #0f7a5c;
+
+  /* focus */
+  --color-focus: #9e5f00;
+
+  --font-sans: "Public Sans", "Segoe UI", -apple-system, sans-serif;
+
+  --radius-tile: 0.375rem;
+}
+
+/* ---------- base ---------- */
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    line-height: 1.65;
+    font-size: 1.0625rem; /* 17px */
+    color: var(--color-body);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-action);
+    color: #ffffff;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--color-ink);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    text-wrap: balance;
+    font-weight: 700;
+  }
+  h1 { font-weight: 800; }
+
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- layout primitives ---------- */
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-navy);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.3rem;
+  transition: top 150ms ease;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+.container-site {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/* measure discipline: body copy never exceeds ~72ch */
+.measure {
+  max-width: 72ch;
+}
+.measure-narrow {
+  max-width: 60ch;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+}
+
+/* ---------- prose ---------- */
+
+.prose-service {
+  color: var(--color-body);
+  max-width: 72ch;
+}
+.prose-service > * + * {
+  margin-top: 1.1em;
+}
+.prose-service h2 {
+  font-size: 1.5rem;
+  margin-top: 2.2em;
+}
+.prose-service h3 {
+  font-size: 1.17rem;
+  margin-top: 1.8em;
+}
+.prose-service a {
+  color: var(--color-action);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose-service a:hover {
+  color: var(--color-action-hover);
+  text-decoration-thickness: 2px;
+}
+.prose-service strong {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+.prose-service ul,
+.prose-service ol {
+  padding-left: 1.4rem;
+  display: grid;
+  gap: 0.45rem;
+}
+.prose-service ul {
+  list-style: disc;
+}
+.prose-service ol {
+  list-style: decimal;
+}
+.prose-service li::marker {
+  color: var(--color-steel);
+}
+
+/* ---------- links ---------- */
+
+.link-plain {
+  color: var(--color-action);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.link-plain:hover {
+  color: var(--color-action-hover);
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- buttons ---------- */
+
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.78rem 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--radius-tile);
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.btn-primary {
+  background: var(--color-action);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background: var(--color-action-hover);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--color-action);
+  border-color: var(--color-action);
+}
+.btn-secondary:hover {
+  background: var(--color-tint);
+  color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}
+
+/* ---------- gov table ---------- */
+
+.table-gov {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+  background: var(--color-paper);
+}
+.table-gov caption {
+  text-align: left;
+  font-weight: 700;
+  color: var(--color-ink);
+  padding-bottom: 0.7rem;
+}
+.table-gov th {
+  text-align: left;
+  font-weight: 700;
+  color: var(--color-ink);
+  background: var(--color-alt);
+  border-bottom: 2px solid var(--color-navy);
+}
+.table-gov th,
+.table-gov td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--color-hairline);
+  vertical-align: top;
+}
+.table-gov tbody th {
+  background: transparent;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+/* ---------- details / accordion (native) ---------- */
+
+.details-gov {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-tile);
+  background: var(--color-paper);
+}
+.details-gov summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  font-weight: 600;
+  color: var(--color-action);
+}
+.details-gov summary::-webkit-details-marker {
+  display: none;
+}
+.details-gov summary::after {
+  content: "";
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2.5px solid currentColor;
+  border-bottom: 2.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 160ms ease;
+  margin-top: -0.25rem;
+}
+.details-gov[open] summary::after {
+  transform: rotate(-135deg);
+  margin-top: 0.25rem;
+}
+.details-gov summary:hover {
+  color: var(--color-action-hover);
+  background: var(--color-alt);
+}
+.details-gov > div {
+  padding: 0.15rem 1.15rem 1.15rem;
+}
+
+/* ---------- chevron affordance for card lists ---------- */
+
+.chevron-after::after {
+  content: "";
+  display: block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2.5px solid var(--color-action);
+  border-bottom: 2.5px solid var(--color-action);
+  transform: rotate(-45deg);
+  flex: none;
+}
+
+/* ---------- side nav (guide sections) ---------- */
+
+.side-nav a {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  border-left: 4px solid transparent;
+  color: var(--color-action);
+  text-decoration: none;
+  font-size: 0.98rem;
+}
+.side-nav a:hover {
+  background: var(--color-alt);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.side-nav a[aria-current="page"] {
+  border-left-color: var(--color-navy);
+  background: var(--color-alt);
+  color: var(--color-ink);
+  font-weight: 700;
+}

@@ -1,0 +1,74 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Accessibility", href: "/accessibility" },
+];
+---
+
+<Base
+  title="Accessibility | identity.org.au"
+  description="Our accessibility statement: WCAG 2.2 AA target, what we have built to meet it, known limitations we are honest about, and how to report a barrier."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Policies"
+    title="Accessibility"
+    lede="Identity infrastructure that not everyone can use is not infrastructure. This is our accessibility statement — including the limitations."
+  />
+
+  <div class="container-site max-w-[62rem] py-12">
+    <section class="prose-service">
+      <h2 class="mt-0">Our target</h2>
+      <p>
+        This website targets <strong>WCAG 2.2 level AA</strong>, with body text aiming for AAA
+        contrast (7:1 or better). Accessibility is treated as a requirement in the design system —
+        every component is built against it, not retrofitted.
+      </p>
+
+      <h2>What we have built</h2>
+      <ul>
+        <li><strong>Keyboard:</strong> every page is fully operable by keyboard, with a visible high-contrast focus indicator (3px outline) and a skip-to-content link on every page.</li>
+        <li><strong>Screen readers:</strong> semantic landmarks (header, nav, main, footer), a logical heading hierarchy on every page, labelled navigation regions, and descriptive link text throughout.</li>
+        <li><strong>Contrast:</strong> headings ~14:1, body text ~9:1, and interactive elements at 4.5:1 or better. The palette is documented with a contrast table in our design system.</li>
+        <li><strong>Text:</strong> 17px base size, line length capped near 72 characters, and layouts that reflow without horizontal scrolling at 400% zoom (data tables scroll within their own region).</li>
+        <li><strong>Motion:</strong> animation is minimal; with <code>prefers-reduced-motion</code> enabled, it is disabled entirely.</li>
+        <li><strong>No JavaScript required:</strong> all content works with scripts disabled. The only scripted behaviour is the mobile menu toggle; expandable FAQ items use the native details element.</li>
+        <li><strong>Images:</strong> every informative image (including the phone-screen illustrations) has a full-sentence text alternative; decorative graphics are hidden from assistive technology.</li>
+        <li><strong>Language:</strong> plain English first — technical concepts get a plain sentence before any jargon, and jargon is explained on first use.</li>
+      </ul>
+
+      <h2>The wallet app</h2>
+      <p>
+        The reference wallet app is built to work with TalkBack (Android) and VoiceOver (iOS),
+        with spoken guidance for document framing and liveness challenges. If a liveness challenge
+        is not possible for you, alternative checks are supported — see
+        <a href="/help/accessibility-support">accessibility support</a> in the help centre.
+      </p>
+
+      <h2>Known limitations — stated honestly</h2>
+      <ul>
+        <li>Data tables scroll horizontally on narrow screens. Headers remain associated for screen readers, but horizontal scrolling is required at small sizes.</li>
+        <li>The phone-screen illustrations convey their content through text alternatives, which summarise rather than reproduce every visual detail.</li>
+        <li>The wallet capture flow inherently requires a camera. Camera-free verification paths are a recognised gap in the current reference implementation.</li>
+        <li>This statement has not yet been backed by an independent third-party accessibility audit. Self-assessment is rigorous but is not the same thing, and we won't pretend otherwise.</li>
+      </ul>
+    </section>
+
+    <Alert tone="info" title="Report a barrier" class="mt-10 max-w-[72ch]">
+      <p>
+        If any part of this site or the wallet does not work with your assistive technology, email
+        <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a> with the subject
+        “Accessibility”. Tell us what you were trying to do, what technology you use, and what
+        happened. Reports are treated with the same seriousness as security reports.
+      </p>
+    </Alert>
+
+    <p class="mt-8 text-[0.92rem] text-muted">This statement was last reviewed in August 2026.</p>
+  </div>
+</Base>

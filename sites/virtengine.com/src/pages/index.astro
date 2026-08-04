@@ -1,0 +1,330 @@
+---
+import Base from "@layouts/Base.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import Mark from "@components/brand/Mark.astro";
+import HeroNetwork from "@components/diagrams/HeroNetwork.astro";
+import { LIFECYCLE, SITE } from "@data/site";
+import { MODULES } from "@data/modules";
+import { SOLUTIONS } from "@data/solutions";
+import { LEARN } from "@data/learn";
+
+const pillars = [
+  {
+    tag: "x/market · x/deployment",
+    href: "/modules/market",
+    title: "On-chain marketplace",
+    body: "Orders, competing bids, and leases are chain state — not a trusted intermediary. The exchange is the protocol itself, executed by consensus.",
+  },
+  {
+    tag: "x/veid · x/veidregistry",
+    href: "/modules/veid",
+    title: "VEID identity",
+    body: "A privacy-preserving identity layer scores encrypted identity scopes through validator-run machine learning, so counterparties are verified without exposing raw documents.",
+  },
+  {
+    tag: "x/escrow · x/settlement",
+    href: "/modules/settlement",
+    title: "Escrow & settlement",
+    body: "Leases are backed by escrowed funds. Metered usage becomes billable line items after a 24-hour dispute window, releasing payment trustlessly.",
+  },
+  {
+    tag: "x/hpc",
+    href: "/modules/hpc",
+    title: "HPC workloads",
+    body: "SLURM, MOAB, and Open OnDemand clusters plug into the marketplace through the provider daemon — supercomputing capacity, leased on-chain.",
+  },
+  {
+    tag: "x/enclave · x/encryption",
+    href: "/modules/enclave",
+    title: "Confidential compute",
+    body: "Enclave attestation and public-key encryption keep sensitive workloads and on-chain data readable only by their intended recipients.",
+  },
+];
+
+const featuredSolutions = SOLUTIONS.filter((s) =>
+  ["gpu-compute-providers", "hpc-clusters", "validators", "ai-ml-workloads", "enterprises-confidential-compute", "cost-optimized-cloud"].includes(s.slug),
+);
+
+const featuredGuides = LEARN.filter((g) =>
+  ["how-the-marketplace-works", "escrow-and-settlement-explained", "tokenomics-explained", "what-is-veid"].includes(g.slug),
+);
+
+const marketplaceOfferings = [
+  { type: "Private clouds", detail: "Dedicated projects and managed cloud capacity", icon: "cloud" },
+  { type: "Storage", detail: "Volume, object and archival service listings", icon: "storage" },
+  { type: "VMs", detail: "Virtual-machine and accelerator-backed capacity", icon: "vm" },
+  { type: "Custom offerings", detail: "Provider-defined services, products and workflows", icon: "custom" },
+];
+---
+
+<Base title={SITE.title} description={SITE.description} path="/">
+  <!-- Hero -->
+  <div class="grid-backdrop relative border-b border-line">
+    <div class="container-site grid items-center gap-12 pb-16 pt-14 md:pb-24 md:pt-20 lg:grid-cols-[1.05fr_0.95fr]">
+      <div>
+        <p class="eyebrow">VirtEngine Protocol · by DET.io</p>
+        <h1 class="mt-5 font-display text-4xl sm:text-5xl md:text-[3.7rem]">
+          The decentralized cloud marketplace protocol
+        </h1>
+        <p class="prose-body mt-6 text-lg md:text-xl">
+          VirtEngine connects tenants who need computing resources with providers who have
+          capacity to lease — through a transparent on-chain marketplace with built-in
+          identity, escrow, and settlement.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <CTA href="/providers">Become a provider</CTA>
+          <CTA href="/staking" variant="secondary">Stake &amp; validate</CTA>
+          <CTA href={SITE.docs} variant="ghost">Read the docs</CTA>
+        </div>
+        <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-4 border-t border-line pt-6 font-mono text-xs sm:grid-cols-4">
+          <div>
+            <dt class="text-muted">License</dt>
+            <dd class="mt-1 font-medium text-green-deep">Apache 2.0</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Consensus</dt>
+            <dd class="mt-1 font-medium text-green-deep">CometBFT</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Framework</dt>
+            <dd class="mt-1 font-medium text-green-deep">Cosmos SDK</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Patent</dt>
+            <dd class="mt-1 font-medium text-green-deep">{SITE.patentId}</dd>
+          </div>
+        </dl>
+      </div>
+      <div
+        class="hero-playfield night-scope clip-corner rounded-frame border border-night-line p-4 md:p-6"
+        role="img"
+        aria-label="Diagram of the VirtEngine marketplace: tenants on the left post orders and providers on the right place bids, meeting at a ring of validator nodes representing the on-chain marketplace. The lifecycle reads order, bid, lease, usage, settlement."
+      >
+        <div class="hero-cloud hero-cloud-a" aria-hidden="true"></div>
+        <div class="hero-cloud hero-cloud-b" aria-hidden="true"></div>
+        <div class="hero-trajectory" aria-hidden="true"></div>
+        <div class="hero-rocket" aria-hidden="true">
+          <span class="hero-rocket-window"></span>
+          <span class="hero-rocket-fin hero-rocket-fin-left"></span>
+          <span class="hero-rocket-fin hero-rocket-fin-right"></span>
+          <span class="hero-rocket-flame"></span>
+        </div>
+        <HeroNetwork />
+      </div>
+    </div>
+    <div class="container-site relative -mt-5 pb-2 md:-mt-8">
+      <div class="hero-control-strip grid overflow-hidden rounded-frame border border-line-strong bg-panel sm:grid-cols-3">
+        <a href="/modules/market" class="hero-control-card">
+          <span class="hero-control-icon hero-control-cube" aria-hidden="true"></span>
+          <span><strong>On-chain marketplace</strong><small>Orders, bids and leases</small></span>
+        </a>
+        <a href="/modules/hpc" class="hero-control-card">
+          <span class="hero-control-icon hero-control-nodes" aria-hidden="true"></span>
+          <span><strong>Compute orchestration</strong><small>Cloud, GPU and HPC capacity</small></span>
+        </a>
+        <a href="/veid" class="hero-control-card">
+          <span class="hero-control-icon hero-control-proof" aria-hidden="true"></span>
+          <span><strong>Private identity</strong><small>Proofs, not document copies</small></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Waldur-connected catalogue -->
+  <Section
+    eyebrow="Marketplace surface"
+    title="One catalogue for far more than containers"
+    lede="Waldur is VirtEngine's primary marketplace and service-management integration: it presents a self-service catalogue for standard cloud capacity and fully custom provider offerings, while the protocol coordinates identity, exchange and settlement."
+  >
+    <div class="marketplace-console clip-corner reveal border border-line-strong bg-panel shadow-[0_16px_34px_rgba(38,43,38,0.08)]">
+      <div class="marketplace-console-top flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+        <div>
+          <p class="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-green-deep">Waldur-connected marketplace</p>
+          <h3 class="mt-1 font-display text-xl text-ink">Explore available offerings</h3>
+        </div>
+        <span class="rounded-full border border-green-deep/30 bg-green-wash px-3 py-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-green-deep">Illustrative catalogue</span>
+      </div>
+      <div class="grid gap-5 p-5 lg:grid-cols-[1fr_0.72fr]">
+        <div class="grid gap-3 sm:grid-cols-2">
+          {marketplaceOfferings.map((offering) => (
+            <article class="marketplace-offering rounded-card border border-line bg-panel-raised p-4">
+              <span class={`marketplace-offering-icon marketplace-icon-${offering.icon}`} aria-hidden="true"></span>
+              <h4 class="mt-4 text-base font-semibold text-ink">{offering.type}</h4>
+              <p class="mt-1 text-sm leading-5 text-slate">{offering.detail}</p>
+            </article>
+          ))}
+        </div>
+        <aside class="marketplace-path rounded-card border border-green-deep/30 bg-green-wash p-5">
+          <p class="font-mono text-[0.68rem] uppercase tracking-[0.13em] text-green-deep">How it connects</p>
+          <ol class="mt-4 space-y-4 text-sm text-slate">
+            <li><strong>1 · Waldur catalogue</strong><span>Providers publish cloud services or fully custom listings.</span></li>
+            <li><strong>2 · VirtEngine protocol</strong><span>VEID, orders, bids, escrow and settlement provide the trust layer.</span></li>
+            <li><strong>3 · Delivery target</strong><span>Waldur routes fulfillment to Kubernetes, SLURM-class schedulers, or a provider-defined integration.</span></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </Section>
+
+  <!-- What VirtEngine is -->
+  <Section
+    eyebrow="What it is"
+    title="A marketplace run by consensus, not by a company"
+    lede="VirtEngine Suite is a single Go binary — a CometBFT-powered blockchain node implementing a decentralized exchange for computing capacity, plus the client tooling to use it."
+  >
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div class="prose-body space-y-5 text-base">
+        <p>
+          Tenants describe the resources they need in an on-chain <strong>order</strong>.
+          Provider daemons — running inside datacenters, clouds, and HPC facilities —
+          watch the chain and place competing <strong>bids</strong>. A matched bid becomes
+          a <strong>lease</strong>: escrow is funded and Waldur coordinates fulfilment from
+          a catalogue that can include private clouds, storage, VMs, and fully custom
+          offerings. Kubernetes and HPC schedulers are delivery targets within that broader
+          marketplace, and signed <strong>usage</strong> records flow back to the chain where
+          <strong>settlement</strong> releases payment.
+        </p>
+        <p>
+          Every step is protocol state. Identity checks come from
+          <a href="/veid">VEID</a>, funds are protected by the
+          <a href="/modules/escrow">escrow</a> and <a href="/modules/settlement">settlement</a>
+          modules, and provider quality is tracked through
+          <a href="/modules/audit">audits</a>, <a href="/modules/benchmark">benchmarks</a>,
+          and <a href="/modules/review">reviews</a> — all on-chain.
+        </p>
+        <p>
+          The protocol is partly derived from the Akash Network codebase and extends it
+          with identity scoring, HPC scheduling, confidential compute, and a patented
+          validator-run identity network. The full walkthrough is in
+          <a href="/learn/how-the-marketplace-works">how the marketplace works</a>.
+        </p>
+      </div>
+      <ol class="space-y-0" aria-label="Marketplace lifecycle">
+        {
+          LIFECYCLE.map((stage) => (
+            <li class="reveal grid grid-cols-[3.25rem_1fr] gap-4 border-b border-line py-4 last:border-b-0">
+              <span class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{stage.step}</span>
+              <div>
+                <h3 class="text-base font-semibold text-ink">{stage.name}</h3>
+                <p class="mt-1 text-sm text-slate">{stage.detail}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Section>
+
+  <!-- Pillars -->
+  <Section
+    eyebrow="Protocol pillars"
+    title="Five capabilities, one chain"
+    lede={`${MODULES.length} on-chain modules organized around a marketplace core — every one documented in the module reference.`}
+  >
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        pillars.map((pillar) => (
+          <Card title={pillar.title} tag={pillar.tag} href={pillar.href} class="reveal">
+            {pillar.body}
+          </Card>
+        ))
+      }
+      <div class="reveal clip-corner flex flex-col justify-between rounded-card border border-green-soft bg-green-wash p-6">
+        <p class="text-sm text-slate">
+          One reference page per module: what it does, why it exists, and how it connects
+          to the rest of the chain.
+        </p>
+        <CTA href="/modules" variant="ghost" class="mt-4">Browse all {MODULES.length} modules</CTA>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Solutions -->
+  <Section
+    eyebrow="Solutions"
+    title="Find your way into the network"
+    lede="Whether you run hardware, hold tokens, or ship workloads — there is a documented path in."
+  >
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        featuredSolutions.map((sol) => (
+          <a
+            href={`/solutions/${sol.slug}`}
+            class="clip-corner group reveal block rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
+          >
+            <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">{sol.label}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate">{sol.title}</p>
+          </a>
+        ))
+      }
+    </div>
+    <div class="reveal mt-8">
+      <CTA href="/solutions" variant="secondary">All solutions</CTA>
+    </div>
+  </Section>
+
+  <!-- Learn -->
+  <Section
+    eyebrow="Learn"
+    title="The protocol, explained properly"
+    lede="Guides grounded in the repository and its economic simulation framework — no filler, no invented numbers."
+  >
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        featuredGuides.map((guide) => (
+          <a
+            href={`/learn/${guide.slug}`}
+            class="clip-corner group reveal flex items-start gap-4 rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
+          >
+            <Mark size={22} class="mt-1 shrink-0 text-green" />
+            <span>
+              <span class="block text-base font-semibold text-ink group-hover:text-green-dark">{guide.title}</span>
+              <span class="mt-1.5 block text-sm leading-relaxed text-slate">{guide.intro.slice(0, 140)}…</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/learn" variant="secondary">All guides</CTA>
+      <CTA href="/faq" variant="ghost">Frequently asked questions</CTA>
+    </div>
+  </Section>
+
+  <!-- Stewardship -->
+  <Section eyebrow="Stewardship" title="Open source, patented, held in public benefit">
+    <div class="grid gap-5 lg:grid-cols-3">
+      <div class="reveal clip-corner rounded-card border border-line bg-panel p-7">
+        <h3 class="text-lg font-semibold text-ink">Apache 2.0 licensed</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">
+          The entire protocol implementation is free to use, modify, and distribute.
+          Development happens in the open — issues, pull requests, and release
+          engineering are all public.
+        </p>
+      </div>
+      <div class="reveal clip-corner rounded-card border border-line bg-panel p-7">
+        <h3 class="text-lg font-semibold text-ink">Patented methods</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">
+          Core methods — including the validator-run identity verification network — are
+          protected by <a href={SITE.patentUrl} rel="noopener" class="text-green-deep underline decoration-green/50 underline-offset-2 hover:text-green-dark">patent {SITE.patentId}</a>.
+          The Apache 2.0 patent grant covers use within this project; see
+          <a href="/open-source" class="text-green-deep underline decoration-green/50 underline-offset-2 hover:text-green-dark">the IP notice</a> for details.
+        </p>
+      </div>
+      <div class="reveal clip-corner rounded-card border border-line bg-panel p-7">
+        <h3 class="text-lg font-semibold text-ink">Foundation stewardship</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">
+          VirtEngine is stewarded by <strong class="font-semibold text-ink">DETIO FOUNDATION LTD</strong>,
+          an Australian not-for-profit public company limited by guarantee with a
+          constitutional public-benefit lock — the protocol cannot be privately captured.
+        </p>
+      </div>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/open-source" variant="secondary">The open-source project</CTA>
+      <CTA href="/about" variant="ghost">About the foundation</CTA>
+    </div>
+  </Section>
+</Base>

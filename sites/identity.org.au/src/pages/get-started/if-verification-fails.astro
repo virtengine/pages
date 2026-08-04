@@ -1,0 +1,102 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+  { name: "If verification fails", href: "/get-started/if-verification-fails" },
+];
+---
+
+<Guide
+  title="If verification fails"
+  metaTitle="If verification fails — Get started | identity.org.au"
+  description="Common reasons Identity Wallet verification fails — document quality, liveness challenges, device attestation — and how to fix each one."
+  lede="Most failures are practical, not personal: lighting, glare, or an expired document. There is no penalty for retrying."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <Alert tone="success" title="Failure is not a black mark">
+    <p>
+      A failed attempt does not lower any score, does not go on any record a service can see, and
+      does not limit your retries. Fix the practical cause and try again.
+    </p>
+  </Alert>
+
+  <div class="mt-8 overflow-x-auto">
+    <table class="table-gov">
+      <caption class="sr-only">Common verification failures and how to fix them</caption>
+      <thead>
+        <tr>
+          <th scope="col">What failed</th>
+          <th scope="col">Likely cause</th>
+          <th scope="col">How to fix it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Document scan rejected</th>
+          <td>Glare, blur, cut-off edges, or a screen/photocopy instead of the physical document</td>
+          <td>Use the physical document on a plain dark surface, in even light without overhead reflection. Fill the guide frame.</td>
+        </tr>
+        <tr>
+          <th scope="row">Document details wrong</th>
+          <td>OCR misread a field (worn print, unusual fonts)</td>
+          <td>You review every extracted field before submission — re-scan rather than submitting incorrect details.</td>
+        </tr>
+        <tr>
+          <th scope="row">Document not accepted</th>
+          <td>Expired, damaged, or not a supported document type</td>
+          <td>Use a current passport, driver licence or national ID. Expired documents cannot be verified.</td>
+        </tr>
+        <tr>
+          <th scope="row">Liveness challenge failed</th>
+          <td>Poor light, backlighting, hat or tinted glasses, moving too fast</td>
+          <td>Face a window or lamp (light on your face, not behind you), remove hats and tinted glasses, follow prompts slowly.</td>
+        </tr>
+        <tr>
+          <th scope="row">Face match failed</th>
+          <td>Selfie doesn't match the document photo confidently enough</td>
+          <td>Retry in better light. Significant appearance changes since the document photo can require a more recent document.</td>
+        </tr>
+        <tr>
+          <th scope="row">Device attestation failed</th>
+          <td>Rooted/jailbroken device, altered app, or a very old OS</td>
+          <td>Attestation-dependent (Trusted) verification is unavailable on tampered devices. On a stock device, update the OS and reinstall from the official source.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="mt-12 text-[1.5rem]">If it keeps failing</h2>
+  <div class="prose-service">
+    <p>
+      If you have fixed the practical causes and verification still fails, work through these in
+      order:
+    </p>
+    <ol>
+      <li>Try a different supported document if you have one — condition varies between documents.</li>
+      <li>Try a different location and time of day — daylight through a window is the most reliable light.</li>
+      <li>
+        Check <a href="/help/accessibility-support">accessibility support</a> if a liveness
+        challenge is not possible for you — alternative checks exist.
+      </li>
+      <li>
+        Contact support at <a href="mailto:hello@det.io">hello@det.io</a> with what step failed and
+        what the app reported. Never email photos of your documents.
+      </li>
+    </ol>
+  </div>
+
+  <Alert tone="warning" title="No one will call you about a failed verification" class="mt-8">
+    <p>
+      A failed attempt never triggers a phone call, text or email asking you to “verify another
+      way”, share codes or approve anything. Anyone contacting you like that is a scammer — see
+      <a href="/help/recognising-scams-and-phishing" class="link-plain">recognising scams</a>.
+    </p>
+  </Alert>
+</Guide>

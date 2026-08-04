@@ -1,0 +1,353 @@
+@import "tailwindcss";
+
+/*
+  det.io design tokens — see DESIGN.md (normative brand guide).
+  The identity is built from the real DET.io logo: sky-blue cloud mark
+  #5DBADB with a dark navy under-shadow #233040 and a steel #4C7094
+  supporting tone. Light-first institutional surfaces; deep navy night
+  band; Space Grotesk / Inter / JetBrains Mono editorial stack shared
+  with virtengine.com, docs.virtengine.com and identity.org.au.
+*/
+@theme {
+  /* light institutional surfaces (cool paper, tinted from the brand blue) */
+  --color-paper: #f6f9fb;
+  --color-surface: #ffffff;
+  --color-vellum: #ebf2f7;
+  --color-sage: #ddeaf2;
+  --color-hairline: #d9e2e9;
+  --color-hairline-strong: #b4c6d2;
+
+  /* text on light (navy-ink family, derived from the cloud shadow) */
+  --color-ink: #17222b;
+  --color-text-muted: #3e5261;
+  --color-text-soft: #5b7080;
+
+  /* brand blue scale — from the flat logo (#5DBADB sky, #4C7094 steel, #233040 navy) */
+  --color-sky: #5dbadb; /* the brand sky blue: mark, glyphs, graphic fills */
+  --color-sky-bright: #8fd6ee; /* accent text + hover on night surfaces */
+  --color-sky-wash: #e3f3fa; /* tinted panels, quiet emphasis */
+  --color-blue-deep: #1a6f97; /* interactive blue on light surfaces — AA on white */
+  --color-blue-mid: #2586b1; /* hover state of blue-deep */
+  --color-steel: #4c7094; /* secondary accent, sampled from the 3D logo shade */
+  --color-navy: #233040; /* the cloud under-shadow */
+  --color-amber-deep: #8a5c12;
+
+  /* night band (footer, closing sections) — deep navy, from the shadow tone */
+  --color-night: #16202b;
+  --color-night-panel: #1e2c3b;
+  --color-night-hairline: #2c3d4f;
+  --color-night-text: #eaf2f8;
+  --color-night-muted: #a2b7c7;
+
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* sharper radii than the siblings: institutional, printed feel */
+  --radius-card: 0.5rem;
+  --radius-frame: 0.75rem;
+}
+
+/* ---------- base ---------- */
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  line-height: 1.7;
+  font-size: 1.0625rem;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-blue-deep);
+  color: #ffffff;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  line-height: 1.14;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--color-blue-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- shared patterns ---------- */
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-blue-deep);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 0.4rem;
+  transition: top 150ms ease;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+.container-site {
+  width: 100%;
+  max-width: 74rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-blue-deep);
+}
+
+.prose-inst {
+  color: var(--color-text-muted);
+  max-width: 46rem;
+}
+.prose-inst a {
+  color: var(--color-blue-deep);
+  text-decoration: underline;
+  text-decoration-color: var(--color-hairline-strong);
+  text-underline-offset: 3px;
+}
+.prose-inst a:hover {
+  text-decoration-color: var(--color-blue-deep);
+}
+.prose-inst strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-inst code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--color-blue-deep);
+  background: var(--color-vellum);
+  border: 1px solid var(--color-hairline);
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+
+/* institutional double rule — the site's editorial signature */
+.rule-double {
+  border-top: 2.5px solid var(--color-ink);
+  position: relative;
+}
+.rule-double::after {
+  content: "";
+  position: absolute;
+  top: 3.5px;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--color-hairline-strong);
+}
+
+/* numbered section header rhythm */
+.section-head {
+  display: grid;
+  gap: 0.9rem;
+  padding-top: 2rem;
+}
+
+/* headline accent: ink → deep blue-mid, tuned for light backgrounds */
+.headline-accent {
+  background: linear-gradient(100deg, var(--color-ink) 50%, var(--color-blue-deep) 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* fine plus-mark lattice backdrop (engineering-paper sibling of the family grid) */
+.lattice-backdrop {
+  background-image:
+    linear-gradient(var(--color-hairline-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-hairline-strong) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center top;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 0%, black 25%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 0%, black 25%, transparent 100%);
+}
+
+/* ---------- reveal-on-scroll (pure CSS, degrades gracefully) ---------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up 0.8s ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 42%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- diagram animation primitives ---------- */
+
+.flow-dash {
+  stroke-dasharray: 6 10;
+  animation: flow-dash-move 1.9s linear infinite;
+}
+@keyframes flow-dash-move {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+.node-pulse {
+  animation: node-pulse 3.6s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes node-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+.orbit-slow {
+  animation: orbit-slow 60s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes orbit-slow {
+  to { transform: rotate(360deg); }
+}
+
+.ring-breathe {
+  animation: ring-breathe 6s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes ring-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-dash {
+    stroke-dasharray: none;
+  }
+}
+
+/* ---------- interactive islands (research program pages only) ----------
+   Tabs (architecture explorer) and steppers (lifecycle / evolution loop).
+   Server-rendered content is fully visible without JS; scripts add
+   [hidden] on panels and reveal the controls. */
+
+.xp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.xp-tab {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: 0.4rem;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+.xp-tab:hover {
+  color: var(--color-blue-deep);
+  border-color: var(--color-blue-deep);
+}
+.xp-tab[aria-selected="true"] {
+  background: var(--color-blue-deep);
+  border-color: var(--color-blue-deep);
+  color: #ffffff;
+}
+
+.step-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: 0.4rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+.step-btn:hover:not(:disabled) {
+  color: var(--color-blue-deep);
+  border-color: var(--color-blue-deep);
+}
+.step-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* stage dimming inside interactive diagrams — .stage-live is added by JS,
+   so without JS every stage renders at full strength */
+.stage-live .io-stage {
+  opacity: 0.26;
+  transition: opacity 350ms ease;
+}
+.stage-live .io-stage.is-active {
+  opacity: 1;
+}
+.io-halo {
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+.stage-live .io-stage.is-active .io-halo {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-live .io-stage,
+  .io-halo {
+    transition-duration: 0.01ms;
+  }
+}

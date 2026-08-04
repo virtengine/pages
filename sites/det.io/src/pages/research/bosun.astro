@@ -1,0 +1,290 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import BosunPipeline from "@components/diagrams/BosunPipeline.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+  { name: "Bosun", href: "/research/bosun" },
+];
+
+const capabilities = [
+  {
+    title: "Executor routing",
+    body: "Plans and routes tasks across GitHub Copilot, Claude, Codex, and OpenCode executors with weighted distribution, automatic failover, and per-executor cooldowns when an executor degrades.",
+  },
+  {
+    title: "PR lifecycle automation",
+    body: "Creates pull requests, monitors CI, auto-rebases against the moving base branch, labels failing PRs for repair, and merges on green through the PR Watchdog — behind a mandatory review gate that prevents destructive merges.",
+  },
+  {
+    title: "Self-healing recovery",
+    body: "Autofix patterns repair known failure classes; circuit breakers stop repeated futile retries; heartbeat-based stale-claim reclaim returns abandoned tasks to the board; workflow runs persist to disk and auto-resume on restart.",
+  },
+  {
+    title: "Task boards",
+    body: "A built-in kanban board plus adapters for GitHub Issues, GitHub Projects v2, and Jira — with bidirectional synchronisation, so the board of record can live wherever the team already works.",
+  },
+  {
+    title: "Operator control",
+    body: "A Telegram bot with 30+ commands and a sentinel companion process, a Mini App dashboard over a stable tunnel hostname, and optional WhatsApp notifications. Escalations reach a human with clear signals.",
+  },
+  {
+    title: "Fleet coordination",
+    body: "Multiple workstations coordinate through shared state: atomic task claims, presence tracking, shared knowledge, and a workspace registry — so concurrent machines do not trample each other's work.",
+  },
+  {
+    title: "Container isolation",
+    body: "Optional execution isolation via Docker, Podman, or Apple Container keeps agent workloads contained, complementing git-level safety helpers and quality gates.",
+  },
+  {
+    title: "Setup & surfaces",
+    body: "An interactive setup wizard configures executors, boards, and channels on first run; an Electron desktop app and a web dashboard provide graphical operation alongside the CLI.",
+  },
+  {
+    title: "Execution ledger",
+    body: "Agent work is logged as a structured event stream — an execution ledger of what each agent did, when, and why — supporting audits, weekly work reports, and post-hoc review.",
+  },
+];
+---
+
+<Base
+  title="Bosun — open-source autonomous AI-agent orchestrator | det.io"
+  description="The Bosun research program: a fully open-source, experimental control plane for autonomous software engineering — task planning, executor routing with failover, automated PR lifecycles, and self-healing recovery — developed in the open as the applied engineering track that informs the foundation's DSEMA multi-agent research."
+  path="/research/bosun"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Research program 03"
+    title="Bosun — the deck officer of autonomous engineering"
+    lede="Bosun is a fully open-source, experimental control plane for autonomous software engineering. It plans and routes work across AI coding agents, automates the pull-request lifecycle, and recovers from failure on its own — while keeping human operators in command of the operation."
+  >
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Status</dt>
+        <dd class="text-ink">experimental — actively developed, open source</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">License</dt>
+        <dd class="text-ink">Apache-2.0</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Install</dt>
+        <dd class="text-ink">npm install -g bosun · requires Node.js 22.13+</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Home</dt>
+        <dd class="text-ink">bosun.engineer · github.com/virtengine/bosun</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="The name, the idea"
+    title="It orchestrates the work. Humans stay in command."
+    lede="The name comes from “boatswain” — the ship's officer responsible for coordinating deck work, keeping operations moving, and translating command into disciplined execution. That is precisely the design: Bosun does not replace the captain or the crew."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What it is</h3>
+        <p class="prose-inst text-[0.98rem]">
+          Bosun is a control plane for autonomous software engineering. Given a task board
+          — its own kanban, GitHub Issues, GitHub Projects v2, or Jira — it plans and
+          decomposes work, routes each task to the best available AI executor, enforces
+          quality gates on the resulting pull requests, and watches its own runs for
+          stalls, failures, and stale claims. Operators steer the whole operation from a
+          Telegram bot, a Mini App dashboard, or a desktop app.
+        </p>
+        <p class="prose-inst text-[0.98rem]">
+          It ships as a single npm package (<span class="font-mono text-sm">bosun</span>),
+          runs from a repository checkout, Docker, or the Electron desktop shell, and
+          configures itself through an interactive setup wizard on first run.
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Why the foundation runs it</h3>
+        <p class="prose-inst text-[0.98rem]">
+          Two reasons, both public-benefit. First, autonomous-engineering infrastructure
+          should not be a proprietary advantage: Bosun is published whole, Apache-2.0, so
+          any team can inspect, run, and improve the machinery — consistent with the
+          foundation's education purpose of open specifications and implementation
+          guidance.
+        </p>
+        <p class="prose-inst text-[0.98rem]">
+          Second, it is an evidence base. The foundation's DSEMA program asks how
+          multi-agent AI systems can be made safe, accountable, and auditable — questions
+          that are easy to theorise about and hard to test. Bosun is a working system in
+          which task routing, failure recovery, review gates, and execution ledgers meet
+          real code, real CI, and real deadlines every day: Bosun-driven pull requests and
+          commits ship production code across the VirtEngine organisation daily.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Architecture"
+    title="Board → supervisor → executors → gates — and a loop that heals"
+    lede="Bosun's lifecycle is a closed loop. Work enters from a task board, a supervisor plans and routes it across the executor pool, results must pass PR gates before merging, and an observe-and-recover layer returns anything that stalls or fails back to the board — escalating to a human when the machinery cannot help itself."
+  >
+    <DiagramFrame
+      label="Bosun orchestration lifecycle diagram. Operators sit above the system, in command via a Telegram bot with more than thirty commands, a Mini App dashboard, and optional WhatsApp notifications. Work flows from a task board — built-in kanban, GitHub Issues, GitHub Projects v2, or Jira with bidirectional sync — to the supervisor, which plans, decomposes, and routes tasks with weighted distribution, automatic failover, and cooldowns. The supervisor dispatches to an executor pool of Copilot, Claude, Codex, and OpenCode agents, with optional container isolation. Executor output flows to PR gates: create PR, monitor CI with auto-rebase, a mandatory review gate, and merge on green only. Beneath everything an observe-and-recover band — execution ledger, autofix patterns, circuit breakers, heartbeat-based stale-claim reclaim, and operator escalation — feeds unresolved work back to the task board, closing the loop."
+      caption="fig 01 — the Bosun lifecycle: task board, supervisor, executor pool, PR gates, observe & recover"
+      class="reveal"
+    >
+      <BosunPipeline />
+    </DiagramFrame>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Planning &amp; routed execution</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Trigger intake consumes issues, comments, schedules, and webhook events; planning
+          converts goals into scoped tasks with execution context. Dispatch picks the best
+          executor profile per task, with retries, weighted distribution across N
+          executors, and automatic failover with cooldowns when one misbehaves. Setup
+          profiles range from Manual Dispatch through Balanced to Autonomous.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Gates before merge</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Nothing merges on an agent's say-so. Bosun creates the PR, watches CI, labels
+          failures for repair, auto-rebases, and merges only when checks are green — and
+          only through a watchdog with a mandatory review gate. The same discipline is
+          enforced in its own repository: pre-commit and pre-push hooks, syntax checks, and
+          prepublish validation.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Recovery before escalation</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Runs persist to disk and auto-resume after restarts. Stalled or broken states are
+          detected by the monitor loop; autofix patterns repair known failure classes;
+          circuit breakers stop futile retries; heartbeat-based reclaim frees tasks claimed
+          by dead workers. When self-healing runs out, the system escalates to an operator
+          with clear signals rather than failing silently.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Fleet, not just one machine</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Multiple workstations coordinate through shared state — atomic claims so two
+          machines never take the same task, presence so the fleet knows who is alive, and
+          shared knowledge so learnings travel. An execution ledger records what every
+          agent did, feeding weekly work summaries operators can pull from Telegram.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Capability inventory"
+    title="What ships in the box"
+    lede="The inventory below is drawn from the open repository — its README, module index, and package manifest — not from a roadmap."
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        capabilities.map((cap) => (
+          <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+            <h3 class="text-lg font-bold">{cap.title}</h3>
+            <p class="prose-inst text-[0.95rem]">{cap.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="Relationship to DSEMA"
+    title="The applied track that keeps the research honest"
+    lede="Bosun and DSEMA answer to the same underlying question — how multi-agent AI systems stay safe, accountable, and auditable — from opposite ends. DSEMA is the formal architecture; Bosun is the working practice."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What Bosun contributes to the research</h3>
+        <p class="prose-inst text-[0.98rem]">
+          Operating experience. Every mechanism DSEMA studies formally has a pragmatic
+          counterpart running in Bosun today: task decomposition and merit-based routing,
+          quality gates before irreversible actions, tamper-resistant activity records,
+          human oversight channels, and recovery under adversity. Watching where those
+          pragmatic mechanisms hold — and where they strain — supplies the research program
+          with grounded failure modes instead of hypothetical ones.
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What we do not claim</h3>
+        <p class="prose-inst text-[0.98rem]">
+          Bosun is not an implementation of the DSEMA architecture and does not claim
+          conformance with it. There is no blockchain control plane, no constitutional
+          safety layer, and no on-chain reputation system in Bosun — its guarantees are
+          engineering guarantees (gates, ledgers, sandboxes, human control), not
+          cryptographic ones. It is the applied engineering track that informs the
+          research, described here exactly as what it is: fully open source, and
+          experimental.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="05"
+    eyebrow="Status"
+    title="Where the program stands — stated plainly"
+    lede="Bosun is experimental software under active development, published in full."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What exists today</h3>
+        <ul class="mt-4 grid gap-2.5">
+          {
+            [
+              "The complete source, published under Apache-2.0 at github.com/virtengine/bosun, with a module-by-module agent guide and long-form documentation",
+              "A released npm package (bosun) with an interactive setup wizard, Docker images on Docker Hub, and an Electron desktop app",
+              "A public documentation site at bosun.engineer, generated from the same markdown sources kept in the repository",
+              "Daily production use: Bosun-driven pull requests and commits ship code across the VirtEngine organisation's repositories",
+            ].map((item) => (
+              <li class="prose-inst flex gap-3 text-[0.95rem]">
+                <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What we don't claim</h3>
+        <p class="prose-inst mt-4 text-[0.98rem]">
+          Bosun is experimental. Interfaces, configuration, and behaviour change quickly;
+          running autonomous agents against real repositories carries real risk, which is
+          why the defaults favour review gates, containment options, and operator
+          escalation. We publish no adoption numbers, no user counts, and no reliability
+          statistics — the verifiable artifacts are the repository, the package, and the
+          commit history, and we prefer you inspect those.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section number="06" eyebrow="Go deeper" title="The program in the open">
+    <div class="flex flex-wrap gap-3">
+      <CTA href="https://bosun.engineer" rel="noopener">bosun.engineer</CTA>
+      <CTA href="https://github.com/virtengine/bosun" variant="secondary" rel="noopener">Source code</CTA>
+      <CTA href="https://www.npmjs.com/package/bosun" variant="secondary" rel="noopener">npm package</CTA>
+      <CTA href="https://bosun.engineer/docs/" variant="ghost" rel="noopener">Documentation</CTA>
+      <CTA href="/research/dsema" variant="ghost">DSEMA program</CTA>
+    </div>
+  </Section>
+</Base>

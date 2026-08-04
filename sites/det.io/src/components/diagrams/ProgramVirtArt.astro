@@ -1,0 +1,62 @@
+---
+/**
+ * Program-card artwork for VirtEngine: tenants and providers meeting at a
+ * hexagonal chain, settlement flowing through it. Decorative (card art).
+ */
+---
+
+<svg viewBox="0 0 420 180" class="h-auto w-full" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="pva" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- tenants -->
+  <g>
+    <rect x="18" y="46" width="84" height="34" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="60" y="67" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">tenants</text>
+    <rect x="18" y="98" width="84" height="34" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="60" y="119" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">deployers</text>
+  </g>
+
+  <!-- providers -->
+  <g>
+    <rect x="318" y="46" width="84" height="34" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="360" y="67" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">providers</text>
+    <rect x="318" y="98" width="84" height="34" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="360" y="119" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">validators</text>
+  </g>
+
+  <!-- chain hex -->
+  <g>
+    <path d="M210 40 L254 65 L254 115 L210 140 L166 115 L166 65 Z" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></path>
+    <g fill="var(--color-blue-deep)">
+      <circle cx="210" cy="40" r="3.4" class="node-pulse"></circle>
+      <circle cx="254" cy="65" r="3.4" class="node-pulse" style="animation-delay: -0.6s"></circle>
+      <circle cx="254" cy="115" r="3.4" class="node-pulse" style="animation-delay: -1.2s"></circle>
+      <circle cx="210" cy="140" r="3.4" class="node-pulse" style="animation-delay: -1.8s"></circle>
+      <circle cx="166" cy="115" r="3.4" class="node-pulse" style="animation-delay: -2.4s"></circle>
+      <circle cx="166" cy="65" r="3.4" class="node-pulse" style="animation-delay: -3s"></circle>
+    </g>
+    <text x="210" y="85" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">chain</text>
+    <text x="210" y="102" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-blue-deep)">market · veid · escrow</text>
+  </g>
+
+  <!-- flows -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#pva)">
+    <path d="M104 63 Q135 68 160 78"></path>
+    <path d="M260 78 Q285 68 316 63"></path>
+  </g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#pva)" style="animation-delay: -0.9s">
+    <path d="M316 115 Q285 112 260 102"></path>
+    <path d="M160 102 Q135 112 104 115"></path>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">
+    <text x="120" y="52">orders</text>
+    <text x="272" y="52">bids</text>
+    <text x="272" y="138">leases</text>
+    <text x="108" y="138">settlement</text>
+  </g>
+</svg>

@@ -1,0 +1,162 @@
+---
+import Base from "@layouts/Base.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import StatusTag from "@components/StatusTag.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import CredentialScreen from "@components/phone/CredentialScreen.astro";
+import WebPortalFrame from "@components/phone/WebPortalFrame.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Wallet", href: "/wallet" },
+];
+---
+
+<Base
+  title="The Identity Wallet service | identity.org.au"
+  description="The Identity Wallet is the real service behind identity.org.au: a web wallet at my.identity.org.au and a mobile capture wallet that together let you verify once and prove things to services on the VirtEngine network — without handing over documents."
+  breadcrumbs={crumbs}
+>
+  <!-- service hero -->
+  <section class="border-b border-hairline bg-alt">
+    <div class="container-site pt-8">
+      <Breadcrumbs crumbs={crumbs} />
+    </div>
+    <div class="container-site grid items-center gap-12 pb-12 pt-6 lg:grid-cols-12 lg:pb-16">
+      <div class="lg:col-span-7">
+        <p class="eyebrow m-0">The service</p>
+        <h1 class="mt-2 mb-0 text-[clamp(1.9rem,4vw,2.7rem)] measure">The Identity Wallet</h1>
+        <p class="mt-4 mb-0 text-[1.15rem] text-body measure">
+          One verified identity, two wallet surfaces. Complete verification once on your phone,
+          then manage credentials, consents and proofs from the web wallet at
+          <strong>my.identity.org.au</strong> — and use your verification level everywhere the
+          VirtEngine network is accepted.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-4">
+          <a href={SITE.walletPortal} rel="noopener" class="btn-primary">
+            Join the launch list
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+          <a href="/get-started" class="btn-secondary">Set up from scratch</a>
+        </div>
+        <p class="mt-5 mb-0 text-[0.95rem] text-muted measure-narrow">
+          Open-source reference software, rolling out with the VirtEngine network. Free to use.
+          Not an Australian Government service.
+        </p>
+      </div>
+      <div class="mx-auto w-full max-w-[280px] lg:col-span-5">
+        <CredentialScreen />
+      </div>
+    </div>
+  </section>
+
+  <!-- the two surfaces -->
+  <section class="container-site py-14 lg:py-20">
+    <p class="eyebrow m-0">Two surfaces, one identity</p>
+    <h2 class="mt-2 text-[1.75rem]">The mobile wallet captures. The web wallet manages.</h2>
+    <p class="text-body measure">
+      Verification evidence — your document, your face, your phone's secure hardware — can only be
+      captured on a mobile device. Everything after that moment works wherever you are signed in.
+    </p>
+    <div class="mt-8 grid gap-6 lg:grid-cols-2">
+      <div class="border border-hairline rounded-tile p-6">
+        <StatusTag tone="info">Capture + wallet</StatusTag>
+        <h3 class="mt-3 mb-0 text-[1.2rem]">Mobile wallet</h3>
+        <p class="mt-2 text-[0.98rem] text-body">
+          Guided document capture, selfie with active liveness, hardware biometrics and device
+          integrity attestation — with everything encrypted on your phone before it moves.
+        </p>
+        <a href="/wallet/mobile-wallet" class="link-plain font-semibold">About the mobile wallet</a>
+      </div>
+      <div class="border border-hairline rounded-tile p-6">
+        <StatusTag tone="info">Manage + present</StatusTag>
+        <h3 class="mt-3 mb-0 text-[1.2rem]">Web wallet — my.identity.org.au</h3>
+        <p class="mt-2 text-[0.98rem] text-body">
+          Your browser portal: see your verification level, present proofs to services, review
+          every consent, and revoke anything — from any device you have signed in with.
+        </p>
+        <a href="/wallet/web-wallet" class="link-plain font-semibold">About the web wallet</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- portal preview -->
+  <section class="border-y border-hairline bg-alt">
+    <div class="container-site py-14 lg:py-20">
+      <div class="grid items-center gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <p class="eyebrow m-0">my.identity.org.au</p>
+          <h2 class="mt-2 text-[1.75rem]">Everything you have shared, in one place you control</h2>
+          <p class="text-body">
+            The portal shows your verified identity the way services see it — a level, a set of
+            proofs — alongside the parts only you can see: your consent ledger, your history, your
+            sessions.
+          </p>
+          <ul class="m-0 mt-4 grid gap-2 list-disc pl-5 text-body">
+            <li>Present proofs — age, residency, verification level — to a requesting service</li>
+            <li>Review and revoke any consent, with a timestamped audit trail</li>
+            <li>Manage devices and sessions; sign out everywhere in one action</li>
+          </ul>
+          <a href={SITE.walletPortal} rel="noopener" class="btn-primary mt-6">Join the launch list</a>
+        </div>
+        <div class="lg:col-span-7">
+          <WebPortalFrame />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- verify on VirtEngine -->
+  <section class="container-site py-14 lg:py-20">
+    <p class="eyebrow m-0">Why verify</p>
+    <h2 class="mt-2 text-[1.75rem]">Your verification is your pass on the VirtEngine network</h2>
+    <p class="text-body measure">
+      The VirtEngine network is a decentralised cloud marketplace. Actions on it — deploying
+      workloads, leasing capacity, taking on sensitive roles — are gated by verification tiers.
+      Completing verification makes you an <strong>approved client</strong>: providers and the
+      marketplace see your tier and score, never your documents.
+    </p>
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <CardLink
+        href="/wallet/verify-on-virtengine"
+        tag="The full flow"
+        title="Verify on VirtEngine"
+        description="Wallet to chain to marketplace: how verification becomes approval, step by step, with the full diagram."
+      />
+      <CardLink
+        href="/wallet/credentials"
+        tag="Reference"
+        title="Credentials and proofs"
+        description="Every credential and proof the wallet can hold — what each one proves, and what it never reveals."
+      />
+      <CardLink
+        href="/wallet/security"
+        tag="Security model"
+        title="Wallet security"
+        description="On-device processing, encrypted payloads, key handling, revocation, and the lost-device path."
+      />
+      <CardLink
+        href="/get-started/verification-levels"
+        tag="Levels"
+        title="Verification levels"
+        description="Unverified, Basic, Standard and Trusted — the evidence behind each level and what it unlocks."
+      />
+    </div>
+  </section>
+
+  <!-- honesty -->
+  <section class="container-site pb-14 lg:pb-20">
+    <Alert tone="info" title="Where the service is up to">
+      <p>
+        The Identity Wallet is working, open-source <strong>reference software</strong> rolling
+        out with the VirtEngine network. my.identity.org.au is its wallet portal. There are no
+        app-store listings and no government accreditation — and we will not claim either until
+        they are true. What we publish is what the <a href="/about/open-source" class="link-plain">code does</a>.
+      </p>
+    </Alert>
+  </section>
+</Base>

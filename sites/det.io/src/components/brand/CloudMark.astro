@@ -1,0 +1,65 @@
+---
+/**
+ * The DET.io cloud mark, rebuilt as clean geometry from the flat logo
+ * (_agent-context/brand/detio/detio-logo-flat.png). Three layers, exactly
+ * as in the original: a dark navy under-shadow offset down-left, the
+ * sky-blue cloud body, and a lighter highlight puff at the upper left.
+ * See DESIGN.md §2 for construction and usage rules.
+ */
+interface Props {
+  /** Rendered size in px (height; width scales at 1.38:1) */
+  size?: number;
+  /** Single-color rendering (currentColor) for favicon-like uses */
+  mono?: boolean;
+  class?: string;
+}
+
+const { size = 34, mono = false, class: className } = Astro.props;
+const width = Math.round(size * 1.38);
+---
+
+<svg
+  viewBox="0 0 132 96"
+  width={width}
+  height={size}
+  class={className}
+  aria-hidden="true"
+  fill="none"
+>
+  {
+    mono ? (
+      <g fill="currentColor">
+        <circle cx="27" cy="60" r="16" />
+        <circle cx="52" cy="40" r="25" />
+        <circle cx="81" cy="50" r="20" />
+        <circle cx="104" cy="61" r="14" />
+        <rect x="14" y="50" width="104" height="27" rx="13.5" />
+      </g>
+    ) : (
+      <>
+        {/* navy under-shadow, offset down-left as in the flat logo */}
+        <g fill="var(--color-navy)" transform="translate(-4 9)">
+          <circle cx="27" cy="60" r="16" />
+          <circle cx="52" cy="44" r="22" />
+          <circle cx="81" cy="52" r="19" />
+          <circle cx="102" cy="61" r="14" />
+          <rect x="14" y="50" width="102" height="27" rx="13.5" />
+        </g>
+        {/* sky-blue cloud body */}
+        <g fill="var(--color-sky)">
+          <circle cx="27" cy="60" r="16" />
+          <circle cx="52" cy="40" r="25" />
+          <circle cx="81" cy="50" r="20" />
+          <circle cx="104" cy="61" r="14" />
+          <rect x="14" y="50" width="104" height="27" rx="13.5" />
+        </g>
+        {/* highlight puff, upper left */}
+        <g fill="var(--color-sky-bright)">
+          <circle cx="34" cy="30" r="13" />
+          <circle cx="18" cy="42" r="10" />
+          <circle cx="49" cy="24" r="9" />
+        </g>
+      </>
+    )
+  }
+</svg>

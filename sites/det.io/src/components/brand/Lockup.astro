@@ -1,0 +1,50 @@
+---
+/**
+ * Full DET.io brand lockup: the real DET.io logo (public/images/detio-logo.png),
+ * with an optional "FOUNDATION" supporting line for the legal entity
+ * (DETIO FOUNDATION LTD). See DESIGN.md §2 for usage rules.
+ */
+const LOGO_ASPECT = 942 / 170;
+
+interface Props {
+  /** Mark height in px; wordmark and supporting line scale from it */
+  size?: number;
+  /** Show the "FOUNDATION" supporting line under the wordmark */
+  foundation?: boolean;
+  /** Render for dark (night) surfaces */
+  onDark?: boolean;
+  class?: string;
+}
+
+const { size = 34, foundation = false, onDark = false, class: className } = Astro.props;
+const logoWidth = Math.round(size * LOGO_ASPECT);
+
+---
+
+<span
+  class:list={["inline-flex flex-col", className]}
+  style={`gap:${Math.max(2, Math.round(size * 0.08))}px`}
+>
+  <img
+    src="/images/detio-logo.png"
+    alt=""
+    aria-hidden="true"
+    width={logoWidth}
+    height={size}
+    style={`height:${size}px;width:${logoWidth}px`}
+  />
+  {
+    foundation && (
+      <span
+        class:list={[
+          "font-display font-semibold uppercase leading-none",
+          onDark ? "text-night-muted" : "text-steel",
+        ]}
+        style={`font-size:${Math.max(8, Math.round(size * 0.24))}px;letter-spacing:${(size * 0.062).toFixed(1)}px`}
+      >
+        Foundation
+      </span>
+    )
+  }
+  </span>
+</span>

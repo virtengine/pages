@@ -1,0 +1,22 @@
+---
+interface Props {
+  /** Full text alternative for the diagram (required for accessibility) */
+  label: string;
+  caption?: string;
+  class?: string;
+}
+
+const { label, caption, class: className } = Astro.props;
+---
+
+<figure
+  class:list={[
+    "overflow-x-auto rounded-frame border border-hairline bg-gradient-to-b from-surface to-vellum p-4 md:p-8",
+    className,
+  ]}
+>
+  <div role="img" aria-label={label}>
+    <slot />
+  </div>
+  {caption && <figcaption class="mt-4 border-t border-hairline pt-3 font-mono text-xs text-text-soft">{caption}</figcaption>}
+</figure>

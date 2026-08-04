@@ -1,0 +1,272 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import CardLink from "@components/CardLink.astro";
+import LockAndKey from "@components/diagrams/LockAndKey.astro";
+import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Privacy", href: "/privacy" },
+  { name: "Trusted processing", href: "/privacy/trusted-processing" },
+];
+---
+
+<Base
+  title="Trusted processing — the lock and the key | identity.org.au"
+  description="How your identity data is processed inside trusted processing units — hardware-sealed enclaves no one can open, not even operators — with attestation checked on-chain before any data enters, keys forged inside the hardware, and raw data destroyed after scoring."
+  breadcrumbs={crumbs}
+  ogType="article"
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Your data and privacy"
+    title="Trusted processing: the lock and the key"
+    lede="Your evidence is only ever processed inside hardware-sealed vaults that no person can open — and you don't have to take that on faith, because the vault proves what it is before any data enters."
+  />
+
+  <div class="container-site max-w-[68rem] py-12">
+    <section>
+      <h2 class="mt-0 text-[1.6rem]">One verification, start to finish</h2>
+      <p class="text-body measure">
+        Follow one verification through the system. Your data is <strong>locked</strong> on your
+        device, travels sealed, is opened only inside a vault whose <strong>key is forged in the
+        hardware itself</strong>, and is destroyed once the answer exists. Only the answer leaves.
+      </p>
+      <figure class="m-0 mt-8 rounded-tile border border-hairline bg-alt p-4 sm:p-6">
+        <LockAndKey />
+        <figcaption class="mt-3 text-[0.9rem] text-muted">
+          The journey of one verification: sealed on your device, opaque in transit, admitted
+          through the attestation gate, processed and destroyed inside the vault — only the
+          result reaches the chain.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="mt-0 text-[1.6rem]">What a trusted processing unit is</h2>
+      <div class="prose-service">
+        <p>
+          A trusted processing unit is a <strong>vault built out of the computer's own
+          hardware</strong>. The technical names are trusted execution environments and
+          confidential virtual machines — AMD SEV-SNP, Intel SGX and AWS Nitro are the three the
+          system supports. Inside one, the processor itself encrypts the memory, so even the
+          machine's owner, looking at their own hardware, sees only ciphertext.
+        </p>
+        <p>
+          Ordinary servers have doors: an administrator account, a debug console, a memory dump.
+          A trusted processing unit is <strong>designed with no doors at all</strong> — no
+          operator login, no console, no way to read the memory from outside. That is not a
+          policy that someone promises to follow; it is how the silicon works.
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">The gate: attestation, checked on-chain</h2>
+      <div class="prose-service">
+        <p>
+          Before your encrypted evidence is released to a vault, the vault must prove what it is.
+          It produces an <strong>attestation</strong> — a signed statement from the hardware
+          manufacturer's own certificate chain that says, in effect: <em>"I am genuine sealed
+          hardware, and I am running exactly this code, with this fingerprint."</em>
+        </p>
+        <p>
+          The VirtEngine chain verifies that attestation <strong>on-chain</strong>, in its
+          <code>x/enclave</code> module, checking the signature and comparing the code's
+          measurement — a cryptographic fingerprint of every byte the vault will run — against
+          the approved record. If a single byte of the code were different, the fingerprint would
+          not match and <strong>no data would be released to it</strong>. Because the check is
+          on-chain, it is public: anyone can confirm which enclave measurements the network
+          accepts.
+        </p>
+      </div>
+      <Callout title="What attestation does and does not prove" class="mt-6 max-w-[72ch]">
+        <p>
+          Attestation proves the vault is genuine hardware running exactly the approved code —
+          nothing more. The rest of the protection comes from what that approved code does:
+          verify, report a result, destroy the evidence. Both halves are open source, so both
+          halves can be checked.
+        </p>
+      </Callout>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">The key: forged inside the vault</h2>
+      <div class="prose-service">
+        <p>
+          The key that decrypts your evidence <strong>never exists outside the vault</strong>. It
+          is derived inside the hardware, from the hardware — the processor's own secrets — and
+          sealed so it can only ever be used by that exact vault running that exact code
+          (hardware key derivation with vTPM sealing, in the technical terms).
+        </p>
+        <p>
+          This is why "no one can open it" is a design fact rather than a promise: there is no
+          key to hand over. Not to an operator with root access, not to the provider hosting the
+          machine, not to the foundation that stewards the project, not in response to a demand.
+          A key that never leaves the silicon cannot be copied, stolen, or surrendered.
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">What happens to your data, stage by stage</h2>
+      <p class="text-body measure">
+        The same journey as a lifecycle. Raw evidence exists inside the vault only for the moments
+        scoring takes — then it is destroyed, and only the result remains.
+      </p>
+      <DataLifecycle withTable class="mt-8" />
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">How and when data is discarded</h2>
+      <div class="prose-service">
+        <p>
+          Destruction is a commitment in the published Biometric Data Addendum, with actual
+          figures rather than adjectives:
+        </p>
+        <ul>
+          <li>
+            <strong>Inside the vault:</strong> working copies of your documents and biometrics
+            exist only while scoring runs; the enclave retains nothing afterwards.
+          </li>
+          <li>
+            <strong>Retained encrypted evidence:</strong> destroyed automatically at the end of
+            its legal retention period — at most 7 years from last use, driven by know-your-customer
+            and anti-money-laundering law.
+          </li>
+          <li>
+            <strong>On deletion request:</strong> removed from active systems within 30 days, and
+            from backups within the rotation period (typically 90 days).
+          </li>
+          <li>
+            <strong>Keys are destroyed too</strong> — which makes any remaining encrypted copy,
+            anywhere, permanently unreadable. That is the permanent-destruction commitment.
+          </li>
+          <li>
+            <strong>Withdraw at any time</strong> by emailing
+            <a href={`mailto:${SITE.dpoEmail}`}>{SITE.dpoEmail}</a>.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">Who can see what</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">
+            For each category of identity data, whether you, services, providers, the foundation
+            or operators can see it
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">You</th>
+              <th scope="col">Service you use</th>
+              <th scope="col">Providers</th>
+              <th scope="col">Foundation</th>
+              <th scope="col">Operators</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Raw documents</th>
+              <td>Yes — on your device</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never</td>
+            </tr>
+            <tr>
+              <th scope="row">Biometric data</th>
+              <td>Yes — on your device</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never</td>
+            </tr>
+            <tr>
+              <th scope="row">Encryption keys</th>
+              <td>Held in your phone's hardware</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never</td>
+              <td>Never — the vault's key never leaves the silicon</td>
+            </tr>
+            <tr>
+              <th scope="row">Score and tier</th>
+              <td>Yes — in full</td>
+              <td>Only with your consent, per request</td>
+              <td>Tier only, as an approved client</td>
+              <td>Public results only</td>
+              <td>Public results only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 mb-0 text-[0.92rem] text-muted measure">
+        "Never" in this table is architectural: raw evidence is ciphertext everywhere outside
+        your device and the attested vault, and the vault has no door.
+      </p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">Verification you can check</h2>
+      <div class="prose-service">
+        <p>
+          Every claim on this page maps to something inspectable. The enclave runtime and the
+          attestation verifier are in the
+          <a href={SITE.github} rel="noopener">open-source repository</a>
+          (<code>pkg/enclave_runtime</code>); the on-chain verification lives in the
+          <code>x/enclave</code> module; the destruction and retention commitments are in the
+          versioned Biometric Data Addendum. The
+          <a href={SITE.docs} rel="noopener">protocol documentation</a> covers the attestation
+          formats in engineering detail.
+        </p>
+      </div>
+      <Alert tone="info" title="The honest limits" class="mt-6 max-w-[72ch]">
+        <p>
+          No security design is beyond all conceivable failure, and we do not claim this one is.
+          What we claim — checkably — is the design: attestation verified before data moves, keys
+          sealed in hardware, no operator access path, and destruction commitments with dates
+          attached. Designed so that no one — not operators, not providers, not the foundation —
+          can open the processing environment.
+        </p>
+      </Alert>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.5rem]">Keep reading</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <CardLink
+          href="/privacy"
+          tag="Policy"
+          title="Privacy"
+          description="Everything that exists, where it lives, who can read it, and the full retention table."
+        />
+        <CardLink
+          href="/how-it-works"
+          tag="Guide"
+          title="How it works"
+          description="The whole pipeline in plain language — on-device capture, network verification, consent."
+        />
+        <CardLink
+          href="/wallet/security"
+          tag="The service"
+          title="Wallet security"
+          description="The wallet's security model: on-device processing, key handling, real deletion."
+        />
+        <CardLink
+          href="/help/how-your-biometrics-are-protected"
+          tag="Help"
+          title="How your biometrics are protected"
+          description="The four promises that never change, and the retention schedule in numbers."
+        />
+      </div>
+    </section>
+  </div>
+</Base>

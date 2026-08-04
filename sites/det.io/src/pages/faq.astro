@@ -1,0 +1,84 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import CTA from "@components/CTA.astro";
+import { FAQ } from "@data/faq";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "FAQ", href: "/faq" },
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+---
+
+<Base
+  title="FAQ — honest answers about DETIO Foundation | det.io"
+  description="Frequently asked questions about DETIO FOUNDATION LTD: charity status, the public-benefit lock, who controls the foundation, what happens on winding up, tokens, patents, membership, and how to verify every claim."
+  path="/faq"
+  breadcrumbs={breadcrumbs}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+  </Fragment>
+
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Frequently asked questions"
+    title="Asked plainly, answered precisely"
+    lede="Fourteen real questions about the foundation — each answered from the signed constitution, the patent record, or the open repository, with a link to the page where you can verify the answer."
+  />
+
+  <div class="container-site max-w-4xl py-14 md:py-20">
+    <dl class="grid gap-5">
+      {
+        FAQ.map((item, i) => (
+          <div class="reveal rounded-card border border-hairline bg-surface p-6 md:p-8">
+            <dt class="flex items-start gap-4">
+              <span class="mt-0.5 font-mono text-xs text-text-soft">{String(i + 1).padStart(2, "0")}</span>
+              <h2 class="text-xl font-bold">{item.question}</h2>
+            </dt>
+            <dd class="mt-3 ml-0 md:ml-9">
+              <p class="prose-inst">{item.answer}</p>
+              {item.links && (
+                <p class="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                  {item.links.map((link) => (
+                    <a
+                      href={link.href}
+                      rel={link.href.startsWith("http") ? "noopener" : undefined}
+                      class="inline-flex items-center gap-1.5 font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep"
+                    >
+                      {link.label}
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" />
+                      </svg>
+                    </a>
+                  ))}
+                </p>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="mt-12 rounded-frame bg-night px-8 py-10 text-night-text">
+      <h2 class="text-2xl font-bold text-night-text">Question not here?</h2>
+      <p class="mt-3 max-w-xl text-night-muted">
+        Write to the foundation — questions that recur get added to this page, with citations.
+      </p>
+      <div class="mt-6">
+        <CTA href="/contact">Contact the foundation</CTA>
+      </div>
+    </div>
+  </div>
+</Base>

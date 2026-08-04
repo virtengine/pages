@@ -1,0 +1,76 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Steps from "@components/Steps.astro";
+import Alert from "@components/Alert.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+  { name: "Lost or new device", href: "/get-started/lost-or-new-device" },
+];
+
+const recoverySteps = [
+  {
+    title: "Secure the old device (if lost or stolen)",
+    body: "Use your platform's find-my-device feature to lock or remotely wipe the phone. The wallet's contents are encrypted behind your screen lock, so a locked phone exposes encrypted data only.",
+  },
+  {
+    title: "Install the wallet on the new device",
+    body: "From the official open-source repository — remember there are no app-store listings, so treat store results as suspect.",
+  },
+  {
+    title: "Re-establish control of your wallet",
+    body: "Restore access using your recovery material (the keys or phrase you saved at setup). This proves the new device is controlled by the wallet's owner.",
+  },
+  {
+    title: "Complete a fresh biometric check",
+    body: "A new selfie and liveness check confirms to the network that the person on the new device is still you — not someone who found your recovery phrase.",
+  },
+  {
+    title: "Review your consents",
+    body: "Your consent history carries over. Take a minute to review active grants and revoke anything you no longer need.",
+  },
+];
+---
+
+<Guide
+  title="Lost or new device"
+  metaTitle="Lost or new device — Get started | identity.org.au"
+  description="What happens to your Identity Wallet when your phone is lost, stolen or replaced — and the steps to recover on a new device."
+  lede="Your verified identity lives on the network, encrypted — not just inside one phone. Losing your phone does not mean losing your identity."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <div class="prose-service">
+    <h2>What a lost phone does — and does not — expose</h2>
+    <ul>
+      <li><strong>Behind your screen lock:</strong> wallet data is encrypted. A thief with a locked phone has ciphertext.</li>
+      <li><strong>Hardware biometrics</strong> never leave your phone's secure hardware unencrypted, and cannot be extracted by another person's fingerprint or face.</li>
+      <li><strong>Your verified claims</strong> exist on the network in encrypted form — they are not destroyed with the device.</li>
+      <li><strong>What is at risk</strong> is an unlocked phone in the wrong hands — which is why the wallet requires a screen lock and re-authenticates for sensitive actions.</li>
+    </ul>
+  </div>
+
+  <h2 class="mt-10 text-[1.5rem]">Recovering on a new device</h2>
+  <Steps steps={recoverySteps} class="mt-6" />
+
+  <Alert tone="warning" title="Keep your recovery material offline" class="mt-6">
+    <p>
+      Whoever holds your recovery keys can begin wallet recovery — the fresh biometric check is
+      the backstop, but do not rely on it alone. Store recovery material offline (written down, in
+      a safe place), never in email, notes apps or screenshots.
+    </p>
+  </Alert>
+
+  <div class="prose-service mt-8">
+    <h2>If you believe someone is using your identity</h2>
+    <ol>
+      <li>Revoke consents from any device where you still have wallet access.</li>
+      <li>Email <a href="mailto:dpo@virtengine.com">dpo@virtengine.com</a> to flag the identity for review — verification can be suspended while it is investigated.</li>
+      <li>Report identity theft to <a href="https://www.idcare.org" rel="noopener">IDCARE</a> (Australia's identity support service) and to police.</li>
+    </ol>
+  </div>
+</Guide>

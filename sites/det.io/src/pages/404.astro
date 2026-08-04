@@ -1,0 +1,32 @@
+---
+import Base from "@layouts/Base.astro";
+import CTA from "@components/CTA.astro";
+import CloudMark from "@components/brand/CloudMark.astro";
+---
+
+<Base
+  title="Page not found — DETIO Foundation | det.io"
+  description="The page you were looking for does not exist on det.io. Return to the DETIO Foundation home page."
+  path="/404"
+>
+  <div class="relative overflow-hidden border-b border-hairline bg-surface">
+    <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
+    <div class="container-site relative grid gap-6 py-24 md:py-36">
+      <CloudMark size={64} />
+      <p class="eyebrow">Error 404</p>
+      <h1 class="headline-accent max-w-2xl text-4xl font-bold md:text-[3.25rem]">
+        This cloud drifted off the map.
+      </h1>
+      <p class="prose-inst text-lg">
+        The page you requested doesn't exist — it may have moved when det.io became the
+        home of the DETIO Foundation. Everything current is reachable from the pages below.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <CTA href="/">Home</CTA>
+        <CTA href="/constitution" variant="secondary">Constitution</CTA>
+        <CTA href="/research" variant="secondary">Research</CTA>
+        <CTA href="/contact" variant="ghost">Contact</CTA>
+      </div>
+    </div>
+  </div>
+</Base>

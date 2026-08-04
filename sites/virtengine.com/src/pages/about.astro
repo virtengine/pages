@@ -1,0 +1,132 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { SITE } from "@data/site";
+
+const timeline = [
+  {
+    period: "Origins",
+    title: "VirtEngine by DET.io",
+    body: "VirtEngine began under DET.io — Dynamic Elastic Technologies, Internet Organization — as a platform for offering cloud infrastructure services, before being re-founded as an open-source, on-chain marketplace protocol.",
+  },
+  {
+    period: "Protocol",
+    title: "A patented decentralized marketplace",
+    body: "The protocol was rebuilt as a CometBFT/Cosmos SDK chain, partly derived from the Akash Network codebase, and its identity-verification consensus system was granted Australian patent AU2024203136B2.",
+  },
+  {
+    period: "Stewardship",
+    title: "DETIO FOUNDATION LTD",
+    body: "Stewardship of the protocol software, patent rights, reference implementations and token policy passed to DETIO FOUNDATION LTD — a not-for-profit public company limited by guarantee (ACN 699 651 771) with a constitutional public-benefit lock. The Foundation does not operate the decentralised VEID network.",
+  },
+  {
+    period: "Launch readiness",
+    title: "January 2027 launch window",
+    body: "Mainnet is planned for the January 2027 launch window. It is not live until a formal launch confirmation is published.",
+  },
+];
+---
+
+<Base
+  title="About — VirtEngine"
+  description="The history and stewardship of the VirtEngine Protocol: from VirtEngine by DET.io to DETIO FOUNDATION LTD (ACN 699 651 771), the patent, and how to reach the project."
+  path="/about"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+  ]}
+>
+  <PageHero
+    eyebrow="About"
+    title="A protocol with a lineage and a lock"
+    lede="VirtEngine is the work of a project that moved from commercial cloud platform to open-source protocol to foundation-stewarded public infrastructure."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "About", href: "/about" },
+    ]}
+  />
+
+  <Section eyebrow="History" title="From DET.io to the foundation">
+    <ol class="relative max-w-3xl space-y-10 border-l border-line pl-8">
+      {
+        timeline.map((item) => (
+          <li class="reveal relative">
+            <span class="absolute -left-[2.45rem] top-1.5 h-3 w-3 rounded-full border-2 border-green bg-paper" aria-hidden="true" />
+            <p class="eyebrow">{item.period}</p>
+            <h3 class="mt-1.5 text-xl font-semibold">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate">{item.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <Section eyebrow="The foundation" title="DETIO FOUNDATION LTD">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        DETIO FOUNDATION LTD ("Dynamic Elastic Technologies, Internet
+        Organization") is an Australian not-for-profit
+        <strong>public company limited by guarantee</strong>, ACN 699 651 771,
+        established for charitable and public-benefit purposes: advancing education
+        through open research and specifications, advancing public welfare through
+        secure and affordable digital infrastructure, protecting human rights including
+        privacy and equality of access, and advancing the security and safety of
+        Australia through cyber security, identity safety, AI safety, and infrastructure
+        resilience.
+      </p>
+      <p>
+        The foundation stewards two flagship public-benefit technology programs:
+        <strong>VirtEngine</strong> — this protocol, its software, standards, patent
+        rights, reference implementations and token policy — and
+        <strong>DSEMA</strong>, a patent-pending self-evolving multi-agent AI
+        architecture. Its constitution forbids operating for private commercial
+        interests or permitting private capture of the IP and digital assets it holds.
+      </p>
+      <p>
+        The Foundation operates its own websites and reference services, including
+        identity.org.au. VEID itself is decentralised protocol technology: validators who
+        meet the network rules can join its operation, and the Foundation does not run a
+        central VEID verification service.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Patent" title="AU2024203136B2">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        Australian patent
+        <a href={SITE.patentUrl} rel="noopener">{SITE.patentId}</a> covers the
+        decentralized computing system at the heart of VirtEngine — including the
+        blockchain control layer in which block-proposing validators decrypt and score
+        encrypted identity data with machine-learning models and consensus validators
+        independently verify those scores, the on-chain MFA module, the encrypted cloud
+        marketplace, the provider daemon, and the staking network that doubles as the
+        identity network. The <a href="/open-source">open-source page</a> explains how
+        the patent interacts with the Apache 2.0 license.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Contact" title="Reach the project">
+    <div class="grid max-w-3xl gap-5 sm:grid-cols-2">
+      <div class="reveal rounded-card border border-line bg-panel p-7">
+        <h3 class="text-base font-semibold">General &amp; licensing</h3>
+        <p class="mt-2 font-mono text-sm">
+          <a href={`mailto:${SITE.email}`} class="text-green-deep hover:text-green-deep">{SITE.email}</a>
+        </p>
+      </div>
+      <div class="reveal rounded-card border border-line bg-panel p-7">
+        <h3 class="text-base font-semibold">Development</h3>
+        <p class="mt-2 font-mono text-sm">
+          <a href={SITE.github} rel="noopener" class="text-green-deep hover:text-green-deep">github.com/virtengine</a>
+        </p>
+      </div>
+    </div>
+    <div class="reveal mt-10 flex flex-wrap gap-4">
+      <CTA href="/open-source">The open-source project</CTA>
+      <CTA href="https://det.io" variant="secondary">DETIO FOUNDATION</CTA>
+    </div>
+  </Section>
+</Base>

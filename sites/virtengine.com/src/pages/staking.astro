@@ -1,0 +1,201 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import StatCallout from "@components/StatCallout.astro";
+import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
+import { SITE } from "@data/site";
+
+const validatorDuties = [
+  {
+    title: "Consensus",
+    body: "Propose and validate blocks under CometBFT. Bonded stake weights voting power; uptime and correctness earn block rewards.",
+  },
+  {
+    title: "Identity network",
+    body: "Uniquely to VirtEngine, validators can participate in the VEID Network: scoring eligible encrypted identity scopes with shared models and committing trust results by consensus. VEID is decentralised protocol infrastructure, not a Foundation-operated verification service.",
+  },
+  {
+    title: "Governance",
+    body: "Vote on parameter changes, upgrades, and configuration — including the approved-client list that controls which interfaces may submit identity data.",
+  },
+];
+
+const requirements = [
+  "Reliable server infrastructure with high uptime — validator rewards and standing depend on availability.",
+  "Secure key management: consensus keys plus the validator encryption keys used for VEID identity scoring.",
+  "Capacity to run the identity-network duties (ML scoring of encrypted identity scopes) alongside consensus.",
+  "Self-bonded stake, and the operational maturity to attract and retain delegations.",
+  "Participation in governance and upgrade coordination with the rest of the validator set.",
+];
+---
+
+<Base
+  title="Staking & Validators — VirtEngine"
+  description="Secure the VirtEngine network as a validator or delegator: staking economics, validator requirements, the dual consensus + identity-network role, delegation, slashing risks, and governance."
+  path="/staking"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Staking", href: "/staking" },
+  ]}
+>
+  <PageHero
+    eyebrow="For validators & staking partners"
+    title="Stake the network that verifies identity by consensus"
+    lede="VirtEngine validators do double duty: they secure the chain and operate the VEID Network. Delegators and staking partners share the rewards — and the responsibilities."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Staking", href: "/staking" },
+    ]}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href={SITE.docs}>Validator documentation</CTA>
+      <CTA href="/network" variant="secondary">Mainnet posture</CTA>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="How it fits"
+    title="Delegated proof of stake, with an identity twist"
+  >
+    <DiagramFrame
+      label="Staking topology diagram. On the left, delegators and staking partners — token holders and staking services — delegate stake to the validator set, shown as a hexagonal ring of nodes where bonded stake weights votes. Validators perform three duties: consensus (proposing and committing blocks), the VEID Network (scoring duties), and governance (voting on parameters). Block rewards minus validator commission flow back to delegators. A warning path shows that misbehavior leads to slashing of bonded stake."
+      caption="fig 01 — stake, duties, rewards, and slashing"
+      class="reveal"
+    >
+      <StakingDiagram />
+    </DiagramFrame>
+  </Section>
+
+  <Section
+    eyebrow="Economics"
+    title="Conservative staking, identity-led issuance"
+    lede="Staking rewards remain, but the proposed model substantially reduces their issuance relative to the prior design. Economic parameters take effect only through network governance."
+  >
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatCallout value="~90% lower" label="Proposed staking issuance vs. prior model" source="Proposed policy" />
+      <StatCallout value="14 : 1" label="Eligible humans to Foundation genesis allocation in each 15-token batch" source="Proposed policy" />
+      <StatCallout value="50 years" label="Illustrative identity-allocation horizon" source="Proposed policy" />
+      <StatCallout value="Quarterly" label="Illustrative activity check" source="Proposed policy" />
+    </div>
+    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
+      <p>
+        The proposed issuance model recognises verified uniqueness rather than treating
+        participation only as capital. When a user reaches the network-defined threshold for
+        a unique verified identity, the protocol may mint tokens to that account over time while
+        the account remains active. The working illustration is a quarterly sign-in check across
+        a 50-year horizon; the threshold, cadence and horizon are protocol parameters, not a
+        promise of an individual entitlement.
+      </p>
+      <p>
+        Each <strong>15-token</strong> VEID issuance batch allocates <strong>14 tokens</strong>
+        to eligible active verified humans and <strong>1 token</strong> to the
+        Foundation-controlled genesis account. The Foundation token is part of the 15-token
+        batch, not an additional token. That ratio, like all issuance parameters, can be
+        changed by consensus. Validator and delegator staking
+        rewards remain, but are proposed at roughly one tenth of the previous allocation.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Validator duties" title="Three jobs, one bonded stake">
+    <div class="grid gap-5 lg:grid-cols-3">
+      {validatorDuties.map((duty) => <Card title={duty.title} class="reveal p-7">{duty.body}</Card>)}
+    </div>
+  </Section>
+
+  <Section eyebrow="Requirements" title="Running a validator">
+    <ul class="prose-body grid max-w-3xl gap-3 text-base">
+      {
+        requirements.map((req) => (
+          <li class="reveal flex gap-3">
+            <span class="font-mono text-green-deep" aria-hidden="true">—</span>
+            {req}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section
+    eyebrow="Delegation"
+    title="Staking without running hardware"
+    lede="Token holders and staking-as-a-service partners can secure the network by delegating to validators they trust."
+  >
+    <div class="grid gap-5 lg:grid-cols-2">
+      <Card title="Delegators" class="reveal p-8">
+        Delegate stake to one or more validators and earn a share of their rewards, net
+        of commission. Your tokens stay in your control — delegation grants voting
+        weight, not custody. Spreading stake across smaller validators strengthens the
+        network's Nakamoto coefficient.
+      </Card>
+      <Card title="Staking partners" class="reveal p-8">
+        Staking services can operate validators or aggregate delegations for their
+        clients. The delegation module (<code class="font-mono text-[0.85em] text-green-deep">x/delegation</code>)
+        manages the full lifecycle on-chain. Partners should surface slashing risk and
+        the 21-day unbonding period to their customers plainly.
+      </Card>
+    </div>
+  </Section>
+
+  <Section eyebrow="Risk" title="Slashing, stated plainly">
+    <div class="reveal max-w-3xl rounded-card border border-amber/40 bg-panel p-7">
+      <p class="text-sm leading-relaxed text-slate">
+        Staking is not risk-free. Bonded stake — including delegated stake — can be
+        <strong class="text-amber">slashed</strong> for validator misbehavior such as
+        double-signing or extended downtime. During the 21-day unbonding period your
+        tokens earn no rewards and remain slashable for offenses committed while bonded.
+        The tokenomics framework models slashing penalties explicitly (basis-point
+        penalties in the economic security audit); choose validators on operational
+        quality, not just commission.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Mainnet" title="Launch posture">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        Mainnet is planned for the <strong>January 2027</strong> launch window. The network
+        and its dependent services should not be described as live before the launch is
+        formally confirmed. See the <a href="/network">network page</a> for the current
+        posture and release materials.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/network">Network status &amp; genesis</CTA>
+      <CTA href={SITE.docs} variant="secondary">Validator onboarding docs</CTA>
+    </div>
+  </Section>
+
+  <Section eyebrow="Go deeper" title="The economics and the risks, in full">
+    <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <li>
+        <a href="/learn/tokenomics-explained" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-sm font-semibold text-ink group-hover:text-green-dark">Tokenomics explained</h3>
+          <p class="mt-1.5 text-xs text-slate">Supply, inflation, BME, and the simulation framework behind the numbers.</p>
+        </a>
+      </li>
+      <li>
+        <a href="/learn/understanding-slashing" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-sm font-semibold text-ink group-hover:text-green-dark">Understanding slashing</h3>
+          <p class="mt-1.5 text-xs text-slate">What gets slashed, how delegators share exposure, how to pick validators.</p>
+        </a>
+      </li>
+      <li>
+        <a href="/solutions/validators" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-sm font-semibold text-ink group-hover:text-green-dark">For validators</h3>
+          <p class="mt-1.5 text-xs text-slate">The dual mandate as an operating business — duties, rewards, and setup.</p>
+        </a>
+      </li>
+      <li>
+        <a href="/solutions/staking-partners" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-sm font-semibold text-ink group-hover:text-green-dark">For staking partners</h3>
+          <p class="mt-1.5 text-xs text-slate">Building staking-as-a-service on the x/delegation lifecycle.</p>
+        </a>
+      </li>
+    </ul>
+  </Section>
+</Base>

@@ -1,0 +1,128 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import { SITE } from "@data/site";
+
+const artifacts = [
+  {
+    path: "config/mainnet/",
+    note: "Final canonical allocations and the genesis publication bundle for mainnet launch.",
+  },
+  {
+    path: "_docs/operations/mainnet-go-no-go-decision.md",
+    note: "The formal launch decision record — status, rationale, and scheduled windows.",
+  },
+  {
+    path: "RELEASE.md · VERIFICATION.md",
+    note: "Release engineering and artifact verification posture for tagged releases.",
+  },
+  {
+    path: "docs/COMPATIBILITY.md",
+    note: "Version and deployment compatibility guidance for operators.",
+  },
+];
+---
+
+<Base
+  title="Network — VirtEngine"
+  description="VirtEngine mainnet status: planned for the January 2027 launch window, with release materials and validator onboarding guidance."
+  path="/network"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Network", href: "/network" },
+  ]}
+>
+  <PageHero
+    eyebrow="Network status"
+    title="Mainnet launch posture, straight from the repo"
+    lede="This page reports exactly what the repository records — no more, no less. The repository is the source of truth for network status."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Network", href: "/network" },
+    ]}
+  />
+
+  <Section eyebrow="Launch posture" title="Planned for January 2027">
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="reveal rounded-card border border-green-soft bg-green-wash p-6">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Decision</p>
+        <p class="mt-2 font-display text-3xl text-green-deep">Preparing</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">not live</p>
+      </div>
+      <div class="reveal rounded-card border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Launch windows</p>
+        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">final date to be confirmed</p>
+      </div>
+      <div class="reveal rounded-card border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Genesis bundle</p>
+        <p class="mt-2 font-display text-2xl text-ink">Checked in</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">config/mainnet/</p>
+      </div>
+    </div>
+    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
+      <p>
+        Mainnet is planned for the <strong>January 2027</strong> launch window. Final
+        allocations and release materials remain subject to the governance and release
+        process. The network must not be described as live until a formal launch
+        confirmation is published.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Artifacts"
+    title="Where the launch materials live"
+    lede="Everything an operator needs to verify is in the repository:"
+  >
+    <ul class="grid gap-3 lg:grid-cols-2">
+      {
+        artifacts.map((item) => (
+          <li class="reveal rounded-card border border-line bg-panel px-5 py-4">
+            <code class="font-mono text-sm font-medium text-green-deep">{item.path}</code>
+            <p class="mt-1.5 text-sm text-slate">{item.note}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section eyebrow="Parameters" title="Network parameters are chain state">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        Economic and operational parameters — inflation band, staking targets, take
+        rate, unbonding period, approved clients — are defined by the protocol's default
+        parameters and governed on-chain thereafter. The defaults are documented on the
+        <a href="/protocol">protocol page</a> and in
+        <a href={SITE.docs}>the documentation</a>; live values on a running network
+        always take precedence and are queryable from any node.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Operators" title="Preparing to validate at launch">
+    <div class="grid gap-5 lg:grid-cols-2">
+      <Card title="Verify before you run" class="reveal p-8">
+        Confirm the release tag you intend to install has actually been published, that
+        the target network has an approved launch or upgrade decision, and that the
+        verification posture in <code class="font-mono text-[0.85em] text-green-deep">VERIFICATION.md</code> matches
+        your deployment. Genesis materials should be validated against the published
+        bundle in <code class="font-mono text-[0.85em] text-green-deep">config/mainnet/</code>.
+      </Card>
+      <Card title="Validator onboarding" class="reveal p-8">
+        The validator role, economics, dual consensus-plus-identity duties, and slashing
+        model are covered on the staking page, with operational guides in the
+        documentation. Start there, then coordinate with the validator community through
+        the repository.
+      </Card>
+    </div>
+    <div class="reveal mt-10 flex flex-wrap gap-4">
+      <CTA href="/staking">Validator &amp; staking overview</CTA>
+      <CTA href="/learn/mainnet-roadmap" variant="secondary">The road to mainnet, explained</CTA>
+      <CTA href={SITE.github} variant="ghost">Decision record on GitHub</CTA>
+    </div>
+  </Section>
+</Base>

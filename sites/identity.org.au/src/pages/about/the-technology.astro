@@ -1,0 +1,116 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Callout from "@components/Callout.astro";
+import { ABOUT_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "The technology", href: "/about/the-technology" },
+];
+---
+
+<Guide
+  title="The technology"
+  metaTitle="The technology — About | identity.org.au"
+  description="VEID, the identity layer of the VirtEngine network, explained in plain language: on-device capture, encrypted payloads, network verification, and zero-knowledge proofs."
+  lede="The wallet is powered by VEID — the identity layer of the open-source VirtEngine network. Here is what each part does, in plain language."
+  eyebrow="About"
+  breadcrumbs={crumbs}
+  sectionLabel="In this section"
+  sectionNav={ABOUT_NAV}
+>
+  <div class="prose-service">
+    <h2>The one-paragraph version</h2>
+    <p>
+      Your phone captures and encrypts your identity evidence. A decentralised network of
+      independent computers verifies it and records tamper-proof <strong>results</strong> — never
+      the evidence itself. When a service needs an answer about you, cryptography delivers the
+      answer without the data. No single company holds a database of everyone's documents.
+    </p>
+
+    <h2>The pieces, named</h2>
+  </div>
+
+  <div class="mt-6 overflow-x-auto">
+    <table class="table-gov">
+      <caption class="sr-only">The technology components and what each does</caption>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">What it is</th>
+          <th scope="col">What it does for you</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Identity Wallet app</th>
+          <td>Open-source mobile app (the reference capture app)</td>
+          <td>Guides document scan, selfie and liveness challenges; encrypts everything on your device before transmission</td>
+        </tr>
+        <tr>
+          <th scope="row">VEID</th>
+          <td>The identity layer of the VirtEngine blockchain</td>
+          <td>Manages your encrypted identity scopes, consent records, verification levels and proofs</td>
+        </tr>
+        <tr>
+          <th scope="row">VirtEngine network</th>
+          <td>An open-source decentralised network (CometBFT / Cosmos SDK), written in Go, Apache 2.0 licensed</td>
+          <td>Independent validators verify identity claims and keep tamper-proof records — no central database</td>
+        </tr>
+        <tr>
+          <th scope="row">Envelope encryption</th>
+          <td>X25519-XSalsa20-Poly1305, applied on your device</td>
+          <td>Your evidence is ciphertext everywhere except your own phone</td>
+        </tr>
+        <tr>
+          <th scope="row">Zero-knowledge proofs</th>
+          <td>Cryptographic proofs (the network's zk module)</td>
+          <td>Prove statements — “over 18”, “meets level Standard” — without revealing the underlying data</td>
+        </tr>
+        <tr>
+          <th scope="row">Device attestation</th>
+          <td>Google Play Integrity / Apple App Attest</td>
+          <td>Proves the app and device are genuine and untampered for high-trust verification</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose-service mt-8">
+    <h2>Why a blockchain is involved</h2>
+    <p>
+      Three properties are hard to get any other way. <strong>No central honeypot:</strong> there
+      is no single database of everyone's documents to breach.
+      <strong>Tamper-proof records:</strong> once the network records a verification result, no
+      administrator can quietly edit it. <strong>No gatekeeper:</strong> no single company can
+      decide to revoke everyone's identity or sell access to it.
+    </p>
+    <p>
+      Personal data is never written to the chain in readable form — only encrypted references and
+      verification results. See
+      <a href="/help/deleting-your-identity">deleting your identity</a> for how deletion works in
+      this design.
+    </p>
+
+    <h2>The machine-learning verification</h2>
+    <p>
+      Document authenticity, face matching and liveness are assessed by machine-learning models.
+      The method — combining document capture, biometric liveness verification and hardware
+      attestation into a single verifiable pipeline — is what Australian patent
+      <a href={SITE.patentUrl} rel="noopener">{SITE.patentId}</a> covers. Verification runs in
+      controlled environments; what gets recorded is scores and results, not your images.
+    </p>
+  </div>
+
+  <Callout title="Want the engineering depth?" class="mt-8">
+    <p>
+      Full protocol documentation lives at
+      <a href={SITE.docs} rel="noopener" class="link-plain">docs.virtengine.com</a>, and the
+      complete source is on
+      <a href={SITE.github} rel="noopener" class="link-plain">GitHub</a> — including the x/veid
+      module and the mobile capture app this site describes.
+    </p>
+  </Callout>
+</Guide>

@@ -1,0 +1,321 @@
+---
+import Base from "@layouts/Base.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import StatusTag from "@components/StatusTag.astro";
+import Steps from "@components/Steps.astro";
+import CredentialScreen from "@components/phone/CredentialScreen.astro";
+import ZkShareScreen from "@components/phone/ZkShareScreen.astro";
+import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
+import { SITE } from "@data/site";
+import { TIERS } from "@data/tiers";
+import { FEATURED_INSIGHTS } from "@data/insights";
+
+const setupSteps = [
+  {
+    title: "Scan your identity document",
+    body: "Front and back, guided by the camera. The app reads the details and you check them before anything is submitted.",
+  },
+  {
+    title: "Take a selfie with liveness checks",
+    body: "Blink, turn your head, smile — short challenges that prove a live person is present, not a photo.",
+  },
+  {
+    title: "Review and submit — encrypted",
+    body: "Everything is encrypted on your phone before it leaves. The network verifies your identity and issues your verification level.",
+  },
+];
+---
+
+<Base title={SITE.title} description={SITE.description} path="/" breadcrumbs={[{ name: "Home", href: "/" }]}>
+  <!-- hero -->
+  <section class="border-b border-hairline bg-alt">
+    <div class="container-site grid items-center gap-12 py-12 lg:grid-cols-12 lg:py-16">
+      <div class="lg:col-span-7">
+        <StatusTag tone="info">The Identity Wallet service</StatusTag>
+        <h1 class="mt-4 mb-0 text-[clamp(2.1rem,4.5vw,3rem)] measure-narrow">
+          Prove who you are, without handing over your documents.
+        </h1>
+        <p class="mt-5 mb-0 text-[1.2rem] text-body measure-narrow">
+          The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an
+          answer — are you over 18, are you verified — it gets the answer, never your documents.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href={SITE.walletPortal} rel="noopener" class="btn-primary">
+            Join the launch list
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+          <a href="/get-started" class="btn-secondary">Set up your wallet</a>
+        </div>
+        <p class="mt-6 mb-0 text-[0.95rem] text-muted measure-narrow">
+          Free, open source, and stewarded by a not-for-profit foundation. Not an Australian
+          Government service.
+        </p>
+      </div>
+      <div class="mx-auto w-full max-w-[300px] lg:col-span-5">
+        <CredentialScreen />
+      </div>
+    </div>
+  </section>
+
+  <!-- the service: two surfaces -->
+  <section class="border-b border-hairline">
+    <div class="container-site py-12 lg:py-16">
+      <p class="eyebrow m-0">The service</p>
+      <h2 class="mt-2 text-[1.75rem]">One verified identity, two wallet surfaces</h2>
+      <p class="text-body measure">
+        Verify once on your phone; manage everything from the browser. Your verification level
+        works everywhere the VirtEngine network is accepted — as an
+        <a href="/wallet/verify-on-virtengine" class="link-plain">approved client</a>, providers
+        see your tier, never your documents.
+      </p>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <CardLink
+          href="/wallet/mobile-wallet"
+          tag="Capture + wallet"
+          title="Mobile wallet"
+          description="Guided document capture, liveness, hardware biometrics — encrypted on your phone before anything moves."
+        />
+        <CardLink
+          href="/wallet/web-wallet"
+          tag="Manage + present"
+          title="Web wallet — my.identity.org.au"
+          description="Present proofs, review every consent, control your sessions — from any browser, passkey sign-in."
+        />
+        <CardLink
+          href="/wallet"
+          tag="Overview"
+          title="The Identity Wallet service"
+          description="What the service is, how the surfaces fit together, and how verification works on the network."
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- what you can do -->
+  <section class="container-site py-14 lg:py-20">
+    <h2 class="mt-0 text-[1.75rem]">What you can do with the Identity Wallet</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      <CardLink
+        href="/get-started/set-up-your-wallet"
+        title="Verify your identity once"
+        description="Complete a guided verification on your phone — document, selfie, liveness — and reuse it everywhere the wallet is accepted."
+      />
+      <CardLink
+        href="/help/proving-your-age-without-your-documents"
+        title="Prove your age without your documents"
+        description="Answer “are you over 18?” with a cryptographic yes — your birth date and documents stay private."
+      />
+      <CardLink
+        href="/help/using-your-wallet-with-a-service"
+        title="Share with services on your terms"
+        description="See exactly what a service is asking for, approve or decline, and set consent to expire automatically."
+      />
+      <CardLink
+        href="/help/revoking-consent"
+        title="Change your mind, any time"
+        description="Every consent you grant can be revoked. Every use of your data is recorded where you can see it."
+      />
+      <CardLink
+        href="/get-started/verification-levels"
+        title="Build a stronger verification level"
+        description="Four levels — from Basic to Trusted — unlock more as your identity evidence gets stronger."
+      />
+      <CardLink
+        href="/help/deleting-your-identity"
+        title="Leave, completely"
+        description="Delete your identity data on a published timeline. Encryption keys are destroyed — deletion is real."
+      />
+    </div>
+  </section>
+
+  <!-- setup preview -->
+  <section class="border-y border-hairline bg-alt">
+    <div class="container-site grid gap-12 py-14 lg:grid-cols-12 lg:py-20">
+      <div class="lg:col-span-7">
+        <p class="eyebrow m-0">Get started</p>
+        <h2 class="mt-2 text-[1.75rem]">Set up in about ten minutes</h2>
+        <p class="text-body measure-narrow">
+          You need a smartphone and a government-issued identity document. The wallet guides you
+          through each step, and you review everything before it is submitted.
+        </p>
+        <Steps steps={setupSteps} class="mt-8" />
+        <a href="/get-started/set-up-your-wallet" class="btn-primary mt-4">See the full setup guide</a>
+      </div>
+      <div class="mx-auto w-full max-w-[280px] lg:col-span-5">
+        <ZkShareScreen />
+      </div>
+    </div>
+  </section>
+
+  <!-- verification levels teaser -->
+  <section class="container-site py-14 lg:py-20">
+    <p class="eyebrow m-0">Verification levels</p>
+    <h2 class="mt-2 text-[1.75rem]">Four levels. Services ask for what they need — no more.</h2>
+    <div class="mt-8 overflow-x-auto">
+      <table class="table-gov">
+        <caption class="sr-only">Verification levels, what each is based on, and what it unlocks</caption>
+        <thead>
+          <tr>
+            <th scope="col">Level</th>
+            <th scope="col">In plain terms</th>
+            <th scope="col">Typical use</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            TIERS.map((tier) => (
+              <tr>
+                <th scope="row">{tier.name}</th>
+                <td class="max-w-[34rem]">{tier.plain}</td>
+                <td class="max-w-[22rem]">{tier.unlocks[0]}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <a href="/get-started/verification-levels" class="link-plain mt-5 inline-block font-semibold">
+      Verification levels in detail — what evidence each requires
+    </a>
+  </section>
+
+  <!-- data in plain terms -->
+  <section class="border-y border-hairline bg-alt">
+    <div class="container-site py-14 lg:py-20">
+      <p class="eyebrow m-0">Your data, in plain terms</p>
+      <h2 class="mt-2 text-[1.75rem]">Locked on your device. Processed in a vault no one can open.</h2>
+      <p class="text-body measure">
+        Your evidence is encrypted before it moves, processed only inside hardware-sealed
+        trusted processing units, and destroyed when scoring ends. Only the result — a score
+        and tier — ever remains.
+      </p>
+      <DataLifecycle class="mt-8" />
+      <div class="mt-6 flex flex-wrap gap-x-8 gap-y-2">
+        <a href="/privacy/trusted-processing" class="link-plain font-semibold">
+          Trusted processing — the lock and the key
+        </a>
+        <a href="/privacy" class="link-plain font-semibold">Read the full privacy page</a>
+      </div>
+      <div class="mt-10 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">Where each category of identity data is stored</caption>
+          <thead>
+            <tr>
+              <th scope="col">Your data</th>
+              <th scope="col">Where it lives</th>
+              <th scope="col">Who can read it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Document scans and photos</th>
+              <td>Encrypted on your device, then as encrypted payloads the network cannot browse</td>
+              <td>You. Verification runs inside sealed, attested enclaves; results are recorded, not images.</td>
+            </tr>
+            <tr>
+              <th scope="row">Biometric templates</th>
+              <td>Encrypted before leaving your phone (X25519-XSalsa20-Poly1305)</td>
+              <td>Never shared with services. Never sold — prohibited regardless of consent.</td>
+            </tr>
+            <tr>
+              <th scope="row">Verification results</th>
+              <td>On the network — your level and pass/fail outcomes</td>
+              <td>Services you explicitly consent to, per request.</td>
+            </tr>
+            <tr>
+              <th scope="row">Consent records</th>
+              <td>Auditable history — every grant, every revocation, timestamped</td>
+              <td>You, in full. Services see only their own grants.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- insights strip -->
+  <section>
+    <div class="container-site py-14 lg:py-16">
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <div>
+          <p class="eyebrow m-0">Insights</p>
+          <h2 class="mt-2 mb-0 text-[1.75rem]">Analysis on digital identity</h2>
+        </div>
+        <a href="/insights" class="link-plain font-semibold">All insights</a>
+      </div>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {
+          FEATURED_INSIGHTS.map((article) => (
+            <a
+              href={`/insights/${article.slug}`}
+              class="group flex flex-col border border-hairline rounded-tile bg-paper p-6 no-underline hover:border-hairline-strong transition-colors"
+            >
+              <span class="block text-[0.72rem] font-bold uppercase tracking-[0.13em] text-steel">
+                {article.topic}
+              </span>
+              <span class="mt-2 block text-[1.12rem] font-bold text-action underline decoration-transparent underline-offset-4 group-hover:decoration-current">
+                {article.title}
+              </span>
+              <span class="mt-2 block text-[0.95rem] text-body">{article.summary}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- trust strip -->
+  <section class="border-t border-hairline">
+    <div class="container-site py-14 lg:py-20">
+      <h2 class="mt-0 text-[1.75rem]">Why you can check our claims</h2>
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      <div class="border-t-4 border-navy pt-4">
+        <h3 class="m-0 text-[1.1rem]">Open source</h3>
+        <p class="mt-2 text-[0.98rem] text-body">
+          Every line of the wallet and the network is public. Nothing on this site asks you to
+          trust what you cannot inspect.
+          <a href="/about/open-source" class="link-plain">About the code</a>
+        </p>
+      </div>
+      <div class="border-t-4 border-navy pt-4">
+        <h3 class="m-0 text-[1.1rem]">Not-for-profit steward</h3>
+        <p class="mt-2 text-[0.98rem] text-body">
+          Stewarded by {SITE.foundation} (ACN {SITE.acn}), whose constitution locks the technology
+          to public benefit — no dividends, no private capture.
+          <a href="/about/who-runs-it" class="link-plain">Who runs it</a>
+        </p>
+      </div>
+      <div class="border-t-4 border-navy pt-4">
+        <h3 class="m-0 text-[1.1rem]">Patented method, public interest</h3>
+        <p class="mt-2 text-[0.98rem] text-body">
+          The verification method is Australian patent {SITE.patentId}, held inside the
+          public-benefit structure. <a href="/about/patents" class="link-plain">The patent in plain terms</a>
+        </p>
+      </div>
+    </div>
+    <Alert tone="info" title="Honesty first" class="mt-10">
+      <p>
+        This wallet is a working, open-source <strong>reference implementation</strong> — the
+        blueprint production wallets build on. There are no app-store listings, and we make no
+        claims of government accreditation. What we publish here is what the code does.
+      </p>
+    </Alert>
+    </div>
+  </section>
+
+  <!-- popular help -->
+  <section class="border-t border-hairline bg-alt">
+    <div class="container-site py-14">
+      <h2 class="mt-0 text-[1.75rem]">Popular help topics</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <CardLink href="/help/who-can-see-your-data" title="Who can see your data" />
+        <CardLink href="/help/how-your-biometrics-are-protected" title="How your biometrics are protected" />
+        <CardLink href="/help/recognising-scams-and-phishing" title="Recognising scams and phishing" />
+        <CardLink href="/faq" title="Frequently asked questions" />
+      </div>
+    </div>
+  </section>
+</Base>

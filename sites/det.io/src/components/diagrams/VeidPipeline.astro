@@ -1,0 +1,98 @@
+---
+/**
+ * VEID verification pipeline: evidence capture on the user's device
+ * (document, selfie + liveness, biometric hardware, device attestation) →
+ * on-device processing and encryption into identity scopes → validator
+ * consensus scoring on the VirtEngine chain (score, never raw evidence) →
+ * tiered verification and zero-knowledge presentation to relying services.
+ * Wrapped by DiagramFrame which carries the label.
+ */
+---
+
+<svg viewBox="0 0 880 540" class="h-auto w-full min-w-[680px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="vp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- stage 1: capture -->
+  <text x="40" y="34" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">ON THE USER'S DEVICE — EVIDENCE NEVER LEAVES UNENCRYPTED</text>
+  <path d="M40 44 H840" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="40" y="62" width="180" height="72" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="130" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Document</text>
+    <text x="130" y="106" text-anchor="middle" fill="var(--color-text-soft)">front/back capture</text>
+    <text x="130" y="121" text-anchor="middle" fill="var(--color-text-soft)">guided framing · OCR</text>
+
+    <rect x="246" y="62" width="180" height="72" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="336" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Selfie + liveness</text>
+    <text x="336" y="106" text-anchor="middle" fill="var(--color-text-soft)">active challenges:</text>
+    <text x="336" y="121" text-anchor="middle" fill="var(--color-text-soft)">blink · head turn · smile</text>
+
+    <rect x="452" y="62" width="180" height="72" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="542" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Biometric hardware</text>
+    <text x="542" y="106" text-anchor="middle" fill="var(--color-text-soft)">fingerprint / iris via</text>
+    <text x="542" y="121" text-anchor="middle" fill="var(--color-text-soft)">platform-secure APIs</text>
+
+    <rect x="658" y="62" width="182" height="72" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="749" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Device attestation</text>
+    <text x="749" y="106" text-anchor="middle" fill="var(--color-text-soft)">Play Integrity ·</text>
+    <text x="749" y="121" text-anchor="middle" fill="var(--color-text-soft)">App Attest</text>
+  </g>
+
+  <!-- converge to encrypted scopes -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#vp-arrow)">
+    <path d="M130 134 Q140 180 330 196"></path>
+    <path d="M336 134 V186"></path>
+    <path d="M542 134 Q532 180 550 196"></path>
+    <path d="M749 134 Q739 186 556 200"></path>
+  </g>
+
+  <!-- stage 2: encrypted scopes -->
+  <g>
+    <rect x="280" y="196" width="320" height="80" rx="10" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
+    <path d="M312 234v-6a12 12 0 0 1 24 0v6" stroke="var(--color-blue-deep)" stroke-width="1.8"></path>
+    <rect x="308" y="234" width="32" height="20" rx="4" fill="var(--color-surface)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="482" y="228" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Encrypted identity scopes</text>
+    <text x="482" y="250" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-blue-deep)">consent-gated · per-scope · encrypted</text>
+  </g>
+  <text x="458" y="302" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">upload — ciphertext only</text>
+
+  <path d="M440 276 V318" stroke="var(--color-blue-mid)" stroke-width="1.7" class="flow-dash" marker-end="url(#vp-arrow)"></path>
+
+  <!-- stage 3: chain consensus -->
+  <g>
+    <rect x="120" y="322" width="640" height="108" rx="10" fill="var(--color-surface)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+    <text x="140" y="350" font-family="var(--font-display)" font-size="14" font-weight="600" fill="var(--color-ink)">VirtEngine chain — consensus scoring</text>
+    <text x="140" y="370" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">validators decrypt, score with ML models, and vote — only the score becomes ledger state</text>
+    <g font-family="var(--font-mono)" font-size="10">
+      <rect x="140" y="382" width="140" height="32" rx="6" fill="var(--color-vellum)" stroke="var(--color-blue-mid)" stroke-width="1.2"></rect>
+      <text x="210" y="402" text-anchor="middle" fill="var(--color-ink)">x/veid</text>
+      <rect x="296" y="382" width="140" height="32" rx="6" fill="var(--color-vellum)" stroke="var(--color-blue-mid)" stroke-width="1.2"></rect>
+      <text x="366" y="402" text-anchor="middle" fill="var(--color-ink)">x/veidregistry</text>
+      <rect x="452" y="382" width="140" height="32" rx="6" fill="var(--color-vellum)" stroke="var(--color-blue-mid)" stroke-width="1.2"></rect>
+      <text x="522" y="402" text-anchor="middle" fill="var(--color-ink)">x/mfa</text>
+      <rect x="608" y="382" width="132" height="32" rx="6" fill="var(--color-vellum)" stroke="var(--color-blue-mid)" stroke-width="1.2"></rect>
+      <text x="674" y="402" text-anchor="middle" fill="var(--color-ink)">x/veid/zk</text>
+    </g>
+  </g>
+
+  <g stroke="var(--color-blue-mid)" stroke-width="1.7" class="flow-dash" marker-end="url(#vp-arrow)" style="animation-delay: -0.8s">
+    <path d="M270 430 Q270 452 270 462"></path>
+    <path d="M610 430 Q610 452 610 462"></path>
+  </g>
+
+  <!-- stage 4: outcomes -->
+  <g>
+    <rect x="120" y="466" width="300" height="60" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="270" y="490" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Verification tier</text>
+    <text x="270" y="510" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">unverified → basic → standard → trusted</text>
+  </g>
+  <g>
+    <rect x="460" y="466" width="300" height="60" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="1.6"></rect>
+    <text x="610" y="490" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Zero-knowledge presentation</text>
+    <text x="610" y="510" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-blue-deep)">prove the attribute, reveal nothing else</text>
+  </g>
+</svg>

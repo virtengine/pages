@@ -1,0 +1,552 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import VirtStack from "@components/diagrams/VirtStack.astro";
+import VeLifecycle from "@components/diagrams/VeLifecycle.astro";
+import VeEnclave from "@components/diagrams/VeEnclave.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { SITE } from "@data/site";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+  { name: "VirtEngine", href: "/research/virtengine" },
+];
+
+const cloudContrast = {
+  today: [
+    {
+      title: "Concentration",
+      body: "A handful of hyperscalers operate most of the world's rentable compute. Capacity everywhere else — regional datacenters, universities, specialist operators — has no common market to sell into.",
+    },
+    {
+      title: "Opaque pricing",
+      body: "Negotiated discounts, regional variation, and egress surprises make like-for-like comparison hard. Price discovery happens inside sales calls, not in the open.",
+    },
+    {
+      title: "Trust by contract",
+      body: "You trust a provider because a contract says you can. Billing is the operator's own record of what you used; disputes run through support tickets and legal terms.",
+    },
+    {
+      title: "Anonymous or gatekept",
+      body: "Open platforms know almost nothing about counterparties; enterprise clouds solve that with paperwork and account managers. Neither gives verifiable identity without a central gatekeeper.",
+    },
+  ],
+  virtengine: [
+    {
+      title: "An open marketplace",
+      body: "Any verified provider can list capacity; any verified tenant can order it. Orders, bids, and leases are on-chain state transitions on a public order book — not a private sales pipeline.",
+    },
+    {
+      title: "On-chain escrow & settlement",
+      body: "Funds are locked in escrow when a lease is matched and released against signed, metered usage records through a dispute-windowed settlement pipeline. The bill is a verifiable data structure.",
+    },
+    {
+      title: "Identity-gated participation",
+      body: "VEID scores every participant through privacy-preserving verification — accountability comes from cryptography and consensus, not from a platform's discretion.",
+    },
+    {
+      title: "Verified, not promised",
+      body: "Enclave attestation for sensitive computation, provider audits and fraud modules on-chain, and a patented verification method (AU2024203136B2) at the core of the design.",
+    },
+  ],
+};
+
+const lifecycle = [
+  {
+    title: "Order placed",
+    body: "A tenant publishes a deployment order on-chain: resource specification, pricing bounds, and a deposit. Sensitive order details are stored encrypted so only intended recipients can decrypt them, and participation is gated by VEID trust-score thresholds.",
+    modules: "x/deployment · x/market · x/veid",
+  },
+  {
+    title: "Providers bid",
+    body: "Provider daemons watch the order book and place priced bids. Bidders are VEID-verified operators whose standing is backed by on-chain audit and review records — an anonymous key cannot simply show up and win workloads.",
+    modules: "x/market · x/provider · x/audit",
+  },
+  {
+    title: "Lease matched",
+    body: "The chain matches a winning bid into a lease: the price is locked and an escrow account opens with the tenant's funds held by the protocol — not by the provider, not by the foundation. Either side can walk away only under the rules both agreed to.",
+    modules: "x/market · x/escrow",
+  },
+  {
+    title: "Workload deployed",
+    body: "The winning provider's daemon picks up the lease and instantiates the workload through its orchestration APIs — Kubernetes for cloud-native services, SLURM for HPC jobs — and reports deployment status back to the chain.",
+    modules: "provider daemon · Kubernetes · SLURM · x/hpc",
+  },
+  {
+    title: "Usage reported",
+    body: "The daemon meters actual consumption and submits signed usage records on a fixed schedule — hourly collection by default — into the settlement pipeline, where anomaly detection watches for implausible metering before anything is billed.",
+    modules: "provider daemon · settlement pipeline",
+  },
+  {
+    title: "Settlement",
+    body: "Usage enters a time-windowed dispute workflow (24 hours by default): disputed records cannot settle until resolved or corrected. Clean records are converted to billable line items, escrow pays the agreed amount to the provider with 0% marketplace commission, and unused deposit returns to the tenant. Low validator transaction fees apply separately to on-chain actions.",
+    modules: "x/settlement · x/escrow · x/take · x/fraud",
+  },
+];
+
+const edges = [
+  {
+    title: "VEID — verified humans, not anonymous keys",
+    body: "Every marketplace participant carries a privacy-preserving identity score computed by the validator set from encrypted evidence — documents, liveness, biometric hardware attestation — with zero-knowledge proofs for selective disclosure. Accountability without a central identity database.",
+    ref: "x/veid · x/mfa · x/veid/zk",
+  },
+  {
+    title: "Trusted processing units",
+    body: "The VEID scoring service runs inside hardware-attested enclaves — AMD SEV-SNP confidential VMs, Intel SGX, AWS Nitro — whose attestations the chain verifies before trusting a result. Sensitive computation happens where no operator can look.",
+    ref: "x/enclave · pkg/enclave_runtime",
+  },
+  {
+    title: "Escrow and dispute-windowed settlement",
+    body: "Payment flows are protocol machinery, not invoices: funds lock at lease time, release against signed usage records, and every record survives a dispute window before it can settle. Corrections and disputes are first-class on-chain workflows.",
+    ref: "x/escrow · x/settlement · x/take",
+  },
+  {
+    title: "HPC as a marketplace lane",
+    body: "Beyond cloud-native workloads, VirtEngine schedules high-performance computing: SLURM cluster integration, dedicated HPC node agents, and a workload publishing pipeline — bringing batch scientific compute into the same order-bid-lease-settle flow.",
+    ref: "x/hpc · docs/hpc-provider-operations",
+  },
+  {
+    title: "Public-benefit stewardship",
+    body: "The protocol, its patent, and its identity system are held by a not-for-profit constitutionally barred from private capture. Licensing must prefer models that support safety, interoperability, and decentralisation.",
+    ref: "AU2024203136B2 · constitution cl 32, 37",
+  },
+];
+
+const audiences = [
+  {
+    title: "For providers",
+    points: [
+      "Sell spare or dedicated capacity into an open order book instead of building a sales channel",
+      "Get paid from escrow against signed usage records — no invoicing, no collection risk beyond the dispute window",
+      "Build portable, on-chain reputation through audits, reviews, and completed leases",
+    ],
+  },
+  {
+    title: "For tenants & deployers",
+    points: [
+      "Compare priced bids from verified operators on like-for-like resource specs",
+      "Funds stay in protocol escrow until metered usage is settled — contested records are held back automatically",
+      "Deploy cloud-native or HPC workloads through one marketplace with encrypted order details",
+    ],
+  },
+  {
+    title: "For validators & staking partners",
+    points: [
+      "Secure consensus and earn from the same staked infrastructure that runs the identity network",
+      "Score encrypted identity scopes inside the consensus process — verification with consensus-grade accountability",
+      "Participate in governance of a protocol constitutionally locked to public benefit",
+    ],
+  },
+];
+---
+
+<Base
+  title="VirtEngine — decentralized cloud marketplace program | det.io"
+  description="The VirtEngine research program: an open-source decentralized cloud computing marketplace with the VEID privacy-preserving identity layer, patent AU2024203136B2 stewarded for public benefit by DETIO FOUNDATION LTD."
+  path="/research/virtengine"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Research program 01"
+    title="VirtEngine — a cloud marketplace no one can own"
+    lede="VirtEngine connects tenants who need compute with providers who have capacity to lease — on a blockchain that runs the entire deal: encrypted orders, open bidding, escrowed funds, metered usage, dispute-windowed settlement. Identity is verified without a central database, sensitive processing happens in attested hardware enclaves, and the whole protocol is open source and constitutionally locked to public benefit."
+  >
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">License</dt>
+        <dd class="text-ink">Apache-2.0</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Stack</dt>
+        <dd class="text-ink">Go · CometBFT consensus · Cosmos SDK · single `virtengine` binary</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Patent</dt>
+        <dd class="text-ink">AU2024203136B2 (accepted)</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Lineage</dt>
+        <dd class="text-ink">partly derived from Akash Network</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="The contrast"
+    title="Cloud today — and the VirtEngine answer"
+    lede="The cloud works. What it lacks is a market anyone can enter, prices anyone can see, and trust anyone can verify. Side by side:"
+  >
+    <div class="grid gap-6 lg:grid-cols-2">
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-text-soft uppercase">Cloud today</p>
+        <h3 class="mt-3 text-xl font-bold">Closed markets, contractual trust</h3>
+        <ul class="mt-5 grid gap-4">
+          {
+            cloudContrast.today.map((item) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 16 16" width="16" height="16" class="mt-1 shrink-0" fill="none" stroke="var(--color-text-soft)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M4 4l8 8M12 4l-8 8"></path>
+                </svg>
+                <p class="prose-inst text-[0.95rem]"><strong>{item.title}.</strong> {item.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+      <article class="reveal rounded-card border-2 border-blue-deep bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">The VirtEngine answer</p>
+        <h3 class="mt-3 text-xl font-bold">An open market with verifiable trust</h3>
+        <ul class="mt-5 grid gap-4">
+          {
+            cloudContrast.virtengine.map((item) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 16 16" width="16" height="16" class="mt-1 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <p class="prose-inst text-[0.95rem]"><strong>{item.title}.</strong> {item.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="The lifecycle"
+    title="Walk through one deal, order to settlement"
+    lede="Six steps take a workload from an encrypted order to a settled payment — every one of them an on-chain state transition, not a trusted intermediary. Step through the lifecycle; the map highlights where you are."
+  >
+    <div data-lifecycle class="grid gap-6">
+      <DiagramFrame
+        label="The VirtEngine marketplace lifecycle as one map. A VEID-verified tenant at top left and a VEID-verified provider at top right sit above the VirtEngine chain — CometBFT consensus, Cosmos SDK, single binary — which contains the order book (x/market, x/deployment), the identity gate (x/veid, x/mfa with trust-score thresholds), escrow (x/escrow, funds locked per lease), and settlement (x/settlement, x/take, x/fraud). Below the chain, the provider daemon watches the chain and runs workloads on Kubernetes and SLURM clusters. Six numbered stages connect them: one, order placed — encrypted specs and a deposit flow from tenant to chain; two, providers bid — priced, identity-gated offers flow from provider to chain; three, lease matched — price locked and an escrow account opens; four, deploy — the manifest flows to the provider daemon and onto Kubernetes or SLURM; five, usage reported — signed usage records flow hourly from the daemon back to the chain; six, settlement — after a dispute window, escrow pays the agreed amount with 0% marketplace commission."
+        caption="fig 01 — the marketplace lifecycle: order → bid → lease → deploy → usage → settlement"
+        class="reveal"
+      >
+        <VeLifecycle />
+      </DiagramFrame>
+
+      <div class="flex flex-wrap items-center gap-3" data-lc-controls hidden>
+        <button type="button" class="step-btn" data-lc-prev>
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3m4-4L3 8l4 4"></path></svg>
+          Previous
+        </button>
+        <div class="flex gap-2" role="group" aria-label="Lifecycle steps">
+          {
+            lifecycle.map((step, i) => (
+              <button type="button" class="xp-tab" data-lc-goto={i} aria-label={`Step ${i + 1}: ${step.title}`} aria-selected={i === 0 ? "true" : "false"}>
+                {i + 1}
+              </button>
+            ))
+          }
+        </div>
+        <button type="button" class="step-btn" data-lc-next>
+          Next
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+        </button>
+      </div>
+
+      <div class="grid gap-4" aria-live="polite">
+        {
+          lifecycle.map((step, i) => (
+            <article class="rounded-card border border-hairline bg-surface p-6" data-lc-panel>
+              <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">Step {i + 1} of 6</p>
+              <h3 class="mt-2 text-lg font-bold">{step.title}</h3>
+              <p class="prose-inst mt-2 text-[0.95rem]">{step.body}</p>
+              <p class="mt-3 border-t border-hairline pt-2.5 font-mono text-xs text-text-soft">{step.modules}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <script>
+      const walk = document.querySelector<HTMLElement>("[data-lifecycle]");
+      if (walk) {
+        const stages = [...walk.querySelectorAll<SVGGElement>("g[data-stage]")];
+        const panels = [...walk.querySelectorAll<HTMLElement>("[data-lc-panel]")];
+        const dots = [...walk.querySelectorAll<HTMLButtonElement>("[data-lc-goto]")];
+        const prev = walk.querySelector<HTMLButtonElement>("[data-lc-prev]")!;
+        const next = walk.querySelector<HTMLButtonElement>("[data-lc-next]")!;
+        const svg = walk.querySelector<SVGSVGElement>("[data-lifecycle-svg]")!;
+        let current = 0;
+        const render = () => {
+          stages.forEach((s) => s.classList.toggle("is-active", Number(s.dataset.stage) === current + 1));
+          panels.forEach((p, i) => {
+            p.hidden = i !== current;
+          });
+          dots.forEach((d, i) => d.setAttribute("aria-selected", i === current ? "true" : "false"));
+          prev.disabled = current === 0;
+          next.disabled = current === panels.length - 1;
+        };
+        prev.addEventListener("click", () => {
+          current = Math.max(0, current - 1);
+          render();
+        });
+        next.addEventListener("click", () => {
+          current = Math.min(panels.length - 1, current + 1);
+          render();
+        });
+        dots.forEach((d, i) =>
+          d.addEventListener("click", () => {
+            current = i;
+            render();
+          }),
+        );
+        svg.classList.add("stage-live");
+        walk.querySelector<HTMLElement>("[data-lc-controls]")!.hidden = false;
+        render();
+      }
+    </script>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Architecture"
+    title="Protocol, marketplace, identity — one chain"
+    lede="A single binary runs a CometBFT-powered blockchain node implementing the decentralized exchange. Orders, bids, leases, identity verification, escrow, and settlement are all on-chain state transitions, not trusted intermediaries."
+  >
+    <DiagramFrame
+      label="VirtEngine stack diagram: tenants and deployers place orders with deposits, providers place bids with attestations. Both meet at the VirtEngine chain — a single binary with CometBFT consensus and Cosmos SDK — whose module domains cover the marketplace (x/market, x/deployment, x/provider, x/hpc), VEID identity (x/veid, x/mfa, zero-knowledge proofs, x/encryption, x/cert), value flow (x/escrow, x/settlement, x/take, x/oracle) and integrity (x/staking, x/audit, x/fraud, x/review). Leases won flow to the provider daemon, which deploys workloads on Kubernetes or SLURM clusters and reports usage records back for on-chain settlement. Validators secure consensus and run the identity network."
+      caption="fig 02 — the VirtEngine protocol stack, from marketplace actors to real clusters"
+      class="reveal"
+    >
+      <VirtStack />
+    </DiagramFrame>
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Marketplace</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Tenants publish orders; providers bid; the chain matches them into leases.
+          Sensitive order and offering data is stored encrypted so only the intended
+          recipient can decrypt it. Escrow and settlement modules meter and pay for actual
+          usage.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Provider daemon</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Off-chain, each provider runs a daemon that watches for orders, places bids,
+          instantiates workloads through orchestration APIs — Kubernetes for cloud-native
+          workloads, SLURM for HPC — and records resource usage back on the chain.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Chain &amp; token</h3>
+        <p class="prose-inst text-[0.95rem]">
+          A CometBFT/Cosmos-SDK proof-of-stake chain secures the exchange. Validators and
+          staking partners secure consensus; the same staked nodes operate the identity
+          network, giving verification consensus-grade accountability.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="The edge"
+    title="What no other marketplace combines"
+    lede="Each of these exists somewhere. VirtEngine's claim is the combination — verified identity, attested hardware, protocol-native payment, HPC scheduling, and non-profit stewardship in one open-source chain."
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        edges.map((edge) => (
+          <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+            <h3 class="text-lg font-bold">{edge.title}</h3>
+            <p class="prose-inst text-[0.95rem]">{edge.body}</p>
+            <p class="mt-auto border-t border-hairline pt-2.5 font-mono text-xs text-text-soft">{edge.ref}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="05"
+    eyebrow="Trusted processing"
+    title="The lock and the key: computation no one can open"
+    lede="The most sensitive computation in the protocol — scoring identity evidence — runs inside hardware trusted-execution environments. Not policy-protected: physics-and-cryptography protected."
+  >
+    <DiagramFrame
+      label="Trusted processing in VirtEngine, drawn as a lock-and-key flow. On the left, encrypted identity scopes — documents, liveness checks, biometric hardware attestation — are encrypted in the wallet before upload. They reach an attestation gate: the enclave produces a signed measurement of its exact code, verified on-chain by the x/enclave module using SGX, SEV-SNP and Nitro verifiers, including the AMD KDS certificate chain from VCEK through ASK to ARK with TCB checks. No proof, no data. Only after proof does data enter the trusted processing unit — a confidential VM on AMD SEV-SNP, Intel SGX or AWS Nitro, drawn as a night-navy vault with a lock — where the VEID scoring service and its machine-learning models run as measured code, with keys derived and sealed in hardware via vTPM and memory encrypted by the CPU. Below the vault, three blocked access paths marked with crosses: host operator, provider, and foundation — no inspection path into the enclave for anyone. Out of the vault, only results leave: a trust score and pass or fail written to chain state — never raw biometric data."
+      caption="fig 03 — attested enclaves: data sealed in, keys sealed in hardware, only results out"
+      class="reveal"
+    >
+      <VeEnclave />
+    </DiagramFrame>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">The lock</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The VEID scoring service deploys in confidential-VM environments — AMD SEV-SNP,
+          Intel SGX, AWS Nitro — where memory is encrypted by the CPU itself. The enclave's
+          contents cannot be inspected by the host operator, the provider running the
+          hardware, or the foundation.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">The key</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Encryption keys are derived and sealed inside the hardware (vTPM key sealing,
+          hardware-based key derivation). Attestation — real <code>/dev/sev-guest</code>
+          reports, the AMD KDS certificate chain, TCB validation — proves the exact
+          measured code is running before any data is released to it.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">What ever leaves</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Only verification results — pass/fail and a trust score — are ever shared;
+          raw biometric data never is. The biometric data addendum commits to automatic
+          destruction at retention end and honours consent withdrawal. The chain verifies
+          enclave attestations on-chain through <code>x/enclave</code>.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="06"
+    eyebrow="VEID"
+    title="Identity that proves without exposing"
+    lede="VEID is VirtEngine's privacy-preserving decentralized identity layer — the mechanism that lets marketplace parties verify each other without surrendering their documents to a central database."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">How verification works</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          Users capture identity evidence — documents, selfie with active liveness,
+          fingerprint or iris with biometric hardware attestation, device integrity
+          attestation — in the mobile wallet. Payloads are encrypted and uploaded as
+          identity <em>scopes</em>. Block-proposing validators decrypt with their private
+          keys, score the evidence with machine-learning models, and write the resulting
+          identity trust score into the proposed block; consensus validators repeat the
+          computation and vote. The score, never the raw evidence, becomes ledger state.
+        </p>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Privacy machinery</h3>
+        <ul class="mt-3 grid gap-2.5">
+          {
+            [
+              "Zero-knowledge proofs (x/veid/zk) — prove a requirement is met without revealing the underlying data",
+              "Selective disclosure by scope — services see only what they ask for and are consented to",
+              "On-chain multifactor authentication (x/mfa) guarding sensitive transactions and account recovery",
+              "Public-key encryption for data in transit and at rest — only intended recipients decrypt",
+              "Device integrity via Play Integrity / App Attest before capture is trusted",
+            ].map((item) => (
+              <li class="prose-inst flex gap-3 text-[0.95rem]">
+                <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+    <p class="prose-inst mt-8">
+      VEID is presented in depth on the foundation's
+      <a href="/research/identity">Identity program page</a>; its citizen-facing home is
+      <a href="https://identity.org.au" rel="noopener">identity.org.au</a> — plain-language
+      explanations for individuals and relying services.
+    </p>
+  </Section>
+
+  <Section
+    number="07"
+    eyebrow="Stewardship"
+    title="Patented — and locked to the public"
+    lede="Patent AU2024203136B2 covers the decentralized computing system: the identity-scoring blockchain control layer, on-chain MFA, encrypted marketplace, provider daemon, staking-identity network, and encryption subsystem."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Why hold a patent at all?</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          Defensively. The constitution requires the foundation to seek ownership or
+          control of VirtEngine's patent rights — including continuations, divisionals, and
+          foreign equivalents — precisely so they cannot be captured and turned against the
+          commons <ClauseRef id="32.1" />. Licensing must prefer models that support
+          safety, interoperability, and decentralisation, and that prevent private capture
+          of core public-benefit protocols <ClauseRef id="37.2" />.
+        </p>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          The code itself is Apache-2.0: free to use, modify, and distribute, with the
+          patent licensed to the extent of the patent holder's contributions to the
+          project.
+        </p>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Mainnet posture</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          The repository's checked-in mainnet decision is <strong>GO</strong>, reaffirmed
+          <strong>2026-08-03</strong> and rescheduled to the <strong>January 2027</strong>
+          launch window after the original 2026-04-18 / 2026-04-19 UTC window did not
+          proceed. Final canonical allocations and the genesis publication bundle remain
+          checked in as a baseline. Per the project's own guidance, the network should
+          not be described as live before the approved window begins.
+        </p>
+        <dl class="mt-4 grid gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+          <div class="flex gap-4">
+            <dt class="w-32 shrink-0 uppercase tracking-wide">Decision</dt>
+            <dd class="text-ink">GO — delayed, 2026-08-03</dd>
+          </div>
+          <div class="flex gap-4">
+            <dt class="w-32 shrink-0 uppercase tracking-wide">Launch window</dt>
+            <dd class="text-ink">2027-01-01 / 2027-01-31 UTC</dd>
+          </div>
+          <div class="flex gap-4">
+            <dt class="w-32 shrink-0 uppercase tracking-wide">Source</dt>
+            <dd class="text-ink">_docs/operations/mainnet-go-no-go-decision.md</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    number="08"
+    eyebrow="Who benefits"
+    title="What each participant gets"
+    lede="The marketplace only works if every side is better off inside it than outside it. Concretely:"
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        audiences.map((aud) => (
+          <article class="reveal grid content-start gap-3 rounded-card border border-hairline bg-surface p-6">
+            <h3 class="text-lg font-bold">{aud.title}</h3>
+            <ul class="grid gap-2.5">
+              {aud.points.map((point) => (
+                <li class="prose-inst flex gap-3 text-[0.93rem]">
+                  <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                    <path d="M3 8.5l3.5 3.5L13 4.5" />
+                  </svg>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section number="09" eyebrow="Go deeper" title="The program in the ecosystem">
+    <div class="flex flex-wrap gap-3">
+      <CTA href="https://virtengine.com" rel="noopener">virtengine.com</CTA>
+      <CTA href="https://docs.virtengine.com" variant="secondary" rel="noopener">Documentation</CTA>
+      <CTA href={SITE.github} variant="secondary" rel="noopener">Source code</CTA>
+      <CTA href={SITE.patentVeUrl} variant="ghost" rel="noopener">Patent AU2024203136B2</CTA>
+    </div>
+  </Section>
+</Base>

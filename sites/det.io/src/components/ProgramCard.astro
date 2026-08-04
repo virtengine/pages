@@ -1,0 +1,54 @@
+---
+/**
+ * Research-program card: crafted SVG artwork (slot="art"), program facts,
+ * and a link to the program page.
+ */
+interface Props {
+  program: string;
+  title: string;
+  href: string;
+  /** mono fact rows, e.g. [["status", "patent accepted"], ...] */
+  facts: [string, string][];
+}
+
+const { program, title, href, facts } = Astro.props;
+---
+
+<article class="group grid overflow-hidden rounded-card border border-hairline bg-surface transition-colors hover:border-blue-deep">
+  <div class="border-b border-hairline bg-gradient-to-b from-surface to-vellum p-6" aria-hidden="true">
+    <slot name="art" />
+  </div>
+  <div class="grid gap-3 p-6">
+    <p class="eyebrow">{program}</p>
+    <h3 class="text-2xl font-bold">
+      <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-blue-deep">
+        {title}
+      </a>
+    </h3>
+    <div class="prose-inst text-[0.98rem]">
+      <slot />
+    </div>
+    <dl class="mt-2 grid gap-1.5 border-t border-hairline pt-3 font-mono text-xs text-text-soft">
+      {
+        facts.map(([term, value]) => (
+          <div class="flex gap-3">
+            <dt class="w-24 shrink-0 uppercase tracking-wide">{term}</dt>
+            <dd class="text-ink">{value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="mt-1 inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep">
+      Program overview
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4"></path>
+      </svg>
+    </p>
+  </div>
+</article>
+
+<style>
+  article {
+    position: relative;
+  }
+</style>

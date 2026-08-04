@@ -1,0 +1,194 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Privacy", href: "/privacy" },
+];
+---
+
+<Base
+  title="Privacy | identity.org.au"
+  description="What identity data exists, where it lives, who can read it, and how long it is kept — including the biometric commitments and concrete retention periods that govern the system."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Policies"
+    title="Privacy"
+    lede="This page tells you what exists, where it lives, who can read it, and how long it is kept — with the actual figures, not adjectives."
+  >
+    <p class="mt-4 mb-0 text-[0.92rem] text-muted">
+      The binding documents — the VirtEngine Privacy Policy, Biometric Data Addendum and Consent
+      Framework — are versioned in the open-source repository. This page summarises them
+      faithfully; where they differ, the repository documents govern.
+    </p>
+  </PageHeader>
+
+  <div class="container-site max-w-[62rem] py-12">
+    <section>
+      <h2 class="mt-0 text-[1.6rem]">This website collects nothing</h2>
+      <p class="text-body measure">
+        identity.org.au is a static informational site. It has no accounts, no login, no forms, no
+        analytics trackers and no advertising. The privacy questions that matter concern the
+        <strong>wallet and the VEID network</strong> — which is what the rest of this page covers.
+      </p>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="mt-0 text-[1.6rem]">The life of your data, in five stages</h2>
+      <p class="text-body measure">
+        Captured on your phone, encrypted before it moves, processed only inside hardware-sealed
+        trusted processing units, destroyed when scoring ends — leaving only the result.
+      </p>
+      <DataLifecycle class="mt-6" />
+      <a href="/privacy/trusted-processing" class="link-plain mt-5 inline-block font-semibold">
+        Trusted processing — how the vault works, and why no one can open it
+      </a>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="mt-0 text-[1.6rem]">What exists, where it lives, who can read it</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">Each category of identity data, its storage location, readability and retention</caption>
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Where it lives</th>
+              <th scope="col">Who can read it</th>
+              <th scope="col">Kept for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Document scans (licence, passport)</th>
+              <td>Encrypted on your device; encrypted payloads in the network vault</td>
+              <td>You. Processing happens only inside sealed, attested enclaves — no operator can look in; results, not images, are recorded</td>
+              <td>7 years (know-your-customer law), then destroyed</td>
+            </tr>
+            <tr>
+              <th scope="row">Biometric templates (face, fingerprint, iris)</th>
+              <td>Encrypted on-device before transmission (X25519-XSalsa20-Poly1305); never unencrypted on-chain</td>
+              <td>Never shared with services; never sold — prohibited regardless of consent</td>
+              <td>Active account + 3 years after closure; absolute maximum 7 years from last use</td>
+            </tr>
+            <tr>
+              <th scope="row">OCR-extracted details (name, date of birth)</th>
+              <td>Encrypted identity scopes on the network</td>
+              <td>You; services only per explicitly consented claim</td>
+              <td>With your account, subject to the document retention rule</td>
+            </tr>
+            <tr>
+              <th scope="row">Verification results (level, pass/fail)</th>
+              <td>On the network — tamper-proof records</td>
+              <td>Services you consent to, per request</td>
+              <td>Permanent (results, not evidence)</td>
+            </tr>
+            <tr>
+              <th scope="row">Consent records</th>
+              <td>Auditable history, timestamped</td>
+              <td>You in full; services see their own grants</td>
+              <td>Permanent audit trail</td>
+            </tr>
+            <tr>
+              <th scope="row">Verification session metadata (device fingerprint, IP during verification)</th>
+              <td>Off-chain verification systems</td>
+              <td>Fraud-prevention processing only</td>
+              <td>Security logs 12 months; error logs 90 days</td>
+            </tr>
+            <tr>
+              <th scope="row">Wallet address and transactions</th>
+              <td>The public blockchain</td>
+              <td>Public — but not linked to your personal details</td>
+              <td>Permanent (blockchain immutability)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="mt-0 text-[1.6rem]">The biometric commitments</h2>
+      <p class="text-body measure">
+        Biometric data is special-category data, and the published Biometric Data Addendum binds
+        the system to commitments stronger than general privacy law requires:
+      </p>
+      <div class="prose-service mt-4">
+        <ul>
+          <li><strong>Never sold, leased or traded</strong> — an absolute prohibition that applies regardless of consent. Biometric data is never monetised.</li>
+          <li><strong>Never disclosed raw.</strong> Services receive verification results, not biometric data. Sub-processors are contractually prohibited from retaining or using it.</li>
+          <li><strong>Separate, informed consent</strong> — biometric consent is unbundled from terms acceptance, logged with a timestamp, and withdrawable at any time.</li>
+          <li><strong>Deletion on request:</strong> 30 days from request or account closure, plus backup rotation (typically 90 days). Encryption keys are destroyed, rendering encrypted copies permanently unreadable.</li>
+          <li><strong>Breach notification within 72 hours</strong> of discovery, with plain-language disclosure and identity-theft protection support where biometric data is involved.</li>
+          <li><strong>Access rights:</strong> request a copy of your biometric data at any time (<a href={`mailto:${SITE.dpoEmail}`} class="link-plain">{SITE.dpoEmail}</a>, subject “Biometric Data Access Request”); responses within 30 days.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="mt-0 text-[1.6rem]">Retention, in one table</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">Retention periods per data type and their rationale</caption>
+          <thead>
+            <tr>
+              <th scope="col">Data type</th>
+              <th scope="col">Retention period</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Blockchain records</th><td>Permanent</td><td>Immutability — but never readable personal data</td></tr>
+            <tr><th scope="row">Biometric templates</th><td>Active account + 3 years</td><td>Fraud and re-registration prevention, KYC/AML</td></tr>
+            <tr><th scope="row">Identity documents</th><td>7 years</td><td>Regulatory (KYC/AML) requirements</td></tr>
+            <tr><th scope="row">Usage metrics</th><td>3 years</td><td>Billing and audit</td></tr>
+            <tr><th scope="row">Support communications</th><td>3 years</td><td>Customer service</td></tr>
+            <tr><th scope="row">Security logs</th><td>12 months</td><td>Incident investigation</td></tr>
+            <tr><th scope="row">Error logs</th><td>90 days</td><td>Debugging</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <Callout title="At the end of retention" class="mt-6 max-w-[72ch]">
+        <p>
+          Destruction is automatic: deletion from active systems, removal from backups within the
+          rotation schedule, and destruction of encryption keys — which makes any on-chain
+          encrypted material permanently unreadable.
+        </p>
+      </Callout>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="mt-0 text-[1.6rem]">Your rights</h2>
+      <div class="prose-service">
+        <ul>
+          <li><strong>Access</strong> — a copy of your data, within 30 days of request.</li>
+          <li><strong>Correction</strong> — re-verify with corrected evidence; you review every extracted field before submission.</li>
+          <li><strong>Withdrawal of consent</strong> — per scope, per service, any time. See <a href="/help/revoking-consent">revoking consent</a>.</li>
+          <li><strong>Deletion</strong> — see <a href="/help/deleting-your-identity">deleting your identity</a> for the full process and its honest limits.</li>
+          <li><strong>Portability</strong> — export your data in a structured format.</li>
+        </ul>
+        <p>
+          Contact for all privacy matters: <a href={`mailto:${SITE.dpoEmail}`}>{SITE.dpoEmail}</a>.
+          The system is designed to comply with the Australian Privacy Principles, GDPR (including
+          Article 9 explicit consent for biometric data), and biometric-specific laws such as
+          Illinois BIPA.
+        </p>
+      </div>
+    </section>
+
+    <Alert tone="info" title="Read the governing documents" class="mt-12 max-w-[72ch]">
+      <p>
+        The full Privacy Policy, Biometric Data Addendum, Consent Framework and GDPR compliance
+        documentation are versioned alongside the code in the
+        <a href={SITE.github} rel="noopener" class="link-plain">open-source repository</a> — you
+        can read the exact text this page summarises.
+      </p>
+    </Alert>
+  </div>
+</Base>

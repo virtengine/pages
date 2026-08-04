@@ -1,0 +1,43 @@
+---
+/**
+ * The "DET·IO" wordmark, hand-drawn as rounded stroke geometry faithful to
+ * the flat logo: uniform-width strokes with fully round terminals, the E as
+ * three detached bars, and a mid-height interpunct. Renders in currentColor.
+ * Closest typeface equivalent (documented in DESIGN.md §4): Baloo 2 — but
+ * the shipped mark is this exact geometry, not a font.
+ */
+interface Props {
+  /** Rendered height in px */
+  size?: number;
+  class?: string;
+}
+
+const { size = 22, class: className } = Astro.props;
+const width = Math.round(size * (400 / 104));
+---
+
+<svg
+  viewBox="0 0 400 104"
+  width={width}
+  height={size}
+  class={className}
+  aria-hidden="true"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="24"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <!-- D -->
+  <path d="M28 22v60M28 22h8a30 30 0 0 1 0 60h-8"></path>
+  <!-- E: three detached rounded bars -->
+  <path d="M112 24h52M112 52h52M112 80h52"></path>
+  <!-- T -->
+  <path d="M192 24h60M222 24v58"></path>
+  <!-- interpunct -->
+  <circle cx="276" cy="58" r="11" fill="currentColor" stroke="none"></circle>
+  <!-- I -->
+  <path d="M310 24v58"></path>
+  <!-- O -->
+  <circle cx="358" cy="53" r="29"></circle>
+</svg>

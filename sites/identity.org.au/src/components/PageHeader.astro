@@ -1,0 +1,24 @@
+---
+import Breadcrumbs, { type Crumb } from "./Breadcrumbs.astro";
+
+/**
+ * Standard page header band: breadcrumbs + eyebrow + h1 + lede on the alt surface.
+ */
+interface Props {
+  crumbs: Crumb[];
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+}
+const { crumbs, eyebrow, title, lede } = Astro.props;
+---
+
+<div class="bg-alt border-b border-hairline">
+  <div class="container-site py-8 lg:py-10">
+    <Breadcrumbs crumbs={crumbs} />
+    {eyebrow && <p class="eyebrow mt-6 mb-0">{eyebrow}</p>}
+    <h1 class="mt-2 mb-0 text-[clamp(1.9rem,4vw,2.7rem)] measure">{title}</h1>
+    {lede && <p class="mt-4 mb-0 text-[1.15rem] text-body measure">{lede}</p>}
+    <slot />
+  </div>
+</div>

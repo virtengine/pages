@@ -1,0 +1,89 @@
+---
+/**
+ * VirtEngine program stack: tenants and providers over the CometBFT/Cosmos
+ * chain with its module domains (marketplace, VEID identity, escrow &
+ * settlement, staking), and the provider daemon driving real clusters via
+ * Kubernetes or SLURM. Wrapped by DiagramFrame which carries the label.
+ */
+---
+
+<svg viewBox="0 0 880 520" class="h-auto w-full min-w-[680px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="ve-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- actors -->
+  <text x="40" y="34" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">MARKETPLACE ACTORS</text>
+  <path d="M40 44 H840" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g>
+    <rect x="120" y="62" width="200" height="66" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="220" y="90" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Tenants &amp; deployers</text>
+    <text x="220" y="110" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">need compute — place orders</text>
+  </g>
+  <g>
+    <rect x="560" y="62" width="200" height="66" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="660" y="90" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Providers</text>
+    <text x="660" y="110" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">lease capacity — bid on orders</text>
+  </g>
+
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#ve-arrow)">
+    <path d="M220 128 V186"></path>
+    <path d="M660 128 V186"></path>
+  </g>
+  <text x="232" y="166" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">orders · deposits</text>
+  <text x="672" y="166" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">bids · attestations</text>
+
+  <!-- chain band -->
+  <g>
+    <rect x="70" y="190" width="740" height="150" rx="10" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+    <text x="90" y="220" font-family="var(--font-display)" font-size="14.5" font-weight="600" fill="var(--color-ink)">VirtEngine chain — single `virtengine` binary · CometBFT consensus · Cosmos SDK</text>
+    <g font-family="var(--font-mono)" font-size="10.5">
+      <rect x="90" y="238" width="160" height="80" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="170" y="262" text-anchor="middle" fill="var(--color-ink)">marketplace</text>
+      <text x="170" y="280" text-anchor="middle" fill="var(--color-text-soft)">x/market · x/deployment</text>
+      <text x="170" y="298" text-anchor="middle" fill="var(--color-text-soft)">x/provider · x/hpc</text>
+
+      <rect x="270" y="238" width="160" height="80" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="350" y="262" text-anchor="middle" fill="var(--color-ink)">identity — VEID</text>
+      <text x="350" y="280" text-anchor="middle" fill="var(--color-text-soft)">x/veid · x/mfa · zk proofs</text>
+      <text x="350" y="298" text-anchor="middle" fill="var(--color-text-soft)">x/encryption · x/cert</text>
+
+      <rect x="450" y="238" width="160" height="80" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="530" y="262" text-anchor="middle" fill="var(--color-ink)">value flow</text>
+      <text x="530" y="280" text-anchor="middle" fill="var(--color-text-soft)">x/escrow · x/settlement</text>
+      <text x="530" y="298" text-anchor="middle" fill="var(--color-text-soft)">x/take · x/oracle</text>
+
+      <rect x="630" y="238" width="160" height="80" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="710" y="262" text-anchor="middle" fill="var(--color-ink)">integrity</text>
+      <text x="710" y="280" text-anchor="middle" fill="var(--color-text-soft)">x/staking · x/audit</text>
+      <text x="710" y="298" text-anchor="middle" fill="var(--color-text-soft)">x/fraud · x/review</text>
+    </g>
+  </g>
+
+  <!-- daemon -->
+  <path d="M660 340 V392" stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#ve-arrow)"></path>
+  <text x="672" y="372" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">leases won → workloads</text>
+
+  <g>
+    <rect x="540" y="396" width="240" height="58" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="660" y="420" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">Provider daemon</text>
+    <text x="660" y="440" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">bids · deploys · meters usage</text>
+  </g>
+
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#ve-arrow)">
+    <path d="M660 454 V492"></path>
+  </g>
+  <text x="660" y="512" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">Kubernetes · SLURM clusters</text>
+
+  <!-- usage back to settlement -->
+  <path d="M540 425 Q400 425 400 344" stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#ve-arrow)"></path>
+  <text x="300" y="412" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">usage records → on-chain settlement</text>
+
+  <!-- staking annotation -->
+  <text x="90" y="378" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">Validators secure consensus and run the identity network:</text>
+  <text x="90" y="396" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">the same staked nodes score encrypted identity scopes,</text>
+  <text x="90" y="414" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">so verification carries consensus-grade accountability.</text>
+</svg>

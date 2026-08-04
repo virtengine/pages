@@ -1,0 +1,78 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import { FOUNDATION_PAGES } from "@data/foundation";
+import { SITE } from "@data/site";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Foundation", href: "/foundation" },
+];
+---
+
+<Base
+  title="The Foundation — DETIO FOUNDATION LTD in practice | det.io"
+  description="How DETIO FOUNDATION LTD works as an institution: who we are, the public-benefit lock in depth, intellectual property stewardship of both patents, the clause-10 code of conduct, and membership honestly described."
+  path="/foundation"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="The institution"
+    title="The foundation, in practice"
+    lede="Beyond the mission statement: the legal entity, the people it names, the lock that binds it, the patents it stewards, the conduct rules it must adopt, and the deliberately scarce membership. Everything cited, nothing embellished."
+  >
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Entity</dt>
+        <dd class="text-ink">{SITE.legalName}</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">ACN</dt>
+        <dd class="text-ink">{SITE.acn}</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Contact</dt>
+        <dd class="text-ink">{SITE.email}</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="Five pages"
+    title="The institutional record"
+    lede="Each page covers one dimension of the institution, grounded in the signed constitution."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        FOUNDATION_PAGES.map((page, i) => (
+          <article class="group reveal relative grid content-start gap-3 rounded-card border border-hairline bg-surface p-6 transition-colors hover:border-blue-deep">
+            <p class="font-mono text-xs tracking-[0.14em] text-text-soft uppercase">
+              {String(i + 1).padStart(2, "0")} · {page.eyebrow}
+            </p>
+            <h3 class="text-xl font-bold">
+              <a href={`/foundation/${page.slug}`} class="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-blue-deep">
+                {page.title}
+              </a>
+            </h3>
+            <p class="prose-inst text-[0.95rem]">{page.summary}</p>
+            <p class="mt-1 inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep">
+              Read the page
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="prose-inst mt-8">
+      The clause-level analysis behind these pages lives in the
+      <a href="/constitution">constitution explorer</a>; commitments you can check are on the
+      <a href="/transparency">transparency page</a>.
+    </p>
+  </Section>
+</Base>

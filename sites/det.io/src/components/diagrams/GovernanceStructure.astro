@@ -1,0 +1,119 @@
+---
+/**
+ * Governance structure per the constitution: members (Founding Member with
+ * two votes + up to two Ordinary Members) → board (Permanent Director +
+ * Temporary Directors) → Protected Provisions lock (Schedule 1) over the
+ * Transferred Assets, with the Reserved Matters consent gate.
+ * Wrapped by DiagramFrame which carries the text alternative.
+ */
+---
+
+<svg viewBox="0 0 880 560" class="h-auto w-full min-w-[680px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="gov-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+    <marker id="gov-gate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-amber-deep)"></path>
+    </marker>
+  </defs>
+
+  <!-- MEMBERS tier -->
+  <text x="40" y="36" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">MEMBERS — GENERAL MEETING</text>
+  <path d="M40 46 H840" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g>
+    <rect x="70" y="66" width="250" height="86" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
+    <text x="195" y="96" text-anchor="middle" font-family="var(--font-display)" font-size="14.5" font-weight="600" fill="var(--color-ink)">Founding Member</text>
+    <text x="195" y="116" text-anchor="middle" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">permanent membership class</text>
+    <text x="195" y="136" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-blue-deep)">2 votes · cl 14.1.1 · cl 17.2</text>
+  </g>
+
+  <g>
+    <rect x="360" y="66" width="200" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="460" y="96" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Ordinary Member</text>
+    <text x="460" y="116" text-anchor="middle" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">admission needs consent</text>
+    <text x="460" y="136" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-soft)">1 vote · cl 11.5 · cl 14.1.2</text>
+  </g>
+
+  <g>
+    <rect x="600" y="66" width="200" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4" stroke-dasharray="6 5"></rect>
+    <text x="700" y="96" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Ordinary Member</text>
+    <text x="700" y="116" text-anchor="middle" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">maximum of two</text>
+    <text x="700" y="136" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-soft)">1 vote · cl 11.3</text>
+  </g>
+
+  <!-- flows members → board -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#gov-arrow)">
+    <path d="M195 152 V218"></path>
+    <path d="M460 152 V218"></path>
+    <path d="M700 152 Q700 190 560 218"></path>
+  </g>
+  <text x="230" y="192" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">appoint / elect directors (with consent · cl 23)</text>
+
+  <!-- BOARD tier -->
+  <text x="40" y="214" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">BOARD — AT LEAST THREE DIRECTORS · CL 19</text>
+  <path d="M40 224 H840" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g>
+    <rect x="70" y="244" width="250" height="86" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
+    <text x="195" y="274" text-anchor="middle" font-family="var(--font-display)" font-size="14.5" font-weight="600" fill="var(--color-ink)">Permanent Director</text>
+    <text x="195" y="294" text-anchor="middle" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">seat attached to the Founding Member</text>
+    <text x="195" y="314" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-blue-deep)">chairperson · cl 21 · cl 25</text>
+  </g>
+
+  <g>
+    <rect x="360" y="244" width="200" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="460" y="270" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">Founder-Appointed</text>
+    <text x="460" y="288" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">Temporary Director</text>
+    <text x="460" y="312" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-soft)">2-year terms · cl 22 · cl 23.2</text>
+  </g>
+
+  <g>
+    <rect x="600" y="244" width="200" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="700" y="270" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">Temporary</text>
+    <text x="700" y="288" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">Director(s)</text>
+    <text x="700" y="312" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-soft)">10-year cap · cl 22.2</text>
+  </g>
+
+  <!-- Reserved matters gate -->
+  <g>
+    <path d="M195 330 Q195 366 240 408" stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#gov-arrow)"></path>
+    <path d="M460 330 V366 Q460 380 420 388" stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#gov-arrow)"></path>
+    <path d="M700 330 V360 Q700 384 560 396" stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#gov-arrow)"></path>
+  </g>
+
+  <g>
+    <rect x="560" y="386" width="280" height="64" rx="8" fill="var(--color-surface)" stroke="var(--color-amber-deep)" stroke-width="1.6" stroke-dasharray="7 5"></rect>
+    <text x="700" y="412" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-amber-deep)">Reserved Matters gate</text>
+    <text x="700" y="432" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">Founding Member Consent required · cl 18A</text>
+    <path d="M700 386 V348" stroke="var(--color-amber-deep)" stroke-width="1.4" stroke-dasharray="4 5" marker-end="url(#gov-gate)"></path>
+  </g>
+
+  <!-- PROTECTED PROVISIONS lock -->
+  <text x="40" y="392" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">PUBLIC-BENEFIT LOCK</text>
+  <path d="M40 402 H520" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g>
+    <rect x="70" y="418" width="450" height="112" rx="10" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+    <!-- padlock -->
+    <g transform="translate(118 474)">
+      <rect x="-17" y="-9" width="34" height="27" rx="5" fill="var(--color-surface)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+      <path d="M-10 -9 V-17 a10 10 0 0 1 20 0 V-9" stroke="var(--color-blue-deep)" stroke-width="2.2" fill="none"></path>
+      <circle cx="0" cy="2" r="3" fill="var(--color-blue-deep)"></circle>
+      <path d="M0 4 V10" stroke="var(--color-blue-deep)" stroke-width="2.2" stroke-linecap="round"></path>
+    </g>
+    <text x="170" y="452" font-family="var(--font-display)" font-size="14.5" font-weight="600" fill="var(--color-ink)">Protected Provisions — Schedule 1</text>
+    <text x="170" y="474" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">Not-for-profit; no private distribution; VirtEngine, DSEMA and all</text>
+    <text x="170" y="490" font-family="var(--font-sans)" font-size="11" fill="var(--color-text-muted)">Transferred Assets stewarded for public benefit; capital cannot buy control.</text>
+    <text x="170" y="514" font-family="var(--font-mono)" font-size="10" fill="var(--color-blue-deep)">amendment: special resolution + written consent · cl 18.3</text>
+  </g>
+
+  <!-- winding-up note -->
+  <g>
+    <path d="M520 486 Q560 486 596 496" stroke="var(--color-blue-mid)" stroke-width="1.4" class="flow-dash" fill="none" marker-end="url(#gov-arrow)"></path>
+    <text x="612" y="482" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">On winding up</text>
+    <text x="612" y="500" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">surplus assets pass only to a</text>
+    <text x="612" y="515" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">compatible charity — cl 61–62</text>
+  </g>
+</svg>

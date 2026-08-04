@@ -1,0 +1,19 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+}
+
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<div class="relative overflow-hidden border-b border-hairline bg-surface">
+  <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
+  <div class="container-site relative grid gap-5 py-16 md:py-24">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="headline-accent max-w-3xl text-4xl font-bold md:text-[3.25rem]">{title}</h1>
+    {lede && <p class="prose-inst text-lg md:text-xl">{lede}</p>}
+    <slot />
+  </div>
+</div>

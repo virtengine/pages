@@ -1,0 +1,121 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Security", href: "/security" },
+];
+---
+
+<Base
+  title="Security | identity.org.au"
+  description="How to report a vulnerability (security@virtengine.com, 48-hour acknowledgement), the severity response targets, the evidence behind security claims, and device security guidance."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Policies"
+    title="Security"
+    lede="Security claims here are evidence-backed: the bar is what can be reproduced from the public repository's test suites and audit material — not what a marketing page asserts."
+  />
+
+  <div class="container-site max-w-[62rem] py-12">
+    <section class="prose-service">
+      <h2 class="mt-0">Reporting a vulnerability</h2>
+      <p>
+        Send reports to <a href={`mailto:${SITE.securityEmail}`}><strong>{SITE.securityEmail}</strong></a>.
+        Good-faith security research is welcomed. Include:
+      </p>
+      <ul>
+        <li>The affected component, module or workflow</li>
+        <li>Precise reproduction steps</li>
+        <li>Expected impact and your severity estimate</li>
+        <li>Logs, hashes, screenshots or proof-of-concept material</li>
+        <li>Any mitigation you have already validated</li>
+      </ul>
+      <p>Initial acknowledgement target: <strong>48 hours</strong>.</p>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="mt-0 text-[1.5rem]">Response targets by severity</h2>
+      <div class="mt-5 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">Severity levels, examples and initial response targets</caption>
+          <thead>
+            <tr>
+              <th scope="col">Severity</th>
+              <th scope="col">Examples</th>
+              <th scope="col">Initial response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Critical</th>
+              <td>Consensus manipulation, unauthorised fund movement, signing-key compromise, complete MFA/VEID bypass</td>
+              <td>24 hours</td>
+            </tr>
+            <tr>
+              <th scope="row">High</th>
+              <td>Privilege escalation, replayable attestation or identity flows, sensitive data disclosure</td>
+              <td>7 days</td>
+            </tr>
+            <tr>
+              <th scope="row">Medium</th>
+              <td>Bounded logic bugs, non-critical authorisation drift, incomplete audit logging</td>
+              <td>30 days</td>
+            </tr>
+            <tr>
+              <th scope="row">Low</th>
+              <td>Defence-in-depth gaps, documentation issues, low-impact hygiene</td>
+              <td>90 days</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="prose-service mt-12">
+      <h2 class="mt-0">The evidence behind the claims</h2>
+      <p>
+        The repository maintains a security test matrix — contract, integration and end-to-end
+        suites — plus fail-closed scripts for static analysis, dependency and vulnerability
+        scanning, and secret detection. Audit-backed control areas include crypto envelope
+        validation, MFA-gated identity recovery, consensus result matching, and enclave heartbeat
+        replay protection, each mapped to reproducible test evidence.
+      </p>
+      <p>
+        External audit evidence — a public summary and the engagement record — is published in the
+        repository. The project deliberately does <strong>not</strong> claim a standing, blanket
+        audit of every subsystem, and this site makes no certification or accreditation claims.
+        What is claimed is what you can reproduce.
+      </p>
+      <p>
+        Supply-chain requirements for releases include pinned tool versions, SBOM generation,
+        cosign signing and verification, and provenance generation — documented in the
+        repository's supply-chain security policy.
+      </p>
+    </section>
+
+    <Callout title="Your side of the security model" class="mt-10 max-w-[72ch]">
+      <p>
+        The strongest protocol cannot compensate for a compromised phone or a phished approval.
+        Work through the <a href="/help/device-security-checklist" class="link-plain">device
+        security checklist</a> and learn the
+        <a href="/help/recognising-scams-and-phishing" class="link-plain">scam patterns</a> that
+        target identity users.
+      </p>
+    </Callout>
+
+    <Alert tone="info" title="Read the full policy" class="mt-10 max-w-[72ch]">
+      <p>
+        The complete security policy, test matrices and audit summaries are in the
+        <a href={SITE.github} rel="noopener" class="link-plain">open-source repository</a>
+        (SECURITY.md).
+      </p>
+    </Alert>
+  </div>
+</Base>

@@ -1,0 +1,96 @@
+---
+/**
+ * Explorer figure E — the constitutional safety layer (spec §2.2.3,
+ * §2.12): immutable on-chain rules validating high-stakes actions;
+ * governed syscall allow-list distributed by content hash and hot-reloaded
+ * by sidecars; L7 egress control; and the bicameral amendment pipeline
+ * (agent legislature → human legislature → 180-day time-lock → seed
+ * wallet veto). Text alternative carried by the enclosing DiagramFrame.
+ */
+---
+
+<svg viewBox="0 0 880 460" class="h-auto w-full min-w-[720px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="fs-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+    <marker id="fs-guard" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-amber-deep)"></path>
+    </marker>
+  </defs>
+
+  <!-- constitution plate -->
+  <g>
+    <rect x="50" y="28" width="780" height="60" rx="9" fill="var(--color-surface)" stroke="var(--color-amber-deep)" stroke-width="1.8" stroke-dasharray="9 6"></rect>
+    <text x="440" y="54" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" letter-spacing="1.6" fill="var(--color-amber-deep)">CONSTITUTIONAL SAFETY LAYER — IMMUTABLE ON-CHAIN RULES</text>
+    <text x="440" y="74" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">high-stakes actions validated before execution · veto is atomic, regardless of any vote count</text>
+  </g>
+
+  <!-- enforcement columns -->
+  <g stroke="var(--color-amber-deep)" stroke-width="1.4" stroke-dasharray="4 5" marker-end="url(#fs-guard)">
+    <path d="M180 88 V126"></path>
+    <path d="M440 88 V126"></path>
+    <path d="M700 88 V126"></path>
+  </g>
+
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="66" y="130" width="228" height="104" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="180" y="154" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">syscall allow-list</text>
+    <text x="180" y="174" text-anchor="middle" fill="var(--color-text-soft)">policy file owned by the layer</text>
+    <text x="180" y="190" text-anchor="middle" fill="var(--color-text-soft)">distributed by content hash</text>
+    <text x="180" y="206" text-anchor="middle" fill="var(--color-text-soft)">hot-reloaded on governance-</text>
+    <text x="180" y="221" text-anchor="middle" fill="var(--color-text-soft)">approved PolicyUpdate</text>
+
+    <rect x="326" y="130" width="228" height="104" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="440" y="154" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">network egress sidecar</text>
+    <text x="440" y="174" text-anchor="middle" fill="var(--color-text-soft)">all traffic pinned to sidecar veth</text>
+    <text x="440" y="190" text-anchor="middle" fill="var(--color-text-soft)">layer-7 allow-list</text>
+    <text x="440" y="206" text-anchor="middle" fill="var(--color-text-soft)">hashes of outbound payloads</text>
+    <text x="440" y="221" text-anchor="middle" fill="var(--color-text-soft)">recorded for audit</text>
+
+    <rect x="586" y="130" width="228" height="104" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="700" y="154" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">model integrity gate</text>
+    <text x="700" y="174" text-anchor="middle" fill="var(--color-text-soft)">signed weight hash checked</text>
+    <text x="700" y="190" text-anchor="middle" fill="var(--color-text-soft)">against on-chain registry</text>
+    <text x="700" y="206" text-anchor="middle" fill="var(--color-text-soft)">mismatch or revoked flag</text>
+    <text x="700" y="221" text-anchor="middle" fill="var(--color-text-soft)">aborts the load</text>
+  </g>
+
+  <!-- amendment pipeline -->
+  <text x="50" y="282" font-family="var(--font-mono)" font-size="10.5" letter-spacing="1.6" fill="var(--color-text-soft)">AMENDING THE CONSTITUTION — BICAMERAL, TIME-LOCKED · SPEC §2.12.4–2.12.5</text>
+  <path d="M50 292 H830" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <g font-family="var(--font-mono)" font-size="9.5">
+    <rect x="50" y="312" width="176" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+    <text x="138" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">agent legislature</text>
+    <text x="138" y="356" text-anchor="middle" fill="var(--color-text-soft)">≥150 highest-reputation</text>
+    <text x="138" y="371" text-anchor="middle" fill="var(--color-text-soft)">agents · 95% supermajority</text>
+    <text x="138" y="386" text-anchor="middle" fill="var(--color-text-soft)">tests technical soundness</text>
+
+    <rect x="256" y="312" width="176" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+    <text x="344" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">human legislature</text>
+    <text x="344" y="356" text-anchor="middle" fill="var(--color-text-soft)">public stakeholders +</text>
+    <text x="344" y="371" text-anchor="middle" fill="var(--color-text-soft)">alignment jury · 66.7%</text>
+    <text x="344" y="386" text-anchor="middle" fill="var(--color-text-soft)">tests values &amp; effects</text>
+
+    <rect x="462" y="312" width="176" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+    <text x="550" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">180-day time-lock</text>
+    <text x="550" y="356" text-anchor="middle" fill="var(--color-text-soft)">mandatory · non-cancellable</text>
+    <text x="550" y="371" text-anchor="middle" fill="var(--color-text-soft)">public red-teaming window</text>
+    <text x="550" y="386" text-anchor="middle" fill="var(--color-text-soft)">votes may be withdrawn</text>
+
+    <rect x="668" y="312" width="162" height="86" rx="8" fill="var(--color-surface)" stroke="var(--color-amber-deep)" stroke-width="1.5" stroke-dasharray="7 5"></rect>
+    <text x="749" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">seed wallet veto</text>
+    <text x="749" y="356" text-anchor="middle" fill="var(--color-text-soft)">genesis credential holds</text>
+    <text x="749" y="371" text-anchor="middle" fill="var(--color-text-soft)">a final, non-overridable</text>
+    <text x="749" y="386" text-anchor="middle" fill="var(--color-text-soft)">constitutional brake</text>
+  </g>
+
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fs-arrow)">
+    <path d="M226 355 H252"></path>
+    <path d="M432 355 H458"></path>
+    <path d="M638 355 H664"></path>
+  </g>
+
+  <text x="440" y="442" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">The rules that bind the system are the hardest thing in the system to change — by design.</text>
+</svg>

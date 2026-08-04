@@ -1,0 +1,86 @@
+---
+/**
+ * Ecosystem map: the foundation at the center stewarding five public
+ * properties — virtengine.com, docs.virtengine.com, identity.org.au,
+ * bosun.engineer and the open-source repositories. Wrapped by DiagramFrame
+ * which carries the label.
+ */
+---
+
+<svg viewBox="0 0 880 470" class="h-auto w-full min-w-[680px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="eco-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- center: foundation seal -->
+  <g>
+    <circle cx="440" cy="210" r="74" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2.2"></circle>
+    <circle cx="440" cy="210" r="65" fill="none" stroke="var(--color-hairline-strong)" stroke-width="1"></circle>
+    <g stroke="var(--color-blue-deep)" stroke-width="2" fill="none">
+      <path d="M440 168 L475 188 L475 228 L440 248 L405 228 L405 188 Z"></path>
+    </g>
+    <g fill="var(--color-blue-deep)">
+      <circle cx="440" cy="168" r="4"></circle>
+      <circle cx="475" cy="188" r="4"></circle>
+      <circle cx="475" cy="228" r="4"></circle>
+      <circle cx="440" cy="248" r="4"></circle>
+      <circle cx="405" cy="228" r="4"></circle>
+      <circle cx="405" cy="188" r="4"></circle>
+    </g>
+    <circle cx="440" cy="208" r="6" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2"></circle>
+    <text x="440" y="304" text-anchor="middle" font-family="var(--font-display)" font-size="14" font-weight="600" fill="var(--color-ink)">DETIO FOUNDATION LTD</text>
+    <text x="440" y="322" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">ACN 699 651 771 · NOT-FOR-PROFIT CLG</text>
+  </g>
+
+  <!-- stewardship flows -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#eco-arrow)">
+    <path d="M372 176 Q260 130 186 118"></path>
+    <path d="M372 244 Q260 292 186 304"></path>
+    <path d="M508 176 Q620 130 694 118"></path>
+    <path d="M508 244 Q620 292 694 304"></path>
+    <path d="M478 268 Q560 330 522 388"></path>
+  </g>
+
+  <!-- property: virtengine.com -->
+  <g>
+    <rect x="40" y="70" width="150" height="76" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="115" y="102" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">virtengine.com</text>
+    <text x="115" y="122" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">protocol &amp; marketplace</text>
+  </g>
+
+  <!-- property: identity.org.au -->
+  <g>
+    <rect x="40" y="266" width="150" height="76" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="115" y="298" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">identity.org.au</text>
+    <text x="115" y="318" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">VEID identity wallet</text>
+  </g>
+
+  <!-- property: docs -->
+  <g>
+    <rect x="690" y="70" width="150" height="76" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="765" y="98" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">docs.virtengine.com</text>
+    <text x="765" y="118" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">open documentation</text>
+  </g>
+
+  <!-- property: bosun.engineer -->
+  <g>
+    <rect x="690" y="266" width="150" height="76" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="765" y="298" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">bosun.engineer</text>
+    <text x="765" y="318" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">agent orchestrator</text>
+  </g>
+
+  <!-- property: source -->
+  <g>
+    <rect x="365" y="384" width="150" height="76" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+    <text x="440" y="416" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">github.com</text>
+    <text x="440" y="436" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-blue-deep)">virtengine · Apache-2.0</text>
+  </g>
+
+  <!-- research programs strip -->
+  <g font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">
+    <text x="440" y="52" text-anchor="middle" letter-spacing="1.5">RESEARCH PROGRAMS: VIRTENGINE · DSEMA · BOSUN · IDENTITY</text>
+  </g>
+  <path d="M300 62 H580" stroke="var(--color-hairline)" stroke-width="1"></path>
+</svg>

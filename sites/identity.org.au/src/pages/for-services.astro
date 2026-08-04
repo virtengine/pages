@@ -1,0 +1,173 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Steps from "@components/Steps.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import CardLink from "@components/CardLink.astro";
+import { SITE } from "@data/site";
+import { TIERS } from "@data/tiers";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "For services", href: "/for-services" },
+];
+
+const integrationSteps = [
+  {
+    title: "Decide what you actually need to know",
+    body: "Most services need less than they collect today. An age check needs “over 18 — yes/no”. A trust gate needs a verification level. Start from the minimum: you cannot leak what you never receive.",
+  },
+  {
+    title: "Register as a verifier on the network",
+    body: "Your service gets an on-chain identity that users' wallets display when you make requests — users always see exactly who is asking.",
+  },
+  {
+    title: "Request verification with a stated purpose",
+    body: "Each request names the scope and the purpose (for example, verification level Standard, to open an account). The user's wallet presents this to them in plain language.",
+  },
+  {
+    title: "Receive the result — never the documents",
+    body: "You receive the verification level and the answer you asked for: a pass/fail result or a zero-knowledge proof you can verify cryptographically. Raw documents and biometrics are not available to verifiers at any price.",
+  },
+  {
+    title: "Respect the consent lifecycle",
+    body: "Consents can be time-limited and revoked. When consent expires or is revoked, fresh requests fail until the user re-approves — build your flows to handle that gracefully.",
+  },
+];
+---
+
+<Base
+  title="For services | identity.org.au"
+  description="Integrate verification levels into your service: what verifiers receive (a level and a result — never documents), the integration steps, and the consent rules you must respect."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="For services"
+    title="Verify your users without holding their documents"
+    lede="Every identity document you store is liability: breach risk, compliance burden, and user distrust. Verification through the wallet gives you the assurance without the archive."
+  />
+
+  <div class="container-site py-12">
+    <section>
+      <h2 class="mt-0 text-[1.6rem]">Start here</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <CardLink
+          href="/for-services/become-a-verifier"
+          tag="Step by step"
+          title="Become a verifier"
+          description="The six-step operational path: understand tiers, register on the network, integrate requests, handle responses, meet consent obligations, go live."
+        />
+        <CardLink
+          href="/for-services/integration-overview"
+          tag="Plain-technical"
+          title="Integration overview"
+          description="Request and response concepts, zero-knowledge presentation verification, consent records — the architecture before the API reference."
+        />
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">What verifiers receive</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">What services receive and never receive from a verification</caption>
+          <thead>
+            <tr>
+              <th scope="col">You receive</th>
+              <th scope="col">You never receive</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>The user's verification level (Unverified, Basic, Standard or Trusted)</td>
+              <td>Identity document scans or images</td>
+            </tr>
+            <tr>
+              <td>A pass/fail verification result for your stated requirement</td>
+              <td>Photos, facial templates, or any biometric data</td>
+            </tr>
+            <tr>
+              <td>Zero-knowledge proofs for attribute checks (for example, over 18)</td>
+              <td>Date of birth, address or document numbers — unless the user explicitly consents to share a specific verified claim</td>
+            </tr>
+            <tr>
+              <td>Consented verified claims, where a user explicitly approves each one</td>
+              <td>Anything from scopes the user did not consent to</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <Callout title="Why this is good for you, not just users" class="mt-6 max-w-[72ch]">
+        <p>
+          Holding no documents means there are no documents to breach, no honeypot to defend, and
+          a dramatically smaller privacy compliance surface. You get cryptographic assurance with
+          none of the archive risk.
+        </p>
+      </Callout>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">Integration, step by step</h2>
+      <Steps steps={integrationSteps} class="mt-6" />
+      <p class="text-body">
+        The operational detail for each step is in
+        <a href="/for-services/become-a-verifier" class="link-plain">become a verifier</a>.
+        Engineering documentation — APIs, the consent framework specification and the x/veid
+        module — is at <a href={SITE.docs} rel="noopener" class="link-plain">docs.virtengine.com</a>.
+      </p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">Choosing a required level</h2>
+      <p class="text-body measure">
+        Ask for the lowest level that manages your actual risk — over-asking erodes user trust and
+        adds nothing:
+      </p>
+      <div class="mt-5 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">Verification levels and appropriate use cases for services</caption>
+          <thead>
+            <tr>
+              <th scope="col">Level</th>
+              <th scope="col">Backed by</th>
+              <th scope="col">Appropriate when</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              TIERS.map((tier) => (
+                <tr>
+                  <th scope="row">{tier.name}</th>
+                  <td class="max-w-[26rem]">{tier.evidence.join("; ")}</td>
+                  <td class="max-w-[26rem]">{tier.unlocks[0]}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">The rules you agree to</h2>
+      <div class="prose-service">
+        <ul>
+          <li><strong>State your purpose honestly.</strong> Requests carry a purpose string shown to the user; misleading purposes are grounds for removal as a verifier.</li>
+          <li><strong>Ask for the minimum.</strong> Data minimisation is a design principle of the protocol, and requests are structured to enforce it.</li>
+          <li><strong>Respect revocation.</strong> When a user revokes consent, you keep historical results you lawfully received but lose all future access.</li>
+          <li><strong>No side-channel collection.</strong> Attempting to reconstruct or retain more than the user consented to violates the terms that govern verifiers.</li>
+        </ul>
+      </div>
+    </section>
+
+    <Alert tone="info" title="Status" class="mt-12 max-w-[72ch]">
+      <p>
+        The wallet and verification pipeline are open-source reference infrastructure of the
+        VirtEngine network. Talk to us before building production dependencies:
+        <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a>.
+      </p>
+    </Alert>
+  </div>
+</Base>

@@ -1,0 +1,118 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Steps from "@components/Steps.astro";
+import Alert from "@components/Alert.astro";
+import DocScanScreen from "@components/phone/DocScanScreen.astro";
+import LivenessScreen from "@components/phone/LivenessScreen.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+  { name: "Set up your wallet", href: "/get-started/set-up-your-wallet" },
+];
+
+const steps = [
+  {
+    title: "Read and agree to the consent notice",
+    body: "Before anything is captured, the app shows you exactly what will be collected, why, how long it is kept, and how to withdraw. Biometric consent is separate from everything else — you agree to it specifically, or not at all.",
+    detail: [
+      "Consent is recorded with a timestamp so there is an auditable record.",
+      "You can withdraw at any time — see Revoking consent in the help centre.",
+    ],
+  },
+  {
+    title: "Scan your identity document — front and back",
+    body: "The camera guides you: corner brackets show where to place the document, and the app checks for glare, blur and cut-off edges as you go. The details on the document are read automatically (OCR).",
+    detail: [
+      "Use even light and a plain background — glare is the most common retry cause.",
+      "You will see every field the app read and can re-scan if anything is wrong.",
+    ],
+  },
+  {
+    title: "Take a selfie with liveness challenges",
+    body: "The app asks you to blink, turn your head, and smile in a random order. These prove that a live person is present — not a photo, a video replay or a mask — and that the person matches the document photo.",
+    detail: [
+      "Face the camera in even light, without a hat or tinted glasses.",
+      "Spoken guidance is available for each challenge — see Accessibility support.",
+    ],
+  },
+  {
+    title: "Add hardware biometrics (optional, for Trusted level)",
+    body: "If your phone has a fingerprint or iris sensor, you can capture through the platform's secure hardware. At the same time the app obtains a device integrity attestation — Google Play Integrity or Apple App Attest — proving the app and device haven't been tampered with.",
+    detail: [
+      "Skipping this step is fine: it limits your maximum level, nothing else.",
+      "Biometric material captured here never leaves the platform's secure hardware unencrypted.",
+    ],
+  },
+  {
+    title: "Review everything, then submit — encrypted",
+    body: "You see a summary of what will be submitted. When you confirm, the payload is encrypted on your phone (X25519-XSalsa20-Poly1305 envelope encryption) before transmission. The network verifies it and issues your verification level.",
+    detail: [
+      "Verification typically completes within minutes.",
+      "Your wallet then shows your level and the proofs you can share.",
+    ],
+  },
+];
+---
+
+<Guide
+  title="Set up your wallet"
+  metaTitle="Set up your wallet — Get started | identity.org.au"
+  description="The full Identity Wallet setup flow, step by step: consent, document scan, selfie with liveness challenges, hardware biometrics, and encrypted submission."
+  lede="Five steps, about ten minutes. You review everything before it is submitted, and everything is encrypted on your phone before it leaves."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <Alert tone="info" title="Before you start">
+    <p>
+      Check <a href="/get-started/what-you-need" class="link-plain">what you need</a> — a current
+      identity document, a phone with a camera, and good lighting.
+    </p>
+  </Alert>
+
+  <Steps steps={steps} class="mt-10" />
+
+  <h2 class="mt-12 text-[1.5rem]">What the key steps look like</h2>
+  <p class="text-body measure">
+    These mockups show the reference wallet's capture flow — the same guidance you will see on
+    your phone.
+  </p>
+  <div class="mt-6 grid gap-8 sm:grid-cols-2">
+    <figure class="m-0 max-w-[280px]">
+      <DocScanScreen />
+      <figcaption class="mt-3 text-[0.9rem] text-muted">
+        Document scan: corner brackets guide the framing; edge and glare checks run as you hold the
+        document steady.
+      </figcaption>
+    </figure>
+    <figure class="m-0 max-w-[280px]">
+      <LivenessScreen />
+      <figcaption class="mt-3 text-[0.9rem] text-muted">
+        Liveness check: short challenges — blink, head turn, smile — prove a live person is
+        present.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2 class="mt-12 text-[1.5rem]">After setup</h2>
+  <div class="prose-service">
+    <ul>
+      <li>
+        Your wallet home shows your <a href="/get-started/verification-levels">verification level</a>
+        and the proofs you can share — like “over 18” as a
+        <a href="/help/proving-your-age-without-your-documents">zero-knowledge proof</a>.
+      </li>
+      <li>
+        The consent screen lists every grant you have made, with
+        <a href="/help/revoking-consent">one-tap revocation</a>.
+      </li>
+      <li>
+        If a step failed, see <a href="/get-started/if-verification-fails">if verification fails</a> —
+        most causes are quick fixes.
+      </li>
+    </ul>
+  </div>
+</Guide>

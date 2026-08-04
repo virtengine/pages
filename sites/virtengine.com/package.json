@@ -1,0 +1,26 @@
+{
+  "name": "virtengine-com",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "virtengine.com — home of the VirtEngine Protocol open-source project",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node ./scripts/og.mjs && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.3.0",
+    "@fontsource/inter": "^5.2.0",
+    "@fontsource/jetbrains-mono": "^5.2.0",
+    "@fontsource/questrial": "^5.2.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^5.6.0",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20.3.0"
+  }
+}

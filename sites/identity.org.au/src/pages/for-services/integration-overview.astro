@@ -1,0 +1,110 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import { FOR_SERVICES_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "For services", href: "/for-services" },
+  { name: "Integration overview", href: "/for-services/integration-overview" },
+];
+---
+
+<Guide
+  title="Integration overview"
+  metaTitle="Integration overview — request and response concepts | identity.org.au"
+  description="Plain-technical integration concepts for verifiers: the structure of verification requests, tier and score responses, zero-knowledge presentation verification, consent records, and links to the VEID technical documentation."
+  lede="The request/response concepts behind a verifier integration, in plain technical language — what you send, what comes back, and how to verify it."
+  eyebrow="For services"
+  breadcrumbs={crumbs}
+  sectionLabel="For services"
+  sectionNav={FOR_SERVICES_NAV}
+>
+  <div class="prose-service">
+    <p>
+      This page is the conceptual layer between the
+      <a href="/for-services/become-a-verifier">step-by-step onboarding path</a> and the
+      <a href="https://docs.virtengine.com/veid/overview" rel="noopener">full technical
+      documentation</a>. It describes the shapes of the interactions — enough to architect an
+      integration before reading an API reference.
+    </p>
+
+    <h2>The request</h2>
+    <p>
+      A verification request is a structured message from your registered service to a user's
+      wallet. Every request carries four things:
+    </p>
+    <ul>
+      <li><strong>Who is asking</strong> — your service's on-chain identity, displayed to the user by name. Unregistered askers cannot make requests.</li>
+      <li><strong>What is required</strong> — one of: a minimum tier (for example Standard), a specific proof (age-over, residency, score-range), or a specific verified claim.</li>
+      <li><strong>The scope involved</strong> — the data category the request touches, from the consent framework's scope model (for example <code>veid.trust_score</code>). Scopes are consented independently; a request cannot bundle.</li>
+      <li><strong>A purpose string</strong> — plain language, shown verbatim to the user. This becomes part of the consent record, so write it as if it will be audited: it will.</li>
+    </ul>
+
+    <h2>The response</h2>
+    <p>
+      If the user approves, you receive a signed result — never raw data. Responses come in three
+      forms:
+    </p>
+    <ul>
+      <li><strong>Tier confirmation</strong> — the user's verification tier, signed by the network. You check it against your requirement and store the outcome.</li>
+      <li><strong>Pass/fail result</strong> — a boolean against the threshold you stated (for example, score meets your minimum), without the underlying value.</li>
+      <li><strong>Zero-knowledge presentation</strong> — a proof object for age-range, residency or score-range circuits. You verify it cryptographically; verification requires no call back to the user and reveals nothing beyond the statement proven.</li>
+    </ul>
+
+    <h2>Verifying a ZK presentation</h2>
+    <p>
+      Zero-knowledge presentations are verified against public parameters published for each
+      circuit. Your integration checks that the proof is valid, that its public inputs match your
+      request (the threshold you asked about, the commitment anchored at the user's verification),
+      and that it is bound to your request rather than replayed from another. All three checks are
+      local computation — fast, offline-capable, and deterministic. The circuits themselves
+      (age range, residency, score range) are
+      <a href="/about/open-source">open source</a>, so your security team can review exactly what
+      a passing proof does and does not establish — the plain-English version is in the
+      <a href="/wallet/credentials">credentials and proofs catalogue</a>.
+    </p>
+
+    <h2>Consent records and your obligations</h2>
+    <p>
+      Every response you receive is paired with a consent record: scope, purpose, optional expiry,
+      timestamp. Two behaviours matter in your architecture. First, <strong>fail closed on
+      revocation and expiry</strong>: a fresh request after either will be declined by the
+      protocol, and your flows should treat that as a normal state — prompt for re-consent, do not
+      error. Second, <strong>retain your receipts</strong>: consent receipts are your audit
+      evidence that processing was permitted at the time it happened.
+    </p>
+
+    <h2>What has no API</h2>
+    <p>
+      There is deliberately no endpoint for document images, biometric data, unconsented claims,
+      bulk queries, or a user's consent history beyond your own grants. If your design requires
+      any of these, it does not fit this system — and, we would argue, it should be redesigned
+      before it fits any system. The reasoning is set out in
+      <a href="/insights/why-centralized-identity-databases-fail">why centralised identity
+      databases fail</a>.
+    </p>
+  </div>
+
+  <Callout title="Where the specifications live" class="mt-8">
+    <p>
+      The VEID module reference, consent framework specification, enrollment and hardware
+      attestation flows are published at
+      <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain">docs.virtengine.com — VEID</a>
+      (see in particular the
+      <a href="https://docs.virtengine.com/veid/consent-framework" rel="noopener" class="link-plain">consent framework</a>
+      and <a href="https://docs.virtengine.com/veid/enrollment" rel="noopener" class="link-plain">enrollment</a> pages).
+      The implementation is in the open-source
+      <a href="https://github.com/virtengine/virtengine" rel="noopener" class="link-plain">VirtEngine repository</a>.
+    </p>
+  </Callout>
+
+  <Alert tone="info" title="Reference infrastructure" class="mt-6">
+    <p>
+      The verification stack is open-source reference infrastructure rolling out with the
+      VirtEngine network. Interfaces may evolve with network governance — pin your integration to
+      the published documentation, and talk to us before building production dependencies.
+    </p>
+  </Alert>
+</Guide>

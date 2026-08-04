@@ -1,0 +1,143 @@
+---
+/**
+ * House-style flow diagram: wallet → VEID chain modules → marketplace approval.
+ * Flat duotone, no gradients; matches the gov-service design system.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 880 430"
+  role="img"
+  aria-label="Diagram: your wallet encrypts identity evidence on your device and submits it to the VEID modules on the VirtEngine chain, which verify it and record a score and tier. The marketplace reads only the tier and score — never documents — and approves you as a client for deployments and leases."
+  class:list={["block w-full h-auto", className]}
+  font-family="Public Sans, sans-serif"
+>
+  <!-- ===== column 1: your wallet ===== -->
+  <g>
+    <rect x="14" y="46" width="220" height="300" rx="8" fill="var(--color-navy)" opacity="0.08" transform="translate(5 5)" />
+    <rect x="14" y="46" width="220" height="300" rx="8" fill="#ffffff" stroke="var(--color-hairline-strong)" stroke-width="1.5" />
+    <rect x="14" y="46" width="220" height="44" rx="8" fill="var(--color-navy)" />
+    <rect x="14" y="76" width="220" height="14" fill="var(--color-navy)" />
+    <!-- mark -->
+    <path d="M34 56 43 59.4 V66 c0 5-3.7 8.6-9 10 -5.3-1.4-9-5-9-10 V59.4 Z" fill="none" stroke="#ffffff" stroke-width="1.8"></path>
+    <path d="m30.5 66 3 3 6-7" stroke="#6ea3d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    <text x="54" y="73" font-size="14.5" font-weight="700" fill="#ffffff">Your wallet</text>
+
+    <text x="30" y="116" font-size="11" font-weight="700" letter-spacing="1" fill="var(--color-steel)">ON YOUR DEVICE</text>
+
+    <g font-size="12" fill="var(--color-body)">
+      <rect x="30" y="128" width="188" height="40" rx="5" fill="var(--color-alt)" />
+      <text x="42" y="145" font-weight="700" fill="var(--color-ink)">Document capture</text>
+      <text x="42" y="160">Front and back, OCR checked</text>
+
+      <rect x="30" y="176" width="188" height="40" rx="5" fill="var(--color-alt)" />
+      <text x="42" y="193" font-weight="700" fill="var(--color-ink)">Selfie + liveness</text>
+      <text x="42" y="208">Blink, head turn, smile</text>
+
+      <rect x="30" y="224" width="188" height="40" rx="5" fill="var(--color-alt)" />
+      <text x="42" y="241" font-weight="700" fill="var(--color-ink)">Hardware biometrics</text>
+      <text x="42" y="256">Fingerprint or iris, attested</text>
+
+      <rect x="30" y="272" width="188" height="52" rx="5" fill="var(--color-tint)" stroke="var(--color-info-rule)" stroke-width="1.2" />
+      <!-- padlock -->
+      <rect x="42" y="292" width="13" height="10" rx="2" fill="none" stroke="var(--color-action)" stroke-width="1.8" />
+      <path d="M44.5 292v-3.5a4 4 0 0 1 8 0V292" fill="none" stroke="var(--color-action)" stroke-width="1.8" />
+      <text x="62" y="292" font-weight="700" fill="var(--color-ink)">Encrypted here first</text>
+      <text x="42" y="315" font-size="11.2">Nothing leaves in the clear</text>
+    </g>
+  </g>
+
+  <!-- arrow 1 -->
+  <g>
+    <path d="M238 176 H302" stroke="var(--color-action)" stroke-width="2.5" fill="none" />
+    <path d="m296 170 8 6-8 6" fill="none" stroke="var(--color-action)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="270" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-steel)">Encrypted</text>
+    <text x="270" y="173" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-steel)">evidence</text>
+  </g>
+
+  <!-- ===== column 2: VEID on chain ===== -->
+  <g>
+    <rect x="308" y="46" width="252" height="300" rx="8" fill="var(--color-navy)" opacity="0.15" transform="translate(5 5)" />
+    <rect x="308" y="46" width="252" height="300" rx="8" fill="var(--color-navy)" />
+    <rect x="314" y="52" width="240" height="288" rx="6" fill="none" stroke="var(--color-navy-hairline)" stroke-width="1.2" />
+    <text x="330" y="76" font-size="14.5" font-weight="700" fill="#ffffff">VEID on the VirtEngine chain</text>
+    <text x="330" y="94" font-size="11" fill="var(--color-navy-muted)">Scoring runs inside attested enclaves</text>
+
+    <g font-size="12">
+      <rect x="330" y="110" width="208" height="46" rx="5" fill="var(--color-navy-panel)" stroke="var(--color-navy-hairline)" />
+      <g transform="translate(521 121)">
+        <circle cx="0" cy="0" r="8" fill="none" stroke="#6ea3d8" stroke-width="1.5" opacity="0.9" />
+        <path d="M-3.4 0a3.4 3.4 0 0 1 6.8 0c0 2.2-.8 3.8-2 5" fill="none" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" />
+        <path d="M0 -1.2v3" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" />
+      </g>
+      <text x="342" y="129" font-weight="700" fill="#ffffff">x/veid — scoring</text>
+      <text x="342" y="146" fill="var(--color-navy-muted)">Composite checks → score 0–100</text>
+
+      <rect x="330" y="164" width="208" height="46" rx="5" fill="var(--color-navy-panel)" stroke="var(--color-navy-hairline)" />
+      <text x="342" y="183" font-weight="700" fill="#ffffff">Tier from score</text>
+      <text x="342" y="200" fill="var(--color-navy-muted)">Basic · Standard · Trusted</text>
+
+      <rect x="330" y="218" width="208" height="46" rx="5" fill="var(--color-navy-panel)" stroke="var(--color-navy-hairline)" />
+      <text x="342" y="237" font-weight="700" fill="#ffffff">x/veidregistry</text>
+      <text x="342" y="254" fill="var(--color-navy-muted)">Governance-approved verifiers</text>
+
+      <rect x="330" y="272" width="208" height="52" rx="5" fill="var(--color-navy-panel)" stroke="var(--color-navy-hairline)" />
+      <text x="342" y="291" font-weight="700" fill="#ffffff">Consent records</text>
+      <text x="342" y="307" fill="var(--color-navy-muted)">Every grant and revocation,</text>
+      <text x="342" y="320" fill="var(--color-navy-muted)">timestamped and auditable</text>
+    </g>
+  </g>
+
+  <!-- arrow 2 -->
+  <g>
+    <path d="M564 176 H628" stroke="var(--color-action)" stroke-width="2.5" fill="none" />
+    <path d="m622 170 8 6-8 6" fill="none" stroke="var(--color-action)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="596" y="147" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-steel)">Tier + score</text>
+    <text x="596" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-steel)">only — never</text>
+    <text x="596" y="173" text-anchor="middle" font-size="11" font-weight="700" fill="var(--color-steel)">documents</text>
+  </g>
+
+  <!-- ===== column 3: marketplace ===== -->
+  <g>
+    <rect x="634" y="46" width="232" height="300" rx="8" fill="var(--color-navy)" opacity="0.08" transform="translate(5 5)" />
+    <rect x="634" y="46" width="232" height="300" rx="8" fill="#ffffff" stroke="var(--color-hairline-strong)" stroke-width="1.5" />
+    <rect x="634" y="46" width="232" height="44" rx="8" fill="var(--color-navy)" />
+    <rect x="634" y="76" width="232" height="14" fill="var(--color-navy)" />
+    <text x="654" y="73" font-size="14.5" font-weight="700" fill="#ffffff">VirtEngine marketplace</text>
+
+    <text x="650" y="116" font-size="11" font-weight="700" letter-spacing="1" fill="var(--color-steel)">WHAT PROVIDERS SEE</text>
+
+    <g font-size="12" fill="var(--color-body)">
+      <rect x="650" y="128" width="200" height="56" rx="5" fill="var(--color-alt)" />
+      <text x="662" y="147" font-weight="700" fill="var(--color-ink)">Tier: Standard</text>
+      <text x="662" y="163">Score band met for the offering</text>
+      <text x="662" y="177" font-size="11" fill="var(--color-muted)">No name, no documents</text>
+
+      <!-- approved tick -->
+      <rect x="650" y="196" width="200" height="52" rx="5" fill="var(--color-success-bg)" stroke="var(--color-success-rule)" stroke-width="1.2" />
+      <circle cx="672" cy="222" r="11" fill="none" stroke="var(--color-success-rule)" stroke-width="2" />
+      <path d="m666.5 222 4 4 7.5-8.5" fill="none" stroke="var(--color-success-rule)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="692" y="219" font-weight="700" fill="var(--color-ink)">Approved client</text>
+      <text x="692" y="236" font-size="11.2">Eligible for the action</text>
+
+      <rect x="650" y="260" width="200" height="64" rx="5" fill="var(--color-alt)" />
+      <text x="662" y="279" font-weight="700" fill="var(--color-ink)">Unlocked actions</text>
+      <text x="662" y="296">Deployments and leases</text>
+      <text x="662" y="311">gated by required tier</text>
+    </g>
+  </g>
+
+  <!-- return arrow: marketplace requirement back to wallet -->
+  <g>
+    <path d="M750 356 V386 H120 V352" stroke="var(--color-hairline-strong)" stroke-width="2" fill="none" stroke-dasharray="6 5" />
+    <path d="m114 358 6-8 6 8" fill="none" stroke="var(--color-hairline-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="440" y="378" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--color-muted)">If an action needs a higher tier, your wallet shows exactly what evidence would raise it — you choose whether to provide it</text>
+  </g>
+
+  <!-- caption row -->
+  <text x="440" y="418" text-anchor="middle" font-size="11.5" fill="var(--color-muted)">Evidence stays encrypted · the chain records results · the marketplace reads tiers</text>
+</svg>

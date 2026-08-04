@@ -1,0 +1,105 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import { INSIGHT_ARTICLES, getInsight } from "@data/insights";
+
+export function getStaticPaths() {
+  return INSIGHT_ARTICLES.map((article) => ({ params: { slug: article.slug } }));
+}
+
+const { slug } = Astro.params;
+const article = getInsight(slug!)!;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Insights", href: "/insights" },
+  { name: article.title, href: `/insights/${article.slug}` },
+];
+
+const related = article.related
+  .map((r) => getInsight(r))
+  .filter((r) => r !== undefined);
+
+const updatedDisplay = new Date(article.updated).toLocaleDateString("en-AU", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.title,
+  description: article.summary,
+  dateModified: article.updated,
+  inLanguage: "en-AU",
+  articleSection: article.topic,
+  author: { "@type": "Organization", name: "Identity.org.au editorial (DETIO FOUNDATION LTD)" },
+  publisher: { "@type": "Organization", name: "DETIO FOUNDATION LTD", url: "https://det.io" },
+  mainEntityOfPage: `https://identity.org.au/insights/${article.slug}`,
+};
+---
+
+<Base
+  title={`${article.title} — Insights | identity.org.au`}
+  description={article.summary}
+  breadcrumbs={crumbs}
+  ogType="article"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+
+  <PageHeader crumbs={crumbs} eyebrow={`Insights · ${article.topic}`} title={article.title} lede={article.summary} />
+
+  <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <article>
+      <p class="m-0 text-[0.9rem] text-muted">
+        Identity.org.au editorial · Last updated {updatedDisplay}
+      </p>
+      {
+        article.sections.map((section) => (
+          <section class="mt-8 first-of-type:mt-6">
+            {section.heading && <h2 class="mt-0 mb-3 text-[1.4rem]">{section.heading}</h2>}
+            <div class="prose-service">
+              {section.paragraphs?.map((p) => <p set:html={p} />)}
+              {section.list && (
+                <ul>
+                  {section.list.map((item) => (
+                    <li set:html={item} />
+                  ))}
+                </ul>
+              )}
+            </div>
+            {section.callout && (
+              <Alert tone={section.callout.tone} class="mt-5 max-w-[72ch]">
+                <p>{section.callout.text}</p>
+              </Alert>
+            )}
+          </section>
+        ))
+      }
+    </article>
+
+    <aside class="lg:pt-2">
+      <h2 class="mt-0 text-[0.85rem] font-bold uppercase tracking-[0.13em] text-muted">
+        Related analysis
+      </h2>
+      <div class="mt-4 grid gap-3">
+        {
+          related.map((r) => (
+            <CardLink href={`/insights/${r.slug}`} tag={r.topic} title={r.title} />
+          ))
+        }
+      </div>
+      <div class="mt-8 border-t border-hairline pt-6 text-[0.95rem] text-body">
+        <p class="m-0 font-bold text-ink">See it in practice</p>
+        <p class="mt-2 mb-0">
+          The ideas in this article are implemented by the
+          <a href="/wallet" class="link-plain">Identity Wallet service</a> — start with
+          <a href="/how-it-works" class="link-plain">how it works</a>.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

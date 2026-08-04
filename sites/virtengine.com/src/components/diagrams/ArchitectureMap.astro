@@ -1,0 +1,90 @@
+---
+/**
+ * Layered protocol architecture: clients → chain (module domains) → provider daemon → clusters.
+ * Decorative inside DiagramFrame — the frame carries the aria-label.
+ */
+---
+
+<svg viewBox="0 0 680 430" class="diagram-svg h-auto w-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <marker id="arch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--color-teal)"></path>
+    </marker>
+  </defs>
+
+  <!-- Layer 1: clients -->
+  <g>
+    <rect x="20" y="16" width="640" height="64" rx="10" fill="var(--color-panel)" stroke="var(--color-hairline)"></rect>
+    <text x="40" y="42" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-text)">Clients</text>
+    <text x="40" y="62" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">CLI &#183; approved client interfaces &#183; VEID mobile wallet</text>
+    <g font-family="var(--font-mono)" font-size="10" fill="var(--color-teal-glow)">
+      <rect x="380" y="30" width="82" height="26" rx="6" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="421" y="47" text-anchor="middle">virtengine</text>
+      <rect x="472" y="30" width="82" height="26" rx="6" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="513" y="47" text-anchor="middle">veid app</text>
+      <rect x="564" y="30" width="76" height="26" rx="6" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="602" y="47" text-anchor="middle">gRPC/REST</text>
+    </g>
+  </g>
+
+  <path class="flow-dash" d="M340 82 V 104" stroke="var(--color-teal)" stroke-width="1.6" marker-end="url(#arch-arrow)"></path>
+
+  <!-- Layer 2: chain -->
+  <g>
+    <rect x="20" y="108" width="640" height="168" rx="10" fill="var(--color-teal-dim)" fill-opacity="0.28" stroke="var(--color-teal)" stroke-opacity="0.6"></rect>
+    <text x="40" y="134" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-teal-glow)">VirtEngine chain — CometBFT consensus, Cosmos SDK app</text>
+    <text x="40" y="152" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">single `virtengine` binary &#183; validators double as the identity network</text>
+
+    <g font-family="var(--font-mono)" font-size="10">
+      <g transform="translate(40,166)">
+        <rect width="142" height="90" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+        <text x="12" y="20" fill="var(--color-teal-bright)">marketplace</text>
+        <text x="12" y="38" fill="var(--color-text-muted)">market &#183; deployment</text>
+        <text x="12" y="54" fill="var(--color-text-muted)">provider &#183; resources</text>
+        <text x="12" y="70" fill="var(--color-text-muted)">marketplace &#183; hpc</text>
+      </g>
+      <g transform="translate(196,166)">
+        <rect width="142" height="90" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+        <text x="12" y="20" fill="var(--color-teal-bright)">identity</text>
+        <text x="12" y="38" fill="var(--color-text-muted)">veid &#183; veidregistry</text>
+        <text x="12" y="54" fill="var(--color-text-muted)">mfa &#183; cert &#183; roles</text>
+        <text x="12" y="70" fill="var(--color-text-muted)">encryption &#183; enclave</text>
+      </g>
+      <g transform="translate(352,166)">
+        <rect width="142" height="90" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+        <text x="12" y="20" fill="var(--color-teal-bright)">economics</text>
+        <text x="12" y="38" fill="var(--color-text-muted)">escrow &#183; settlement</text>
+        <text x="12" y="54" fill="var(--color-text-muted)">take &#183; bme &#183; oracle</text>
+        <text x="12" y="70" fill="var(--color-text-muted)">staking &#183; delegation</text>
+      </g>
+      <g transform="translate(508,166)">
+        <rect width="132" height="90" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+        <text x="12" y="20" fill="var(--color-teal-bright)">quality</text>
+        <text x="12" y="38" fill="var(--color-text-muted)">audit &#183; benchmark</text>
+        <text x="12" y="54" fill="var(--color-text-muted)">review &#183; fraud</text>
+        <text x="12" y="70" fill="var(--color-text-muted)">support &#183; config</text>
+      </g>
+    </g>
+  </g>
+
+  <path class="flow-dash" d="M340 278 V 300" stroke="var(--color-teal)" stroke-width="1.6" marker-end="url(#arch-arrow)" style="animation-delay:-0.4s"></path>
+
+  <!-- Layer 3: provider daemon -->
+  <g>
+    <rect x="20" y="304" width="640" height="58" rx="10" fill="var(--color-panel)" stroke="var(--color-hairline)"></rect>
+    <text x="40" y="328" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-text)">Provider daemon</text>
+    <text x="40" y="348" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">watches orders &#183; places bids &#183; instantiates workloads &#183; meters &amp; reports usage</text>
+  </g>
+
+  <path class="flow-dash" d="M340 364 V 386" stroke="var(--color-teal)" stroke-width="1.6" marker-end="url(#arch-arrow)" style="animation-delay:-0.8s"></path>
+
+  <!-- Layer 4: infrastructure -->
+  <g font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-muted)">
+    <rect x="20" y="390" width="200" height="32" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="120" y="410" text-anchor="middle">Kubernetes clusters</text>
+    <rect x="240" y="390" width="200" height="32" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="340" y="410" text-anchor="middle">HPC: SLURM / MOAB / OOD</text>
+    <rect x="460" y="390" width="200" height="32" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="560" y="410" text-anchor="middle">confidential enclaves</text>
+  </g>
+</svg>

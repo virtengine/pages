@@ -1,0 +1,696 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import DsemaArchitecture from "@components/diagrams/DsemaArchitecture.astro";
+import DsemaHeroMotif from "@components/diagrams/DsemaHeroMotif.astro";
+import DsemaEvolution from "@components/diagrams/DsemaEvolution.astro";
+import FigAgentAnatomy from "@components/diagrams/FigAgentAnatomy.astro";
+import FigOrchestration from "@components/diagrams/FigOrchestration.astro";
+import FigReputationPipeline from "@components/diagrams/FigReputationPipeline.astro";
+import FigMemory from "@components/diagrams/FigMemory.astro";
+import FigSafety from "@components/diagrams/FigSafety.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+  { name: "DSEMA", href: "/research/dsema" },
+];
+
+const contrast = {
+  problem: [
+    {
+      title: "Frozen artifacts",
+      body: "Models are trained offline and deployed static. Every improvement is a human-led retraining cycle; nothing learned in production feeds back into the model.",
+    },
+    {
+      title: "Generalist inefficiency",
+      body: "Multi-trillion-parameter generalists are spent on narrow tasks — high latency, high energy, and no architecture for small specialists that collaborate.",
+    },
+    {
+      title: "Centralized control",
+      body: "Multi-agent systems today need a central controller: a single point of failure, opaque decisions, and no manipulation-resistant way to rank agents by merit.",
+    },
+    {
+      title: "Siloed learning",
+      body: "What one instance learns is lost to every other. There is no shared, provenance-tracked collective memory.",
+    },
+  ],
+  answer: [
+    {
+      title: "Continuous adaptation",
+      body: "Agents fine-tune their own models — LoRA adapter updates triggered, verified, and recorded by the chain — so live performance drives improvement.",
+    },
+    {
+      title: "A specialized swarm",
+      body: "Tasks route to small, domain-expert agents by verified merit. Ensembles of specialists cross-check each other instead of one giant model guessing alone.",
+    },
+    {
+      title: "Blockchain orchestration",
+      body: "An active on-chain control plane: immutable performance logs, trustless verification, and governance that no single party operates.",
+    },
+    {
+      title: "Shared collective knowledge",
+      body: "A decentralized knowledge repository lets every agent learn from every other agent's validated experience.",
+    },
+  ],
+};
+
+const explorer = [
+  {
+    id: "agent",
+    tab: "fig A · inside an agent",
+    title: "Inside a DSEMA agent",
+    caption: "fig 02·A — the AI agent entity: model core, sandbox, identity, comms (spec §2.2)",
+    label:
+      "Anatomy of a DSEMA agent. Three internal blocks: a generative model core — a small specialized base model with a LoRA adapter slot taking rank-16 deltas with sub-second hot-swap, and a loader that verifies the signed weight hash against the on-chain registry before loading. A secure execution environment — a gVisor user-space kernel intercepting and validating every system call, or WebAssembly with WASI as a capability-based alternative, with namespaces and cgroups isolating identity and resources. A decentralized identity block — a DID with an Ed25519 key pair, verifiable credentials attesting domain competence, and an on-chain registry entry mapping the DID to public key, model hash, specialization and reputation. All three feed the secure communication interface — gRPC, HTTP and peer-to-peer publish-subscribe — which binds cryptographic identity and context to every message exchanged with peer agents, the chain and the knowledge repository.",
+    note: "An agent is not just a model. It is a model that can prove what it is (DID + registry entry), cannot run unapproved weights (integrity-gated loader), and cannot act outside its walls (sandboxed kernel). The LoRA adapter slot is the hinge of self-evolution: improvements arrive as small, swappable, chain-registered deltas — never as silent weight changes.",
+  },
+  {
+    id: "chain",
+    tab: "fig B · the control plane",
+    title: "The blockchain orchestration layer",
+    caption: "fig 02·B — an active control plane, not a passive ledger (spec §2.3)",
+    label:
+      "The blockchain orchestration layer drawn as an event bus. Inputs at the top: the performance evaluation module appends structured metric vectors, and agents submit task requests, proposals and votes. The layer itself holds four contracts: an agent registry mapping DIDs to public keys, signed model hashes and revocation flags; an append-only performance log with partitioned sub-ledgers committed as Merkle roll-up proofs; a tasking contract decomposing objectives into DAG sub-tasks with merit-weighted routing; and a governance contract with quadratic vote weighting and timelocked execution. Outputs at the bottom: signed ADAPT events to the model adaptation module and task assignment events to the agent collective — with the central rule that no verified instruction means no action.",
+    note: "Most blockchains record what already happened. DSEMA's chain decides what happens next: every state-changing operation downstream — an adaptation run, a task assignment, a spawn — executes only on receipt of a cryptographically verifiable instruction referencing an on-chain record. That inversion is what makes the system's autonomy auditable.",
+  },
+  {
+    id: "reputation",
+    tab: "fig C · reputation pipeline",
+    title: "Trust is a calculation, not a vote",
+    caption: "fig 02·C — the autonomous reputation pipeline with time-decay kernel (spec §2.8)",
+    label:
+      "The reputation pipeline in four stages. Stage one: the immutable performance log, records bound to each agent's DID with roll-up proofs. Stage two: the metric vector M with four components — task outcome, quality and accuracy, efficiency derived from the Economic Vector, and knowledge contribution. Stage three: the time-decay kernel — the existing score is multiplied by e to the minus lambda delta-t, with lambda stored on-chain, so inactivity erodes trust; the exponential is computed with a four-term Taylor series for gas-bounded execution. Stage four: the on-chain score, updated at each block by the exponentially weighted moving average R equals one minus alpha times the decayed score plus alpha times the weighted dot product of the metric vector. Consequences below: merit-based task allocation, reputation tiers with epoch decay, and percentile culling of roughly the bottom ten percent at each checkpoint.",
+    note: "Reputation in DSEMA is a deterministic on-chain computation over cryptographically verified performance records — anyone can replay it. The decay kernel e^(−λΔt) means standing must be continuously re-earned: an agent that stops performing well doesn't keep coasting on history.",
+  },
+  {
+    id: "memory",
+    tab: "fig D · collective memory",
+    title: "One agent's lesson, every agent's starting point",
+    caption: "fig 02·D — the decentralized knowledge repository (spec §2.8–2.9)",
+    label:
+      "The decentralized knowledge repository at center, holding an NLP query interface, a vector index for semantic retrieval, and a hybrid content-addressed store. On the left, agents commit validated learnings after solving tasks, and harvester agents ingest documents, research papers and sensor or simulation logs. On the right, agents facing new problems retrieve the collective's experience, and newly spawned agents bootstrap from shared memory. Below, provenance is anchored to the blockchain orchestration layer, and valuable contributions raise the contribution component of the reputation metric vector.",
+    note: "The repository is what turns a set of agents into an organization that learns. Contributions are provenance-tracked and rewarded through the reputation system's contribution vector — so sharing knowledge is not altruism, it is the economically rational move.",
+  },
+  {
+    id: "safety",
+    tab: "fig E · safety constitution",
+    title: "The constitution and its enforcement",
+    caption: "fig 02·E — constitutional safety layer, containment, and the bicameral amendment path (spec §2.2.3, §2.12)",
+    label:
+      "The constitutional safety layer as an immutable on-chain rule set validating high-stakes actions before execution, with an atomic veto regardless of vote count. Three enforcement columns hang beneath it: the syscall allow-list — a policy file owned by the layer, distributed by content hash, hot-reloaded on governance-approved policy updates; the network egress sidecar — all traffic pinned to a sidecar with a layer-7 allow-list and hashes of outbound payloads recorded; and the model integrity gate — signed weight hashes checked against the on-chain registry, with mismatches or revoked flags aborting the load. Below, the bicameral amendment pipeline: an agent legislature of at least 150 highest-reputation agents at a 95 percent supermajority, then a human legislature of public stakeholders and an alignment jury at 66.7 percent, then a mandatory non-cancellable 180-day time-lock for public red-teaming, and finally a genesis seed wallet holding a non-overridable veto.",
+    note: "Safety here is not a policy document beside the system — it is enforced by the same machinery that runs the system. And the rules that bind the system are deliberately the hardest thing in it to change: two houses, a 180-day public red-team window, and a final human-held brake.",
+  },
+];
+
+const evolutionSteps = [
+  {
+    title: "Monitor",
+    body: "The Performance Evaluation Module scores every task execution against objective criteria and emits a structured metric vector M = ⟨outcome, quality, efficiency, contribution⟩. Records are appended immutably — high-frequency data in partitioned sub-ledgers, anchored to the main chain as Merkle roll-up proofs (spec §2.5).",
+  },
+  {
+    title: "Trigger",
+    body: "A trigger contract evaluates an on-chain guard: has performance shifted beyond a threshold, and is the agent's reputation above the minimum? Only when both hold is a signed ADAPT event emitted. Without that event, the sandbox denies the adaptation module the very system calls it would need (claim 5).",
+  },
+  {
+    title: "Adapt",
+    body: "The Model Adaptation Module fine-tunes inside the sandbox: LoRA adapter updates (rank-16 deltas in the spec's reference configuration), reinforcement learning, or prompt routing — with the learning-rate schedule itself tied to on-chain metrics (spec §2.10).",
+  },
+  {
+    title: "Validate",
+    body: "The candidate faces a correctness gate: the unit-test suite runs in the gVisor sandbox and the new version is benchmarked against the incumbent. A regression means rollback — the failed attempt stays on the record, but never reaches production.",
+  },
+  {
+    title: "Select — fork or cull",
+    body: "On success, the new version hot-swaps in sub-second and its weight hash is registered on-chain. At population level the same logic runs as natural selection: bootstrapping spawns new specialists when the collective finds a capability gap, and percentile culling (p_c ≈ 10%) retires persistent underperformers at each checkpoint (spec §2.8.7).",
+  },
+];
+
+const possibilities = [
+  {
+    title: "Self-healing software",
+    body: "Coder and auditor agent swarms that detect defects, draft patches, validate them in sandboxed test runs, and deploy under governance — with rollback if the fix regresses. The specification's software-development embodiment.",
+  },
+  {
+    title: "Evaluation that evolves with capability",
+    body: "The Adversarial Evolution Protocol (spec §2.10.2) tasks specialist agents with building harder tests once incumbents saturate the old ones — the scientific method, run as infrastructure.",
+  },
+  {
+    title: "Physical & robotic control",
+    body: "A hierarchical two-brain design (spec §2.11.4): a high-level planner over a real-time motor policy, trained in decentralized simulation against digital twins — with an emergency-stop channel independent of the AI control path.",
+  },
+  {
+    title: "Accountable autonomous organizations",
+    body: "Meta-cognitive governance that restructures the collective — spawning agent classes, reallocating compute — through quadratic-vote proposals under the constitution, with the full proposal trail on-chain.",
+  },
+];
+---
+
+<Base
+  title="DSEMA — Dynamically Self-Evolving Multi-Agent architecture | det.io"
+  description="The DSEMA research program: a patent-pending architecture for safe, accountable, auditable multi-agent AI systems that improve themselves under verifiable blockchain-based control — stewarded for public benefit by DETIO FOUNDATION LTD."
+  path="/research/dsema"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Research program 02"
+    title="DSEMA — self-improving AI that must show its work"
+    lede="Today's AI is frozen at release and improved behind closed doors. DSEMA — the Dynamically Self-Evolving Multi-Agent architecture — inverts both: collectives of small, specialized agents that fine-tune their own models in production, with every improvement triggered, verified, and permanently recorded by a blockchain control plane, under a constitutional safety layer the system cannot silently rewrite."
+  >
+    <div class="mt-4" aria-hidden="true">
+      <DsemaHeroMotif />
+    </div>
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Status</dt>
+        <dd class="text-ink">active research — patent pending</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Specification</dt>
+        <dd class="text-ink">v1.0.5 architecture specification (103 pages)</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Steward</dt>
+        <dd class="text-ink">DETIO FOUNDATION LTD — public-benefit lock</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="The contrast"
+    title="The problem with static AI — and the DSEMA answer"
+    lede="The specification identifies interlocking gaps in the state of the art — frozen models, wasteful generalists, central controllers, siloed learning — and answers them with a single integrated architecture. Side by side:"
+  >
+    <div class="grid gap-6 lg:grid-cols-2">
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-text-soft uppercase">Current state · static systems</p>
+        <h3 class="mt-3 text-xl font-bold">One frozen generalist</h3>
+        <ul class="mt-5 grid gap-4">
+          {
+            contrast.problem.map((item) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 16 16" width="16" height="16" class="mt-1 shrink-0" fill="none" stroke="var(--color-text-soft)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M4 4l8 8M12 4l-8 8"></path>
+                </svg>
+                <p class="prose-inst text-[0.95rem]"><strong>{item.title}.</strong> {item.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+      <article class="reveal rounded-card border-2 border-blue-deep bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">The DSEMA answer · spec §1</p>
+        <h3 class="mt-3 text-xl font-bold">An evolving collective on the record</h3>
+        <ul class="mt-5 grid gap-4">
+          {
+            contrast.answer.map((item) => (
+              <li class="flex gap-3">
+                <svg viewBox="0 0 16 16" width="16" height="16" class="mt-1 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <p class="prose-inst text-[0.95rem]"><strong>{item.title}.</strong> {item.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Architecture"
+    title="The whole system on one page"
+    lede="A peer-to-peer collective of specialized agents over an on-chain control plane, two nested improvement loops, and a constitutional safety layer beneath everything. Start with the map — then take the guided tour below, which opens it one figure at a time."
+  >
+    <DiagramFrame
+      label="DSEMA architecture diagram, faithful to the v1.0.5 specification. Top: a heterogeneous collective of specialized AI agents — code, research, data, a manager agent that splits tasks into a directed acyclic graph, and a bootstrapped spawned agent — each with a decentralized identifier, a generative model, and a sandboxed secure execution environment. Agent task executions flow to a Performance Evaluation Module, which appends structured performance records to the Blockchain Orchestration Layer — an active control plane comprising an agent registry with DIDs and model hashes, an append-only performance log with roll-up proofs, a tasking contract managing DAG sub-tasks, and a governance contract for proposals and votes. Verified ADAPT instructions from the chain trigger the Model Adaptation Module — LoRA fine-tuning, reinforcement learning, or prompt routing — closing loop one, individual improvement, back to the agents. The Meta-Cognitive Governance Module aggregates collective KPIs from the chain and submits structural proposals back through governance, closing loop two. A shared Knowledge Repository and an Autonomous Reputation System both connect to the chain. Beneath everything, the Constitutional Safety Layer validates high-stakes actions against immutable on-chain rules."
+      caption="fig 01 — DSEMA system architecture: dual improvement loops under a constitutional safety layer (spec §2.1, FIG. 1)"
+      class="reveal"
+    >
+      <DsemaArchitecture />
+    </DiagramFrame>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Loop 1 — individual improvement <span class="font-mono text-xs text-text-soft">(spec §2.4)</span></h3>
+        <p class="prose-inst text-[0.95rem]">
+          Execute → evaluate → record on-chain → trigger → adapt. An agent's own live
+          performance, immutably logged, is what licenses its next fine-tune — no
+          human-led retraining cycle, and no off-the-record change. The full cycle is
+          stepped through in <a href="#evolution-engine">the evolution engine</a> below.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Loop 2 — meta-cognitive adaptation <span class="font-mono text-xs text-text-soft">(spec §2.6)</span></h3>
+        <p class="prose-inst text-[0.95rem]">
+          The Meta-Cognitive Governance Module watches the collective, not individuals:
+          aggregating on-chain KPIs, detecting systemic bottlenecks, and drafting
+          structural proposals — a new specialist class, reallocated compute — that pass
+          through on-chain governance before anything changes. The system redesigns its
+          own organization, with the proposal trail preserved.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Guided tour"
+    title="Explore the architecture, figure by figure"
+    lede="Five figures from the specification, redrawn. Select a figure to open it — or read them in sequence; each one answers a question the last one raises."
+  >
+    <div data-xplorer class="grid gap-6">
+      <div role="tablist" aria-label="DSEMA architecture figures" class="xp-tabs" hidden>
+        {
+          explorer.map((fig, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`xp-tab-${fig.id}`}
+              aria-controls={`xp-panel-${fig.id}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? 0 : -1}
+              class="xp-tab"
+            >
+              {fig.tab}
+            </button>
+          ))
+        }
+      </div>
+      {
+        explorer.map((fig) => (
+          <section
+            role="tabpanel"
+            id={`xp-panel-${fig.id}`}
+            aria-labelledby={`xp-tab-${fig.id}`}
+            tabindex="0"
+            class="grid gap-5"
+          >
+            <h3 class="text-xl font-bold">{fig.title}</h3>
+            <DiagramFrame label={fig.label} caption={fig.caption}>
+              {fig.id === "agent" && <FigAgentAnatomy />}
+              {fig.id === "chain" && <FigOrchestration />}
+              {fig.id === "reputation" && <FigReputationPipeline />}
+              {fig.id === "memory" && <FigMemory />}
+              {fig.id === "safety" && <FigSafety />}
+            </DiagramFrame>
+            <div class="rounded-r-card border-l-4 border-sky bg-sky-wash p-5">
+              <p class="prose-inst max-w-none text-[0.95rem]">{fig.note}</p>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <script>
+      const root = document.querySelector("[data-xplorer]");
+      if (root) {
+        const tablist = root.querySelector<HTMLElement>('[role="tablist"]')!;
+        const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+        const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+        const select = (index: number, focus = false) => {
+          tabs.forEach((tab, i) => {
+            tab.setAttribute("aria-selected", i === index ? "true" : "false");
+            tab.tabIndex = i === index ? 0 : -1;
+          });
+          panels.forEach((panel, i) => {
+            panel.hidden = i !== index;
+          });
+          if (focus) tabs[index].focus();
+        };
+        tabs.forEach((tab, i) => {
+          tab.addEventListener("click", () => select(i));
+          tab.addEventListener("keydown", (e) => {
+            const map: Record<string, number> = {
+              ArrowRight: (i + 1) % tabs.length,
+              ArrowLeft: (i - 1 + tabs.length) % tabs.length,
+              Home: 0,
+              End: tabs.length - 1,
+            };
+            if (e.key in map) {
+              e.preventDefault();
+              select(map[e.key], true);
+            }
+          });
+        });
+        tablist.hidden = false;
+        select(0);
+      }
+    </script>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="The evolution engine"
+    title="Step through one improvement cycle"
+    lede="Monitor → trigger → adapt → validate → select. The same loop runs for a single agent's fine-tune and, at population scale, as natural selection — fork the winners, cull the laggards — with every cycle on the chain."
+  >
+    <div id="evolution-engine" data-stepper class="grid scroll-mt-24 gap-6">
+      <DiagramFrame
+        label="The DSEMA evolution engine as a five-station cycle around a hub labelled 'every cycle recorded on-chain'. Station one, monitor: the evaluation module scores every task execution into the metric vector of outcome, quality, efficiency and contribution. Station two, trigger: an on-chain guard requiring a performance shift beyond threshold and reputation above minimum emits a signed ADAPT event. Station three, adapt: LoRA fine-tuning with rank-16 deltas in the sandbox, reinforcement learning, or prompt routing, with the learning rate tied to on-chain metrics. Station four, validate: a correctness gate runs the test suite in the gVisor sandbox and benchmarks the candidate against the incumbent. Station five, select: on pass the new version hot-swaps and its weight hash is registered on-chain; on fail it is rolled back, and persistently underperforming agents are culled by percentile. Arrows connect the stations in a closed loop."
+        caption="fig 03 — the evolution engine: one loop, five stations, all on the record (spec §2.4, §2.8.7, §2.10)"
+        class="reveal"
+      >
+        <DsemaEvolution />
+      </DiagramFrame>
+
+      <div class="flex flex-wrap items-center gap-3" data-stepper-controls hidden>
+        <button type="button" class="step-btn" data-step-prev>
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3m4-4L3 8l4 4"></path></svg>
+          Previous
+        </button>
+        <div class="flex gap-2" role="group" aria-label="Evolution loop steps">
+          {
+            evolutionSteps.map((step, i) => (
+              <button type="button" class="xp-tab" data-step-goto={i} aria-label={`Step ${i + 1}: ${step.title}`} aria-selected={i === 0 ? "true" : "false"}>
+                {i + 1}
+              </button>
+            ))
+          }
+        </div>
+        <button type="button" class="step-btn" data-step-next>
+          Next
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+        </button>
+      </div>
+
+      <div class="grid gap-4" aria-live="polite">
+        {
+          evolutionSteps.map((step, i) => (
+            <article class="rounded-card border border-hairline bg-surface p-6" data-step-panel>
+              <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">Step {i + 1} of 5</p>
+              <h3 class="mt-2 text-lg font-bold">{step.title}</h3>
+              <p class="prose-inst mt-2 text-[0.95rem]">{step.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <script>
+      const stepper = document.querySelector<HTMLElement>("[data-stepper]");
+      if (stepper) {
+        const stages = [...stepper.querySelectorAll<SVGGElement>("g[data-step]")];
+        const panels = [...stepper.querySelectorAll<HTMLElement>("[data-step-panel]")];
+        const dots = [...stepper.querySelectorAll<HTMLButtonElement>("[data-step-goto]")];
+        const prev = stepper.querySelector<HTMLButtonElement>("[data-step-prev]")!;
+        const next = stepper.querySelector<HTMLButtonElement>("[data-step-next]")!;
+        const svg = stepper.querySelector<SVGSVGElement>("[data-evolution-svg]")!;
+        let current = 0;
+        const render = () => {
+          stages.forEach((s) => s.classList.toggle("is-active", Number(s.dataset.step) === current + 1));
+          panels.forEach((p, i) => {
+            p.hidden = i !== current;
+          });
+          dots.forEach((d, i) => d.setAttribute("aria-selected", i === current ? "true" : "false"));
+          prev.disabled = current === 0;
+          next.disabled = current === panels.length - 1;
+        };
+        prev.addEventListener("click", () => {
+          current = Math.max(0, current - 1);
+          render();
+        });
+        next.addEventListener("click", () => {
+          current = Math.min(panels.length - 1, current + 1);
+          render();
+        });
+        dots.forEach((d, i) =>
+          d.addEventListener("click", () => {
+            current = i;
+            render();
+          }),
+        );
+        svg.classList.add("stage-live");
+        stepper.querySelector<HTMLElement>("[data-stepper-controls]")!.hidden = false;
+        render();
+      }
+    </script>
+  </Section>
+
+  <Section
+    number="05"
+    eyebrow="Safety, accountability, audit"
+    title="Autonomy under a constitution"
+    lede="DSEMA treats safety as an architectural property. Alignment isn't a policy document sitting beside the system — it is enforced by the same cryptographic machinery that runs the system."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        [
+          {
+            title: "Constitutional Safety Layer (spec §2.3.3, §2.12.3)",
+            body: "A foundational smart contract holds immutable safety and ethics rules — hard operational constraints and invariants. Proposed high-stakes agent actions are validated against it before execution; amendments to the constitution itself follow a deliberately hardened multi-party process.",
+          },
+          {
+            title: "Verified execution, end to end (claims 1–2, 4)",
+            body: "State-changing operations occur only on receipt of a cryptographically verifiable instruction referencing an on-chain record — and are inhibited without one. Sandboxed kernels mediate agent system calls; model loaders abort on hash mismatch or revoked credentials.",
+          },
+          {
+            title: "Guarded adaptation (claim 5)",
+            body: "Compute-intensive self-modification is gated by an on-chain predicate combining real-time performance data with decentralized trust data. Absent a valid ADAPT event, the sandbox denies the adaptation module the very system calls it would need.",
+          },
+          {
+            title: "Governed change & multi-signature control (spec §2.12)",
+            body: "Code changes pass through a governed approval protocol; sensitive actions require multi-signature approval; agent instantiation and termination require quadratic-vote governance approval before a provisioner may launch or kill an environment (claim 3).",
+          },
+          {
+            title: "Tamper-evident history (claims 1, 6)",
+            body: "Every performance record is cryptographically bound to the agent's identifier in an append-only log, with off-chain shards anchored to the main chain via verifiable roll-up proofs — a globally auditable record of what every agent did and how it changed.",
+          },
+          {
+            title: "Human constitutional anchors (spec §2.13.2)",
+            body: "Even in its fullest decentralized embodiment, the architecture reserves a role for humans holding external credentials in constitutional governance — autonomy is bounded by human-set, cryptographically enforced principles.",
+          },
+        ].map((item) => (
+          <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+            <h3 class="text-lg font-bold">{item.title}</h3>
+            <p class="prose-inst text-[0.95rem]">{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="06"
+    eyebrow="The mathematics of the swarm"
+    title="Why many small specialists can rival one giant model"
+    lede="The specification grounds its ensemble design in the Condorcet framework: for agents with independent accuracy p answering the same task, an N-agent ensemble that requires M agreeing votes is correct with cumulative binomial probability — and the system tunes N and M per task."
+  >
+    <div class="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <div class="reveal grid content-start gap-4">
+        <p class="prose-inst">
+          Under a simple majority with per-agent accuracy better than chance, ensemble accuracy
+          exceeds any individual member's and converges to certainty as the ensemble grows —
+          the spec cites the Chernoff bound's exponential convergence. Raising the threshold
+          <em>M</em> above <em>p</em> trades success rate for confidence: consensus becomes rarer, but
+          when it lands, it means more. If a supermajority is not reached, the system falls back
+          to the largest agreeing block and attaches an explicit uncertainty warning rather than
+          bluffing (spec §2.2.1.1).
+        </p>
+        <p class="prose-inst">
+          The worked example in the specification: ten agents, each 70% accurate, with a 7-of-10
+          threshold reach correct consensus ≈65% of the time — below the individuals, because the
+          threshold equals their accuracy. Relax to a 6-of-10 majority and the ensemble jumps to
+          ≈85%, demonstrating the ensemble gain. This is the quantitative case for DSEMA's core
+          efficiency bet: heterogeneous collectives of small specialized models, cross-checking
+          one another, can approach or exceed a monolithic generalist.
+        </p>
+        <p class="prose-inst">
+          Specialization itself is manufactured, not assumed: new agents are cloned from
+          validated foundation models, assigned a machine-readable Specialization Curriculum by a
+          mentor agent, and fine-tuned through task-based feedback until a Verifiable Credential
+          attests their domain competence (spec §2.2.1).
+        </p>
+      </div>
+      <div class="reveal rounded-frame border border-hairline bg-surface p-6" role="img" aria-label="Table from the DSEMA specification's worked ensemble example: ten agents at seventy percent individual accuracy reach about sixty-five percent consensus accuracy at a seven-of-ten threshold, and about eighty-five percent at a simple six-of-ten majority.">
+        <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">Worked example · spec §2.2.1.1</p>
+        <dl class="mt-4 grid gap-2.5 font-mono text-sm">
+          <div class="flex justify-between gap-4 border-b border-hairline pb-2"><dt class="text-text-soft">ensemble size N</dt><dd class="text-ink">10 agents</dd></div>
+          <div class="flex justify-between gap-4 border-b border-hairline pb-2"><dt class="text-text-soft">individual accuracy p</dt><dd class="text-ink">0.70</dd></div>
+          <div class="flex justify-between gap-4 border-b border-hairline pb-2"><dt class="text-text-soft">threshold M = 7</dt><dd class="text-ink">P ≈ 0.65 — high confidence</dd></div>
+          <div class="flex justify-between gap-4 border-b border-hairline pb-2"><dt class="text-text-soft">threshold M = 6</dt><dd class="text-ink">P ≈ 0.85 — ensemble gain</dd></div>
+          <div class="flex justify-between gap-4"><dt class="text-text-soft">fallback</dt><dd class="text-ink">best block + warning</dd></div>
+        </dl>
+        <p class="mt-4 border-t border-hairline pt-3 font-mono text-xs text-text-soft">
+          P(consensus correct) = Σ<sub>k=M..N</sub> C(N,k) p<sup>k</sup>(1−p)<sup>N−k</sup>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    number="07"
+    eyebrow="Containment engineering"
+    title="Agents run inside walls they cannot see over"
+    lede="Below the constitutional layer sits hard containment: user-space kernels, capability sandboxes, syscall allow-lists controlled by the safety layer, and integrity-gated model loading (spec §2.2.3)."
+  >
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.25fr]">
+      <div class="reveal grid content-start gap-4">
+        <p class="prose-inst">
+          The preferred execution environment is a gVisor-style sandbox: each agent gets its own
+          application kernel that intercepts and validates system calls before anything touches
+          the host, with namespaces and cgroups isolating identity and resources. For higher
+          assurance and portability, WebAssembly with WASI provides a capability-based
+          alternative. A compromised agent cannot escalate on its host — the syscalls it would
+          need are simply not in its world.
+        </p>
+        <p class="prose-inst">
+          The policy is itself governed: the syscall allow-list is a policy file controlled by
+          the Constitutional Safety Layer, distributed by content hash, and hot-reloaded by
+          sidecars when a governance-approved PolicyUpdate lands. Network egress is pinned to a
+          sidecar enforcing a Layer-7 allow-list that records hashes of outbound payloads.
+        </p>
+        <p class="prose-inst">
+          Model integrity closes the loop: loaders verify the signed hash of every weight file
+          against the on-chain registry before mapping it into accelerator memory — a hash
+          mismatch or revoked status flag aborts the load. An agent cannot quietly become
+          something the chain has not approved.
+        </p>
+      </div>
+      <div class="reveal overflow-x-auto rounded-frame border border-hairline bg-surface">
+        <table class="w-full min-w-[30rem] border-collapse text-left">
+          <caption class="border-b-2 border-ink px-5 py-3 text-left font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">
+            Illustrative syscall policy · spec §2.2.3
+          </caption>
+          <thead>
+            <tr class="border-b border-hairline">
+              <th scope="col" class="px-5 py-2.5 font-display text-sm font-semibold">Category</th>
+              <th scope="col" class="px-5 py-2.5 font-display text-sm font-semibold">Constraint</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-text-muted">
+            <tr class="border-b border-hairline"><td class="px-5 py-2.5 font-mono text-xs text-ink">file i/o</td><td class="px-5 py-2.5">writes restricted to the agent workspace; symlink resolution disabled</td></tr>
+            <tr class="border-b border-hairline"><td class="px-5 py-2.5 font-mono text-xs text-ink">memory</td><td class="px-5 py-2.5">executable memory mappings forbidden</td></tr>
+            <tr class="border-b border-hairline"><td class="px-5 py-2.5 font-mono text-xs text-ink">gpu / accel</td><td class="px-5 py-2.5">ioctls only on known accelerator drivers, compute + memcopy command ranges</td></tr>
+            <tr class="border-b border-hairline"><td class="px-5 py-2.5 font-mono text-xs text-ink">network</td><td class="px-5 py-2.5">egress only via sidecar veth; direct UDP blocked; no listen/accept/bind</td></tr>
+            <tr><td class="px-5 py-2.5 font-mono text-xs text-ink">blocked</td><td class="px-5 py-2.5">mount, ptrace, bpf, reboot, privilege-escalation and raw-socket operations</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    number="08"
+    eyebrow="Perpetual improvement, governed change"
+    title="An arms race by design — and a two-house brake on the rules"
+    lede="Two of the specification's most distinctive mechanisms: the Adversarial Evolution Protocol that keeps the merit signal honest, and the bicameral human-machine process that guards the constitution itself."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">Adversarial evolution · spec §2.10.2</p>
+        <h3 class="mt-3 text-xl font-bold">When agents master the test, evolve the test</h3>
+        <p class="prose-inst mt-4 text-[0.95rem]">
+          When elite agents saturate an evaluation function, the meta-cognitive module tasks a
+          specialist Adversarial Agent not with breaking solutions but with evolving a superior
+          evaluation — harder problem instances, more comprehensive test suites, more discerning
+          scoring. If validated, the new test becomes the domain standard, former top performers
+          are re-scored against the higher bar, and their failures become the targeted feedback
+          for the next capability step. The spec's analogy is the scientific method: better
+          theories demand more sensitive experiments.
+        </p>
+      </article>
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <p class="font-mono text-xs tracking-[0.18em] text-blue-deep uppercase">Amendment governance · spec §2.12.4–2.12.5</p>
+        <h3 class="mt-3 text-xl font-bold">Changing the constitution takes two houses and 180 days</h3>
+        <p class="prose-inst mt-4 text-[0.95rem]">
+          Amendments to the Constitutional Safety Layer pass through an Agent Legislature — at
+          least 150 of the highest-reputation agents, 95% supermajority, testing technical
+          soundness — then a Human Legislature split equally between public stakeholders and an
+          anonymous, credentialed Alignment Jury, at a 66.7% weighted threshold, testing values
+          and second-order effects. Passage triggers a mandatory, non-cancellable 180-day
+          time-lock for public red-teaming during which votes can be withdrawn; a genesis Seed
+          Wallet holds a final, non-overridable veto. The design explicitly answers the
+          persuasive-AI and compromised-human threat models the spec names.
+        </p>
+      </article>
+    </div>
+    <p class="prose-inst mt-8">
+      These mechanisms are studied further in the
+      <a href="/research/multi-agent-safety">multi-agent safety</a>,
+      <a href="/research/incentive-mechanism-design">incentive mechanism design</a>, and
+      <a href="/research/protocol-governance-design">protocol governance design</a> research topics.
+    </p>
+  </Section>
+
+  <Section
+    number="09"
+    eyebrow="What this unlocks"
+    title="Research directions, not products"
+    lede="The specification's embodiments sketch where verifiable self-improvement could matter. The foundation states these as directions under study — no deployment is implied."
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+      {
+        possibilities.map((item) => (
+          <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+            <h3 class="text-lg font-bold">{item.title}</h3>
+            <p class="prose-inst text-[0.92rem]">{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="10"
+    eyebrow="Status"
+    title="Where the program stands — stated plainly"
+    lede="DSEMA is a research program, and the foundation describes it as exactly that."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What exists today</h3>
+        <ul class="mt-4 grid gap-2.5">
+          {
+            [
+              "A 103-page architecture specification (v1.0.5) covering the full system: agents, orchestration layer, dual improvement loops, reputation, knowledge repository, multi-modal frameworks, and security mechanisms",
+              "A patent application with detailed claims — patent pending, not granted. The claims cover chain-verified instruction gating, sandboxed syscall mediation, governance-gated agent instantiation, integrity-gated model loading, guarded adaptation, and roll-up-anchored performance logs",
+              "Constitutional stewardship: DSEMA and its patent-pending rights are Transferred Assets under the foundation's public-benefit lock",
+            ].map((item) => (
+              <li class="prose-inst flex gap-3 text-[0.95rem]">
+                <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-4"><ClauseRef id="6.2.2" /> <ClauseRef id="32.1.2" /></p>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What we don't claim</h3>
+        <p class="prose-inst mt-4 text-[0.98rem]">
+          There is no deployed production DSEMA network, no token, and no granted patent.
+          The constitution is explicit that nothing obliges the foundation to issue or
+          operate any token or digital asset <ClauseRef id="38.2" />, and that production
+          systems affecting identity, digital assets, health, safety, or significant
+          economic rights require safety, security, and compliance policies to be in place
+          first <ClauseRef id="40.2" />.
+        </p>
+        <p class="prose-inst mt-4 text-[0.98rem]">
+          The research question DSEMA exists to answer is public-interest by nature: can
+          self-improving AI be built so that every step of its self-improvement is
+          verifiable, attributable, and constrained by rules it cannot silently rewrite?
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section number="11" eyebrow="Related" title="Continue through the foundation">
+    <div class="flex flex-wrap gap-3">
+      <CTA href="/research/virtengine">VirtEngine program</CTA>
+      <CTA href="/research/bosun" variant="secondary">Bosun — the applied track</CTA>
+      <CTA href="/research" variant="secondary">All research topics</CTA>
+      <CTA href="/mission" variant="ghost">Charitable purposes</CTA>
+    </div>
+  </Section>
+</Base>

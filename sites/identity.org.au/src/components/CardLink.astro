@@ -1,0 +1,32 @@
+---
+/**
+ * Card list item with chevron affordance (gov card-link pattern).
+ */
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  /** Optional small tag rendered above the title. */
+  tag?: string;
+  class?: string;
+}
+const { href, title, description, tag, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "group flex items-center justify-between gap-4 border border-hairline rounded-tile bg-paper px-5 py-4 no-underline",
+    "hover:border-hairline-strong hover:bg-alt transition-colors",
+    className,
+  ]}
+>
+  <span>
+    {tag && <span class="block text-[0.72rem] font-bold uppercase tracking-[0.13em] text-steel">{tag}</span>}
+    <span class="block font-bold text-action underline decoration-transparent underline-offset-4 group-hover:decoration-current">
+      {title}
+    </span>
+    {description && <span class="mt-1 block text-[0.95rem] text-body">{description}</span>}
+  </span>
+  <span class="chevron-after flex-none" aria-hidden="true"></span>
+</a>

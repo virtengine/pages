@@ -1,0 +1,78 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import { FOUNDATION_PAGES, getFoundationPage } from "@data/foundation";
+
+export function getStaticPaths() {
+  return FOUNDATION_PAGES.map((page) => ({ params: { slug: page.slug } }));
+}
+
+const { slug } = Astro.params;
+const page = getFoundationPage(slug!)!;
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Foundation", href: "/foundation" },
+  { name: page.title, href: `/foundation/${page.slug}` },
+];
+---
+
+<Base
+  title={`${page.title} — DETIO Foundation | det.io`}
+  description={page.summary}
+  path={`/foundation/${page.slug}`}
+  breadcrumbs={breadcrumbs}
+  ogType="article"
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero eyebrow={`Foundation · ${page.eyebrow}`} title={page.title} lede={page.summary} />
+
+  <div class="container-site grid gap-12 py-14 lg:grid-cols-[1fr_18rem] md:py-20">
+    <article class="grid content-start gap-12">
+      {
+        page.sections.map((section, i) => (
+          <section class="rule-double reveal grid gap-4 pt-6">
+            <p class="eyebrow">
+              <span class="mr-3 text-text-soft">{String(i + 1).padStart(2, "0")}</span>
+              {page.title}
+            </p>
+            <h2 class="text-2xl font-bold md:text-3xl">{section.heading}</h2>
+            {section.clauses && (
+              <p class="flex flex-wrap gap-1.5">
+                {section.clauses.map((c) => (
+                  <ClauseRef id={c} />
+                ))}
+              </p>
+            )}
+            {section.body.map((paragraph) => (
+              <p class="prose-inst max-w-3xl">{paragraph}</p>
+            ))}
+          </section>
+        ))
+      }
+    </article>
+
+    <aside class="grid content-start gap-6">
+      <div class="rounded-card border border-hairline bg-surface p-5">
+        <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-text-soft uppercase">Continue reading</h2>
+        <ul class="mt-4 grid gap-3">
+          {
+            page.related.map((related) => (
+              <li>
+                <a href={related.href} class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">
+                  {related.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-4">
+          <CTA href="/foundation" variant="ghost">All foundation pages</CTA>
+        </div>
+      </div>
+    </aside>
+  </div>
+</Base>

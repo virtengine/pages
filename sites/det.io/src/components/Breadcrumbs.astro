@@ -1,0 +1,42 @@
+---
+/**
+ * Visible breadcrumb trail. The matching BreadcrumbList JSON-LD is emitted
+ * by Base.astro from the same `breadcrumbs` prop — pass both from the page.
+ */
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  crumbs: Crumb[];
+  class?: string;
+}
+
+const { crumbs, class: className } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class:list={["container-site pt-6", className]}>
+  <ol class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-soft">
+    {
+      crumbs.map((crumb, i) => (
+        <li class="flex items-center gap-1.5">
+          {i > 0 && (
+            <svg viewBox="0 0 8 8" width="7" height="7" aria-hidden="true" class="text-hairline-strong">
+              <path d="M2 0l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4" />
+            </svg>
+          )}
+          {i === crumbs.length - 1 ? (
+            <span aria-current="page" class="text-ink">
+              {crumb.name}
+            </span>
+          ) : (
+            <a href={crumb.href} class="underline decoration-hairline-strong underline-offset-4 transition-colors hover:text-blue-deep hover:decoration-blue-deep">
+              {crumb.name}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

@@ -1,0 +1,97 @@
+---
+/**
+ * Explorer figure C — the autonomous reputation pipeline (spec §2.8.1):
+ * performance log → metric vector M = ⟨outcome, quality, efficiency,
+ * contribution⟩ → time-decay kernel R·e^(−λΔt) with λ stored on-chain →
+ * EWMA update R(t) = (1−α)·R_decayed + α·(w·M) → on-chain reputation
+ * driving task allocation, tiers and percentile culling. Text alternative
+ * carried by the enclosing DiagramFrame.
+ */
+---
+
+<svg viewBox="0 0 880 430" class="h-auto w-full min-w-[720px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="fr-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <text x="40" y="34" font-family="var(--font-mono)" font-size="11" letter-spacing="2" fill="var(--color-text-soft)">REPUTATION IS A DETERMINISTIC CALCULATION — NOT A VOTE</text>
+  <path d="M40 44 H840" stroke="var(--color-hairline)" stroke-width="1"></path>
+
+  <!-- stage 1: performance log -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="40" y="86" width="150" height="92" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="115" y="112" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Performance log</text>
+    <text x="115" y="134" text-anchor="middle" fill="var(--color-text-soft)">immutable records</text>
+    <text x="115" y="150" text-anchor="middle" fill="var(--color-text-soft)">bound to agent DID</text>
+    <text x="115" y="166" text-anchor="middle" fill="var(--color-text-soft)">roll-up proofs</text>
+  </g>
+
+  <!-- stage 2: metric vector -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="230" y="72" width="184" height="120" rx="8" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.5"></rect>
+    <text x="322" y="98" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Metric vector</text>
+    <text x="322" y="116" text-anchor="middle" fill="var(--color-blue-deep)">M = ⟨m₁ m₂ m₃ m₄⟩</text>
+    <text x="322" y="136" text-anchor="middle" fill="var(--color-text-soft)">m₁ task outcome</text>
+    <text x="322" y="151" text-anchor="middle" fill="var(--color-text-soft)">m₂ quality / accuracy</text>
+    <text x="322" y="166" text-anchor="middle" fill="var(--color-text-soft)">m₃ efficiency (EV)</text>
+    <text x="322" y="181" text-anchor="middle" fill="var(--color-text-soft)">m₄ knowledge contribution</text>
+  </g>
+
+  <!-- stage 3: decay kernel -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="454" y="72" width="184" height="120" rx="8" fill="var(--color-sky-wash)" stroke="var(--color-blue-deep)" stroke-width="1.6"></rect>
+    <text x="546" y="98" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Time-decay kernel</text>
+    <text x="546" y="122" text-anchor="middle" font-size="12" fill="var(--color-blue-deep)">R · e^(−λ·Δt)</text>
+    <text x="546" y="142" text-anchor="middle" fill="var(--color-text-soft)">λ stored on-chain</text>
+    <text x="546" y="157" text-anchor="middle" fill="var(--color-text-soft)">inactivity erodes trust</text>
+    <text x="546" y="172" text-anchor="middle" fill="var(--color-text-soft)">4-term Taylor eˣ · gas-bounded</text>
+  </g>
+
+  <!-- stage 4: on-chain score -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="678" y="86" width="162" height="92" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="759" y="112" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">On-chain score</text>
+    <text x="759" y="134" text-anchor="middle" fill="var(--color-text-soft)">Rᵢ(t) updated at block</text>
+    <text x="759" y="150" text-anchor="middle" fill="var(--color-text-soft)">deterministic · public</text>
+    <text x="759" y="166" text-anchor="middle" fill="var(--color-text-soft)">replayable by anyone</text>
+  </g>
+
+  <!-- flow arrows -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fr-arrow)">
+    <path d="M190 132 H226"></path>
+    <path d="M414 132 H450"></path>
+    <path d="M638 132 H674"></path>
+  </g>
+
+  <!-- EWMA formula strip -->
+  <rect x="40" y="222" width="800" height="46" rx="8" fill="var(--color-vellum)" stroke="var(--color-hairline-strong)" stroke-width="1.2"></rect>
+  <text x="440" y="245" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" fill="var(--color-ink)">Rᵢ(t_b) = (1 − α) · Rᵢ(t_last) · e^(−λ(t_b − t_last)) + α · Σ wⱼ·mⱼ</text>
+  <text x="440" y="261" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">α — on-chain learning rate · wⱼ — governance-defined weights · spec §2.8.1</text>
+
+  <!-- consequences row -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#fr-arrow)">
+    <path d="M200 268 V308"></path>
+    <path d="M440 268 V308"></path>
+    <path d="M680 268 V308"></path>
+  </g>
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="86" y="312" width="228" height="72" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="200" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">merit-based task allocation</text>
+    <text x="200" y="356" text-anchor="middle" fill="var(--color-text-soft)">higher score → more work,</text>
+    <text x="200" y="371" text-anchor="middle" fill="var(--color-text-soft)">more compute, more stake</text>
+
+    <rect x="326" y="312" width="228" height="72" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="440" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">reputation tiers</text>
+    <text x="440" y="356" text-anchor="middle" fill="var(--color-text-soft)">council eligibility decays</text>
+    <text x="440" y="371" text-anchor="middle" fill="var(--color-text-soft)">each epoch unless re-earned</text>
+
+    <rect x="566" y="312" width="228" height="72" rx="7" fill="var(--color-surface)" stroke="var(--color-amber-deep)" stroke-width="1.4" stroke-dasharray="7 5"></rect>
+    <text x="680" y="336" text-anchor="middle" font-family="var(--font-display)" font-size="11.5" font-weight="600" fill="var(--color-ink)">percentile culling</text>
+    <text x="680" y="356" text-anchor="middle" fill="var(--color-text-soft)">bottom p_c ≈ 10% at each</text>
+    <text x="680" y="371" text-anchor="middle" fill="var(--color-text-soft)">checkpoint · spec §2.8.7</text>
+  </g>
+
+  <text x="440" y="416" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">Every input is a cryptographically verified on-chain record — the score cannot be lobbied, only earned.</text>
+</svg>

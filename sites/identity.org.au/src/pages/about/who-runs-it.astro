@@ -1,0 +1,76 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Callout from "@components/Callout.astro";
+import { ABOUT_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Who runs it", href: "/about/who-runs-it" },
+];
+---
+
+<Guide
+  title="Who runs it"
+  metaTitle="Who runs it — About | identity.org.au"
+  description="identity.org.au is stewarded by DETIO FOUNDATION LTD, an Australian not-for-profit public company limited by guarantee (ACN 699 651 771) with a constitutional public-benefit lock."
+  lede="A named legal entity, a public constitution, and a structure that makes private capture of the technology impossible."
+  eyebrow="About"
+  breadcrumbs={crumbs}
+  sectionLabel="In this section"
+  sectionNav={ABOUT_NAV}
+>
+  <div class="prose-service">
+    <h2>The steward</h2>
+    <p>
+      identity.org.au is stewarded by <strong>{SITE.foundation}</strong> (“Dynamic Elastic
+      Technologies, Internet Organization”), an Australian not-for-profit
+      <strong>public company limited by guarantee</strong>, ACN {SITE.acn}. The Foundation
+      stewards two public-benefit technology programs: <strong>VirtEngine</strong> (the protocol,
+      identity system, and infrastructure this wallet is part of) and <strong>DSEMA</strong> (a
+      multi-agent AI architecture).
+    </p>
+
+    <h2>The public-benefit lock</h2>
+    <p>
+      The Foundation's constitution — a signed public document — contains protections that go
+      beyond ordinary not-for-profit status:
+    </p>
+    <ul>
+      <li><strong>No private profit.</strong> The Foundation must not operate for private commercial interests, pay dividends, or allow private capture of its intellectual property or digital assets.</li>
+      <li><strong>Commercial activity is subordinate.</strong> Revenue-raising is permitted only to fund, scale and sustain the charitable purposes.</li>
+      <li><strong>Protected provisions.</strong> A schedule of entrenched clauses — the public-benefit lock — cannot be amended through ordinary governance.</li>
+      <li><strong>Assets can never be privatised.</strong> On winding-up, all assets, including the technology and patent rights, must pass to another charity or public-benefit entity.</li>
+    </ul>
+
+    <h2>The purposes, briefly</h2>
+    <p>The constitution establishes the Foundation for charitable and public-benefit purposes, including:</p>
+    <ul>
+      <li>Advancing education — open research, open specifications, standards and safety materials for privacy-preserving digital infrastructure</li>
+      <li>Advancing social and public welfare through secure, privacy-preserving, resilient and affordable digital infrastructure</li>
+      <li>Promoting and protecting human rights — privacy, dignity, autonomy, equality of access, and protection from unlawful surveillance and private capture of essential digital infrastructure</li>
+      <li>Advancing the security and safety of Australia — cyber security, identity safety, AI safety, data protection and infrastructure resilience</li>
+    </ul>
+    <p>
+      An identity wallet is a direct expression of those purposes: identity safety and privacy
+      protection, delivered as open infrastructure that no private interest can capture.
+    </p>
+
+    <h2>Governance structure</h2>
+    <ul>
+      <li>A Founding Member (with two votes) and up to two Ordinary Members</li>
+      <li>A Permanent Director seat, alongside the board</li>
+      <li>Reserved Matters requiring elevated approval</li>
+      <li>Protected Provisions (Schedule 1) carrying the public-benefit lock described above</li>
+    </ul>
+  </div>
+
+  <Callout title="Check, don't trust" class="mt-8">
+    <p>
+        The company can be looked up on the ASIC register by ACN {SITE.acn} (ABN {SITE.abn}). The Foundation's own
+      site is <a href="https://det.io" rel="noopener" class="link-plain">det.io</a>, which
+      publishes the constitution's key provisions in full.
+    </p>
+  </Callout>
+</Guide>

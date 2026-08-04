@@ -1,0 +1,69 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Launch updates", href: "/launch" },
+];
+---
+
+<Base
+  title="Identity Wallet launch updates | identity.org.au"
+  description="The Identity Wallet and web portal are planned for January 2027. Join the launch list for updates."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    title="The Identity Wallet is coming"
+    lede="The wallet portal is not live yet. We are preparing for the January 2027 launch window."
+    eyebrow="Launch update"
+  />
+  <div class="container-site py-10 lg:py-14">
+  <div class="prose-service max-w-2xl">
+    <h2>Join the launch list</h2>
+    <p>
+      Leave your email and we will let you know when the Identity Wallet is ready. The wallet,
+      web portal and any services that depend on them are not yet available.
+    </p>
+    <form id="launch-signup" class="mt-8 rounded-tile border border-hairline bg-alt p-6" novalidate>
+      <label for="launch-email" class="block font-bold text-ink">Email address</label>
+      <input id="launch-email" name="email" type="email" autocomplete="email" required class="mt-2 w-full rounded-tile border border-hairline bg-paper px-4 py-3 text-ink" />
+      <label class="mt-4 flex gap-3 text-sm text-body">
+        <input id="launch-consent" type="checkbox" required class="mt-1" />
+        <span>I agree to receive launch updates from {SITE.foundation}. I can unsubscribe at any time.</span>
+      </label>
+      <button type="submit" class="btn-primary mt-5">Notify me at launch</button>
+      <p id="launch-form-note" class="mt-3 text-sm text-muted" aria-live="polite">
+        Submitting opens a pre-addressed email to the Foundation, which manages the launch list.
+      </p>
+    </form>
+    <h2>What is launching</h2>
+    <p>
+      identity.org.au is the Foundation-operated public website and educational resource. VEID is
+      different: it is the decentralised identity technology of the VirtEngine protocol. No
+      Foundation-operated central service verifies people; participating validators run the VEID
+      protocol by consensus.
+    </p>
+  </div>
+  </div>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>("#launch-signup");
+    const email = document.querySelector<HTMLInputElement>("#launch-email");
+    const consent = document.querySelector<HTMLInputElement>("#launch-consent");
+    const note = document.querySelector<HTMLElement>("#launch-form-note");
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!email?.checkValidity() || !consent?.checked) {
+        note!.textContent = "Enter a valid email address and confirm that you agree to receive launch updates.";
+        return;
+      }
+      const subject = encodeURIComponent("Identity Wallet launch list");
+      const body = encodeURIComponent(`Please add ${email.value} to the Identity Wallet launch list.`);
+      window.location.href = `mailto:hello@det.io?subject=${subject}&body=${body}`;
+      note!.textContent = "Your email app should open with a pre-addressed launch-list request.";
+    });
+  </script>
+</Base>

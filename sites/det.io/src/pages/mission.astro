@@ -1,0 +1,188 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import { PURPOSES } from "@data/site";
+
+const pillarDetail: Record<string, string[]> = {
+  "6.1.1": [
+    "Publishing the VirtEngine protocol documentation, module reference, and operational guides in the open at docs.virtengine.com.",
+    "Maintaining open specifications and standards work for privacy-preserving identity (VEID), usage settlement, and provider operations.",
+    "Releasing safety materials and implementation guidance — consent frameworks, biometric data handling, security policies — alongside the code they govern.",
+    "Publishing Bosun, the foundation's experimental autonomous-engineering orchestrator, whole and Apache-2.0 — the machinery, its documentation, and its operator guides.",
+  ],
+  "6.1.2": [
+    "Developing VirtEngine as an open, decentralized cloud marketplace so that compute capacity is not gated by a handful of hyperscale gatekeepers.",
+    "Stewarding infrastructure that is resilient by architecture: no single operator, no single point of failure, no single point of pricing power.",
+    "Reinvesting earnings into engineering, security, and ecosystem growth rather than distributing them.",
+  ],
+  "6.1.3": [
+    "Designing VEID — the identity program behind identity.org.au — so verification minimises disclosure: zero-knowledge proofs, selective scopes, encrypted payloads, and consent-first flows.",
+    "Constitutionally prohibiting the foundation from building technology for unlawful surveillance, coercion, or discrimination.",
+    "Keeping essential digital infrastructure out of private capture — as a Protected Provision, not a policy.",
+  ],
+  "6.1.4": [
+    "Contributing research, standards, and working systems for cyber security, identity safety, and data protection in Australia.",
+    "Advancing AI safety through the DSEMA program: verifiable audit trails, constitutional constraints, and accountable autonomy.",
+    "Operating Bosun as the open, applied testbed where multi-agent coordination, review gates, and recovery mechanisms meet real engineering — grounding the safety research in evidence.",
+    "Building infrastructure resilience through decentralization — capacity that survives the failure of any single operator.",
+  ],
+};
+---
+
+<Base
+  title="Mission — charitable purposes of DETIO FOUNDATION LTD | det.io"
+  description="The four charitable purposes of DETIO FOUNDATION LTD under clause 6 of its constitution: education, public welfare, human rights, and the security of Australia — and how commercial activity is constrained to funding public benefit."
+  path="/mission"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Mission", href: "/mission" },
+  ]}
+>
+  <PageHero
+    eyebrow="Mission"
+    title="Charitable purposes, carried out through working technology"
+    lede="DETIO FOUNDATION LTD exists only for charitable purposes for the public benefit, carried out without private commercial interests. That sentence is not marketing — it is clause 6.1 of the constitution, and everything the foundation does must trace back to it."
+  />
+
+  <Section
+    number="01"
+    eyebrow="Clause 6.1"
+    title="The four purpose pillars"
+    lede="Each purpose below is quoted in condensed form from the constitution, followed by what the foundation actually does under it today."
+  >
+    <div class="grid gap-8">
+      {
+        PURPOSES.map((p, i) => (
+          <article class="reveal grid gap-4 rounded-card border border-hairline bg-surface p-7 md:grid-cols-[1fr_1.3fr] md:gap-10">
+            <div class="grid content-start gap-3">
+              <p class="font-mono text-sm text-text-soft">{String(i + 1).padStart(2, "0")}</p>
+              <h3 class="text-2xl font-bold">{p.name}</h3>
+              <p class="prose-inst text-[0.98rem]">{p.summary}</p>
+              <p><ClauseRef id={p.clause} /></p>
+            </div>
+            <div>
+              <h4 class="font-mono text-xs font-medium tracking-[0.18em] text-blue-deep uppercase">What this looks like in practice</h4>
+              <ul class="mt-4 grid gap-3">
+                {pillarDetail[p.clause]?.map((line) => (
+                  <li class="prose-inst flex gap-3 text-[0.95rem]">
+                    <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                      <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                    </svg>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Clauses 6.2.6–6.2.8 and 9"
+    title="Commercial activity exists to fund the mission — nothing else"
+    lede="The foundation may charge fees, sell services, license technology, and compete with for-profit companies. The constitution permits this for exactly one reason: funding, scaling, securing, and sustaining the charitable purposes."
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Earn only to fund</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Commercial activities — fees, services, licensing, hosting, integration, research
+          — are permitted <em>only as a means</em> of funding and sustaining the charitable
+          purposes. <ClauseRef id="6.2.6" /> <ClauseRef id="9.2" />
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Reinvestment doctrine</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Earnings are reinvested into research, engineering, operations, infrastructure,
+          resilience, security, compliance, staff, volunteers, ecosystem growth, and
+          public-benefit delivery. <ClauseRef id="6.2.7" /> <ClauseRef id="9.3" />
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Charitable programs</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The directors may establish free or subsidised technology, subsidised
+          infrastructure, public-interest services, education, and access programs.
+          <ClauseRef id="6.2.8" /> <ClauseRef id="9.5" />
+        </p>
+      </article>
+    </div>
+    <div class="prose-inst mt-8 max-w-3xl">
+      <p>
+        This is the inversion that makes the model coherent: in a conventional company,
+        public-benefit work is a cost centre that serves the profit engine. Here, the profit
+        engine is constitutionally the cost centre — it serves the public-benefit work, and
+        the not-for-profit clause <ClauseRef id="8" /> makes sure nothing leaks out the side
+        to private hands.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Clause 10"
+    title="Code of conduct and the public-interest duty"
+    lede="The constitution requires the directors to adopt and maintain a Code of Conduct that gives practical effect to the purposes — it is a governance obligation, not an HR formality."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What the Code must cover</h3>
+        <ul class="mt-4 grid gap-2.5">
+          {
+            [
+              "The foundation's purposes and public-interest duties",
+              "Confidentiality requirements",
+              "Conflict-management requirements",
+              "Privacy commitments",
+              "Safety commitments",
+              "Anti-private-capture principles",
+            ].map((item) => (
+              <li class="prose-inst flex gap-3 text-[0.95rem]">
+                <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-4"><ClauseRef id="10.1" /></p>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Who it binds</h3>
+        <p class="prose-inst mt-4 text-[0.98rem]">
+          Directors, officers, employees, contractors, volunteers, members — and anyone
+          with privileged or material access to the foundation's systems or Transferred
+          Assets — must comply with the Code. <ClauseRef id="10.2" />
+        </p>
+        <p class="prose-inst mt-4 text-[0.98rem]">
+          Before privileged access is granted to systems, confidential information, digital
+          assets, or intellectual property, the directors may require a signed
+          confidentiality, conflict-of-interest, or access undertaking.
+          <ClauseRef id="10.3" />
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="Continue"
+    title="See the purposes at work"
+  >
+    <div class="flex flex-wrap gap-3">
+      <CTA href="/research/virtengine">VirtEngine program</CTA>
+      <CTA href="/research/dsema" variant="secondary">DSEMA program</CTA>
+      <CTA href="/research/bosun" variant="secondary">Bosun program</CTA>
+      <CTA href="/research/identity" variant="secondary">Identity program</CTA>
+      <CTA href="/governance" variant="ghost">Governance structure</CTA>
+    </div>
+  </Section>
+</Base>

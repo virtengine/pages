@@ -1,0 +1,74 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Callout from "@components/Callout.astro";
+import { ABOUT_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Patents", href: "/about/patents" },
+];
+---
+
+<Guide
+  title="Patents"
+  metaTitle="Patents — About | identity.org.au"
+  description="Australian patent AU2024203136B2 covers the machine-learning identity verification method behind the Identity Wallet. What it covers, in plain terms, and why it protects the public interest."
+  lede="The verification method is patented — and the patent is held inside a structure that prevents it ever being used against the public."
+  eyebrow="About"
+  breadcrumbs={crumbs}
+  sectionLabel="In this section"
+  sectionNav={ABOUT_NAV}
+>
+  <div class="prose-service">
+    <h2>The patent</h2>
+    <p>
+      Australian patent <a href={SITE.patentUrl} rel="noopener"><strong>{SITE.patentId}</strong></a>
+      (granted, with claims accepted in 2025) covers the machine-learning identity verification
+      method used by VEID. You can read it on the public patent register.
+    </p>
+
+    <h2>What it covers, in plain terms</h2>
+    <p>The patent describes a system that combines, in one verifiable pipeline:</p>
+    <ul>
+      <li>Capturing identity documents (multiple sides, with guided framing) and reading their contents automatically</li>
+      <li>Capturing biometrics — a selfie with active liveness challenge-response, plus fingerprint or iris via device hardware</li>
+      <li>Scoring the results with machine-learning models, with quality gates for face confidence and liveness</li>
+      <li>Packaging the evidence securely — encryption and device integrity attestation — so the verification can be trusted end-to-end</li>
+    </ul>
+    <p>
+      In short: the pipeline described across this website — document, selfie, liveness, hardware
+      attestation, encrypted submission — is the patented method.
+    </p>
+
+    <h2>Doesn't a patent conflict with open source?</h2>
+    <p>Not in this structure, and the distinction matters:</p>
+    <ul>
+      <li>
+        <strong>The implementation is open.</strong> The code is Apache 2.0 — a licence that
+        includes an express patent grant from contributors to users. Using the open-source
+        software is exactly what the licence permits.
+      </li>
+      <li>
+        <strong>The patent is captive to the public benefit.</strong> It sits within the
+        Foundation's structure, where the constitution prohibits private capture of IP and
+        requires that on winding-up all assets — patents included — pass to another public-benefit
+        entity.
+      </li>
+      <li>
+        <strong>Its practical role is defensive.</strong> Holding the patent prevents someone else
+        from patenting the same technique and fencing it off — the classic reason
+        public-interest projects hold patents at all.
+      </li>
+    </ul>
+  </div>
+
+  <Callout title="Check the register" class="mt-8">
+    <p>
+      Patents are public documents. Search {SITE.patentId} on
+      <a href={SITE.patentUrl} rel="noopener" class="link-plain">Google Patents</a> or IP
+      Australia's AusPat to read the accepted claims yourself.
+    </p>
+  </Callout>
+</Guide>

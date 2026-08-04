@@ -1,0 +1,103 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import { SITE } from "@data/site";
+---
+
+<Base
+  title="Contact — DETIO FOUNDATION LTD | det.io"
+  description="Contact DETIO FOUNDATION LTD: research collaboration, provider and staking partnerships, membership inquiries under clause 13 of the constitution. hello@det.io — Australia."
+  path="/contact"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Contact", href: "/contact" },
+  ]}
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Write to the foundation"
+    lede="One address reaches us. Tell us plainly what you're proposing and which program it concerns — a person, not a funnel, reads it."
+  >
+    <p class="mt-2 font-mono text-lg">
+      <a href={`mailto:${SITE.email}`} class="text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">
+        {SITE.email}
+      </a>
+    </p>
+    <p class="prose-inst text-sm">
+      {SITE.legalName} · ACN {SITE.acn} · Australia
+    </p>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="Inquiries"
+    title="What fits where"
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="reveal grid content-start gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Research collaboration</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Academic and industry research on privacy-preserving identity, decentralized
+          infrastructure, verifiable AI governance, or the DSEMA architecture. Include your
+          affiliation, the question you want to work on, and any relevant publications or
+          code.
+        </p>
+        <p class="font-mono text-xs text-text-soft">→ hello@det.io, subject "Research"</p>
+      </article>
+
+      <article class="reveal grid content-start gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Providers, staking &amp; integration</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Datacenter and cloud operators who want to lease capacity, validators and staking
+          partners, and developers integrating against the protocol: the VirtEngine
+          properties are the right front door — start with the protocol site and
+          documentation.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <CTA href="https://virtengine.com" variant="ghost" rel="noopener">virtengine.com</CTA>
+          <CTA href="https://docs.virtengine.com" variant="ghost" rel="noopener">docs.virtengine.com</CTA>
+        </div>
+      </article>
+
+      <article class="reveal grid content-start gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Membership</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Ordinary Membership is open to people at least 18 years old, resident in
+          Australia, who support the foundation's purposes <ClauseRef id="13.1" />.
+          Application is in writing; the directors may accept or refuse it, and admission
+          requires prior Founding Member Consent <ClauseRef id="13.2" />
+          <ClauseRef id="11.5" />. Note the constitution allows at most two Ordinary
+          Members <ClauseRef id="11.3" />.
+        </p>
+        <p class="font-mono text-xs text-text-soft">→ hello@det.io, subject "Membership"</p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Expectations"
+    title="A few honest notes"
+  >
+    <ul class="grid max-w-3xl gap-3">
+      {
+        [
+          "We are a small research organization, not a sales team — replies may take time, and proposals aligned with the charitable purposes get priority.",
+          "Security reports about the VirtEngine protocol should follow the security policy in the repository rather than email, so they reach the right process.",
+          "We don't publish a street address; the foundation is Australian and correspondence is electronic.",
+          "Commercial proposals are welcome — remember they will be evaluated against one test: whether they fund, scale, secure, or sustain the charitable purposes (cl 9.2).",
+        ].map((note) => (
+          <li class="prose-inst flex gap-3">
+            <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+            </svg>
+            <span>{note}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</Base>

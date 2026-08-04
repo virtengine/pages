@@ -1,0 +1,21 @@
+---
+interface Props {
+  class?: string;
+  /** Display height in pixels. */
+  size?: number;
+  /** Retained for existing callers; the original artwork includes its own treatment. */
+  byline?: boolean;
+  onDark?: boolean;
+}
+
+const { class: className, size = 34 } = Astro.props;
+---
+
+<img
+  src="/brand/virtengine-original.png"
+  width="1423"
+  height="362"
+  alt="VirtEngine"
+  class={className}
+  style={`display:block;height:${size}px;width:auto;max-width:220px;object-fit:contain;object-position:left center`}
+/>

@@ -1,0 +1,26 @@
+---
+/**
+ * Status tag, e.g. "Reference implementation", "Optional", "Special category data".
+ */
+interface Props {
+  tone?: "neutral" | "info" | "success" | "warning";
+  class?: string;
+}
+const { tone = "neutral", class: className } = Astro.props;
+const tones = {
+  neutral: "bg-alt text-ink border-hairline-strong",
+  info: "bg-info-bg text-action-hover border-[#a8c6df]",
+  success: "bg-success-bg text-[#0b5c45] border-[#9fd0ba]",
+  warning: "bg-warn-bg text-warn border-[#e0bc7a]",
+} as const;
+---
+
+<span
+  class:list={[
+    "inline-block rounded-[3px] border px-2 py-0.5 text-[0.78rem] font-bold uppercase tracking-[0.08em]",
+    tones[tone],
+    className,
+  ]}
+>
+  <slot />
+</span>

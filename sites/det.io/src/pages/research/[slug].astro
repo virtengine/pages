@@ -1,0 +1,108 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import CTA from "@components/CTA.astro";
+import { RESEARCH_TOPICS, getResearchTopic } from "@data/research";
+
+export function getStaticPaths() {
+  return RESEARCH_TOPICS.map((topic) => ({ params: { slug: topic.slug } }));
+}
+
+const { slug } = Astro.params;
+const topic = getResearchTopic(slug!)!;
+const relatedTopics = topic.related
+  .map((s) => getResearchTopic(s))
+  .filter((t): t is NonNullable<typeof t> => Boolean(t));
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+  { name: topic.title, href: `/research/${topic.slug}` },
+];
+---
+
+<Base
+  title={`${topic.title} — DETIO Foundation research | det.io`}
+  description={topic.summary}
+  path={`/research/${topic.slug}`}
+  breadcrumbs={breadcrumbs}
+  ogType="article"
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero eyebrow={`Research topic · ${topic.programs.join(" + ")}`} title={topic.title} lede={topic.question}>
+    <p class="prose-inst max-w-3xl text-[1.02rem]">{topic.summary}</p>
+  </PageHero>
+
+  <div class="container-site grid gap-12 py-14 lg:grid-cols-[1fr_18rem] md:py-20">
+    <article class="grid content-start gap-12">
+      {
+        topic.sections.map((section, i) => (
+          <section class="rule-double reveal grid gap-4 pt-6">
+            <p class="eyebrow">
+              <span class="mr-3 text-text-soft">{String(i + 1).padStart(2, "0")}</span>
+              research
+            </p>
+            <h2 class="text-2xl font-bold md:text-3xl">{section.heading}</h2>
+            {section.body.map((paragraph) => (
+              <p class="prose-inst max-w-3xl">{paragraph}</p>
+            ))}
+          </section>
+        ))
+      }
+
+      <section class="reveal rounded-frame border border-hairline bg-surface p-6 md:p-8">
+        <p class="font-mono text-xs font-medium tracking-[0.18em] text-blue-deep uppercase">Artifacts — verify, don't trust</p>
+        <ul class="mt-5 grid gap-4">
+          {
+            topic.artifacts.map((artifact) => (
+              <li class="grid gap-1 border-l-2 border-sky pl-4">
+                {artifact.href ? (
+                  <a
+                    href={artifact.href}
+                    rel={artifact.href.startsWith("http") ? "noopener" : undefined}
+                    class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep"
+                  >
+                    {artifact.label}
+                  </a>
+                ) : (
+                  <span class="font-display text-sm font-semibold text-ink">{artifact.label}</span>
+                )}
+                <span class="font-mono text-xs text-text-soft">{artifact.detail}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </article>
+
+    <aside class="grid content-start gap-6">
+      <div class="rounded-card border border-hairline bg-surface p-5">
+        <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-text-soft uppercase">Related topics</h2>
+        <ul class="mt-4 grid gap-3">
+          {
+            relatedTopics.map((related) => (
+              <li>
+                <a href={`/research/${related.slug}`} class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">
+                  {related.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="rounded-card border border-hairline bg-surface p-5">
+        <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-text-soft uppercase">Programs</h2>
+        <ul class="mt-4 grid gap-3">
+          <li><a href="/research/virtengine" class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">VirtEngine</a></li>
+          <li><a href="/research/dsema" class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">DSEMA</a></li>
+          <li><a href="/research/bosun" class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">Bosun</a></li>
+          <li><a href="/research/identity" class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">Identity — VEID</a></li>
+        </ul>
+        <div class="mt-4">
+          <CTA href="/research" variant="ghost">All research</CTA>
+        </div>
+      </div>
+    </aside>
+  </div>
+</Base>

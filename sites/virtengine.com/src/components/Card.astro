@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  /** Optional mono tag rendered above the title, e.g. a module name */
+  tag?: string;
+  href?: string;
+  class?: string;
+}
+
+const { title, tag, href, class: className } = Astro.props;
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  href={href}
+  class:list={[
+    "clip-corner group block rounded-card border border-line bg-panel p-6 transition-colors",
+    href && "hover:border-green-deep focus-visible:border-green-deep",
+    className,
+  ]}
+>
+  {tag && <p class="mb-2 font-mono text-xs font-medium uppercase tracking-[0.16em] text-green-deep">{tag}</p>}
+  <h3 class="text-lg font-semibold text-ink group-hover:text-green-dark">{title}</h3>
+  <div class="mt-2.5 text-sm leading-relaxed text-slate">
+    <slot />
+  </div>
+</Tag>

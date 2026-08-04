@@ -1,0 +1,26 @@
+---
+interface Props {
+  /** Mono uppercase label above the title */
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  /** Extra classes on the outer <section> */
+  class?: string;
+  id?: string;
+}
+
+const { eyebrow, title, lede, class: className, id } = Astro.props;
+---
+
+<section class:list={["container-site py-14 md:py-20", className]} id={id}>
+  {
+    (eyebrow || title || lede) && (
+      <div class="section-head reveal mb-10 md:mb-14">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        {title && <h2 class="max-w-3xl font-display text-3xl md:text-[2.6rem]">{title}</h2>}
+        {lede && <p class="prose-body text-lg">{lede}</p>}
+      </div>
+    )
+  }
+  <slot />
+</section>

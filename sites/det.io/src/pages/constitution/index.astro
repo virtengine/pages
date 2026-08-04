@@ -1,0 +1,132 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import { CONSTITUTION_TOPICS } from "@data/constitution";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Constitution", href: "/constitution" },
+];
+
+const parts = [
+  ["Part 1", "Preliminary — name, type, definitions", "1–5"],
+  ["Part 2", "Purpose, powers, and public-benefit lock", "6–10"],
+  ["Part 3", "Members", "11–18A"],
+  ["Part 4", "Directors", "19–30"],
+  ["Part 5", "Intellectual Property Rights and Digital Assets", "31–37"],
+  ["Part 6", "Protocol governance, privacy, and safety", "38–40"],
+  ["Part 7", "Salary, employment benefits, and founder capacity", "41–42"],
+  ["Part 8", "Meetings", "43–48"],
+  ["Part 9", "Disputes and discipline", "49–50"],
+  ["Part 10", "Secretary, records, and financial matters", "51–54"],
+  ["Part 11", "Notices", "55–57"],
+  ["Part 12", "Indemnity and insurance", "58–59"],
+  ["Part 13", "Winding up", "60–63"],
+  ["Schedule 1", "Protected Provisions — twenty entrenched items", "items 1–20"],
+] as const;
+---
+
+<Base
+  title="Constitution explorer — DETIO FOUNDATION LTD | det.io"
+  description="A plain-language explorer of the signed constitution of DETIO FOUNDATION LTD: purpose, the public-benefit lock, members, directors, Protected Provisions, Reserved Matters, asset stewardship, protocol governance, and the charity-only winding-up rule — with exact clause citations."
+  path="/constitution"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="The founding instrument"
+    title="The constitution, explained clause by clause"
+    lede="DETIO FOUNDATION LTD is literally defined by one document — a signed constitution of thirteen parts and a schedule of twenty entrenched Protected Provisions. This explorer translates it into plain language, with exact clause citations you can check against the instrument."
+  >
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Instrument</dt>
+        <dd class="text-ink">constitution of a public company limited by guarantee</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Drafted</dt>
+        <dd class="text-ink">25 June 2026 · revised 29 June 2026 · signed July 2026</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Structure</dt>
+        <dd class="text-ink">13 parts · 63 clauses · Schedule 1 (20 Protected Provisions)</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="Topic guide"
+    title="Ten topics, from purpose to winding up"
+    lede="Each topic page summarises the relevant clauses in plain language, cites them precisely, and explains why the mechanism exists. The signed instrument prevails over every word of ours."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        CONSTITUTION_TOPICS.map((topic, i) => (
+          <article class="group reveal relative grid content-start gap-3 rounded-card border border-hairline bg-surface p-6 transition-colors hover:border-blue-deep">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="font-mono text-xs tracking-[0.14em] text-text-soft uppercase">
+                {String(i + 1).padStart(2, "0")} · {topic.source}
+              </p>
+            </div>
+            <h3 class="text-xl font-bold">
+              <a href={`/constitution/${topic.slug}`} class="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-blue-deep">
+                {topic.title}
+              </a>
+            </h3>
+            <p class="prose-inst text-[0.95rem]">{topic.summary}</p>
+            <p class="mt-1 inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep">
+              Read the topic
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Document map"
+    title="Where everything lives in the instrument"
+    lede="The constitution's own structure, for orientation. Clause citations across this site — rendered like this: "
+  >
+    <div class="overflow-x-auto rounded-frame border border-hairline bg-surface">
+      <table class="w-full min-w-[36rem] border-collapse text-left">
+        <thead>
+          <tr class="border-b-2 border-ink">
+            <th scope="col" class="px-5 py-3 font-display text-sm font-semibold">Division</th>
+            <th scope="col" class="px-5 py-3 font-display text-sm font-semibold">Subject</th>
+            <th scope="col" class="px-5 py-3 font-display text-sm font-semibold">Clauses</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            parts.map(([part, subject, clauses]) => (
+              <tr class="border-b border-hairline last:border-0">
+                <td class="px-5 py-2.5 font-mono text-xs whitespace-nowrap text-blue-deep">{part}</td>
+                <td class="px-5 py-2.5 text-sm text-text-muted">{subject}</td>
+                <td class="px-5 py-2.5 font-mono text-xs text-text-soft">{clauses}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="prose-inst mt-6 text-sm">
+      A citation such as <ClauseRef id="18.3" /> refers to the numbered clause of the signed
+      instrument; <ClauseRef id="sch 1" /> refers to Schedule 1. This explorer is an educational
+      summary, not legal advice.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <CTA href="/constitution/purpose-and-public-benefit-lock">Start with purpose</CTA>
+      <CTA href="/governance" variant="secondary">Governance overview</CTA>
+    </div>
+  </Section>
+</Base>

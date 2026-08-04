@@ -1,0 +1,83 @@
+---
+import { ECOSYSTEM, FOOTER_COLUMNS, SITE } from "@data/site";
+import Lockup from "./brand/Lockup.astro";
+---
+
+<footer class="bg-navy text-inverse mt-20">
+  <div class="container-site py-12">
+    <Lockup variant="reversed" support markSize={44} />
+
+    <div class="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        FOOTER_COLUMNS.map((col) => (
+          <nav aria-label={col.heading}>
+            <h2 class="text-[0.8rem] font-bold uppercase tracking-[0.14em] text-navy-muted">
+              {col.heading}
+            </h2>
+            <ul class="mt-4 grid gap-2.5 list-none m-0 p-0">
+              {col.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-inverse/90 text-[0.95rem] underline decoration-navy-hairline underline-offset-4 hover:decoration-inverse"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 border-t border-navy-hairline pt-8">
+      <h2 class="text-[0.8rem] font-bold uppercase tracking-[0.14em] text-navy-muted">
+        VirtEngine ecosystem
+      </h2>
+      <ul class="mt-3 flex flex-wrap gap-x-8 gap-y-2 list-none m-0 p-0">
+        {
+          ECOSYSTEM.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                rel="noopener"
+                class="text-inverse/90 text-[0.95rem] underline decoration-navy-hairline underline-offset-4 hover:decoration-inverse"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-10 border-t border-navy-hairline pt-8 grid gap-4 text-[0.92rem] text-navy-muted measure-wide">
+      <p class="m-0">
+        <strong class="text-inverse">identity.org.au is not an Australian Government service.</strong>
+        It is not operated or endorsed by any government, and it is not the Australian Government
+        Digital ID System, myID or myGov. The steward is currently in the process of applying for
+        accreditation under the <em>Digital ID Act 2024</em> Accreditation Scheme; no accreditation
+        is claimed, and the Digital ID Accreditation Trustmark will only be displayed if and when
+        accreditation is granted. The steward's predecessor company, DET-IO Pty Ltd, has
+        received NSW Government business-grant funding — a funding relationship only, which does
+        not make this a government service.
+      </p>
+      <p class="m-0">
+        Stewarded by {SITE.foundation}, an Australian not-for-profit public company limited by
+        guarantee, ACN {SITE.acn}, ABN {SITE.abn}. The Identity Wallet is open-source reference software powered by
+        VEID, the identity layer of the VirtEngine network (Australian patent {SITE.patentId}).
+      </p>
+      <p class="m-0">
+        We acknowledge the Traditional Custodians of Country throughout Australia and pay our
+        respects to Elders past and present.
+      </p>
+      <p class="m-0">
+        Contact: <a href={`mailto:${SITE.email}`} class="text-inverse underline decoration-navy-hairline underline-offset-4 hover:decoration-inverse">{SITE.email}</a>
+        · Privacy: <a href={`mailto:${SITE.dpoEmail}`} class="text-inverse underline decoration-navy-hairline underline-offset-4 hover:decoration-inverse">{SITE.dpoEmail}</a>
+        · Security: <a href={`mailto:${SITE.securityEmail}`} class="text-inverse underline decoration-navy-hairline underline-offset-4 hover:decoration-inverse">{SITE.securityEmail}</a>
+      </p>
+      <p class="m-0">© {new Date().getFullYear()} {SITE.foundation}. Content licensed for reuse with attribution.</p>
+    </div>
+  </div>
+</footer>

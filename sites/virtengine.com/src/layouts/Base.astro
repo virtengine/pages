@@ -1,0 +1,110 @@
+---
+import "@fontsource/questrial/400.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "../styles/global.css";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { SITE } from "@data/site";
+
+interface Breadcrumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path for canonical URL, e.g. "/providers". Defaults to current pathname. */
+  path?: string;
+  breadcrumbs?: Breadcrumb[];
+  ogType?: "website" | "article";
+}
+
+const { title, description, path, breadcrumbs, ogType = "website" } = Astro.props;
+
+const pathname = path ?? Astro.url.pathname;
+const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
+const ogImage = new URL("/og.png", SITE.url).href;
+
+const organizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "VirtEngine",
+  url: SITE.url,
+  logo: new URL("/favicon.svg", SITE.url).href,
+  email: SITE.email,
+  sameAs: [SITE.github, SITE.docs],
+  parentOrganization: {
+    "@type": "Organization",
+    name: "DETIO FOUNDATION LTD",
+    url: "https://det.io",
+  },
+};
+
+const webSiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+};
+
+const breadcrumbLd = breadcrumbs
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: breadcrumbs.map((crumb, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: crumb.name,
+        item: new URL(crumb.href, SITE.url).href,
+      })),
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f7f8f7" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />
+    {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+    <slot name="head" />
+  </head>
+  <body class="bg-paper text-slate">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <mask id="k" maskUnits="userSpaceOnUse" x="-20" y="-12" width="280" height="228">
+      <rect x="-20" y="-12" width="280" height="228" fill="white"/>
+      <polygon points="4,52 156,52 80,184" stroke="black" stroke-width="34" fill="none"/>
+    </mask>
+    <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+      <path d="M72 0H0V72" fill="none" stroke="#dee3de" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#f7f8f7"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="10" fill="#60cc5d"/>
+
+  <!-- mark: two overlapping inverted-triangle rings + solid core -->
+  <g transform="translate(96,150)" fill="none">
+    <polygon points="84,12 236,12 160,144" stroke="#60cc5d" stroke-width="20" mask="url(#k)"/>
+    <polygon points="4,52 156,52 80,184" stroke="#60cc5d" stroke-width="20"/>
+    <polygon points="50,80 110,80 80,132" fill="#60cc5d"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="392" y="292" font-family="Segoe UI Light, Segoe UI, Helvetica, Arial, sans-serif" font-weight="300" font-size="104" letter-spacing="1" fill="#575757">VirtEngine</text>
+  <text x="396" y="348" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="400" font-size="30" fill="#7c827c">by DET.io</text>
+
+  <text x="96" y="470" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600" font-size="40" fill="#262b26">The decentralized cloud marketplace protocol</text>
+  <text x="96" y="522" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="400" font-size="26" fill="#575757">On-chain compute leasing · VEID identity · escrow &amp; settlement · Apache 2.0</text>
+
+  <line x1="96" y1="566" x2="1104" y2="566" stroke="#c2cac2" stroke-width="1"/>
+  <text x="96" y="600" font-family="Consolas, Menlo, monospace" font-size="22" fill="#2b7d29">virtengine.com</text>
+  <text x="1104" y="600" text-anchor="end" font-family="Consolas, Menlo, monospace" font-size="22" fill="#7c827c">CometBFT · Cosmos SDK · AU2024203136B2</text>
+</svg>

@@ -1,0 +1,72 @@
+---
+import Guide from "@layouts/Guide.astro";
+import CardLink from "@components/CardLink.astro";
+import Alert from "@components/Alert.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+];
+---
+
+<Guide
+  title="Get started with your Identity Wallet"
+  metaTitle="Get started — Identity Wallet | identity.org.au"
+  description="Everything you need to set up your Identity Wallet: what you need, the step-by-step setup, verification levels, and what to do when something goes wrong."
+  lede="Setting up takes about ten minutes with a smartphone and one identity document. This guide walks you through every step — and what to do when something doesn't go to plan."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <div class="prose-service">
+    <p>
+      Your Identity Wallet is an app on your phone that holds <strong>verified claims</strong>
+      about you — facts like your name and age that have been checked against real evidence. Once
+      set up, you can prove things to services without handing over documents, and you decide what
+      is shared every single time.
+    </p>
+  </div>
+
+  <div class="mt-8 grid gap-4">
+    <CardLink
+      href="/get-started/what-you-need"
+      tag="Before you start"
+      title="What you need"
+      description="A smartphone, one government-issued identity document, and about ten minutes."
+    />
+    <CardLink
+      href="/get-started/set-up-your-wallet"
+      tag="Step by step"
+      title="Set up your wallet"
+      description="The full setup flow: document scan, selfie and liveness, hardware biometrics, review, and encrypted submission."
+    />
+    <CardLink
+      href="/get-started/verification-levels"
+      tag="Reference"
+      title="Verification levels"
+      description="Unverified, Basic, Standard and Trusted — what each level requires and what it unlocks."
+    />
+    <CardLink
+      href="/get-started/if-verification-fails"
+      tag="Troubleshooting"
+      title="If verification fails"
+      description="Most failures are practical — lighting, glare, expired documents. How to fix each one."
+    />
+    <CardLink
+      href="/get-started/lost-or-new-device"
+      tag="Troubleshooting"
+      title="Lost or new device"
+      description="Your identity lives on the network, not just your phone. How to recover on a new device."
+    />
+  </div>
+
+  <Alert tone="info" title="Reference implementation" class="mt-10">
+    <p>
+      The wallet app is open-source reference software — the working blueprint production wallets
+      build on. There are no official app-store listings; get the code from the
+      <a href="/about/open-source" class="link-plain">official repository</a>.
+    </p>
+  </Alert>
+</Guide>

@@ -1,0 +1,194 @@
+---
+/**
+ * "What happens to your data" lifecycle strip.
+ * Five stages: captured → encrypted on device → attested enclave processing →
+ * raw data destroyed → result only. Optionally renders the companion
+ * .table-gov table (stage / where / who can access / what remains).
+ * Grounded in BIOMETRIC_DATA_ADDENDUM + pkg/enclave_runtime facts.
+ */
+interface Props {
+  class?: string;
+  /** Render the companion definition table under the strip. */
+  withTable?: boolean;
+}
+const { class: className, withTable = false } = Astro.props;
+
+const stages = [
+  {
+    key: "captured",
+    title: "Captured",
+    note: "On your phone: document scan, selfie, liveness.",
+  },
+  {
+    key: "encrypted",
+    title: "Encrypted on your device",
+    note: "Sealed before anything moves. Keys stay in your phone.",
+  },
+  {
+    key: "processed",
+    title: "Processed in a sealed enclave",
+    note: "Hardware-attested. No operator can look inside.",
+  },
+  {
+    key: "destroyed",
+    title: "Raw data destroyed",
+    note: "The enclave keeps nothing after scoring ends.",
+  },
+  {
+    key: "result",
+    title: "Only the result remains",
+    note: "A score and tier — never documents or biometrics.",
+  },
+];
+---
+
+<div class:list={["lifecycle-strip", className]}>
+  <ol
+    class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-5"
+    aria-label="The life of your identity data in five stages: captured on your phone, encrypted on your device, processed inside a sealed hardware enclave, raw data destroyed, and only the verification result remains."
+  >
+    {
+      stages.map((stage, i) => (
+        <li class="lifecycle-stage relative flex flex-col gap-2 rounded-tile border border-hairline bg-paper p-4">
+          <span class="flex items-center gap-2.5">
+            <span class="lifecycle-disc flex h-9 w-9 flex-none items-center justify-center rounded-full" data-stage={stage.key}>
+              {stage.key === "captured" && (
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="2" y="4.5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.7" />
+                  <circle cx="10" cy="10.5" r="3.2" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M6.5 4.5 8 2.5h4l1.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              )}
+              {stage.key === "encrypted" && (
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="4" y="9" width="12" height="9" rx="1.8" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M6.8 9V6.2a3.2 3.2 0 0 1 6.4 0V9" stroke="currentColor" stroke-width="1.7" />
+                  <circle cx="10" cy="13.3" r="1.4" fill="currentColor" />
+                </svg>
+              )}
+              {stage.key === "processed" && (
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="2.5" y="3" width="15" height="14" rx="2" stroke="currentColor" stroke-width="1.7" />
+                  <rect x="6" y="6.5" width="8" height="7" rx="1.2" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M10 3v-2M6 3V1.7M14 3V1.7M10 19v-2M6 18.5V17M14 18.5V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              )}
+              {stage.key === "destroyed" && (
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="3" y="2.5" width="14" height="6.5" rx="1.4" stroke="currentColor" stroke-width="1.7" />
+                  <path d="M6 9v6.5M8.7 9v8M11.3 9v6.5M14 9v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                  <path d="M7 5.8h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                </svg>
+              )}
+              {stage.key === "result" && (
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.7" />
+                  <path d="m6.6 10.2 2.3 2.3 4.6-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              )}
+            </span>
+            <span class="text-[0.78rem] font-bold uppercase tracking-[0.1em] text-steel">Stage {i + 1}</span>
+          </span>
+          <span class="text-[1rem] font-bold leading-snug text-ink">{stage.title}</span>
+          <span class="text-[0.9rem] leading-normal text-body">{stage.note}</span>
+        </li>
+      ))
+    }
+  </ol>
+
+  {
+    withTable && (
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">
+            For each stage of the data lifecycle: where it happens, who can access the data, and
+            what remains afterwards
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Stage</th>
+              <th scope="col">Where it happens</th>
+              <th scope="col">Who can access your data</th>
+              <th scope="col">What remains afterwards</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1 · Capture</th>
+              <td>Your phone</td>
+              <td>Only you</td>
+              <td>Nothing has left your device yet</td>
+            </tr>
+            <tr>
+              <th scope="row">2 · Encryption</th>
+              <td>Your phone, before transmission</td>
+              <td>Only your device holds the keys</td>
+              <td>Ciphertext ready to travel — unreadable to every carrier</td>
+            </tr>
+            <tr>
+              <th scope="row">3 · Attested processing</th>
+              <td>A hardware-sealed enclave (trusted processing unit)</td>
+              <td>
+                No person — not operators, not providers, not the foundation. The chain admits
+                data only after verifying the enclave's measurement
+              </td>
+              <td>A signed verification result</td>
+            </tr>
+            <tr>
+              <th scope="row">4 · Destruction</th>
+              <td>Inside the enclave, then retention systems</td>
+              <td>Automatic — no human handles raw data</td>
+              <td>
+                Working copies destroyed when scoring ends; retained encrypted evidence destroyed
+                automatically at the end of its legal retention period (maximum 7 years, KYC/AML)
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">5 · Result</th>
+              <td>The VirtEngine chain</td>
+              <td>Services you consent to, per request</td>
+              <td>Your score and tier, pass/fail outcomes — never documents or biometrics</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .lifecycle-stage:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -0.72rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: -0.25rem;
+    border-right: 2.5px solid var(--color-hairline-strong);
+    border-bottom: 2.5px solid var(--color-hairline-strong);
+    transform: rotate(-45deg);
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .lifecycle-stage:not(:last-child)::after {
+      display: block;
+    }
+  }
+  .lifecycle-disc {
+    background: var(--color-tint);
+    color: var(--color-action);
+  }
+  .lifecycle-disc[data-stage="processed"] {
+    background: var(--color-navy);
+    color: #ffffff;
+  }
+  .lifecycle-disc[data-stage="destroyed"] {
+    background: var(--color-warn-bg);
+    color: var(--color-warn);
+  }
+  .lifecycle-disc[data-stage="result"] {
+    background: var(--color-success-bg);
+    color: var(--color-success-rule);
+  }
+</style>

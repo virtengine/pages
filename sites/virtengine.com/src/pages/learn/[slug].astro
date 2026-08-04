@@ -1,0 +1,139 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
+import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
+import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
+import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
+import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
+import { LEARN } from "@data/learn";
+import type { LearnDiagram } from "@data/learn";
+
+export function getStaticPaths() {
+  return LEARN.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Learn", href: "/learn" },
+  { name: guide.label, href: `/learn/${guide.slug}` },
+];
+
+const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
+  lifecycle: {
+    component: LifecycleFlow,
+    label:
+      "Marketplace lifecycle flow diagram in five stages: order (a tenant posts a deployment), bid (providers compete), lease (escrow is funded and the workload starts), usage (signed usage records are submitted), and settlement (escrow is released after the dispute window).",
+  },
+  settlement: {
+    component: SettlementFlow,
+    label:
+      "Settlement flow diagram: on the provider side, a usage meter, scheduled hourly collector, settlement pipeline with anomaly detection, and chain submitter; on-chain, the settlement module, 24-hour dispute window, escrow, and payout of the agreed amount with no marketplace commission deducted.",
+  },
+  veid: {
+    component: VeidPipeline,
+    label:
+      "VEID verification pipeline diagram: on-device capture, liveness, biometric attestation, and encryption; on-chain validator identity network scoring encrypted scopes by consensus; zero-knowledge verification surfaces for score thresholds, attributes, and marketplace gating.",
+  },
+  staking: {
+    component: StakingDiagram,
+    label:
+      "Staking topology diagram: delegators and staking partners delegate to the validator set; validators perform consensus, identity network, and governance duties; rewards flow back minus commission; misbehavior leads to slashing of bonded stake.",
+  },
+  architecture: {
+    component: ArchitectureMap,
+    label:
+      "Layered architecture diagram: clients on top, the VirtEngine chain with its module domains in the middle, the provider daemon below, and Kubernetes, HPC schedulers, and confidential enclaves at the infrastructure layer.",
+  },
+};
+
+const diagram = guide.diagram ? diagrams[guide.diagram] : null;
+const otherGuides = LEARN.filter((g) => g.slug !== guide.slug).slice(0, 4);
+
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: guide.title,
+  description: guide.metaDescription,
+  author: { "@type": "Organization", name: "VirtEngine" },
+  publisher: { "@type": "Organization", name: "VirtEngine", url: "https://virtengine.com" },
+  mainEntityOfPage: `https://virtengine.com/learn/${guide.slug}`,
+};
+---
+
+<Base
+  title={`${guide.title} — VirtEngine`}
+  description={guide.metaDescription}
+  path={`/learn/${guide.slug}`}
+  breadcrumbs={crumbs}
+  ogType="article"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(articleLd)} slot="head" />
+  <PageHero eyebrow={`Learn · ${guide.kicker}`} title={guide.title} lede={guide.intro} crumbs={crumbs} />
+
+  {
+    diagram && (
+      <div class="container-site pt-14 md:pt-20">
+        <DiagramFrame label={diagram.label} caption={guide.diagramCaption} class="reveal">
+          <diagram.component />
+        </DiagramFrame>
+      </div>
+    )
+  }
+
+  <article>
+    {
+      guide.sections.map((section) => (
+        <Section eyebrow={guide.kicker} title={section.heading}>
+          <div class="prose-body space-y-5 text-base">
+            {section.paragraphs.map((para) => <p>{para}</p>)}
+            {section.bullets && (
+              <ul class="tri-list text-base">
+                {section.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            )}
+          </div>
+        </Section>
+      ))
+    }
+  </article>
+
+  <Section eyebrow="Related" title="Continue from here">
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {
+        guide.related.map((rel) => (
+          <li>
+            <a
+              href={rel.href}
+              class="clip-corner group flex items-center justify-between gap-4 rounded-card border border-line bg-panel px-5 py-4 transition-colors hover:border-green-deep"
+            >
+              <span class="text-sm font-medium text-ink group-hover:text-green-dark">{rel.label}</span>
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-green-deep">
+                <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-8">
+      <p class="eyebrow">More guides</p>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {
+          otherGuides.map((g) => (
+            <li>
+              <a href={`/learn/${g.slug}`} class="inline-block rounded-sm border border-line-strong px-4 py-2 text-sm font-medium text-slate transition-colors hover:border-green-deep hover:text-green-dark">
+                {g.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+</Base>

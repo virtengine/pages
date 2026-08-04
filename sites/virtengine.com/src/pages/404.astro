@@ -1,0 +1,27 @@
+---
+import Base from "@layouts/Base.astro";
+import CTA from "@components/CTA.astro";
+---
+
+<Base
+  title="Page not found — VirtEngine"
+  description="The page you were looking for does not exist on virtengine.com."
+  path="/404"
+>
+  <div class="grid-backdrop border-b border-line">
+    <div class="container-site flex min-h-[60vh] flex-col items-start justify-center py-24">
+      <p class="eyebrow">404 — order unmatched</p>
+      <h1 class="mt-4 max-w-2xl font-display text-4xl md:text-6xl">
+        No bids for this route
+      </h1>
+      <p class="prose-body mt-6 max-w-xl text-lg">
+        The page you requested doesn't exist. Try the marketplace of pages below — every
+        one settles instantly.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <CTA href="/">Back to home</CTA>
+        <CTA href="/protocol" variant="secondary">Protocol overview</CTA>
+      </div>
+    </div>
+  </div>
+</Base>

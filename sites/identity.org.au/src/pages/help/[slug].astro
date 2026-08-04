@@ -1,0 +1,116 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
+import { HELP_ARTICLES, RELATED_EXTERNAL, getArticle } from "@data/help";
+
+export function getStaticPaths() {
+  return HELP_ARTICLES.map((article) => ({ params: { slug: article.slug } }));
+}
+
+const { slug } = Astro.params;
+const article = getArticle(slug!)!;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Help", href: "/help" },
+  { name: article.title, href: `/help/${article.slug}` },
+];
+
+const related = article.related
+  .map((r) => {
+    const internal = getArticle(r);
+    if (internal) {
+      return { title: internal.title, href: `/help/${internal.slug}`, summary: internal.summary };
+    }
+    const external = RELATED_EXTERNAL[r];
+    return external ? { title: external.title, href: external.href, summary: undefined } : null;
+  })
+  .filter((r) => r !== null);
+
+const updatedDisplay = new Date(article.updated).toLocaleDateString("en-AU", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.title,
+  description: article.summary,
+  dateModified: article.updated,
+  inLanguage: "en-AU",
+  author: { "@type": "Organization", name: "DETIO FOUNDATION LTD" },
+  mainEntityOfPage: `https://identity.org.au/help/${article.slug}`,
+};
+---
+
+<Base
+  title={`${article.title} — Help | identity.org.au`}
+  description={article.summary}
+  breadcrumbs={crumbs}
+  ogType="article"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+
+  <PageHeader crumbs={crumbs} eyebrow={article.category} title={article.title} lede={article.summary} />
+
+  <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <article>
+      <p class="m-0 text-[0.9rem] text-muted">Last updated {updatedDisplay}</p>
+      {
+        article.sections.map((section) => (
+          <section class="mt-8 first-of-type:mt-6">
+            {section.heading && <h2 class="mt-0 mb-3 text-[1.4rem]">{section.heading}</h2>}
+            <div class="prose-service">
+              {section.paragraphs?.map((p) => (
+                <p>{p}</p>
+              ))}
+              {section.list && (
+                <ul>
+                  {section.list.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {section.callout && (
+              <Alert tone={section.callout.tone} class="mt-5 max-w-[72ch]">
+                <p>{section.callout.text}</p>
+              </Alert>
+            )}
+            {section.embed === "lifecycle" && (
+              <div class="mt-6">
+                <DataLifecycle />
+                <p class="mt-4 mb-0">
+                  <a href="/privacy/trusted-processing" class="link-plain font-semibold">
+                    Trusted processing — the lock and the key
+                  </a>
+                </p>
+              </div>
+            )}
+          </section>
+        ))
+      }
+    </article>
+
+    <aside class="lg:pt-2">
+      <h2 class="mt-0 text-[0.85rem] font-bold uppercase tracking-[0.13em] text-muted">
+        Related articles
+      </h2>
+      <div class="mt-4 grid gap-3">
+        {related.map((r) => <CardLink href={r.href} title={r.title} description={r.summary} />)}
+      </div>
+      <div class="mt-8 border-t border-hairline pt-6 text-[0.95rem] text-body">
+        <p class="m-0 font-bold text-ink">Still need help?</p>
+        <p class="mt-2 mb-0">
+          Email <a href="mailto:hello@det.io" class="link-plain">hello@det.io</a> — never include
+          photos of your documents.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

@@ -1,0 +1,30 @@
+---
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  /** Visible breadcrumb trail (also pass to Base for JSON-LD). */
+  crumbs?: Crumb[];
+}
+
+const { eyebrow, title, lede, crumbs } = Astro.props;
+---
+
+<div class="grid-backdrop border-b border-line">
+  <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
+    {crumbs && <Breadcrumbs crumbs={crumbs} class="mb-8" />}
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="mt-4 max-w-4xl font-display text-4xl md:text-6xl">
+      {title}
+    </h1>
+    <p class="prose-body mt-6 max-w-2xl text-lg md:text-xl">{lede}</p>
+    <slot />
+  </div>
+</div>

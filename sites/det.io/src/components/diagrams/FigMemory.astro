@@ -1,0 +1,78 @@
+---
+/**
+ * Explorer figure D — the decentralized knowledge repository (spec §2.8,
+ * §2.9): agents commit validated learnings and query the collective's
+ * experience through an NLP interface over a vector index; harvesters
+ * ingest documents, research papers, and sensor/simulation logs;
+ * contributions feed the reputation contribution vector m₄. Text
+ * alternative carried by the enclosing DiagramFrame.
+ */
+---
+
+<svg viewBox="0 0 880 400" class="h-auto w-full min-w-[720px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="fm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- contributing agents -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="50" y="50" width="180" height="52" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="140" y="72" text-anchor="middle" fill="var(--color-ink)">agent · solves a task</text>
+    <text x="140" y="90" text-anchor="middle" fill="var(--color-text-soft)">novel technique learned</text>
+
+    <rect x="50" y="122" width="180" height="52" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="140" y="144" text-anchor="middle" fill="var(--color-ink)">harvester agents</text>
+    <text x="140" y="162" text-anchor="middle" fill="var(--color-text-soft)">docs · papers · sensor logs</text>
+  </g>
+
+  <!-- commit arrows -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fm-arrow)">
+    <path d="M230 76 Q290 76 300 116"></path>
+    <path d="M230 148 H296"></path>
+  </g>
+  <text x="244" y="62" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">commit learning</text>
+  <text x="244" y="140" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">ingest</text>
+
+  <!-- the repository -->
+  <g>
+    <rect x="300" y="60" width="300" height="200" rx="11" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+    <text x="450" y="90" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Decentralized knowledge repository</text>
+    <g font-family="var(--font-mono)" font-size="10">
+      <rect x="322" y="106" width="256" height="36" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="450" y="128" text-anchor="middle" fill="var(--color-ink)">NLP query interface</text>
+      <rect x="322" y="152" width="256" height="36" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="450" y="174" text-anchor="middle" fill="var(--color-ink)">vector index · semantic retrieval</text>
+      <rect x="322" y="198" width="256" height="36" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="450" y="220" text-anchor="middle" fill="var(--color-ink)">hybrid store · content-addressed</text>
+    </g>
+  </g>
+
+  <!-- querying agents -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="670" y="50" width="180" height="52" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="760" y="72" text-anchor="middle" fill="var(--color-ink)">agent · new problem</text>
+    <text x="760" y="90" text-anchor="middle" fill="var(--color-text-soft)">"has the collective seen this?"</text>
+
+    <rect x="670" y="122" width="180" height="52" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="760" y="144" text-anchor="middle" fill="var(--color-ink)">spawned agent</text>
+    <text x="760" y="162" text-anchor="middle" fill="var(--color-text-soft)">bootstraps from shared memory</text>
+  </g>
+
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fm-arrow)">
+    <path d="M604 76 Q640 76 666 72"></path>
+    <path d="M604 148 H666"></path>
+  </g>
+  <text x="610" y="62" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">retrieve</text>
+  <text x="610" y="140" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">seed</text>
+
+  <!-- chain anchor -->
+  <path d="M450 260 V300" stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#fm-arrow)"></path>
+  <text x="461" y="286" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">provenance anchored on-chain</text>
+  <rect x="270" y="304" width="360" height="44" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+  <text x="450" y="323" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Blockchain orchestration layer</text>
+  <text x="450" y="340" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">valuable contributions raise the contribution vector m₄</text>
+
+  <text x="440" y="384" text-anchor="middle" font-family="var(--font-sans)" font-size="10.5" fill="var(--color-text-muted)">One agent's lesson becomes every agent's starting point — organizational learning without a central data silo.</text>
+</svg>

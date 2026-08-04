@@ -1,0 +1,136 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
+import { SITE } from "@data/site";
+
+const stages = [
+  {
+    step: "01",
+    title: "Capture",
+    body: "The VEID mobile wallet captures identity documents with OCR and a selfie, entirely on the user's device.",
+  },
+  {
+    step: "02",
+    title: "Liveness",
+    body: "Active liveness challenges confirm a real, present human — not a photo, replay, or injection attack.",
+  },
+  {
+    step: "03",
+    title: "Hardware attestation",
+    body: "Biometric hardware attestation (fingerprint or iris) plus device integrity checks — Play Integrity on Android, App Attest on iOS — bind the capture to trusted hardware.",
+  },
+  {
+    step: "04",
+    title: "Encrypted submission",
+    body: "Identity scopes are sealed with public-key encryption and signed by both an approved client and the user before upload — only validator recipients can decrypt.",
+  },
+  {
+    step: "05",
+    title: "Consensus scoring",
+    body: "Validators decrypt, score the data with shared machine-learning models, and commit an identity trust score to the ledger by consensus — the patented core of the protocol.",
+  },
+  {
+    step: "06",
+    title: "ZK verification",
+    body: "Zero-knowledge proofs (x/veid/zk) let users prove facts about their verified identity — score thresholds, attributes — without revealing the underlying data.",
+  },
+];
+---
+
+<Base
+  title="VEID Network — VirtEngine"
+  description="VEID is VirtEngine's privacy-preserving decentralized identity layer: on-device capture, active liveness, biometric hardware attestation, validator consensus scoring, and zero-knowledge verification tiers."
+  path="/veid"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "VEID", href: "/veid" },
+  ]}
+>
+  <PageHero
+    eyebrow="Identity layer"
+    title="Identity verified by consensus, revealed by proof"
+    lede="VEID turns identity verification into a protocol function: encrypted identity scopes are scored by the validator set's shared machine-learning models, and users prove what matters with zero-knowledge proofs — nothing more."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "VEID", href: "/veid" },
+    ]}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="https://identity.org.au">identity.org.au</CTA>
+      <CTA href={SITE.docs} variant="secondary">VEID documentation</CTA>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Pipeline"
+    title="From device to ledger"
+    lede="Six stages take a user from document capture to a consensus-committed trust score they can use across the marketplace."
+  >
+    <DiagramFrame
+      label="VEID verification pipeline diagram. On device, the VEID capture wallet performs four stages: capture (document OCR and selfie), liveness (active liveness challenge), attestation (fingerprint or iris biometric attestation and device integrity), and encrypt (identity scopes sealed with public-key encryption). The submission, signed by an approved client and the user, flows on-chain to the validator identity network, where validators decrypt with their keys, score identity with shared machine-learning models, and commit the trust score by consensus, using the veid, veidregistry, encryption, and mfa modules. Outputs feed three zero-knowledge verification surfaces: score threshold proofs that prove a score meets a threshold and reveal nothing else, attribute proofs for scopes like age or residency, and marketplace gating where providers and tenants verify each other."
+      caption="fig 01 — capture → liveness → attestation → encryption → consensus scoring → ZK tiers"
+      class="reveal"
+    >
+      <VeidPipeline />
+    </DiagramFrame>
+
+    <ol class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        stages.map((stage) => (
+          <li class="reveal rounded-card border border-line bg-panel p-6">
+            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{stage.step}</p>
+            <h3 class="mt-2 text-base font-semibold">{stage.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate">{stage.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <Section eyebrow="Design principles" title="Privacy is the architecture, not a policy">
+    <div class="grid gap-5 lg:grid-cols-3">
+      <Card title="Encrypted end to end" tag="x/encryption" class="reveal">
+        Raw identity data is never public on-chain. Scopes are public-key encrypted so
+        only intended validator recipients can decrypt — in transit and at rest.
+      </Card>
+      <Card title="Approved clients only" tag="x/config" class="reveal">
+        Validators verify that uploads were produced by an approved client interface and
+        signed by the user. The approved-client list is chain configuration, governed
+        on-chain.
+      </Card>
+      <Card title="Selective disclosure" tag="x/veid/zk" class="reveal">
+        Zero-knowledge verification tiers mean a counterparty learns that your score
+        clears a threshold or that an attribute holds — never the document, biometric,
+        or score itself.
+      </Card>
+    </div>
+  </Section>
+
+  <Section eyebrow="In the marketplace" title="Why a cloud marketplace needs identity">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        Marketplace access is identity-dependent by design: providers verify tenants
+        before workloads land on their hardware, and tenants verify providers before
+        trusting them with workloads — cutting fraud in both directions. Sensitive
+        transactions, including account recovery, are additionally protected by on-chain
+        multi-factor authentication (<code>x/mfa</code>). Validators are compensated for
+        identity work through governance-controlled, conservative network incentives.
+      </p>
+      <p>
+        The VEID wallet reference implementation lives in the protocol repository at
+        <code>mobile/veid-capture-app/</code>. The consumer-facing identity program is
+        presented at <a href="https://identity.org.au">identity.org.au</a>.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/learn/what-is-veid">The full VEID explainer</CTA>
+      <CTA href="/modules/veid" variant="secondary">x/veid module reference</CTA>
+      <CTA href={SITE.github} variant="ghost">VEID source</CTA>
+    </div>
+  </Section>
+</Base>

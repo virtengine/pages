@@ -1,0 +1,99 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import StatusTag from "@components/StatusTag.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+import { TIERS } from "@data/tiers";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+  { name: "Verification levels", href: "/get-started/verification-levels" },
+];
+---
+
+<Guide
+  title="Verification levels"
+  metaTitle="Verification levels — Get started | identity.org.au"
+  description="The four VEID verification levels — Unverified, Basic, Standard and Trusted — what evidence each requires, and what each unlocks."
+  lede="Your verification level describes how thoroughly your identity has been checked. Services ask for the level they need — and get nothing beyond it."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <div class="prose-service">
+    <p>
+      There are four levels. Each is earned by completing stronger checks, and each unlocks more.
+      A service checking your identity learns your level and the answer it asked for —
+      <strong>never the evidence behind it</strong>.
+    </p>
+  </div>
+
+  <div class="mt-10 grid gap-6">
+    {
+      TIERS.map((tier, i) => (
+        <section class="border border-hairline rounded-tile bg-paper">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-alt px-6 py-4">
+            <h2 class="m-0 text-[1.3rem]">
+              <span class="text-muted font-semibold mr-2" aria-hidden="true">{i}.</span>
+              {tier.name}
+            </h2>
+            {tier.name === "Standard" && <StatusTag tone="info">Most services ask for this</StatusTag>}
+            {tier.name === "Trusted" && <StatusTag tone="success">Strongest assurance</StatusTag>}
+          </div>
+          <div class="grid gap-6 px-6 py-5 md:grid-cols-2">
+            <div>
+              <p class="m-0 text-body">{tier.plain}</p>
+              <h3 class="mt-4 mb-2 text-[0.85rem] font-bold uppercase tracking-[0.12em] text-steel">
+                Evidence required
+              </h3>
+              <ul class="m-0 grid gap-1.5 pl-5 list-disc marker:text-steel text-[0.97rem] text-body">
+                {tier.evidence.map((e) => (
+                  <li>{e}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 class="mt-0 mb-2 text-[0.85rem] font-bold uppercase tracking-[0.12em] text-steel">
+                What it unlocks
+              </h3>
+              <ul class="m-0 grid gap-1.5 pl-5 list-disc marker:text-steel text-[0.97rem] text-body">
+                {tier.unlocks.map((u) => (
+                  <li>{u}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <h2 class="mt-12 text-[1.5rem]">How levels change</h2>
+  <div class="prose-service">
+    <ul>
+      <li><strong>Levels go up</strong> when you complete stronger checks — for example adding hardware biometrics to move toward Trusted.</li>
+      <li><strong>Levels can go stale</strong> if evidence ages — an expired document means the related claims need re-verification.</li>
+      <li><strong>Levels go down</strong> if you revoke the consent a level depended on — revoking biometric consent withdraws biometric verification.</li>
+    </ul>
+    <p>
+      The network recalculates your level from the evidence it has verified. There is no manual
+      override and no way to buy a level — for anyone.
+    </p>
+    <p>
+      However strong the evidence you provide, the scoring itself always runs inside
+      <a href="/privacy/trusted-processing">trusted processing units</a> — hardware-sealed
+      vaults no one can open — and the raw evidence is destroyed when scoring ends. Only the
+      level and score remain.
+    </p>
+  </div>
+
+  <Alert tone="info" title="For services" class="mt-8">
+    <p>
+      If you run a service and want to check verification levels, see
+      <a href="/for-services" class="link-plain">for services</a> — verifiers receive a level and a
+      result, never documents.
+    </p>
+  </Alert>
+</Guide>

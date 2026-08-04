@@ -1,0 +1,68 @@
+---
+import { ECOSYSTEM, FOOTER_COLUMNS, SITE } from "@data/site";
+import Lockup from "@components/brand/Lockup.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="night-scope mt-24">
+  <div aria-hidden="true" class="delta-divider"></div>
+  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]">
+    <div class="max-w-sm md:col-span-2 lg:col-span-1">
+      <a href="/" class="inline-flex" aria-label="VirtEngine home">
+        <Lockup size={30} byline onDark />
+      </a>
+      <p class="mt-5 text-sm leading-relaxed">
+        The open-source decentralized cloud marketplace protocol. Apache 2.0 licensed,
+        protected by patent {SITE.patentId}, and stewarded by DETIO FOUNDATION LTD as
+        public-benefit infrastructure.
+      </p>
+      <p class="mt-4 font-mono text-sm">
+        <a href={`mailto:${SITE.email}`} class="text-night-muted transition-colors hover:text-green">{SITE.email}</a>
+      </p>
+    </div>
+
+    {
+      FOOTER_COLUMNS.map((col) => (
+        <nav aria-label={col.heading}>
+          <h2 class="eyebrow">{col.heading}</h2>
+          <ul class="mt-4 space-y-2.5">
+            {col.items.map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-night-muted transition-colors hover:text-green">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+
+    <nav aria-label="Ecosystem">
+      <h2 class="eyebrow">Ecosystem</h2>
+      <ul class="mt-4 space-y-2.5">
+        {
+          ECOSYSTEM.map((item) => (
+            <li>
+              <a href={item.href} rel="noopener" class="text-sm text-night-muted transition-colors hover:text-green">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-night-line">
+    <div class="container-site flex flex-col gap-2 py-6 text-xs text-night-faint sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {year} DETIO FOUNDATION LTD (ACN 699 651 771). VirtEngine is Apache 2.0 licensed open source.</p>
+      <p>
+        Certain methods are protected by
+        <a href={SITE.patentUrl} rel="noopener" class="underline underline-offset-2 transition-colors hover:text-green">
+          patent {SITE.patentId}</a>.
+      </p>
+    </div>
+  </div>
+</footer>

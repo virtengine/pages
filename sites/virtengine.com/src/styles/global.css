@@ -1,0 +1,508 @@
+@import "tailwindcss";
+
+/*
+  virtengine.com design tokens — see DESIGN.md at the project root.
+
+  Brand: VirtEngine green #60CC5D (nested double inverted-triangle mark)
+  + wordmark grey #575757. Engineering-paper light surfaces with green
+  as the single accent; dark "diagram plates" for technical figures.
+
+  Type: Questrial (display / wordmark-adjacent) · Inter (UI + body)
+  · JetBrains Mono (data, module names, captions).
+*/
+@theme {
+  /* surfaces */
+  --color-paper: #f7f8f7;
+  --color-paper-soft: #eef1ee;
+  --color-panel: #ffffff;
+
+  /* grey scale, built from wordmark grey #575757 */
+  --color-ink: #262b26;
+  --color-slate: #575757;
+  --color-muted: #6d736d;
+  --color-faint: #7c827c;
+
+  /* rules & hairlines */
+  --color-line: #dee3de;
+  --color-line-strong: #c2cac2;
+
+  /* green scale, built from brand green #60CC5D */
+  --color-green: #60cc5d;
+  --color-green-bright: #7ddd7a;
+  --color-green-deep: #2b7d29;
+  --color-green-dark: #1f611e;
+  --color-green-soft: #dcf3db;
+  --color-green-wash: #eff8ee;
+
+  /* night surfaces (footer + diagram plates) */
+  --color-night: #1b201b;
+  --color-night-deep: #141814;
+  --color-night-panel: #232923;
+  --color-night-line: #313931;
+  --color-night-line-strong: #465046;
+  --color-night-text: #e9eee9;
+  --color-night-muted: #a7b1a7;
+  --color-night-faint: #828c82;
+
+  /* semantic warning (slashing/risk callouts) */
+  --color-amber: #9a6700;
+  --color-amber-soft: #fdf3d7;
+
+  --font-display: "Questrial", "Century Gothic", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-card: 0.375rem;
+  --radius-frame: 0.5rem;
+}
+
+/* ---------- base ---------- */
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-slate);
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-green);
+  color: var(--color-night-deep);
+}
+
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1.1;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+h3, h4 {
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- shared patterns ---------- */
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-green-deep);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.4rem;
+  transition: top 150ms ease;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+.container-site {
+  width: 100%;
+  max-width: 74rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/* mono uppercase kicker with a brand-green delta glyph */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-green-deep);
+}
+.eyebrow::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.5rem;
+  background: var(--color-green);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  flex-shrink: 0;
+}
+
+.prose-body {
+  color: var(--color-slate);
+  max-width: 46rem;
+}
+.prose-body a {
+  color: var(--color-green-deep);
+  text-decoration: underline;
+  text-decoration-color: var(--color-green);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose-body a:hover {
+  color: var(--color-green-dark);
+  text-decoration-thickness: 2px;
+}
+.prose-body strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.prose-body code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--color-ink);
+  background: var(--color-paper-soft);
+  border: 1px solid var(--color-line);
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+
+/* triangle list bullet — the mark, pointing down (deploy/settle) */
+.tri-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.tri-list > li {
+  position: relative;
+  padding-left: 1.5rem;
+}
+.tri-list > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 0.62rem;
+  height: 0.56rem;
+  background: var(--color-green);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* clipped-corner panel — triangle-derived geometry */
+.clip-corner {
+  clip-path: polygon(0 0, calc(100% - 1.1rem) 0, 100% 1.1rem, 100% 100%, 0 100%);
+}
+
+/* ruled section header */
+.section-head {
+  display: grid;
+  gap: 0.9rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--color-line);
+}
+
+/* engineering-paper grid backdrop for hero bands (grid lives on a masked
+   pseudo-element so content above is never faded) */
+.grid-backdrop {
+  position: relative;
+  isolation: isolate;
+}
+.grid-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 0%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 0%, black 30%, transparent 100%);
+}
+
+/* Homepage launch field — a deliberate nod to the original VirtEngine site's
+   playful cloud-and-rocket mood, built from CSS so it remains crisp at any size. */
+.hero-playfield {
+  overflow: hidden;
+  min-height: 25rem;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(125, 221, 122, 0.18) 0 2px, transparent 3px) 0 0 / 28px 28px,
+    linear-gradient(145deg, #18251a 0%, #172218 58%, #213824 100%);
+}
+.hero-playfield > svg { position: relative; z-index: 2; }
+.hero-cloud {
+  position: absolute;
+  z-index: 1;
+  width: 11rem;
+  height: 3.7rem;
+  border-radius: 3rem;
+  background: rgba(116, 177, 226, 0.18);
+  filter: blur(0.2px);
+}
+.hero-cloud::before,
+.hero-cloud::after { content: ""; position: absolute; bottom: 0; border-radius: 50%; background: inherit; }
+.hero-cloud::before { width: 5rem; height: 5rem; left: 1.4rem; }
+.hero-cloud::after { width: 3.8rem; height: 3.8rem; right: 1.1rem; }
+.hero-cloud-a { left: -2rem; bottom: 1.2rem; }
+.hero-cloud-b { right: -1rem; top: 3rem; transform: scale(0.7); opacity: 0.6; }
+.hero-trajectory {
+  position: absolute;
+  z-index: 1;
+  width: 17rem;
+  height: 21rem;
+  right: 21%;
+  bottom: -7rem;
+  border-left: 2px dashed rgba(125, 221, 122, 0.7);
+  border-radius: 55% 0 0 0;
+  transform: rotate(18deg);
+}
+.hero-rocket {
+  position: absolute;
+  z-index: 3;
+  right: 26%;
+  bottom: 15%;
+  width: 2.6rem;
+  height: 6.2rem;
+  border: 2px solid #dcebdd;
+  border-radius: 60% 60% 35% 35%;
+  background: linear-gradient(90deg, #e5eee5 0 48%, #bdd0be 49% 100%);
+  transform: rotate(18deg);
+  box-shadow: 0 0 1.5rem rgba(125, 221, 122, 0.26);
+}
+.hero-rocket-window { position: absolute; left: 50%; top: 1.2rem; width: 0.9rem; height: 0.9rem; border: 2px solid #dcebdd; border-radius: 50%; background: #2b7d29; transform: translateX(-50%); }
+.hero-rocket-fin { position: absolute; bottom: 0.55rem; width: 1.2rem; height: 1.7rem; background: #dd5f4d; }
+.hero-rocket-fin-left { left: -0.8rem; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.hero-rocket-fin-right { right: -0.8rem; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.hero-rocket-flame { position: absolute; left: 50%; bottom: -1.7rem; width: 0.8rem; height: 1.9rem; background: linear-gradient(#f7d45f, #ef794b); clip-path: polygon(50% 100%, 0 0, 100% 0); transform: translateX(-50%); }
+.hero-control-strip { position: relative; z-index: 4; box-shadow: 0 12px 28px rgba(38, 43, 38, 0.12); }
+.hero-control-card { display: flex; align-items: center; gap: 0.9rem; min-height: 5.5rem; padding: 1rem 1.2rem; color: var(--color-slate); text-decoration: none; border-bottom: 1px solid var(--color-line); }
+.hero-control-card:last-child { border-bottom: 0; }
+.hero-control-card:hover { background: var(--color-green-wash); }
+.hero-control-card strong { display: block; color: var(--color-ink); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.hero-control-card small { display: block; margin-top: 0.15rem; font-size: 0.78rem; }
+.hero-control-icon { position: relative; flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; border: 1.5px solid var(--color-green-deep); border-radius: 0.28rem; }
+.hero-control-cube::before { content: ""; position: absolute; inset: 0.55rem; border: 1.5px solid var(--color-green); transform: rotate(45deg); }
+.hero-control-nodes::before { content: ""; position: absolute; inset: 0.45rem; background: radial-gradient(circle at 10% 50%, var(--color-green-deep) 0 3px, transparent 4px), radial-gradient(circle at 90% 15%, var(--color-green-deep) 0 3px, transparent 4px), radial-gradient(circle at 90% 85%, var(--color-green-deep) 0 3px, transparent 4px); }
+.hero-control-nodes::after { content: ""; position: absolute; left: 0.7rem; top: 1.15rem; width: 1.1rem; height: 1px; background: var(--color-green-deep); transform: rotate(-25deg); box-shadow: 0 0.75rem 0 var(--color-green-deep); }
+.hero-control-proof::before { content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-green-deep); font-size: 1.4rem; font-weight: 700; }
+@media (min-width: 640px) { .hero-control-card { border-bottom: 0; border-right: 1px solid var(--color-line); } .hero-control-card:last-child { border-right: 0; } }
+@media (max-width: 640px) { .hero-playfield { min-height: 20rem; } .hero-rocket { right: 18%; transform: scale(0.75) rotate(18deg); transform-origin: bottom center; } .hero-trajectory { right: 11%; transform: scale(0.75) rotate(18deg); transform-origin: bottom right; } }
+
+/* Waldur-connected catalogue plate — deliberately visual, while keeping the
+   distinction between the marketplace surface, protocol and execution layer visible. */
+.marketplace-console { overflow: hidden; background: linear-gradient(135deg, #fcfdfb, #f3f8f1); }
+.marketplace-console-top { background: linear-gradient(105deg, rgba(81, 153, 80, 0.16), transparent 60%); }
+.marketplace-offering { min-height: 10.25rem; transition: transform 180ms ease, border-color 180ms ease; }
+.marketplace-offering:hover { border-color: var(--color-green-deep); transform: translateY(-3px); }
+.marketplace-offering-icon { position: relative; display: block; width: 3.3rem; height: 2.55rem; color: var(--color-green-deep); }
+.marketplace-offering-icon::before, .marketplace-offering-icon::after { content: ""; position: absolute; box-sizing: border-box; }
+.marketplace-icon-cloud::before { left: 0.25rem; bottom: 0.25rem; width: 2.8rem; height: 1.2rem; border: 2px solid currentColor; border-radius: 1rem; }
+.marketplace-icon-cloud::after { left: 0.85rem; top: 0.05rem; width: 1.45rem; height: 1.45rem; border: 2px solid currentColor; border-radius: 50%; background: #f6faf4; }
+.marketplace-icon-storage::before { left: 0.4rem; top: 0.3rem; width: 2.5rem; height: 1.85rem; border: 2px solid currentColor; border-radius: 50% / 20%; box-shadow: 0 0.58rem 0 -1px #f6faf4, 0 0.58rem 0 0 currentColor; }
+.marketplace-icon-storage::after { right: 0.75rem; top: 0.85rem; width: 0.28rem; height: 0.28rem; border-radius: 50%; background: currentColor; }
+.marketplace-icon-vm::before { inset: 0.15rem 0.2rem 0.48rem; border: 2px solid currentColor; border-radius: 0.22rem; }
+.marketplace-icon-vm::after { left: 0.85rem; bottom: 0.05rem; width: 1.6rem; height: 0.38rem; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
+.marketplace-icon-custom::before { left: 0.3rem; top: 0.15rem; width: 2.35rem; height: 2.15rem; border: 2px solid currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.marketplace-icon-custom::after { left: 1.2rem; top: 0.85rem; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: currentColor; box-shadow: -0.8rem 0.43rem 0 -0.06rem currentColor, 0.8rem 0.43rem 0 -0.06rem currentColor; }
+.marketplace-path ol { counter-reset: marketplace-step; }
+.marketplace-path li { display: grid; gap: 0.25rem; padding-left: 0.85rem; border-left: 2px solid rgba(51, 111, 50, 0.35); }
+.marketplace-path strong { color: var(--color-ink); font-weight: 650; }
+.marketplace-path span { line-height: 1.45; }
+
+/* downward-delta section divider (points down = deploy/settle) */
+.delta-divider {
+  display: flex;
+  justify-content: center;
+  height: 0;
+  position: relative;
+}
+.delta-divider::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  width: 1.6rem;
+  height: 0.9rem;
+  background: var(--color-line-strong);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* ---------- night scope (footer, dark bands, diagram plates) ----------
+   Also remaps the diagram components' legacy custom-property names so the
+   hand-drawn SVG figures render as green-on-night engineering plates. */
+
+.night-scope {
+  background-color: var(--color-night);
+  color: var(--color-night-muted);
+
+  --color-ink: var(--color-night);
+  --color-ink-deep: var(--color-night-deep);
+  --color-panel: var(--color-night-panel);
+  --color-panel-raised: #2a312a;
+  --color-hairline: var(--color-night-line);
+  --color-hairline-strong: var(--color-night-line-strong);
+  --color-text: var(--color-night-text);
+  --color-text-muted: var(--color-night-muted);
+  --color-text-soft: var(--color-night-faint);
+  --color-teal: var(--color-green);
+  --color-teal-bright: var(--color-green);
+  --color-teal-glow: var(--color-green-bright);
+  --color-teal-dim: #2c4a2b;
+  --color-amber: #e0b348;
+}
+.night-scope h1,
+.night-scope h2,
+.night-scope h3,
+.night-scope h4 {
+  color: var(--color-night-text);
+}
+.night-scope .eyebrow {
+  color: var(--color-green);
+}
+
+/* Diagrams must fit inside the page at every viewport. Labels that sit on a
+   connector receive a dark halo so the line never reduces legibility. */
+.diagram-svg {
+  min-width: 0;
+}
+.diagram-line-label {
+  paint-order: stroke fill;
+  stroke: var(--color-night);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.diagram-mobile {
+  display: grid;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+}
+.diagram-mobile-card,
+.diagram-mobile-duties > div {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--color-night-line-strong);
+  border-radius: 0.5rem;
+  background: var(--color-night-panel);
+}
+.diagram-mobile strong {
+  color: var(--color-green-bright);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.diagram-mobile span {
+  color: var(--color-night-muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.diagram-mobile-flow {
+  color: var(--color-green-bright);
+  font-size: 0.77rem;
+  font-weight: 700;
+  text-align: center;
+}
+.diagram-mobile-validator {
+  border-color: var(--color-green);
+  background: #253725;
+  text-align: center;
+}
+.diagram-mobile-duties {
+  display: grid;
+  gap: 0.5rem;
+}
+.diagram-mobile-return,
+.diagram-mobile-warning {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.diagram-mobile-return {
+  color: var(--color-green-bright);
+  border-top: 1px solid var(--color-night-line);
+}
+.diagram-mobile-warning {
+  color: #ffd064;
+  border-radius: 0.4rem;
+  background: #352d18;
+}
+
+/* ---------- reveal-on-scroll (pure CSS, degrades gracefully) ---------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up 0.8s ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 42%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- diagram animation primitives ---------- */
+
+.flow-dash {
+  stroke-dasharray: 6 10;
+  animation: flow-dash-move 1.6s linear infinite;
+}
+@keyframes flow-dash-move {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+.node-pulse {
+  animation: node-pulse 3.2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes node-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.orbit-drift {
+  animation: orbit-drift 14s linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes orbit-drift {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-dash {
+    stroke-dasharray: none;
+  }
+}

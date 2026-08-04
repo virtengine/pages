@@ -1,0 +1,311 @@
+---
+import Base from "@layouts/Base.astro";
+import Section from "@components/Section.astro";
+import ProgramCard from "@components/ProgramCard.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import CTA from "@components/CTA.astro";
+import HeroLattice from "@components/diagrams/HeroLattice.astro";
+import EcosystemMap from "@components/diagrams/EcosystemMap.astro";
+import ProgramVirtArt from "@components/diagrams/ProgramVirtArt.astro";
+import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
+import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
+import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
+import { PURPOSES, SITE } from "@data/site";
+---
+
+<Base title={SITE.title} description={SITE.description} path="/">
+  <!-- hero -->
+  <div class="relative overflow-hidden border-b border-hairline bg-surface">
+    <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
+    <div class="container-site relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.15fr_1fr]">
+      <div class="grid gap-6">
+        <p class="eyebrow">Dynamic Elastic Technologies, Internet Organization</p>
+        <h1 class="headline-accent text-4xl font-bold md:text-[3.6rem] md:leading-[1.08]">
+          A research foundation for decentralized technologies — held for the public, by design.
+        </h1>
+        <p class="prose-inst text-lg md:text-xl">
+          <strong>DETIO FOUNDATION LTD</strong> is a not-for-profit technical research
+          organization. We develop and steward privacy-preserving digital infrastructure,
+          distributed computing, and trustworthy AI — and our constitution makes private
+          capture of that work structurally impossible.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <CTA href="/mission">Our mission</CTA>
+          <CTA href="/governance" variant="secondary">How we are governed</CTA>
+        </div>
+        <dl class="mt-2 grid max-w-md gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+          <div class="flex gap-4">
+            <dt class="w-28 shrink-0 uppercase tracking-wide">Legal form</dt>
+            <dd class="text-ink">not-for-profit public company limited by guarantee</dd>
+          </div>
+          <div class="flex gap-4">
+            <dt class="w-28 shrink-0 uppercase tracking-wide">ACN</dt>
+            <dd class="text-ink">699 651 771</dd>
+          </div>
+          <div class="flex gap-4">
+            <dt class="w-28 shrink-0 uppercase tracking-wide">Jurisdiction</dt>
+            <dd class="text-ink">Australia</dd>
+          </div>
+          <div class="flex gap-4">
+            <dt class="w-28 shrink-0 uppercase tracking-wide">Programs</dt>
+            <dd class="text-ink">VirtEngine · DSEMA · Bosun · Identity</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="reveal" role="img" aria-label="Abstract diagram of a decentralized node lattice converging on the DETIO Foundation seal, with a padlock beneath it representing the constitutional public-benefit lock.">
+        <HeroLattice />
+      </div>
+    </div>
+  </div>
+
+  <!-- mission distilled -->
+  <Section
+    number="01"
+    eyebrow="Charitable purposes"
+    title="Four purposes, written into the constitution"
+    lede="The foundation exists only for charitable purposes for the public benefit, carried out without private commercial interests. Clause 6 of the constitution defines exactly four pillars."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        PURPOSES.map((p) => (
+          <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-xl font-bold">{p.name}</h3>
+              <ClauseRef id={p.clause} />
+            </div>
+            <p class="prose-inst text-[0.98rem]">{p.summary}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="prose-inst mt-8">
+      Read the purposes in depth — including how commercial activity is constitutionally
+      constrained to funding public benefit — on the <a href="/mission">mission page</a>.
+    </p>
+  </Section>
+
+  <!-- research programs -->
+  <Section
+    number="02"
+    eyebrow="Research programs"
+    title="Four public-benefit technology programs"
+    lede="The foundation develops, stewards, publishes, and maintains four bodies of technology as public-benefit infrastructure — two flagship programs named in the constitution, an open-source applied-engineering track, and a first-class identity program."
+  >
+    <div class="grid gap-6 lg:grid-cols-2">
+      <ProgramCard
+        program="Program 01 — decentralized cloud"
+        title="VirtEngine"
+        href="/research/virtengine"
+        facts={[
+          ["stack", "Go · CometBFT · Cosmos SDK"],
+          ["license", "Apache-2.0, open source"],
+          ["patent", "AU2024203136B2 (accepted)"],
+          ["identity", "VEID — privacy-preserving"],
+        ]}
+      >
+        <p>
+          A decentralized cloud computing marketplace connecting tenants who need compute
+          with providers who lease capacity — with identity, encryption, escrow, and
+          settlement enforced by the chain itself.
+        </p>
+        <Fragment slot="art"><ProgramVirtArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 02 — trustworthy AI"
+        title="DSEMA"
+        href="/research/dsema"
+        facts={[
+          ["subject", "self-evolving multi-agent AI"],
+          ["status", "research — patent pending"],
+          ["control plane", "blockchain orchestration"],
+          ["safety", "constitutional safety layer"],
+        ]}
+      >
+        <p>
+          The Dynamically Self-Evolving Multi-Agent architecture: a research program for
+          safe, accountable, auditable multi-agent AI systems that improve themselves under
+          verifiable on-chain control.
+        </p>
+        <Fragment slot="art"><ProgramDsemaArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 03 — autonomous engineering"
+        title="Bosun"
+        href="/research/bosun"
+        facts={[
+          ["status", "experimental — open source"],
+          ["license", "Apache-2.0"],
+          ["install", "npm install -g bosun"],
+          ["home", "bosun.engineer"],
+        ]}
+      >
+        <p>
+          A fully open-source, experimental control plane for autonomous software
+          engineering — routing work across AI coding agents, automating PR lifecycles,
+          and recovering from failure while humans stay in command.
+        </p>
+        <Fragment slot="art"><ProgramBosunArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 04 — verifiable identity"
+        title="Identity — VEID"
+        href="/research/identity"
+        facts={[
+          ["layer", "x/veid · x/mfa · x/veid/zk"],
+          ["patent", "AU2024203136B2 (accepted)"],
+          ["service", "identity.org.au"],
+          ["privacy", "on-device · zero-knowledge"],
+        ]}
+      >
+        <p>
+          Verifiable Electronic Identity: multi-factor verification encrypted on the
+          user's device, scored by chain consensus, and presented to services as proofs of
+          attributes — never copies of documents.
+        </p>
+        <Fragment slot="art"><ProgramIdentityArt /></Fragment>
+      </ProgramCard>
+    </div>
+    <p class="prose-inst mt-8">
+      Six cross-cutting research topics — from <a href="/research/decentralized-identity">decentralized identity</a>
+      and <a href="/research/multi-agent-safety">multi-agent safety</a> to
+      <a href="/research/incentive-mechanism-design">incentive mechanism design</a> — are mapped
+      on the <a href="/research">research portfolio</a>.
+    </p>
+  </Section>
+
+  <!-- public-benefit lock -->
+  <Section
+    number="03"
+    eyebrow="The public-benefit lock"
+    title="No private capture — by constitution, not by promise"
+    lede="Most technology pledges are policies that a future board can quietly reverse. Ours are Protected Provisions in the constitution itself, changeable only under clause 18 with a special resolution and written Founding Member consent."
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">No dividends. No private extraction.</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Income and assets must be applied solely to the charitable purposes. Distribution
+          to members, directors, founders, or related parties is prohibited.
+          <ClauseRef id="8.1" /> <ClauseRef id="8.2" />
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">The technology is locked to the public.</h3>
+        <p class="prose-inst text-[0.95rem]">
+          VirtEngine, DSEMA, the patents, and all Transferred Assets must be owned,
+          stewarded, and applied for public benefit — a Protected Provision.
+          <ClauseRef id="sch 1" /> <ClauseRef id="31.1" />
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Capital cannot buy control.</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Transferable economic value — including any protocol token — must be structurally
+          separated from governance over the foundation's purposes.
+          <ClauseRef id="38.1" /> <ClauseRef id="38.5" />
+        </p>
+      </article>
+    </div>
+    <p class="prose-inst mt-8">
+      Even on winding up, surplus assets cannot flow to members: they must pass to another
+      charity with compatible purposes <ClauseRef id="61" /> <ClauseRef id="62" />. See the
+      full breakdown on the <a href="/governance">governance page</a> and in the
+      <a href="/foundation/public-benefit-lock">public-benefit lock deep dive</a>.
+    </p>
+  </Section>
+
+  <!-- constitution explorer -->
+  <Section
+    number="04"
+    eyebrow="The constitution explorer"
+    title="Read the document that defines us — in plain language"
+    lede="Thirteen parts, sixty-three clauses, twenty entrenched Protected Provisions. The constitution explorer translates the entire signed instrument into ten plain-language topics, each with exact clause citations you can verify."
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        [
+          { slug: "purpose-and-public-benefit-lock", title: "Purpose and the public-benefit lock", source: "Parts 1–2" },
+          { slug: "amendments-and-protected-provisions", title: "Amendments and Protected Provisions", source: "Clause 18 · Schedule 1" },
+          { slug: "reserved-matters", title: "Reserved Matters — the consent gate", source: "Clause 18A" },
+          { slug: "asset-stewardship-and-transferred-assets", title: "Asset stewardship and Transferred Assets", source: "Part 5" },
+          { slug: "protocol-governance-privacy-and-safety", title: "Protocol governance, privacy, safety", source: "Part 6" },
+          { slug: "winding-up-and-the-charity-lock", title: "Winding up and the charity lock", source: "Part 13" },
+        ].map((topic) => (
+          <a
+            href={`/constitution/${topic.slug}`}
+            class="group reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-5 transition-colors hover:border-blue-deep"
+          >
+            <span class="font-mono text-xs tracking-[0.14em] text-text-soft uppercase">{topic.source}</span>
+            <span class="font-display text-lg leading-snug font-bold group-hover:text-blue-deep">{topic.title}</span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <CTA href="/constitution">All ten topics</CTA>
+      <CTA href="/faq" variant="secondary">Questions, answered plainly</CTA>
+    </div>
+  </Section>
+
+  <!-- ecosystem -->
+  <Section
+    number="05"
+    eyebrow="Ecosystem"
+    title="One foundation, a family of public properties"
+    lede="det.io is the institutional anchor. The protocol, its documentation, the citizen-facing identity wallet, and the Bosun orchestrator each have a dedicated home."
+  >
+    <DiagramFrame
+      label="Ecosystem map: DETIO FOUNDATION LTD, ACN 699 651 771, at the center, stewarding the VirtEngine, DSEMA, Bosun and Identity research programs and five public properties — virtengine.com for the protocol and marketplace, docs.virtengine.com for open documentation, identity.org.au for the VEID identity wallet, bosun.engineer for the open-source agent orchestrator, and the open-source Apache-2.0 repositories on GitHub."
+      caption="fig 01 — the DETIO / VirtEngine ecosystem"
+      class="reveal"
+    >
+      <EcosystemMap />
+    </DiagramFrame>
+    <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <li class="rounded-card border border-hairline bg-surface p-5">
+        <a href="https://virtengine.com" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">virtengine.com</a>
+        <p class="prose-inst mt-2 text-sm">The protocol: marketplace, staking, VEID, and tokenomics for providers, tenants, and validators.</p>
+      </li>
+      <li class="rounded-card border border-hairline bg-surface p-5">
+        <a href="https://docs.virtengine.com" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">docs.virtengine.com</a>
+        <p class="prose-inst mt-2 text-sm">Open technical documentation — node operations, provider guides, module reference.</p>
+      </li>
+      <li class="rounded-card border border-hairline bg-surface p-5">
+        <a href="https://identity.org.au" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">identity.org.au</a>
+        <p class="prose-inst mt-2 text-sm">The Identity Wallet: plain-language home of VEID for individuals and relying services.</p>
+      </li>
+      <li class="rounded-card border border-hairline bg-surface p-5">
+        <a href="https://bosun.engineer" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">bosun.engineer</a>
+        <p class="prose-inst mt-2 text-sm">The open-source Bosun agent orchestrator — docs, installation, and operator guides.</p>
+      </li>
+    </ul>
+  </Section>
+
+  <!-- closing CTA -->
+  <section class="container-site pb-4">
+    <div class="rounded-frame bg-night px-8 py-12 text-night-text md:px-14">
+      <p class="font-mono text-xs tracking-[0.18em] text-sky-bright uppercase">Work with the foundation</p>
+      <h2 class="mt-4 max-w-2xl text-3xl font-bold text-night-text md:text-4xl">
+        Research collaboration, provider partnerships, membership.
+      </h2>
+      <p class="mt-4 max-w-2xl text-night-muted">
+        The foundation welcomes inquiries from researchers, infrastructure operators, and
+        people who share its purposes. Commercial engagement is welcome too — it exists to
+        fund the mission.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/contact" class="inline-flex items-center gap-2 rounded-md bg-sky px-5 py-2.5 font-display text-sm font-semibold text-night transition-colors hover:bg-sky-bright">
+          Contact us
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+        </a>
+        <a href="/transparency" class="inline-flex items-center gap-2 rounded-md border border-night-hairline px-5 py-2.5 font-display text-sm font-semibold text-night-text transition-colors hover:border-sky-bright hover:text-sky-bright">
+          Transparency commitments
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

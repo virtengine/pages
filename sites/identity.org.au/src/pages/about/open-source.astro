@@ -1,0 +1,83 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import { ABOUT_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Open source", href: "/about/open-source" },
+];
+---
+
+<Guide
+  title="Open source"
+  metaTitle="Open source — About | identity.org.au"
+  description="The Identity Wallet and the VirtEngine network are fully open source under Apache 2.0. Where the code lives, what a reference implementation means, and why openness is a security feature."
+  lede="Every claim on this website is checkable against public code. That is deliberate."
+  eyebrow="About"
+  breadcrumbs={crumbs}
+  sectionLabel="In this section"
+  sectionNav={ABOUT_NAV}
+>
+  <div class="prose-service">
+    <h2>What is open</h2>
+    <p>
+      Everything. The VirtEngine network — including VEID, the identity layer — is written in Go
+      and licensed under <strong>Apache 2.0</strong>, a permissive open-source licence. The mobile
+      capture app that implements the wallet flow described on this site is public in the same
+      repository.
+    </p>
+    <ul>
+      <li>
+        <strong>The network and identity layer:</strong>
+        <a href={SITE.github} rel="noopener">github.com/virtengine/virtengine</a> — see the
+        <code>x/veid</code> module for identity, consent and zero-knowledge proofs
+      </li>
+      <li>
+        <strong>The wallet capture app:</strong> <code>mobile/veid-capture-app</code> in the same
+        repository — document capture, liveness challenges, hardware biometrics, attestation
+      </li>
+      <li>
+        <strong>The governing documents:</strong> the privacy policy, consent framework and
+        biometric data addendum are versioned in the repository alongside the code they govern
+      </li>
+    </ul>
+
+    <h2>What “reference implementation” means</h2>
+    <p>
+      The capture app is a <strong>reference implementation</strong>: a complete, working
+      implementation of the wallet flow that serves as the blueprint for production wallets. Some
+      production adapters — for example native machine-learning modules and production encryption
+      backends — are pluggable extension points in the reference code. We say this plainly
+      because honesty about maturity is part of being trustworthy infrastructure.
+    </p>
+    <p>
+      There are <strong>no official app-store listings</strong> at this stage. Any store listing
+      claiming to be this wallet should be treated as suspect — see
+      <a href="/help/recognising-scams-and-phishing">recognising scams</a>.
+    </p>
+
+    <h2>Why openness is a security feature</h2>
+    <ul>
+      <li><strong>Anyone can audit it.</strong> Security researchers, journalists and rival experts can — and do — read the code. Flaws cannot hide behind a marketing page.</li>
+      <li><strong>Claims are falsifiable.</strong> When this site says biometric templates are encrypted with X25519-XSalsa20-Poly1305, you can find that code and check.</li>
+      <li><strong>No lock-in.</strong> If the steward ever failed the community, the code can be forked and continued — the public cannot lose access to it.</li>
+    </ul>
+
+    <h2>Contributing and reviewing</h2>
+    <p>
+      Issues and pull requests are open on GitHub. Security-sensitive findings should go to
+      <a href={`mailto:${SITE.securityEmail}`}>{SITE.securityEmail}</a> rather than a public issue —
+      see the <a href="/security">security page</a> for the disclosure process.
+    </p>
+  </div>
+
+  <Alert tone="info" class="mt-8">
+    <p>
+      Full engineering documentation, including the protocol modules and operational guides, is at
+      <a href={SITE.docs} rel="noopener" class="link-plain">docs.virtengine.com</a>.
+    </p>
+  </Alert>
+</Guide>

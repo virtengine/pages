@@ -1,0 +1,120 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { SOLUTIONS } from "@data/solutions";
+import { SITE } from "@data/site";
+
+export function getStaticPaths() {
+  return SOLUTIONS.map((sol) => ({ params: { slug: sol.slug }, props: { sol } }));
+}
+
+const { sol } = Astro.props;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Solutions", href: "/solutions" },
+  { name: sol.label, href: `/solutions/${sol.slug}` },
+];
+
+const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
+---
+
+<Base
+  title={`${sol.title} — VirtEngine`}
+  description={sol.metaDescription}
+  path={`/solutions/${sol.slug}`}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={`Solutions · ${sol.label}`} title={sol.title} lede={sol.intro} crumbs={crumbs}>
+    <p class="mt-6 max-w-2xl border-l-2 border-green pl-4 text-sm text-muted">
+      <strong class="font-semibold text-ink">Who this is for:</strong> {sol.audience}
+    </p>
+  </PageHero>
+
+  <Section eyebrow="The problem" title={sol.problem.heading}>
+    <div class="prose-body space-y-5 text-base">
+      {sol.problem.paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </Section>
+
+  <Section eyebrow="How VirtEngine addresses it" title="Grounded in what the protocol actually does">
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        sol.approach.map((sec, i) => (
+          <div class="reveal clip-corner rounded-card border border-line bg-panel p-7">
+            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+            <h3 class="mt-2 text-lg font-semibold text-ink">{sec.heading}</h3>
+            <div class="mt-3 space-y-3 text-sm leading-relaxed text-slate">
+              {sec.paragraphs.map((p) => <p>{p}</p>)}
+            </div>
+            {sec.bullets && (
+              <ul class="tri-list mt-4 text-sm text-slate">
+                {sec.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section eyebrow="Economics" title={sol.economics.heading}>
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      {sol.economics.paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </Section>
+
+  <Section eyebrow="Getting started" title="The path in">
+    <ol class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {
+        sol.gettingStarted.map((step, i) => (
+          <li class="reveal clip-corner rounded-card border border-line bg-panel p-5">
+            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+            <h3 class="mt-2 text-sm font-semibold text-ink">{step.step}</h3>
+            <p class="mt-1.5 text-xs leading-relaxed text-slate">{step.detail}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="reveal mt-10 flex flex-wrap gap-4">
+      <CTA href={SITE.docs}>Read the documentation</CTA>
+      <CTA href={SITE.github} variant="secondary">Browse the source</CTA>
+    </div>
+  </Section>
+
+  <Section eyebrow="Related" title="Continue from here">
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {
+        sol.related.map((rel) => (
+          <li>
+            <a
+              href={rel.href}
+              class="clip-corner group flex items-center justify-between gap-4 rounded-card border border-line bg-panel px-5 py-4 transition-colors hover:border-green-deep"
+            >
+              <span class="text-sm font-medium text-ink group-hover:text-green-dark">{rel.label}</span>
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-green-deep">
+                <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-8">
+      <p class="eyebrow">More solutions</p>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {
+          others.map((o) => (
+            <li>
+              <a href={`/solutions/${o.slug}`} class="inline-block rounded-sm border border-line-strong px-4 py-2 text-sm font-medium text-slate transition-colors hover:border-green-deep hover:text-green-dark">
+                {o.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+</Base>

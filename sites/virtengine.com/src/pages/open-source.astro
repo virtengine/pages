@@ -1,0 +1,163 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import { SITE } from "@data/site";
+
+const repoLayout = [
+  { path: "x/", note: "27 on-chain modules — marketplace, identity, economics, quality" },
+  { path: "app/", note: "Cosmos SDK application wiring for the virtengine binary" },
+  { path: "pkg/", note: "Shared packages, incl. the provider daemon and pkg/economics" },
+  { path: "docs/", note: "Protocol, provider, HPC, VEID, and operations documentation" },
+  { path: "config/mainnet/", note: "Mainnet launch artifacts: allocations & genesis bundle" },
+  { path: "_docs/operations/", note: "Launch-readiness records, incl. the go/no-go decision" },
+  { path: "mobile/veid-capture-app/", note: "VEID identity capture reference wallet" },
+  { path: "Makefile", note: "Canonical build entry point — make virtengine" },
+];
+
+const contribute = [
+  {
+    title: "Feedback & testing",
+    body: "Exercise existing and new features and report what you find. Issues with reproduction steps are among the most valuable contributions to a protocol at launch-readiness stage.",
+  },
+  {
+    title: "Code",
+    body: "Pick up an issue, follow CONTRIBUTING.md, and open a pull request. The codebase is Go with a comprehensive test suite — changes are expected to arrive with tests.",
+  },
+  {
+    title: "Documentation",
+    body: "Protocol, provider, validator, and VEID docs live in-repo and at docs.virtengine.com. Corrections and operational write-ups from real deployments are welcome.",
+  },
+];
+---
+
+<Base
+  title="Open Source — VirtEngine"
+  description="The VirtEngine Protocol as an open-source project: Apache 2.0 license, repository layout, how to contribute, the patent notice explained, Akash lineage, and DETIO FOUNDATION stewardship."
+  path="/open-source"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Open Source", href: "/open-source" },
+  ]}
+>
+  <PageHero
+    eyebrow="The project"
+    title="Built in the open, held for the public"
+    lede="VirtEngine is Apache 2.0 licensed Go, developed in public, and stewarded by a not-for-profit foundation whose constitution forbids private capture of the protocol."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Open Source", href: "/open-source" },
+    ]}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href={SITE.github}>github.com/virtengine/virtengine</CTA>
+      <CTA href={SITE.docs} variant="secondary">Documentation</CTA>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Repository"
+    title="One repo, one binary"
+    lede="Everything — chain, modules, provider daemon, docs, and launch artifacts — ships from a single repository that builds a single virtengine binary."
+  >
+    <ul class="grid gap-3 lg:grid-cols-2">
+      {
+        repoLayout.map((item) => (
+          <li class="reveal flex items-baseline gap-4 rounded-md border border-line bg-panel px-5 py-3.5">
+            <code class="shrink-0 font-mono text-sm font-medium text-green-deep">{item.path}</code>
+            <span class="text-sm text-slate">{item.note}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section eyebrow="Contributing" title="Ways to contribute">
+    <div class="grid gap-5 lg:grid-cols-3">
+      {contribute.map((item) => <Card title={item.title} class="reveal p-7">{item.body}</Card>)}
+    </div>
+    <div class="prose-body reveal mt-10 max-w-3xl space-y-4 text-base">
+      <h3 class="text-xl font-semibold text-ink">Development environment</h3>
+      <p>
+        VirtEngine is developed against <strong>Go 1.25.5</strong>. You need a working Go
+        toolchain with <code>$GOPATH/bin</code> on your <code>PATH</code>, plus a C/C++
+        compiler (<code>gcc</code> or <code>clang</code>) for the <code>libusb</code> and
+        <code>libhid</code> dependencies. Builds run through the <code>Makefile</code>:
+        <code>make virtengine</code> compiles the binary into <code>.cache/bin</code>.
+        Linux and macOS on amd64/arm64 are supported; Windows amd64 is experimental.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="License & patent"
+    title="Apache 2.0, with a patent you should understand"
+  >
+    <div class="grid gap-5 lg:grid-cols-2">
+      <div class="reveal rounded-card border border-line bg-panel p-8">
+        <h3 class="text-lg font-semibold">What the license gives you</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">
+          The Apache License 2.0 lets you use, modify, and distribute the source code
+          freely, including commercially. It also includes a patent grant covering the
+          contributions the patent holder has made to this project — so using VirtEngine
+          as shipped is covered.
+        </p>
+      </div>
+      <div class="reveal rounded-card border border-line bg-panel p-8">
+        <h3 class="text-lg font-semibold">Where the patent applies</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">
+          Certain methods and system architectures implemented in the codebase — notably
+          the decentralized identity-verification consensus system — are protected by
+          <a href={SITE.patentUrl} rel="noopener" class="text-green-deep underline decoration-green/50 underline-offset-2 hover:decoration-green-deep">patent {SITE.patentId}</a>.
+          Reproducing or deploying the patented methods <em>outside</em> the scope of the
+          Apache 2.0 grant — for example, re-implementing them in a separate system — may
+          require separate authorization. Questions: contact the maintainers at
+          <a href={`mailto:${SITE.email}`} class="text-green-deep underline decoration-green/50 underline-offset-2 hover:decoration-green-deep">{SITE.email}</a>.
+        </p>
+      </div>
+    </div>
+    <p class="reveal mt-6 max-w-3xl text-sm text-slate">
+      In plain terms: the patent is used defensively to keep the protocol's core methods
+      open under foundation stewardship, not to restrict users of the open-source
+      project.
+    </p>
+  </Section>
+
+  <Section eyebrow="Lineage" title="Standing on Akash's shoulders">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        VirtEngine's codebase is partly derived from the
+        <strong>Akash Network</strong> decentralized cloud infrastructure marketplace,
+        and the project acknowledges that lineage openly. On top of that foundation,
+        VirtEngine adds the VEID Network, on-chain MFA, HPC scheduler
+        integrations, confidential compute attestation, burn-and-mint economics, and the
+        usage-settlement pipeline — the surface documented across this site.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Stewardship" title="A public-benefit lock on the protocol">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        The protocol, software, standards, patent rights, identity system, chain, and
+        token are stewarded by <strong>DETIO FOUNDATION LTD</strong> — an Australian
+        not-for-profit public company limited by guarantee (ACN 699 651 771). Its
+        constitution establishes a public-benefit lock: the foundation must not operate
+        for private commercial interests, pay dividends, or permit private capture of
+        the IP and digital assets it stewards. Commercial activity is permitted only to
+        fund, scale, or sustain its charitable purposes, and on winding-up its assets
+        pass to another public-benefit entity.
+      </p>
+      <p>
+        That structure is the answer to "what stops this from being taken closed-source?"
+        — governance, not goodwill.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/about">About the foundation</CTA>
+      <CTA href="https://det.io" variant="secondary">det.io</CTA>
+    </div>
+  </Section>
+</Base>

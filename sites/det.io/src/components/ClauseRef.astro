@@ -1,0 +1,22 @@
+---
+/**
+ * Small typographic citation of a constitution clause or schedule,
+ * e.g. <ClauseRef id="6.1.1" /> → "cl 6.1.1".
+ */
+interface Props {
+  /** Clause number, e.g. "6.1.1", "18A", or "sch 1" */
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+const label = id.startsWith("sch") ? id : `cl ${id}`;
+---
+
+<span
+  class:list={[
+    "inline-block rounded-sm border border-hairline bg-vellum px-1.5 py-0.5 align-middle font-mono text-[0.72rem] leading-none font-medium whitespace-nowrap text-blue-deep",
+    className,
+  ]}
+  title={`DETIO FOUNDATION LTD constitution, ${label.replace("cl ", "clause ").replace("sch ", "schedule ")}`}
+>{label}</span>

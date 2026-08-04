@@ -1,0 +1,163 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import Steps from "@components/Steps.astro";
+import VerifyFlow from "@components/diagrams/VerifyFlow.astro";
+import { WALLET_NAV } from "@data/nav-sections";
+import { TIERS } from "@data/tiers";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Wallet", href: "/wallet" },
+  { name: "Verify on VirtEngine", href: "/wallet/verify-on-virtengine" },
+];
+
+const flowSteps = [
+  {
+    title: "Create your wallet",
+    body: "Set up the Identity Wallet — the mobile app for capture, the web wallet at my.identity.org.au for management. Every wallet starts Unverified.",
+    detail: ["No identity checks yet — just keys created on your device."],
+  },
+  {
+    title: "Complete verification levels",
+    body: "Work through the evidence steps your target level needs: document capture and liveness for Standard; hardware biometrics and device attestation for Trusted. Everything is encrypted on your device before it moves.",
+    detail: [
+      "Each step is consented separately, and you review before anything is submitted.",
+      "You only climb as high as the actions you want actually require.",
+    ],
+  },
+  {
+    title: "The network scores and records",
+    body: "Governance-approved verifiers process your encrypted evidence and the VEID module computes a composite score. Your tier — Basic, Standard, Trusted — is derived from that score and recorded on-chain.",
+    detail: [
+      "The chain records results and encrypted references, never readable evidence.",
+      "Scoring logic is open source — the model is inspectable, not a black box.",
+    ],
+  },
+  {
+    title: "You are an approved client",
+    body: "Marketplace actions carry tier requirements. When your tier meets an action's requirement, the network's eligibility check passes and the action proceeds — deployments, leases, marketplace participation.",
+    detail: ["Approval is mechanical: tier meets requirement, action allowed."],
+  },
+  {
+    title: "Present your tier — never your documents",
+    body: "Providers and services on the network see your tier and that your score met their threshold. They never see your name, documents or biometrics unless you explicitly consent to share a specific verified claim.",
+  },
+];
+---
+
+<Guide
+  title="Verify on VirtEngine"
+  metaTitle="Verify on VirtEngine — become an approved client | identity.org.au"
+  description="The end-to-end flow from wallet to approved client: complete verification levels, receive an on-chain VEID score and tier, and present your tier to providers and the marketplace — which never see your documents."
+  lede="How verification in your wallet becomes approval on the VirtEngine network: evidence in, score and tier out, and marketplace actions unlocked — with providers seeing your tier, never your documents."
+  eyebrow="The service"
+  breadcrumbs={crumbs}
+  sectionLabel="The wallet"
+  sectionNav={WALLET_NAV}
+>
+  <div class="prose-service">
+    <p>
+      The VirtEngine network is a decentralised cloud marketplace: tenants deploy workloads,
+      providers lease capacity, and the chain settles between them. Because real money and real
+      infrastructure are involved, actions on the network are gated by identity assurance — and
+      the Identity Wallet is how you provide it. Verifying makes you an
+      <strong>approved client</strong>: an account whose verification tier satisfies the
+      requirements of the actions it takes.
+    </p>
+  </div>
+
+  <div class="mt-8 border border-hairline rounded-tile bg-paper p-4 sm:p-6">
+    <VerifyFlow />
+  </div>
+
+  <div class="prose-service mt-10">
+    <h2>The flow, end to end</h2>
+  </div>
+  <Steps steps={flowSteps} class="mt-6" />
+
+  <div class="prose-service mt-10">
+    <h2>What providers see — and never see</h2>
+  </div>
+  <div class="mt-5 overflow-x-auto">
+    <table class="table-gov">
+      <caption class="sr-only">What providers and the marketplace see about a verified client, and what they never see</caption>
+      <thead>
+        <tr>
+          <th scope="col">Providers and the marketplace see</th>
+          <th scope="col">They never see</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Your verification tier (Basic, Standard, Trusted)</td>
+          <td>Your identity documents or any images of them</td>
+        </tr>
+        <tr>
+          <td>That your score meets the threshold their offering requires</td>
+          <td>Your exact score history or the signals behind it</td>
+        </tr>
+        <tr>
+          <td>Zero-knowledge proof results they requested (for example, score above threshold)</td>
+          <td>Your biometric data — in any form, at any tier, ever</td>
+        </tr>
+        <tr>
+          <td>Verified claims you explicitly consent to share, one by one</td>
+          <td>Anything from scopes you did not consent to</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose-service mt-10">
+    <h2>How tiers gate marketplace actions</h2>
+    <p>
+      Every offering type on the network carries a required tier, and the chain's eligibility
+      check compares your recorded tier against it before the action executes. Low-risk activity
+      needs little; sensitive roles need a lot — the
+      <a href="/insights/verification-tiers-and-proportionality">proportionality principle</a>
+      applied mechanically.
+    </p>
+  </div>
+  <div class="mt-5 overflow-x-auto">
+    <table class="table-gov">
+      <caption class="sr-only">Verification tiers and the marketplace activity each typically unlocks</caption>
+      <thead>
+        <tr>
+          <th scope="col">Your tier</th>
+          <th scope="col">Typically unlocks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          TIERS.map((tier) => (
+            <tr>
+              <th scope="row">{tier.name}</th>
+              <td>{tier.unlocks.join(" · ")}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <Callout title="If an action needs a higher tier" class="mt-8">
+    <p>
+      Nothing fails silently. Your wallet shows which level the action requires and exactly what
+      evidence would raise yours — and climbing is always your choice, made when something you
+      want actually requires it. See <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
+      for the evidence behind each tier.
+    </p>
+  </Callout>
+
+  <Alert tone="info" title="Network status honesty" class="mt-8">
+    <p>
+      The VirtEngine network and the wallet are open-source infrastructure rolling out together.
+      Tier requirements for specific offerings are set on-chain and may evolve through network
+      governance — this page describes the mechanism, and the
+      <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain">technical documentation</a>
+      tracks the current parameters.
+    </p>
+  </Alert>
+</Guide>

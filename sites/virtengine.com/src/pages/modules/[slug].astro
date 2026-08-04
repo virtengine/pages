@@ -1,0 +1,107 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { MODULES, modulesByDomain } from "@data/modules";
+import { SITE } from "@data/site";
+
+export function getStaticPaths() {
+  return MODULES.map((mod) => ({ params: { slug: mod.slug }, props: { mod } }));
+}
+
+const { mod } = Astro.props;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Modules", href: "/modules" },
+  { name: mod.path, href: `/modules/${mod.slug}` },
+];
+
+const siblings = modulesByDomain(mod.domain).filter((m) => m.slug !== mod.slug).slice(0, 3);
+const githubPath = `${SITE.github}/tree/main/${mod.path}`;
+---
+
+<Base
+  title={`${mod.path} — ${mod.name} module — VirtEngine`}
+  description={`${mod.name} module reference: ${mod.summary} How ${mod.path} works, why it exists, and how it interacts with the rest of the VirtEngine protocol.`}
+  path={`/modules/${mod.slug}`}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={`Module reference · ${mod.domain}`} title={`${mod.path} — ${mod.name}`} lede={mod.summary} crumbs={crumbs}>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href={githubPath}>Source on GitHub</CTA>
+      <CTA href={SITE.docs} variant="secondary">Protocol docs</CTA>
+    </div>
+  </PageHero>
+
+  <Section eyebrow="What it does" title={`Inside ${mod.path}`}>
+    <div class="prose-body space-y-5 text-base">
+      {mod.whatItDoes.map((para) => <p>{para}</p>)}
+    </div>
+  </Section>
+
+  <Section eyebrow="Why it exists" title="The design rationale">
+    <div class="prose-body reveal max-w-3xl text-base">
+      <p>{mod.whyItExists}</p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Interactions"
+    title="How it connects to the rest of the chain"
+    lede="No module stands alone — these are the protocol surfaces this module depends on or serves."
+  >
+    <ul class="grid gap-3 sm:grid-cols-2">
+      {
+        mod.interactions.map((ix) => (
+          <li class="reveal clip-corner rounded-card border border-line bg-panel p-5">
+            {ix.slug ? (
+              <a href={`/modules/${ix.slug}`} class="font-mono text-sm font-medium text-green-deep underline decoration-green/40 underline-offset-2 hover:text-green-dark">
+                {ix.label}
+              </a>
+            ) : (
+              <span class="font-mono text-sm font-medium text-ink">{ix.label}</span>
+            )}
+            <p class="mt-1.5 text-sm text-slate">{ix.how}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section eyebrow="Key concepts" title="Terms that matter here">
+    <dl class="grid max-w-4xl gap-4 sm:grid-cols-2">
+      {
+        mod.concepts.map((c) => (
+          <div class="reveal border-l-2 border-green pl-4">
+            <dt class="text-sm font-semibold text-ink">{c.term}</dt>
+            <dd class="mt-1 text-sm text-slate">{c.def}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <Section eyebrow="Keep exploring" title={`More from ${mod.domain.toLowerCase()}`}>
+    <ul class="grid gap-3 sm:grid-cols-3">
+      {
+        siblings.map((sib) => (
+          <li>
+            <a
+              href={`/modules/${sib.slug}`}
+              class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
+            >
+              <span class="font-mono text-sm font-medium text-green-deep group-hover:text-green-dark">{sib.path}</span>
+              <p class="mt-1.5 text-sm text-slate">{sib.summary}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/modules" variant="secondary">Full module reference</CTA>
+      <CTA href="/protocol" variant="ghost">Protocol architecture</CTA>
+    </div>
+  </Section>
+</Base>

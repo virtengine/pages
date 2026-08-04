@@ -1,0 +1,57 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import CardLink from "@components/CardLink.astro";
+import { HELP_ARTICLES, HELP_CATEGORIES } from "@data/help";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Help", href: "/help" },
+];
+---
+
+<Base
+  title="Help centre | identity.org.au"
+  description="Plain-English help for the Identity Wallet: your data and privacy, using your wallet with services, security, and support."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Help centre"
+    title="How can we help?"
+    lede="Plain-English articles about your data, your wallet and your rights. No jargon without an explanation."
+  />
+
+  <div class="container-site py-12">
+    {
+      HELP_CATEGORIES.map((category) => {
+        const articles = HELP_ARTICLES.filter((a) => a.category === category);
+        if (articles.length === 0) return null;
+        return (
+          <section class="mb-12 last:mb-0">
+            <h2 class="mt-0 border-b-2 border-navy pb-3 text-[1.4rem]">{category}</h2>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              {articles.map((article) => (
+                <CardLink
+                  href={`/help/${article.slug}`}
+                  title={article.title}
+                  description={article.summary}
+                />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+
+    <section class="mt-14 border border-hairline rounded-tile bg-alt px-6 py-6">
+      <h2 class="mt-0 text-[1.25rem]">Can't find what you need?</h2>
+      <p class="text-body measure">
+        Check the <a href="/faq" class="link-plain">frequently asked questions</a>, the
+        <a href="/get-started" class="link-plain">get-started guide</a>, or email
+        <a href="mailto:hello@det.io" class="link-plain">hello@det.io</a>. Never include photos of
+        your identity documents in an email.
+      </p>
+    </section>
+  </div>
+</Base>

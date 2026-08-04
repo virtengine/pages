@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://identity.org.au/sitemap-index.xml

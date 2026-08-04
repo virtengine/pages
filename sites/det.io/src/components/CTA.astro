@@ -1,0 +1,25 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary" | "ghost";
+  rel?: string;
+}
+
+const { href, variant = "primary", rel } = Astro.props;
+
+const classes = {
+  primary:
+    "inline-flex items-center gap-2 rounded-md bg-blue-deep px-5 py-2.5 font-display text-sm font-semibold text-white transition-colors hover:bg-blue-mid",
+  secondary:
+    "inline-flex items-center gap-2 rounded-md border border-hairline-strong bg-surface px-5 py-2.5 font-display text-sm font-semibold text-ink transition-colors hover:border-blue-deep hover:text-blue-deep",
+  ghost:
+    "inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 transition-colors hover:decoration-blue-deep",
+}[variant];
+---
+
+<a href={href} rel={rel} class={classes}>
+  <slot />
+  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 8h10M9 4l4 4-4 4"></path>
+  </svg>
+</a>

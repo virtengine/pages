@@ -1,0 +1,90 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import { GET_STARTED_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Get started", href: "/get-started" },
+  { name: "What you need", href: "/get-started/what-you-need" },
+];
+---
+
+<Guide
+  title="What you need"
+  metaTitle="What you need — Get started | identity.org.au"
+  description="What you need before setting up your Identity Wallet: an eligible identity document, a smartphone with a camera, and the requirements for higher verification levels."
+  lede="Three things: a smartphone, one identity document, and about ten minutes somewhere well lit."
+  eyebrow="Get started"
+  breadcrumbs={crumbs}
+  sectionLabel="In this guide"
+  sectionNav={GET_STARTED_NAV}
+>
+  <div class="prose-service">
+    <h2>An identity document</h2>
+    <p>You need one government-issued identity document. Any of these works:</p>
+    <ul>
+      <li>Passport</li>
+      <li>Driver licence</li>
+      <li>National identity card</li>
+    </ul>
+    <p>
+      The document must be current — expired documents cannot be verified — and physically with
+      you, because you photograph the real document during setup. Photocopies, screenshots and
+      photos of photos are rejected by the capture checks.
+    </p>
+
+    <h2>A smartphone</h2>
+    <p>The wallet runs on Android and iOS phones. For the core setup you need:</p>
+    <ul>
+      <li>A working camera — used for the document scan and the selfie</li>
+      <li>A screen lock set up (PIN, fingerprint or face) — the wallet relies on it as the first line of defence</li>
+      <li>An up-to-date operating system, so the platform security features the wallet uses are current</li>
+    </ul>
+
+    <h2>For the Trusted level: secure hardware</h2>
+    <p>
+      The highest verification level uses your phone's built-in security hardware. If you want to
+      reach <a href="/get-started/verification-levels">Trusted</a>, your phone also needs:
+    </p>
+    <ul>
+      <li>A fingerprint or iris sensor (fingerprint sensors on most modern phones qualify)</li>
+      <li>
+        Support for device integrity attestation — Google Play Integrity on Android, or Apple App
+        Attest on iOS. Most phones from recent years support this automatically.
+      </li>
+    </ul>
+  </div>
+
+  <Callout title="Rooted or jailbroken phones" class="mt-8">
+    <p>
+      Device integrity attestation fails on phones that have been rooted or jailbroken, so the
+      Trusted level is unavailable on them. Standard verification may still work, depending on the
+      device's state.
+    </p>
+  </Callout>
+
+  <div class="prose-service mt-8">
+    <h2>Ten minutes, good light</h2>
+    <p>
+      The whole flow takes about ten minutes. Two practical tips prevent most retries: sit
+      somewhere with even lighting and no glare behind you, and put your document on a plain, dark
+      surface when scanning it.
+    </p>
+
+    <h2>What you do not need</h2>
+    <ul>
+      <li><strong>No printer, no paperwork</strong> — everything happens in the app.</li>
+      <li><strong>No account with anyone else</strong> — the wallet is not linked to myGov, banks or any other login.</li>
+      <li><strong>No payment</strong> — the software is free and open source.</li>
+    </ul>
+  </div>
+
+  <Alert tone="info" class="mt-8">
+    <p>
+      Ready? Continue to <a href="/get-started/set-up-your-wallet" class="link-plain">Set up your wallet</a>
+      for the step-by-step flow.
+    </p>
+  </Alert>
+</Guide>

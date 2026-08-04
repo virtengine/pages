@@ -1,0 +1,131 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import StatusTag from "@components/StatusTag.astro";
+import Steps from "@components/Steps.astro";
+import WebPortalFrame from "@components/phone/WebPortalFrame.astro";
+import { WALLET_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Wallet", href: "/wallet" },
+  { name: "Web wallet", href: "/wallet/web-wallet" },
+];
+
+const signInSteps = [
+  {
+    title: "Sign in with a device-bound credential",
+    body: "The portal signs you in with a passkey or device-bound key — cryptographic material held by your device's secure hardware. There is no password to remember, reuse, or phish.",
+  },
+  {
+    title: "Your wallet loads — results, not evidence",
+    body: "The portal shows your verification level, available proofs and consent ledger. Your documents and biometrics are not in the portal; they stay encrypted where they were captured.",
+  },
+  {
+    title: "Act, and everything is recorded",
+    body: "Present a proof, approve or revoke a consent, end a session — every action lands in your auditable history, timestamped, visible only to you.",
+  },
+];
+---
+
+<Guide
+  title="Web wallet — my.identity.org.au"
+  metaTitle="Web wallet — my.identity.org.au | identity.org.au"
+  description="my.identity.org.au is the browser wallet portal of the Identity Wallet service: passkey sign-in, credential and consent management, presenting proofs to services, and session security."
+  lede="The browser portal for your Identity Wallet: manage credentials and consents, present proofs to services, and control your sessions — from any browser, with no password to phish."
+  eyebrow="The service"
+  breadcrumbs={crumbs}
+  sectionLabel="The wallet"
+  sectionNav={WALLET_NAV}
+>
+  <StatusTag tone="info">Reference implementation · rolling out with the VirtEngine network</StatusTag>
+
+  <div class="prose-service mt-6">
+    <p>
+      <strong>my.identity.org.au</strong> is the web wallet — the portal where your verified
+      identity lives day to day. Verification evidence is captured once, on your phone, by the
+      <a href="/wallet/mobile-wallet">mobile wallet</a>; the portal is where you use the result:
+      presenting proofs, granting and revoking consent, and watching exactly what has been shared
+      with whom.
+    </p>
+  </div>
+
+  <div class="mt-8 flex flex-wrap gap-4">
+    <a href={SITE.walletPortal} rel="noopener" class="btn-primary">
+      Join the launch list
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </a>
+  </div>
+
+  <div class="mt-10">
+    <WebPortalFrame />
+  </div>
+
+  <div class="prose-service mt-10">
+    <h2>How signing in works</h2>
+    <p>
+      The portal never asks you to create a password. Sign-in uses <strong>passkeys and
+      device-bound credentials</strong> — key pairs created in your device's secure hardware,
+      where the private key never leaves. A sign-in is a cryptographic signature, not a shared
+      secret: there is nothing for a phishing site to capture and replay, and nothing for a
+      breached server to leak.
+    </p>
+  </div>
+
+  <Steps steps={signInSteps} class="mt-8" />
+
+  <div class="prose-service mt-10">
+    <h2>What you manage in the portal</h2>
+    <ul>
+      <li>
+        <strong>Credentials.</strong> Your verification level and the verified claims behind it —
+        with plain statements of <a href="/wallet/credentials">what each one proves and never
+        reveals</a>.
+      </li>
+      <li>
+        <strong>Proof presentation.</strong> When a service requests a proof — over 18, residency,
+        a tier confirmation — the request appears with the asker, the exact data involved and the
+        purpose, and you approve or decline. See
+        <a href="/help/presenting-proofs-to-a-service">presenting proofs to a service</a>.
+      </li>
+      <li>
+        <strong>Consents.</strong> Every active grant with its scope, purpose and expiry, plus
+        one-action revocation and the full timestamped history —
+        <a href="/help/revoking-consent">how revocation works</a>.
+      </li>
+      <li>
+        <strong>Sessions and devices.</strong> Every signed-in browser and device, with the
+        ability to end any session — or all of them — immediately.
+      </li>
+    </ul>
+
+    <h2>Session security</h2>
+    <p>
+      Portal sessions are deliberately short-lived and re-authenticate for sensitive actions such
+      as approving a new consent or removing a device. Signing out of all devices takes one
+      action, and every sign-in — successful or failed — appears in your activity history. If a
+      device is lost or stolen, the <a href="/get-started/lost-or-new-device">lost or new
+      device</a> guide covers the recovery path end to end.
+    </p>
+    <p>
+      What the portal deliberately does not hold is as important as what it does: no document
+      images, no biometric templates, no raw evidence. If the portal's infrastructure were
+      breached, the attacker's haul would be verification results and consent records — not the
+      material needed to impersonate you. That is the same
+      <a href="/wallet/security">no-honeypot architecture</a> the whole service is built on.
+    </p>
+  </div>
+
+  <Alert tone="info" title="Maturity, stated plainly" class="mt-8">
+    <p>
+      The web wallet is part of the open-source VirtEngine reference stack and is rolling out with
+      the network. Capabilities described here are the portal's design as implemented in the
+      public codebase — we do not make availability claims beyond that, and any site other than
+      <strong>my.identity.org.au</strong> claiming to be this portal should be treated as
+      <a href="/help/recognising-scams-and-phishing" class="link-plain">a scam</a>.
+    </p>
+  </Alert>
+</Guide>

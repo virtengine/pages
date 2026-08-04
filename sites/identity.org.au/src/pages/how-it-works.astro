@@ -1,0 +1,176 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Steps from "@components/Steps.astro";
+import Alert from "@components/Alert.astro";
+import Callout from "@components/Callout.astro";
+import ConsentScreen from "@components/phone/ConsentScreen.astro";
+import ZkShareScreen from "@components/phone/ZkShareScreen.astro";
+import LockAndKey from "@components/diagrams/LockAndKey.astro";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "How it works", href: "/how-it-works" },
+];
+
+const onDevice = [
+  {
+    title: "Capture happens on your phone",
+    body: "Document scan (front and back), a selfie with active liveness challenges, and — for the highest level — fingerprint or iris through your phone's secure hardware.",
+  },
+  {
+    title: "Reading and checking happen on your phone",
+    body: "The document's text is read automatically (OCR) and quality checks run locally: edges, glare, face confidence, liveness gating. You review everything.",
+  },
+  {
+    title: "Encryption happens on your phone",
+    body: "Before anything is transmitted, the evidence is sealed with envelope encryption (X25519-XSalsa20-Poly1305). From this moment, your evidence is ciphertext everywhere except your device.",
+  },
+];
+
+const onNetwork = [
+  {
+    title: "Verification runs inside trusted processing units",
+    body: "Your encrypted submission is opened only inside hardware-sealed enclaves — trusted processing units the chain checks by fingerprint before any data enters. Machine-learning models assess document authenticity, face match and liveness in an environment no operator can look into; raw data is destroyed when scoring ends.",
+  },
+  {
+    title: "Results are recorded, evidence is not",
+    body: "The network records the outcome: your verification level and pass/fail results, plus encrypted references. Your documents and biometrics are never written to the chain in readable form.",
+  },
+  {
+    title: "Your level becomes usable everywhere",
+    body: "Any participating service can now ask the network to confirm your identity — with your consent, per request — without any service ever holding your documents.",
+  },
+];
+---
+
+<Base
+  title="How it works | identity.org.au"
+  description="How the Identity Wallet works, end to end: on-device capture and encryption, network verification, consent-based sharing, and zero-knowledge proofs — in plain language."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="How it works"
+    title="Your phone holds the evidence. The network holds the proof."
+    lede="The entire design follows one rule: the sensitive material stays with you, and everyone else gets answers. Here is the pipeline, in plain language."
+  />
+
+  <div class="container-site py-12">
+    <section class="grid gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="mt-0 flex items-center gap-3 text-[1.5rem]">
+          <span class="inline-block h-7 w-1.5 bg-navy" aria-hidden="true"></span>
+          Part one — on your device
+        </h2>
+        <Steps steps={onDevice} class="mt-6" />
+      </div>
+      <div>
+        <h2 class="mt-0 flex items-center gap-3 text-[1.5rem]">
+          <span class="inline-block h-7 w-1.5 bg-steel" aria-hidden="true"></span>
+          Part two — on the network
+        </h2>
+        <Steps steps={onNetwork} class="mt-6" />
+      </div>
+    </section>
+
+    <Callout title="Why split it this way?" class="mt-10 max-w-[72ch]">
+      <p>
+        Conventional identity systems copy your documents into a central database — and central
+        databases get breached. This design means there is nothing central to raid: your evidence
+        exists in readable form only on your device, and the network holds tamper-proof results.
+      </p>
+    </Callout>
+
+    <section class="mt-16">
+      <h2 class="mt-0 text-[1.6rem]">Inside the trusted processing unit</h2>
+      <p class="text-body measure">
+        The step that deserves the closest look is the processing itself. Your encrypted
+        evidence is opened only inside a hardware-sealed vault whose key is forged in the
+        hardware and never exists outside it — and the chain checks the vault's exact
+        fingerprint before any data enters.
+      </p>
+      <figure class="m-0 mt-8 rounded-tile border border-hairline bg-alt p-4 sm:p-6">
+        <LockAndKey />
+        <figcaption class="mt-3 text-[0.9rem] text-muted">
+          The lock and the key: sealed on your device, admitted through the attestation gate,
+          processed and destroyed inside the vault — only the result reaches the chain.
+        </figcaption>
+      </figure>
+      <a href="/privacy/trusted-processing" class="link-plain mt-5 inline-block font-semibold">
+        Trusted processing, explained in full — how the vault works and when data is destroyed
+      </a>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="mt-0 text-[1.6rem]">When a service asks about you</h2>
+      <p class="text-body measure">
+        Verification happens once. Sharing happens as often as you approve it — and only what you
+        approve. Two screens do all the work:
+      </p>
+      <div class="mt-8 grid gap-10 md:grid-cols-2">
+        <figure class="m-0 max-w-[280px]">
+          <ConsentScreen />
+          <figcaption class="mt-3 text-[0.9rem] text-muted">
+            The consent screen: who is asking, exactly what they will see, what they will never
+            see, and when the consent expires. Nothing moves until you approve.
+          </figcaption>
+        </figure>
+        <figure class="m-0 max-w-[280px]">
+          <ZkShareScreen />
+          <figcaption class="mt-3 text-[0.9rem] text-muted">
+            Zero-knowledge sharing: your data stays locked on the device; the service receives one
+            verifiable answer — nothing else.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="mt-0 text-[1.6rem]">What each party ends up holding</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">What you, the network, and services each hold</caption>
+          <thead>
+            <tr>
+              <th scope="col">Party</th>
+              <th scope="col">Holds</th>
+              <th scope="col">Never holds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">You</th>
+              <td>Everything — your evidence, your keys, your consent history</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">The network</th>
+              <td>Encrypted payloads, verification results, consent records</td>
+              <td>Readable documents or biometrics</td>
+            </tr>
+            <tr>
+              <th scope="row">A service you approve</th>
+              <td>Your verification level and the specific answer you approved</td>
+              <td>Documents, photos, biometric data, unconsented scopes</td>
+            </tr>
+            <tr>
+              <th scope="row">Everyone else</th>
+              <td>Nothing about you</td>
+              <td>Everything</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <Alert tone="info" title="Want to go deeper?" class="mt-12 max-w-[72ch]">
+      <p>
+        <a href="/about/the-technology" class="link-plain">The technology</a> names every component,
+        and <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
+        details what evidence earns each level. Engineers can go straight to the
+        <a href="https://docs.virtengine.com" rel="noopener" class="link-plain">protocol docs</a>.
+      </p>
+    </Alert>
+  </div>
+</Base>

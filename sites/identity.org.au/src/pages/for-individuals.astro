@@ -1,0 +1,107 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import CardLink from "@components/CardLink.astro";
+import Alert from "@components/Alert.astro";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "For individuals", href: "/for-individuals" },
+];
+---
+
+<Base
+  title="For individuals | identity.org.au"
+  description="What the Identity Wallet means for you: verify once, prove things without documents, control every share, and leave whenever you want — with the rights that back each promise."
+  breadcrumbs={crumbs}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="For individuals"
+    title="Your identity, working for you — not filed in someone's database"
+    lede="Every time you photograph your licence for a website, you create another copy that can leak. The wallet replaces copies with answers."
+  />
+
+  <div class="container-site py-12">
+    <section>
+      <h2 class="mt-0 text-[1.6rem]">What changes for you</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-gov">
+          <caption class="sr-only">The old way of proving identity compared with the wallet</caption>
+          <thead>
+            <tr>
+              <th scope="col">Today's way</th>
+              <th scope="col">With the wallet</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Upload your licence to every website that asks</td>
+              <td>Verify once; reuse the result everywhere the wallet is accepted</td>
+            </tr>
+            <tr>
+              <td>The venue photocopies your ID — name, address, everything</td>
+              <td>The venue gets one answer: “over 18 — yes”</td>
+            </tr>
+            <tr>
+              <td>You never know who still holds copies of your documents</td>
+              <td>Your consent history lists every share; every consent is revocable</td>
+            </tr>
+            <tr>
+              <td>A breach at any company that copied your ID exposes you</td>
+              <td>Services hold answers, not documents — there is nothing to steal</td>
+            </tr>
+            <tr>
+              <td>Deleting your data means emailing dozens of companies</td>
+              <td>One deletion process, with a published timeline and key destruction</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">The rights behind the promises</h2>
+      <p class="text-body measure">
+        These are not features that can be quietly removed — they are commitments in the published
+        documents that govern the system:
+      </p>
+      <ul class="mt-5 grid list-none gap-4 p-0 md:grid-cols-2">
+        <li class="border border-hairline rounded-tile px-5 py-4">
+          <h3 class="m-0 text-[1.05rem]">Consent, always and granularly</h3>
+          <p class="mt-1.5 mb-0 text-[0.95rem] text-body">Per data category, per service, with optional expiry — and revocable at any time.</p>
+        </li>
+        <li class="border border-hairline rounded-tile px-5 py-4">
+          <h3 class="m-0 text-[1.05rem]">Biometrics never monetised</h3>
+          <p class="mt-1.5 mb-0 text-[0.95rem] text-body">Selling, leasing or trading biometric data is prohibited outright — regardless of consent.</p>
+        </li>
+        <li class="border border-hairline rounded-tile px-5 py-4">
+          <h3 class="m-0 text-[1.05rem]">Access and portability</h3>
+          <p class="mt-1.5 mb-0 text-[0.95rem] text-body">Request a copy of your data at any time; responses within 30 days.</p>
+        </li>
+        <li class="border border-hairline rounded-tile px-5 py-4">
+          <h3 class="m-0 text-[1.05rem]">Real deletion</h3>
+          <p class="mt-1.5 mb-0 text-[0.95rem] text-body">30 days from request, plus backup rotation — with encryption keys destroyed.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="mt-0 text-[1.6rem]">Where to go next</h2>
+      <div class="mt-5 grid gap-4 md:grid-cols-2">
+        <CardLink href="/get-started" title="Set up your wallet" description="What you need and the five-step setup." />
+        <CardLink href="/help/using-your-wallet-with-a-service" title="Using your wallet with a service" description="What sharing looks like in practice." />
+        <CardLink href="/help/who-can-see-your-data" title="Who can see your data" description="The complete visibility map." />
+        <CardLink href="/privacy" title="Privacy" description="What exists, where it lives, and for how long." />
+      </div>
+    </section>
+
+    <Alert tone="info" title="Is this a government ID?" class="mt-12 max-w-[72ch]">
+      <p>
+        No. This is an open-source community service stewarded by a not-for-profit foundation —
+        not a government service, and it does not replace your passport or licence.
+        <a href="/about/what-is-identity-org-au" class="link-plain">How it differs</a>.
+      </p>
+    </Alert>
+  </div>
+</Base>

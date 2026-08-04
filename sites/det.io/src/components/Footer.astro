@@ -1,0 +1,70 @@
+---
+import { ECOSYSTEM, FOOTER_EXTRA, NAV, SITE } from "@data/site";
+import Lockup from "@components/brand/Lockup.astro";
+---
+
+<footer class="mt-20 bg-night text-night-text">
+  <div class="container-site grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
+    <div class="max-w-sm">
+      <a href="/" class="inline-flex items-center" aria-label="DETIO Foundation home">
+        <Lockup size={40} foundation onDark />
+      </a>
+      <p class="mt-4 text-sm leading-relaxed text-night-muted">
+        {SITE.legalName} — Dynamic Elastic Technologies, Internet Organization. A
+        not-for-profit technical research organization advancing decentralized technologies
+        for public benefit — steward of the VirtEngine protocol, the DSEMA multi-agent
+        architecture, the open-source Bosun agent orchestrator, and the VEID identity
+        program.
+      </p>
+      <p class="mt-4 font-mono text-sm">
+        <a href={`mailto:${SITE.email}`} class="text-sky-bright underline decoration-night-hairline underline-offset-4 hover:decoration-sky-bright">
+          {SITE.email}
+        </a>
+      </p>
+    </div>
+
+    <nav aria-label="Site">
+      <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-night-muted uppercase">Site</h2>
+      <ul class="mt-4 grid gap-2.5">
+        {
+          [...NAV, ...FOOTER_EXTRA].map((item) => (
+            <li>
+              <a href={item.href} class="text-sm text-night-text transition-colors hover:text-sky-bright">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-label="Ecosystem">
+      <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-night-muted uppercase">Ecosystem</h2>
+      <ul class="mt-4 grid gap-2.5">
+        {
+          ECOSYSTEM.map((item) => (
+            <li>
+              <a href={item.href} rel="noopener" class="text-sm text-night-text transition-colors hover:text-sky-bright">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-night-hairline">
+    <div class="container-site flex flex-wrap items-center justify-between gap-3 py-6 font-mono text-xs text-night-muted">
+      <p>
+        {SITE.legalName} · ACN {SITE.acn} · ABN {SITE.abn} · not-for-profit public company limited by guarantee (Australia)
+      </p>
+      <p>
+        Apache-2.0 ·
+        <a href={SITE.patentVeUrl} rel="noopener" class="underline underline-offset-4 hover:text-sky-bright">
+          patent {SITE.patentVe}
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>

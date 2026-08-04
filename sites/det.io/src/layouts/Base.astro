@@ -1,0 +1,126 @@
+---
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "../styles/global.css";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { SITE } from "@data/site";
+
+interface Breadcrumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path for canonical URL, e.g. "/mission". Defaults to current pathname. */
+  path?: string;
+  breadcrumbs?: Breadcrumb[];
+  ogType?: "website" | "article";
+}
+
+const { title, description, path, breadcrumbs, ogType = "website" } = Astro.props;
+
+const pathname = path ?? Astro.url.pathname;
+const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
+const ogImage = new URL("/og.png", SITE.url).href;
+
+const organizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: SITE.url,
+  email: SITE.email,
+  identifier: `ACN ${SITE.acn}`,
+  nonprofitStatus: "Nonprofit",
+  description:
+    "Not-for-profit public company limited by guarantee (Australia) advancing decentralized technologies for public benefit. Steward of the VirtEngine protocol and the DSEMA multi-agent architecture.",
+  foundingLocation: { "@type": "Country", name: "Australia" },
+  sameAs: [SITE.github, "https://virtengine.com", "https://identity.org.au"],
+};
+
+const webSiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+  publisher: { "@type": "Organization", name: SITE.legalName, url: SITE.url },
+};
+
+const breadcrumbLd = breadcrumbs
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: breadcrumbs.map((crumb, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: crumb.name,
+        item: new URL(crumb.href, SITE.url).href,
+      })),
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f6f9fb" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />
+    {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+    <slot name="head" />
+  </head>
+  <body class="bg-paper text-ink">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      const firstVeid = [...document.querySelectorAll("main *")].find((element) =>
+        [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && /\bVEID\b/.test(node.textContent ?? "")),
+      );
+      if (firstVeid) {
+        for (const node of firstVeid.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE && /\bVEID\b/.test(node.textContent ?? "")) {
+            node.textContent = (node.textContent ?? "").replace(/\bVEID\b/, "VEID (Verifiable Electronic Identity)");
+            break;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

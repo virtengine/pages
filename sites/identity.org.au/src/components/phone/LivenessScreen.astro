@@ -1,0 +1,51 @@
+---
+import Phone from "./Phone.astro";
+import ScreenChrome from "./ScreenChrome.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<Phone
+  label="Wallet app mockup: the liveness check step, prompting the person to turn their head slowly to the left, with the blink challenge already passed."
+  class={className}
+>
+  <ScreenChrome title="Liveness check" step={2} />
+
+  <text x="160" y="176" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="13" font-weight="700" fill="var(--color-ink)">Challenge 2 of 3</text>
+
+  <!-- face guide ring -->
+  <circle cx="160" cy="300" r="96" fill="var(--color-alt)" />
+  <circle cx="160" cy="300" r="96" fill="none" stroke="var(--color-action)" stroke-width="3" stroke-dasharray="10 8" stroke-linecap="round" />
+
+  <!-- abstract face -->
+  <ellipse cx="160" cy="296" rx="46" ry="54" fill="#ffffff" stroke="var(--color-hairline-strong)" stroke-width="2" />
+  <g stroke="var(--color-steel)" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <path d="M138 288q6-5 12 0" />
+    <path d="M170 288q6-5 12 0" />
+    <path d="M148 322q12 8 24 0" />
+    <path d="M158 296q-4 8 2 12" />
+  </g>
+
+  <!-- direction arrow -->
+  <path d="M96 300h-28m0 0 10-10m-10 10 10 10" stroke="var(--color-accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- prompt -->
+  <rect x="48" y="428" width="224" height="40" rx="20" fill="var(--color-navy)" />
+  <text x="160" y="453" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="12.5" font-weight="700" fill="#ffffff">Turn your head slowly to the left</text>
+
+  <!-- challenge list -->
+  <g font-family="Public Sans, sans-serif" font-size="11" font-weight="600">
+    <circle cx="66" cy="502" r="8" fill="var(--color-success-bg)" stroke="var(--color-success-rule)" stroke-width="1.6" />
+    <path d="m62.5 502 2.5 2.5 4.5-5" stroke="var(--color-success-rule)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <text x="82" y="506" fill="var(--color-body)">Blink — passed</text>
+    <circle cx="66" cy="530" r="8" fill="var(--color-tint)" stroke="var(--color-action)" stroke-width="1.8" />
+    <text x="82" y="534" fill="var(--color-ink)">Head turn — in progress</text>
+    <circle cx="66" cy="558" r="8" fill="none" stroke="var(--color-hairline-strong)" stroke-width="1.6" />
+    <text x="82" y="562" fill="var(--color-muted)">Smile — up next</text>
+  </g>
+
+  <text x="160" y="606" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-muted)">Proves a live person is present — not a photo or replay</text>
+</Phone>

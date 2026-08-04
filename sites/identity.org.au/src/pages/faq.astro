@@ -1,0 +1,70 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import { FAQ_FLAT, FAQ_GROUPS } from "@data/faq";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "FAQ", href: "/faq" },
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_FLAT.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+---
+
+<Base
+  title="Frequently asked questions | identity.org.au"
+  description="Answers to common questions about the Identity Wallet: whether it is a government service (no), setup, verification levels, privacy, data deletion, and governance."
+  breadcrumbs={crumbs}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="FAQ"
+    title="Frequently asked questions"
+    lede="Straight answers, starting with the one that matters most: no, this is not a government service."
+  />
+
+  <div class="container-site max-w-[56rem] py-12">
+    {
+      FAQ_GROUPS.map((group) => (
+        <section class="mb-12 last:mb-0">
+          <h2 class="mt-0 border-b-2 border-navy pb-3 text-[1.4rem]">{group.heading}</h2>
+          <div class="mt-5 grid gap-3">
+            {group.items.map((item) => (
+              <details class="details-gov">
+                <summary>{item.question}</summary>
+                <div>
+                  <p class="m-0 text-body">{item.answer}</p>
+                  {item.more && (
+                    <p class="mt-3 mb-0">
+                      <a href={item.more.href} class="link-plain font-semibold">
+                        {item.more.label}
+                      </a>
+                    </p>
+                  )}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="mt-14 border border-hairline rounded-tile bg-alt px-6 py-6">
+      <h2 class="mt-0 text-[1.25rem]">Question not answered?</h2>
+      <p class="mb-0 text-body">
+        Try the <a href="/help" class="link-plain">help centre</a> for in-depth articles, or email
+        <a href="mailto:hello@det.io" class="link-plain">hello@det.io</a>.
+      </p>
+    </section>
+  </div>
+</Base>

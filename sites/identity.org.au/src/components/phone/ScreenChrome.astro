@@ -1,0 +1,48 @@
+---
+/**
+ * App-screen chrome shared by the wallet mockups: header bar + step dots.
+ * Draws inside Phone.astro's coordinate space.
+ */
+interface Props {
+  title: string;
+  /** 1-based current step of 5, omit for no progress dots. */
+  step?: number;
+}
+const { title, step } = Astro.props;
+---
+
+<g>
+  <rect x="15" y="58" width="290" height="46" fill="var(--color-navy)" />
+  <path
+    d="M36 70 45 73.4 V80 c0 5-3.7 8.6-9 10 -5.3-1.4-9-5-9-10 V73.4 Z"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2"></path>
+  <path d="m32.5 80 3 3 6-7" stroke="#6ea3d8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+  <text x="56" y="86" font-family="Public Sans, sans-serif" font-size="15" font-weight="700" fill="#ffffff">{title}</text>
+  {
+    step && (
+      <g>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <circle
+            cx={130 + i * 16}
+            cy="120"
+            r="4.5"
+            fill={i < step ? "var(--color-action)" : "var(--color-hairline)"}
+          />
+        ))}
+        <text
+          x="160"
+          y="140"
+          text-anchor="middle"
+          font-family="Public Sans, sans-serif"
+          font-size="10.5"
+          font-weight="600"
+          fill="var(--color-muted)"
+        >
+          Step {step} of 5
+        </text>
+      </g>
+    )
+  }
+</g>

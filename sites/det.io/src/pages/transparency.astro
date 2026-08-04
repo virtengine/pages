@@ -1,0 +1,242 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import { SITE } from "@data/site";
+
+const documents = [
+  {
+    name: "Constitution of DETIO FOUNDATION LTD",
+    detail:
+      "The signed constitutional instrument — purposes, not-for-profit rules, Protected Provisions, Reserved Matters, asset stewardship, winding-up.",
+    status: "Signed instrument; summarised across this site with clause references",
+  },
+  {
+    name: "Patent AU2024203136B2 (VirtEngine)",
+    detail:
+      "Accepted Australian patent covering the decentralized computing system: identity-scoring blockchain control layer, on-chain MFA, encrypted marketplace, provider daemon, staking-identity network, encryption subsystem.",
+    status: "Accepted — public record",
+    href: "https://patents.google.com/patent/AU2024203136B2/",
+  },
+  {
+    name: "DSEMA patent application",
+    detail:
+      "Claims covering verifiably authorized autonomous governance and evolution of a multi-agent AI collective — tamper-evident performance logs, verified adaptation, constitutional safety layer, governed provisioning.",
+    status: "Patent pending — not granted",
+  },
+  {
+    name: "Privacy Policy",
+    detail: "How the VirtEngine project handles personal information.",
+    status: "Published in the VirtEngine repository (PRIVACY_POLICY.md)",
+    href: "https://github.com/virtengine/virtengine/blob/main/PRIVACY_POLICY.md",
+  },
+  {
+    name: "Consent Framework",
+    detail: "The consent model governing VEID identity data collection and use.",
+    status: "Published in the VirtEngine repository (CONSENT_FRAMEWORK.md)",
+    href: "https://github.com/virtengine/virtengine/blob/main/CONSENT_FRAMEWORK.md",
+  },
+  {
+    name: "Biometric Data Addendum",
+    detail: "Specific commitments for the handling of biometric identity data.",
+    status: "Published in the VirtEngine repository (BIOMETRIC_DATA_ADDENDUM.md)",
+    href: "https://github.com/virtengine/virtengine/blob/main/BIOMETRIC_DATA_ADDENDUM.md",
+  },
+  {
+    name: "Security Policy",
+    detail: "Vulnerability reporting and security posture for the protocol implementation.",
+    status: "Published in the VirtEngine repository (SECURITY.md)",
+    href: "https://github.com/virtengine/virtengine/blob/main/SECURITY.md",
+  },
+  {
+    name: "Bosun — source repository",
+    detail:
+      "The complete source of the Bosun autonomous agent orchestrator — experimental, fully open source under Apache-2.0, with module-level documentation.",
+    status: "Published — github.com/virtengine/bosun (LICENSE: Apache-2.0)",
+    href: "https://github.com/virtengine/bosun",
+  },
+  {
+    name: "Bosun Privacy Policy",
+    detail: "How the Bosun project handles data for its operator channels and services.",
+    status: "Published in the Bosun repository (PrivacyPolicy.md)",
+    href: "https://github.com/virtengine/bosun/blob/main/PrivacyPolicy.md",
+  },
+];
+---
+
+<Base
+  title="Transparency — commitments of DETIO FOUNDATION LTD | det.io"
+  description="DETIO FOUNDATION LTD's transparency commitments: open source under Apache-2.0, open specifications and documentation, patents held for public benefit, code of conduct and conflict-of-interest undertakings — with an honest list of what exists today."
+  path="/transparency"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Transparency", href: "/transparency" },
+  ]}
+>
+  <PageHero
+    eyebrow="Transparency"
+    title="Openness you can verify, not just read about"
+    lede="A public-benefit foundation should be legible from the outside. These are the commitments the constitution imposes and the artefacts that exist today — nothing more claimed, nothing less."
+  />
+
+  <Section
+    number="01"
+    eyebrow="Commitments"
+    title="What openness means here"
+  >
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Open source</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The VirtEngine protocol implementation is Apache-2.0 on GitHub — the entire
+          chain, marketplace, identity, and provider stack. The constitution empowers the
+          foundation to publish and open-source its technology
+          <ClauseRef id="6.2.5" /> <ClauseRef id="37.1" />, and requires licensing models
+          that support auditability, interoperability, and public trust
+          <ClauseRef id="37.2" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Open specifications &amp; documentation</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Public research, open technical education, open specifications, standards, and
+          safety materials are the foundation's first charitable purpose
+          <ClauseRef id="6.1.1" />. The living expression is
+          <a href="https://docs.virtengine.com" rel="noopener">docs.virtengine.com</a> and
+          the in-repo operational documentation.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Patents held for public benefit</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Patent rights are stewarded to prevent private capture of core public-benefit
+          protocols — not to extract rents. Holding, licensing, and enforcing IP is
+          permitted only to advance the purposes <ClauseRef id="7.2" />, and the patents
+          are Protected Provision assets <ClauseRef id="sch 1" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Code of conduct</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The directors must adopt and maintain a Code of Conduct giving practical effect
+          to the purposes, public-interest duties, privacy and safety commitments, and
+          anti-private-capture principles <ClauseRef id="10.1" />. It binds directors,
+          staff, contractors, volunteers, members, and anyone with privileged system
+          access <ClauseRef id="10.2" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Conflict &amp; confidentiality undertakings</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Privileged access to systems, confidential information, digital assets, or
+          Transferred Assets can be conditioned on signed confidentiality,
+          conflict-of-interest, and access undertakings <ClauseRef id="10.3" />. Conflicts
+          must be disclosed, registered, and excluded from the vote
+          <ClauseRef id="30.1" /> <ClauseRef id="30.3" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Records &amp; accountability</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The foundation must keep minutes, financial records, and registers of assets, IP,
+          keys, custody arrangements, conflicts, and related-party transactions, retained
+          for at least seven years <ClauseRef id="53" />, and must hold an AGM or send
+          members an annual activity and finance report <ClauseRef id="43.1" />.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Documents"
+    title="The document shelf — what exists today"
+    lede="An honest inventory. The foundation is young; annual reports and audited financials will appear here if and when they exist. We do not publish placeholders."
+  >
+    <div class="overflow-x-auto rounded-card border border-hairline bg-surface">
+      <table class="w-full min-w-[640px] border-collapse text-left">
+        <caption class="sr-only">Documents and public artefacts of DETIO FOUNDATION LTD and its programs</caption>
+        <thead>
+          <tr class="border-b border-hairline bg-vellum">
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">Document</th>
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">What it is</th>
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            documents.map((doc) => (
+              <tr class="border-b border-hairline last:border-b-0">
+                <th scope="row" class="px-5 py-4 align-top font-display text-sm font-semibold text-ink">
+                  {doc.href ? (
+                    <a href={doc.href} rel="noopener" class="text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">
+                      {doc.name}
+                    </a>
+                  ) : (
+                    doc.name
+                  )}
+                </th>
+                <td class="px-5 py-4 align-top text-sm text-text-muted">{doc.detail}</td>
+                <td class="px-5 py-4 align-top font-mono text-xs text-text-soft">{doc.status}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="prose-inst mt-6 text-sm">
+      The constitution states the foundation <em>may apply</em> for ACNC charity
+      registration <ClauseRef id="2.2" />; no registration is claimed here. No annual
+      reports or audited financial statements are published yet.
+    </p>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Funding"
+    title="Government funding, disclosed"
+    lede="The foundation is not government-operated or government-endorsed. Where public money has supported the work, we say so."
+  >
+    <div class="prose-inst">
+      <p>
+        The foundation's predecessor company, <strong>DET-IO Pty Ltd</strong>, received a
+        <strong>Jobs for NSW Minimum Viable Product grant</strong> (up to $27,000) — a NSW
+        Government business grant disclosed in the
+        <a
+          href="https://www.parliament.nsw.gov.au/tp/files/78999/Jobs%20for%20NSW%20for%20year%20ended%2030%20June%202020.pdf"
+          rel="noopener"
+          class="text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep"
+          >Jobs for NSW Annual Report 2019–20</a
+        > tabled in NSW Parliament. A further NSW Government business-grant application is in
+        progress at the time of writing; this page will record the outcome either way.
+      </p>
+      <p>
+        These are competitive business grants and nothing more: they do not make any foundation
+        program a government service, and no government operates, controls, or endorses
+        VirtEngine, DSEMA, Bosun, or identity.org.au.
+      </p>
+      <p>
+        Separately, the foundation is currently in the process of applying for accreditation
+        under the <em>Digital ID Act 2024</em> Accreditation Scheme, administered by the
+        Digital ID Regulator (the ACCC), for the Identity program. Accreditation has not been
+        granted and none is claimed; the Digital ID Accreditation Trustmark will only be
+        displayed if and when accreditation is granted. Progress will be recorded here.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="Verify"
+    title="Don't take our word for it"
+    lede="The most meaningful transparency artefact is a working, inspectable codebase and a public patent record."
+  >
+    <div class="flex flex-wrap gap-3">
+      <CTA href={SITE.github} rel="noopener">Read the source</CTA>
+      <CTA href={SITE.patentVeUrl} variant="secondary" rel="noopener">Patent AU2024203136B2</CTA>
+      <CTA href="https://docs.virtengine.com" variant="ghost" rel="noopener">Protocol documentation</CTA>
+    </div>
+  </Section>
+</Base>

@@ -1,0 +1,87 @@
+---
+/**
+ * Explorer figure B — the blockchain orchestration layer (spec §2.3):
+ * agent registry, append-only performance log with Merkle roll-up proofs,
+ * tasking contract managing DAG sub-tasks, and governance contract. The
+ * layer is drawn as an active event bus: records flow in from evaluation,
+ * cryptographically verifiable instructions flow out to the modules.
+ * Text alternative carried by the enclosing DiagramFrame.
+ */
+---
+
+<svg viewBox="0 0 880 440" class="h-auto w-full min-w-[720px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="fo-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- inputs -->
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="90" y="28" width="210" height="46" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="195" y="48" text-anchor="middle" fill="var(--color-ink)">performance evaluation</text>
+    <text x="195" y="63" text-anchor="middle" fill="var(--color-text-soft)">structured metric vectors</text>
+    <rect x="580" y="28" width="210" height="46" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="685" y="48" text-anchor="middle" fill="var(--color-ink)">agents &amp; governance module</text>
+    <text x="685" y="63" text-anchor="middle" fill="var(--color-text-soft)">task requests · proposals · votes</text>
+  </g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fo-arrow)">
+    <path d="M195 74 V138"></path>
+    <path d="M685 74 V138"></path>
+  </g>
+  <text x="206" y="112" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">append record</text>
+  <text x="696" y="112" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">submit</text>
+
+  <!-- the layer -->
+  <g>
+    <rect x="50" y="142" width="780" height="164" rx="11" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2.2"></rect>
+    <text x="72" y="172" font-family="var(--font-display)" font-size="14.5" font-weight="600" fill="var(--color-ink)">Blockchain orchestration layer — source of truth · state machine · trustless event bus</text>
+
+    <g font-family="var(--font-mono)" font-size="10.5">
+      <rect x="72" y="190" width="176" height="94" rx="7" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+      <text x="160" y="214" text-anchor="middle" fill="var(--color-ink)">agent registry</text>
+      <text x="160" y="234" text-anchor="middle" fill="var(--color-text-soft)">DID → public key</text>
+      <text x="160" y="250" text-anchor="middle" fill="var(--color-text-soft)">signed model hashes</text>
+      <text x="160" y="266" text-anchor="middle" fill="var(--color-text-soft)">revocation flags</text>
+
+      <rect x="264" y="190" width="176" height="94" rx="7" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+      <text x="352" y="214" text-anchor="middle" fill="var(--color-ink)">performance log</text>
+      <text x="352" y="234" text-anchor="middle" fill="var(--color-text-soft)">append-only</text>
+      <text x="352" y="250" text-anchor="middle" fill="var(--color-text-soft)">partitioned sub-ledgers</text>
+      <text x="352" y="266" text-anchor="middle" fill="var(--color-text-soft)">Merkle roll-up proofs</text>
+
+      <rect x="456" y="190" width="176" height="94" rx="7" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+      <text x="544" y="214" text-anchor="middle" fill="var(--color-ink)">tasking contract</text>
+      <text x="544" y="234" text-anchor="middle" fill="var(--color-text-soft)">objectives → DAG</text>
+      <text x="544" y="250" text-anchor="middle" fill="var(--color-text-soft)">sub-task assignment</text>
+      <text x="544" y="266" text-anchor="middle" fill="var(--color-text-soft)">merit-weighted routing</text>
+
+      <rect x="648" y="190" width="160" height="94" rx="7" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+      <text x="728" y="214" text-anchor="middle" fill="var(--color-ink)">governance</text>
+      <text x="728" y="234" text-anchor="middle" fill="var(--color-text-soft)">proposals · votes</text>
+      <text x="728" y="250" text-anchor="middle" fill="var(--color-text-soft)">quadratic weighting</text>
+      <text x="728" y="266" text-anchor="middle" fill="var(--color-text-soft)">timelocked execution</text>
+    </g>
+  </g>
+
+  <!-- outputs -->
+  <g stroke="var(--color-blue-mid)" stroke-width="1.6" class="flow-dash" marker-end="url(#fo-arrow)">
+    <path d="M240 306 V366"></path>
+    <path d="M640 306 V366"></path>
+  </g>
+  <text x="228" y="342" text-anchor="end" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">signed ADAPT event</text>
+  <text x="651" y="342" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">task assignment event</text>
+
+  <g font-family="var(--font-mono)" font-size="10">
+    <rect x="120" y="370" width="240" height="46" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="240" y="390" text-anchor="middle" fill="var(--color-ink)">model adaptation module</text>
+    <text x="240" y="405" text-anchor="middle" fill="var(--color-text-soft)">executes only after verifying the instruction</text>
+    <rect x="520" y="370" width="240" height="46" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+    <text x="640" y="390" text-anchor="middle" fill="var(--color-ink)">agent collective</text>
+    <text x="640" y="405" text-anchor="middle" fill="var(--color-text-soft)">verifies signature + on-chain reference</text>
+  </g>
+
+  <!-- the rule -->
+  <rect x="330" y="322" width="220" height="34" rx="6" fill="var(--color-vellum)" stroke="var(--color-blue-deep)" stroke-width="1.4"></rect>
+  <text x="440" y="343" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.8" fill="var(--color-blue-deep)">NO VERIFIED INSTRUCTION → NO ACTION</text>
+</svg>

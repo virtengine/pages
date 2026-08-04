@@ -1,0 +1,281 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import GovernanceStructure from "@components/diagrams/GovernanceStructure.astro";
+---
+
+<Base
+  title="Governance — structure of DETIO FOUNDATION LTD | det.io"
+  description="How DETIO FOUNDATION LTD is governed: members and voting, the Permanent Director seat, Protected Provisions and the Schedule 1 public-benefit lock, Reserved Matters, asset stewardship, and winding-up to charity — with clause references."
+  path="/governance"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Governance", href: "/governance" },
+  ]}
+>
+  <PageHero
+    eyebrow="Governance"
+    title="A constitution engineered against capture"
+    lede="DETIO FOUNDATION LTD is a not-for-profit public company limited by guarantee (ACN 699 651 771), established for charitable and public-benefit purposes, and it may apply to be registered as a charity with the ACNC. Its constitution is deliberately structured so that neither money, nor majorities, nor time can quietly redirect the foundation away from its purposes."
+  >
+    <p class="prose-inst mt-1 text-sm">
+      Plain-language summary with clause references. The signed constitution is the
+      authoritative instrument. <ClauseRef id="2.1" /> <ClauseRef id="2.2" />
+    </p>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="Structure"
+    title="Members, directors, and the lock beneath them"
+    lede="Three tiers: a small membership with weighted votes, a board of at least three directors, and a set of Protected Provisions that neither tier can casually amend."
+  >
+    <DiagramFrame
+      label="Governance structure diagram of DETIO FOUNDATION LTD. Top tier, members in general meeting: the Founding Member holds a permanent membership class with two votes under clauses 14.1.1 and 17.2, alongside up to two Ordinary Members with one vote each — admission requires Founding Member consent under clause 11.5. Members appoint or elect directors with consent under clause 23. Middle tier, the board of at least three directors under clause 19: the Permanent Director seat attached to the Founding Member who chairs the board under clauses 21 and 25, a Founder-Appointed Temporary Director under clause 23.2, and further Temporary Directors serving two-year terms with a maximum of ten consecutive years. A Reserved Matters gate requires Founding Member Consent under clause 18A. Bottom tier, the public-benefit lock: the Protected Provisions of Schedule 1 — not-for-profit character, no private distribution, VirtEngine, DSEMA and all Transferred Assets stewarded for public benefit, and capital unable to buy control — amendable only by special resolution plus written consent under clause 18.3 and section 136(3) of the Corporations Act. On winding up, surplus assets pass only to a compatible charity under clauses 61 and 62."
+      caption="fig 01 — members → board → protected provisions: the constitutional stack"
+      class="reveal"
+    >
+      <GovernanceStructure />
+    </DiagramFrame>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Part 3 — members"
+    title="Two member classes, deliberately small"
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">The Founding Member</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          The constitution names <strong>Jonathan Amir Samuel Philipos</strong> as the
+          Founding Member <ClauseRef id="11.2" />, holding two votes at general meetings
+          <ClauseRef id="14.1.1" />. The Founding Member's membership and voting class are
+          permanent — they cannot be relinquished, transferred, or removed except on legal
+          death or where mandatory law requires <ClauseRef id="17.2" />. Incapacity alone
+          does not end membership; a lawful representative may exercise membership rights,
+          but never director duties <ClauseRef id="17.4" /> <ClauseRef id="21.7" />.
+        </p>
+      </article>
+      <article class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Ordinary Members</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          The foundation may have at most two Ordinary Members <ClauseRef id="11.3" />,
+          each with one vote <ClauseRef id="14.1.2" />. Admission requires a written
+          application from an adult Australian resident who supports the purposes
+          <ClauseRef id="13.1" />, acceptance by the directors, and prior Founding Member
+          Consent <ClauseRef id="11.5" /> <ClauseRef id="13.2" />. Membership cannot be
+          transferred <ClauseRef id="16.1" />, and each member's guarantee on winding up
+          is capped at $444 <ClauseRef id="63.1" />.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="Part 4 — directors"
+    title="A board of at least three, with one permanent seat"
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Permanent Director</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The Founding Member holds the Permanent Director seat while eligible
+          <ClauseRef id="21.1" /> <ClauseRef id="21.2" /> and chairs meetings
+          <ClauseRef id="25.1" /> — without a casting vote <ClauseRef id="25.3" />. The
+          seat never overrides mandatory law: removal and disqualification provisions of
+          the Corporations Act and ACNC standards always prevail <ClauseRef id="21.8" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Temporary Directors</h3>
+        <p class="prose-inst text-[0.95rem]">
+          At least two Temporary Directors serve two-year terms <ClauseRef id="19.3" />
+          <ClauseRef id="22.1" />, capped at ten consecutive years unless members resolve
+          otherwise <ClauseRef id="22.2" />. The Founding Member may appoint or nominate
+          one Founder-Appointed Temporary Director by written notice
+          <ClauseRef id="23.2" />; other elections and casual-vacancy appointments require
+          Founding Member Consent <ClauseRef id="23.3" /> <ClauseRef id="23.4" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Duties &amp; conflicts</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Directors owe the usual statutory duties plus a constitutional duty to protect
+          the Transferred Assets from private capture <ClauseRef id="29.1.7" />.
+          Related-party matters involving the Founding Member must be reviewed by
+          independent legal and accounting advisers and approved by non-conflicted
+          directors <ClauseRef id="30.4" /> <ClauseRef id="30.5" />. Emergency
+          appointments to restore the legal minimum expire within 60 days
+          <ClauseRef id="23.6" />.
+        </p>
+      </article>
+    </div>
+    <p class="prose-inst mt-8">
+      Founder remuneration is itself constitutionally constrained: the Permanent Director's
+      salary is capped at the lowest lawful minimum wage for the work actually performed,
+      with no sitting fees and no accrued-salary or deferred-compensation mechanism
+      <ClauseRef id="41.2" /> <ClauseRef id="41.3" /> <ClauseRef id="41.5" /> — a Protected
+      Provision <ClauseRef id="sch 1" />.
+    </p>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="Clause 18 &amp; Schedule 1"
+    title="Protected Provisions: the public-benefit lock"
+    lede="Schedule 1 lists twenty Protected Provisions. Amending any of them requires a special resolution and the Founding Member's written consent — and even then, no amendment may make the foundation for-profit or strip its public-benefit purposes."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What the lock protects</h3>
+        <ul class="mt-4 grid gap-2.5">
+          {
+            [
+              "Charitable purposes only, without private commercial interests (sch 1 item 1)",
+              "Not-for-profit: no distribution of income, assets, IP, or tokens for private profit (item 2)",
+              "VirtEngine, DSEMA, their patents, and all Transferred Assets held for public benefit (item 3)",
+              "Economic value structurally separated from governance — capital cannot buy control (item 6)",
+              "No obligation ever to issue or operate a token (item 7)",
+              "Surplus assets on winding up pass only to compatible charities (item 19)",
+            ].map((item) => (
+              <li class="prose-inst flex gap-3 text-[0.95rem]">
+                <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                  <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="reveal rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">How amendment works — and fails</h3>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          A Protected Provision can only be amended if the Corporations Act's requirements
+          are satisfied (including a 75% special resolution), the Founding Member gives
+          written consent, and the amendment does not end the foundation's not-for-profit
+          or public-benefit character <ClauseRef id="18.3" />. This entrenchment relies on
+          sections 136(3)–(4) of the Corporations Act.
+        </p>
+        <p class="prose-inst mt-3 text-[0.98rem]">
+          Any amendment that would allow private distribution, permit private use of
+          Transferred Assets, or weaken a Protected Provision without meeting that bar has
+          <strong>no effect</strong> <ClauseRef id="18.2" />. The only override is
+          mandatory law, a court, a regulator, or the ACNC <ClauseRef id="18.4" />.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    number="05"
+    eyebrow="Clause 18A"
+    title="Reserved Matters: the consent gate"
+    lede="Certain decisions cannot be approved or implemented by anyone — board, members, delegates, or subsidiaries — without prior Founding Member Consent."
+  >
+    <div class="grid gap-4 md:grid-cols-2">
+      {
+        [
+          ["18A.2.1", "Admitting members, new member classes, or changing member voting or quorum rules"],
+          ["18A.2.2", "Appointing or filling any Temporary Director seat (outside 60-day emergencies)"],
+          ["18A.2.3", "Materially transferring, licensing, encumbering, or disposing of a Transferred Asset outside the ordinary course"],
+          ["18A.2.4", "Changing the technology-stewardship model, patent strategy, open-source strategy, token policy, or anti-capture controls"],
+          ["18A.2.5", "Restructuring subsidiaries, including DET-IO Pty Ltd"],
+          ["18A.2.6", "Mergers or transactions materially changing control of the company or the Transferred Assets"],
+          ["18A.2.7", "Choosing the recipient of surplus assets on winding up"],
+          ["18A.2.8", "Anything that would impair a Protected Provision, a Founding Member right, or the public-benefit lock"],
+        ].map(([clause, text]) => (
+          <div class="reveal flex gap-4 rounded-card border border-hairline bg-surface p-5">
+            <ClauseRef id={clause} class="mt-0.5 shrink-0" />
+            <p class="prose-inst text-[0.95rem]">{text}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="prose-inst mt-8">
+      Consent may be withheld at the Founding Member's discretion — but the same clause
+      forbids using it for private benefit, to breach directors' duties, to cause
+      insolvency, or to override mandatory law <ClauseRef id="18A.3" />. The gate is a
+      brake against capture, not a steering wheel for private interest.
+    </p>
+  </Section>
+
+  <Section
+    number="06"
+    eyebrow="Part 5 — assets"
+    title="Asset stewardship: everything flows in, nothing leaks out"
+  >
+    <div class="grid gap-5 md:grid-cols-3">
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Transferred Assets</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The foundation is intended to own and steward the Transferred Assets — Founder
+          IP, DET-IO Pty Ltd IP and digital assets, VirtEngine, and DSEMA — for the benefit
+          of humanity and the general public <ClauseRef id="31.1" />. It must seek
+          ownership or sufficient licences to both programs and all their patent rights,
+          improvements, and digital assets <ClauseRef id="32.1" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Founder IP</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The Founding Member must execute all instruments needed to vest Founder IP and
+          digital assets in the foundation <ClauseRef id="33.1" />, including a present
+          agreement to assign future IP <ClauseRef id="33.3" />. Anything that cannot yet
+          be assigned is held on trust for the foundation with an irrevocable royalty-free
+          licence in the meantime <ClauseRef id="33.4" />.
+        </p>
+      </article>
+      <article class="reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">DET-IO Pty Ltd</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The predecessor company may remain as a subsidiary for activities not suited to
+          the foundation directly <ClauseRef id="36.1" />, under a transfer program moving
+          its IP and digital assets to the foundation via separate signed instruments
+          <ClauseRef id="34" /> <ClauseRef id="35" />. No restructure of it may move
+          Transferred Assets away for private benefit <ClauseRef id="36.3" />.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="07"
+    eyebrow="Part 13 — winding up"
+    title="Even the end is locked"
+    lede="If the foundation is ever wound up, members receive nothing. Surplus assets must go to one or more ACNC-registered charities with compatible purposes, equal or stronger non-distribution rules, and the capacity to lawfully steward the Transferred Assets."
+  >
+    <div class="prose-inst max-w-3xl">
+      <p>
+        The recipient of VirtEngine, DSEMA, and related Transferred Assets should, where
+        reasonably possible, be capable of maintaining the public-benefit,
+        privacy-preserving, and anti-private-capture principles of the constitution
+        <ClauseRef id="62.2" />. The recipient is chosen by special resolution — a Reserved
+        Matter — or failing that by the directors, or by application to the Supreme Court
+        for directions <ClauseRef id="62.3" />. Distribution to members is prohibited
+        unless the member is itself a qualifying charity <ClauseRef id="61.1" />.
+      </p>
+      <p class="mt-4">
+        The foundation is established to operate for charitable and public-benefit purposes
+        and <em>may apply</em> to be registered as a charity with the Australian Charities
+        and Not-for-profits Commission <ClauseRef id="2.2" />. It is not currently
+        registered, and this site makes no claim that it is.
+      </p>
+    </div>
+  </Section>
+
+  <Section number="08" eyebrow="Continue" title="Related reading">
+    <div class="flex flex-wrap gap-3">
+      <CTA href="/constitution">Constitution explorer — all ten topics</CTA>
+      <CTA href="/foundation/public-benefit-lock" variant="secondary">The public-benefit lock, in depth</CTA>
+      <CTA href="/foundation/membership" variant="secondary">Membership</CTA>
+      <CTA href="/transparency" variant="ghost">Transparency commitments</CTA>
+    </div>
+  </Section>
+</Base>

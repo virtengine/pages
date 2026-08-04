@@ -1,0 +1,84 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { LEARN } from "@data/learn";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Learn", href: "/learn" },
+];
+
+const fundamentals = LEARN.filter((g) =>
+  ["how-the-marketplace-works", "escrow-and-settlement-explained", "what-is-veid"].includes(g.slug),
+);
+const economics = LEARN.filter((g) =>
+  ["tokenomics-explained", "understanding-slashing", "provider-economics", "governance-guide"].includes(g.slug),
+);
+const advanced = LEARN.filter((g) =>
+  ["confidential-computing-on-virtengine", "hpc-on-virtengine", "mainnet-roadmap"].includes(g.slug),
+);
+
+const groups = [
+  { eyebrow: "Fundamentals", title: "Start here", items: fundamentals },
+  { eyebrow: "Economics & governance", title: "Money, risk, and control", items: economics },
+  { eyebrow: "Advanced capabilities", title: "Confidential compute, HPC & mainnet", items: advanced },
+];
+---
+
+<Base
+  title="Learn — VirtEngine guides & explainers"
+  description="In-depth guides to the VirtEngine protocol: marketplace mechanics, escrow and settlement, tokenomics, VEID identity, slashing, provider economics, confidential computing, HPC, governance, and the mainnet roadmap."
+  path="/learn"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Learn"
+    title="The protocol, explained properly"
+    lede="Ten guides that explain how VirtEngine actually works — grounded in the protocol repository, its documentation, and its economic simulation framework. No filler, no invented numbers."
+    crumbs={crumbs}
+  />
+
+  {
+    groups.map((group) => (
+      <Section eyebrow={group.eyebrow} title={group.title}>
+        <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {group.items.map((guide) => (
+            <li>
+              <a
+                href={`/learn/${guide.slug}`}
+                class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
+              >
+                <p class="font-mono text-xs font-medium uppercase tracking-[0.16em] text-green-deep">{guide.kicker}</p>
+                <h3 class="mt-2 text-lg font-semibold text-ink group-hover:text-green-dark">{guide.title}</h3>
+                <p class="mt-2.5 flex-1 text-sm leading-relaxed text-slate">{guide.metaDescription}</p>
+                <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-green-deep">
+                  Read the guide
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+
+  <Section eyebrow="Reference material" title="When you need the exact details">
+    <div class="prose-body reveal max-w-3xl text-base">
+      <p>
+        The guides link into the <a href="/modules">module reference</a> — one page per on-chain
+        module — and outward to <a href="https://docs.virtengine.com">docs.virtengine.com</a>
+        for message-level documentation. Questions the guides don't answer may already be in the
+        <a href="/faq">FAQ</a>.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/modules">Module reference</CTA>
+      <CTA href="/faq" variant="secondary">FAQ</CTA>
+    </div>
+  </Section>
+</Base>

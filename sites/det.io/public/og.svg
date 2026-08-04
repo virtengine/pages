@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="'Space Grotesk','Segoe UI',sans-serif">
+  <rect width="1200" height="630" fill="#16202b"/>
+
+  <!-- fine grid on night -->
+  <g stroke="#22303f" stroke-width="1">
+    <path d="M0 105 H1200 M0 210 H1200 M0 315 H1200 M0 420 H1200 M0 525 H1200"/>
+    <path d="M150 0 V630 M300 0 V630 M450 0 V630 M600 0 V630 M750 0 V630 M900 0 V630 M1050 0 V630"/>
+  </g>
+
+  <!-- brand accent bar -->
+  <rect x="0" y="0" width="1200" height="10" fill="#5dbadb"/>
+
+  <!-- cloud mark, large -->
+  <g transform="translate(830 130) scale(2.6)">
+    <g fill="#233040" transform="translate(-4 9)">
+      <circle cx="27" cy="60" r="16"/>
+      <circle cx="52" cy="44" r="22"/>
+      <circle cx="81" cy="52" r="19"/>
+      <circle cx="102" cy="61" r="14"/>
+      <rect x="14" y="50" width="102" height="27" rx="13.5"/>
+    </g>
+    <g fill="#5dbadb">
+      <circle cx="27" cy="60" r="16"/>
+      <circle cx="52" cy="40" r="25"/>
+      <circle cx="81" cy="50" r="20"/>
+      <circle cx="104" cy="61" r="14"/>
+      <rect x="14" y="50" width="104" height="27" rx="13.5"/>
+    </g>
+    <g fill="#8fd6ee">
+      <circle cx="34" cy="30" r="13"/>
+      <circle cx="18" cy="42" r="10"/>
+      <circle cx="49" cy="24" r="9"/>
+    </g>
+  </g>
+
+  <!-- DET·IO wordmark geometry under the mark -->
+  <g transform="translate(845 400) scale(0.72)" stroke="#5dbadb" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M28 22v60M28 22h8a30 30 0 0 1 0 60h-8"/>
+    <path d="M112 24h52M112 52h52M112 80h52"/>
+    <path d="M192 24h60M222 24v58"/>
+    <circle cx="276" cy="58" r="11" fill="#5dbadb" stroke="none"/>
+    <path d="M310 24v58"/>
+    <circle cx="358" cy="53" r="29"/>
+  </g>
+
+  <!-- text block -->
+  <g>
+    <text x="90" y="175" font-family="'JetBrains Mono',monospace" font-size="24" letter-spacing="6" fill="#8fd6ee">NOT-FOR-PROFIT RESEARCH ORGANIZATION</text>
+    <text x="90" y="272" font-size="86" font-weight="700" fill="#eaf2f8" letter-spacing="-2">DETIO Foundation</text>
+    <text x="90" y="352" font-size="34" fill="#a2b7c7">Decentralized technologies,</text>
+    <text x="90" y="400" font-size="34" fill="#a2b7c7">stewarded for public benefit.</text>
+    <text x="90" y="500" font-family="'JetBrains Mono',monospace" font-size="22" fill="#7d94a6">det.io · ACN 699 651 771 · VirtEngine · DSEMA</text>
+  </g>
+</svg>

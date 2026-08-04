@@ -1,0 +1,65 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { MODULE_DOMAINS, MODULES, modulesByDomain } from "@data/modules";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Modules", href: "/modules" },
+];
+---
+
+<Base
+  title="Module reference — the 27 on-chain modules of VirtEngine"
+  description="Complete reference for VirtEngine's on-chain modules: marketplace, deployment, escrow, settlement, VEID identity, encryption, enclave, HPC, staking, and more — what each does and how they connect."
+  path="/modules"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Module reference"
+    title="Twenty-seven modules, one marketplace"
+    lede="Everything the marketplace needs lives in x/ modules on the chain — matching, identity, payments, and quality control as consensus-executed state machines. Each module below links to a full reference page."
+    crumbs={crumbs}
+  />
+
+  {
+    MODULE_DOMAINS.map((group) => (
+      <Section eyebrow={group.domain} title={group.domain} lede={group.blurb}>
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {modulesByDomain(group.domain).map((mod) => (
+            <li>
+              <a
+                href={`/modules/${mod.slug}`}
+                class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
+              >
+                <span class="font-mono text-sm font-medium text-green-deep group-hover:text-green-dark">{mod.path}</span>
+                <h3 class="mt-1 text-base font-semibold text-ink">{mod.name}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-slate">{mod.summary}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+
+  <Section eyebrow="Go deeper" title="From reference to running code">
+    <div class="prose-body reveal max-w-3xl text-base">
+      <p>
+        All {MODULES.length} modules ship in the single <code>virtengine</code> binary, developed in the open at
+        <a href={SITE.github} rel="noopener">github.com/virtengine/virtengine</a> under <code>x/</code>.
+        For message-level and API documentation, see <a href={SITE.docs}>docs.virtengine.com</a>;
+        for the architectural view of how the domains fit together, start with the
+        <a href="/protocol">protocol overview</a> or the
+        <a href="/learn/how-the-marketplace-works">marketplace lifecycle guide</a>.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/protocol">Protocol architecture</CTA>
+      <CTA href="/learn" variant="secondary">Guides &amp; explainers</CTA>
+    </div>
+  </Section>
+</Base>

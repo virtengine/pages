@@ -1,0 +1,96 @@
+---
+/**
+ * Explorer figure A — inside a DSEMA agent (spec §2.2): generative model
+ * core with LoRA adapter slot and integrity-gated loader; sandboxed secure
+ * execution environment (gVisor user-space kernel / WASI); DID identity
+ * with Ed25519 key pair and on-chain registry entry; and the secure
+ * communication interface (gRPC, HTTP, P2P pub/sub). Text alternative is
+ * carried by the enclosing DiagramFrame.
+ */
+---
+
+<svg viewBox="0 0 880 470" class="h-auto w-full min-w-[720px]" fill="none" aria-hidden="true">
+  <defs>
+    <marker id="fa-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
+    </marker>
+  </defs>
+
+  <!-- entity boundary -->
+  <rect x="34" y="30" width="812" height="330" rx="12" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.6" stroke-dasharray="9 6"></rect>
+  <rect x="52" y="18" width="252" height="24" rx="4" fill="var(--color-vellum)" stroke="var(--color-hairline)" stroke-width="1"></rect>
+  <text x="64" y="35" font-family="var(--font-mono)" font-size="10.5" letter-spacing="1.6" fill="var(--color-text-soft)">AI AGENT ENTITY · SPEC §2.2</text>
+
+  <!-- generative model core -->
+  <g>
+    <rect x="64" y="66" width="238" height="182" rx="9" fill="var(--color-paper)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="183" y="94" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Generative model core</text>
+    <rect x="84" y="108" width="198" height="38" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="183" y="131" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">base model · small &amp; specialized</text>
+    <rect x="84" y="156" width="198" height="38" rx="6" fill="var(--color-sky-wash)" stroke="var(--color-blue-mid)" stroke-width="1.4"></rect>
+    <text x="183" y="173" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-blue-deep)">LoRA adapter slot</text>
+    <text x="183" y="188" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">rank-16 deltas · sub-second hot-swap</text>
+    <text x="183" y="222" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">loader verifies signed weight hash</text>
+    <text x="183" y="237" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">against on-chain registry before load</text>
+  </g>
+
+  <!-- secure execution environment -->
+  <g>
+    <rect x="322" y="66" width="238" height="182" rx="9" fill="var(--color-paper)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="441" y="94" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Secure execution environment</text>
+    <rect x="342" y="108" width="198" height="38" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="441" y="126" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">gVisor user-space kernel</text>
+    <text x="441" y="140" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">every syscall intercepted &amp; validated</text>
+    <rect x="342" y="156" width="198" height="38" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="441" y="174" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">WebAssembly + WASI</text>
+    <text x="441" y="188" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">capability-based alternative</text>
+    <text x="441" y="222" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">namespaces + cgroups isolate identity</text>
+    <text x="441" y="237" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">and resources — no direct host access</text>
+  </g>
+
+  <!-- identity -->
+  <g>
+    <rect x="580" y="66" width="238" height="182" rx="9" fill="var(--color-paper)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="699" y="94" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Decentralized identity</text>
+    <rect x="600" y="108" width="198" height="38" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="699" y="126" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">DID · Ed25519 key pair</text>
+    <text x="699" y="140" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">generated at bootstrap</text>
+    <rect x="600" y="156" width="198" height="38" rx="6" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+    <text x="699" y="174" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="var(--color-ink)">verifiable credentials</text>
+    <text x="699" y="188" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">domain competence attested</text>
+    <text x="699" y="222" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">registered on-chain: DID → public key,</text>
+    <text x="699" y="237" text-anchor="middle" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">model hash, specialization, reputation</text>
+  </g>
+
+  <!-- internal links -->
+  <g stroke="var(--color-hairline-strong)" stroke-width="1.3">
+    <path d="M302 157 H322"></path>
+    <path d="M560 157 H580"></path>
+  </g>
+
+  <!-- communication interface band -->
+  <g>
+    <rect x="64" y="278" width="754" height="62" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <text x="86" y="304" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Secure communication interface</text>
+    <text x="86" y="322" font-family="var(--font-sans)" font-size="9.8" fill="var(--color-text-muted)">cryptographic identity + contextual metadata bound to every message</text>
+    <g font-family="var(--font-mono)" font-size="10">
+      <rect x="516" y="292" width="82" height="32" rx="5" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="557" y="312" text-anchor="middle" fill="var(--color-ink)">gRPC</text>
+      <rect x="612" y="292" width="82" height="32" rx="5" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="653" y="312" text-anchor="middle" fill="var(--color-ink)">HTTP</text>
+      <rect x="708" y="292" width="96" height="32" rx="5" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
+      <text x="756" y="312" text-anchor="middle" fill="var(--color-ink)">p2p pub/sub</text>
+    </g>
+  </g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#fa-arrow)">
+    <path d="M183 248 V274"></path>
+    <path d="M441 248 V274"></path>
+    <path d="M699 248 V274"></path>
+  </g>
+
+  <!-- external world -->
+  <path d="M441 360 V404" stroke="var(--color-blue-mid)" stroke-width="1.5" class="flow-dash" marker-end="url(#fa-arrow)"></path>
+  <text x="452" y="390" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">tasks in · results + performance data out</text>
+  <rect x="256" y="408" width="370" height="40" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+  <text x="441" y="433" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" letter-spacing="1.2" fill="var(--color-text-soft)">PEER AGENTS · CHAIN · KNOWLEDGE REPOSITORY</text>
+</svg>

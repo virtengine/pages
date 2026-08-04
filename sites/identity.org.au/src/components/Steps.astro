@@ -1,0 +1,47 @@
+---
+/**
+ * Gov "steps" pattern: numbered discs joined by a vertical rule.
+ */
+export interface StepData {
+  title: string;
+  body: string;
+  detail?: string[];
+}
+interface Props {
+  steps: StepData[];
+  class?: string;
+}
+const { steps, class: className } = Astro.props;
+---
+
+<ol class:list={["list-none m-0 p-0 grid", className]}>
+  {
+    steps.map((step, i) => (
+      <li class="relative flex gap-5 pb-9 last:pb-0">
+        {i < steps.length - 1 && (
+          <span
+            class="absolute left-[1.19rem] top-11 bottom-0 w-0.5 bg-hairline-strong"
+            aria-hidden="true"
+          />
+        )}
+        <span
+          class="flex-none w-10 h-10 rounded-full bg-navy text-white font-extrabold grid place-items-center text-[1.05rem]"
+          aria-hidden="true"
+        >
+          {i + 1}
+        </span>
+        <div class="pt-1 measure">
+          <h3 class="m-0 text-[1.15rem]">{step.title}</h3>
+          <p class="mt-1.5 mb-0 text-body">{step.body}</p>
+          {step.detail && (
+            <ul class="mt-2.5 mb-0 grid gap-1.5 pl-5 list-disc text-[0.97rem] text-body marker:text-steel">
+              {step.detail.map((d) => (
+                <li>{d}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>

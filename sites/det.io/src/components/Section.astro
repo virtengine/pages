@@ -1,0 +1,25 @@
+---
+interface Props {
+  /** Two-digit section number rendered in the mono margin, e.g. "01" */
+  number?: string;
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  class?: string;
+}
+
+const { number, eyebrow, title, lede, class: className } = Astro.props;
+---
+
+<section class:list={["container-site py-14 md:py-20", className]}>
+  <div class="rule-double section-head reveal">
+    <p class="eyebrow">
+      {number && <span class="mr-3 text-text-soft">{number}</span>}{eyebrow}
+    </p>
+    <h2 class="text-3xl font-bold md:text-4xl">{title}</h2>
+    {lede && <p class="prose-inst text-lg">{lede}</p>}
+  </div>
+  <div class="mt-10">
+    <slot />
+  </div>
+</section>

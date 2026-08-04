@@ -1,0 +1,49 @@
+---
+import Base, { type Breadcrumb } from "./Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import type { NavItem } from "@data/site";
+
+/**
+ * Side-nav layout for multi-page guide sections (/get-started, /about).
+ */
+interface Props {
+  title: string;
+  metaTitle: string;
+  description: string;
+  lede?: string;
+  eyebrow?: string;
+  breadcrumbs: Breadcrumb[];
+  sectionLabel: string;
+  sectionNav: NavItem[];
+}
+const { title, metaTitle, description, lede, eyebrow, breadcrumbs, sectionLabel, sectionNav } =
+  Astro.props;
+const current = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "");
+---
+
+<Base title={metaTitle} description={description} breadcrumbs={breadcrumbs} ogType="article">
+  <PageHeader crumbs={breadcrumbs} title={title} lede={lede} eyebrow={eyebrow} />
+  <div class="container-site grid gap-10 py-10 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14 lg:py-14">
+    <aside>
+      <nav aria-label={sectionLabel} class="side-nav lg:sticky lg:top-6">
+        <p class="m-0 mb-2 px-1 text-[0.8rem] font-bold uppercase tracking-[0.13em] text-muted">
+          {sectionLabel}
+        </p>
+        <ul class="m-0 grid list-none gap-0.5 border-l border-hairline p-0">
+          {
+            sectionNav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={current === item.href ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </aside>
+    <article class="min-w-0">
+      <slot />
+    </article>
+  </div>
+</Base>

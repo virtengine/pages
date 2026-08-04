@@ -1,0 +1,36 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary" | "ghost";
+  class?: string;
+  ariaLabel?: string;
+}
+
+const { href, variant = "primary", class: className, ariaLabel } = Astro.props;
+
+const variants = {
+  primary:
+    "clip-corner bg-green-deep text-white hover:bg-green-dark",
+  secondary:
+    "border border-line-strong text-ink hover:border-green-deep hover:text-green-dark",
+  ghost:
+    "text-green-deep hover:text-green-dark underline decoration-green underline-offset-4 hover:decoration-2",
+} as const;
+---
+
+<a
+  href={href}
+  aria-label={ariaLabel}
+  rel={href.startsWith("http") ? "noopener" : undefined}
+  class:list={[
+    "inline-flex items-center gap-2 rounded-sm text-sm font-semibold transition-colors",
+    variant === "ghost" ? "py-1" : "px-5 py-2.5",
+    variants[variant],
+    className,
+  ]}
+>
+  <slot />
+  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
+  </svg>
+</a>

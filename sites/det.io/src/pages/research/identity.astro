@@ -1,0 +1,279 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ClauseRef from "@components/ClauseRef.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import { SITE } from "@data/site";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+  { name: "Identity", href: "/research/identity" },
+];
+
+const tiers = [
+  {
+    name: "Unverified",
+    evidence: "none — where every wallet starts",
+    unlocks: "browsing; activity that needs no identity checks",
+  },
+  {
+    name: "Basic",
+    evidence: "self-entered details; a session passing the network's early checks",
+    unlocks: "low-risk services needing a real-person signal",
+  },
+  {
+    name: "Standard",
+    evidence: "government document (front and back) + selfie with active liveness + OCR match",
+    unlocks: "most participating services; age and attribute proofs",
+  },
+  {
+    name: "Trusted",
+    evidence: "Standard plus hardware-backed biometrics, device attestation, sustained history",
+    unlocks: "high-trust roles — e.g. validator onboarding; high-value transactions",
+  },
+];
+---
+
+<Base
+  title="Identity — VEID, verifiable electronic identity | det.io"
+  description="The Identity research program: VEID — VirtEngine's Verifiable Electronic Identity layer — combines document capture, active liveness, biometric hardware attestation, on-device encryption, on-chain consensus scoring, verification tiers, and zero-knowledge presentation. identity.org.au is stewarded for public benefit by DETIO FOUNDATION LTD; VEID is decentralised validator-operated technology."
+  path="/research/identity"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Research program 04"
+    title="Identity — prove who you are without handing yourself over"
+    lede="VEID, the Verifiable Electronic Identity layer of VirtEngine, is decentralised protocol technology: multi-factor verification whose evidence is processed and encrypted on the user's own device, scored by chain consensus rather than a central bureau, and presented to services as proofs of attributes — not copies of documents."
+  >
+    <dl class="mt-2 grid max-w-lg gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Layer</dt>
+        <dd class="text-ink">VEID on the VirtEngine chain — x/veid · x/veidregistry · x/mfa · x/veid/zk</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Patent</dt>
+        <dd class="text-ink">AU2024203136B2 (accepted) — held for public benefit</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Service</dt>
+        <dd class="text-ink">identity.org.au · wallet portal my.identity.org.au</dd>
+      </div>
+      <div class="flex gap-4">
+        <dt class="w-28 shrink-0 uppercase tracking-wide">Grounding</dt>
+        <dd class="text-ink">human-rights purpose, constitution cl 6.1.3 · consent framework</dd>
+      </div>
+    </dl>
+  </PageHero>
+
+  <Section
+    number="01"
+    eyebrow="The pipeline"
+    title="Four factors in, one score out — and the evidence stays yours"
+    lede="Verification strength usually comes at privacy's expense: stronger checks, bigger central databases. VEID's pipeline is engineered to break that trade — evidence is captured and encrypted on-device, validators score it under consensus, and only the score becomes ledger state."
+  >
+    <DiagramFrame
+      label="VEID verification pipeline diagram. Stage one, on the user's device: four evidence factors are captured — identity document front and back with guided framing and OCR; a selfie with active liveness challenges (blink, head turn, smile); fingerprint or iris via the platform's secure biometric hardware; and device integrity attestation through Play Integrity or App Attest. Stage two: the evidence is processed and encrypted on-device into consent-gated, per-scope identity payloads using the protocol encryption envelope — only ciphertext is uploaded. Stage three: on the VirtEngine chain, validators decrypt with their keys, score the evidence with machine-learning models, and vote under consensus; the modules involved are x/veid, x/veidregistry, x/mfa, and x/veid/zk. The score, never the raw evidence, becomes ledger state. Stage four, two outcomes: a verification tier from unverified through basic and standard to trusted, and zero-knowledge presentation — proving an attribute to a relying service while revealing nothing else."
+      caption="fig 01 — the VEID pipeline: capture, encrypt, score by consensus, present in zero knowledge"
+      class="reveal"
+    >
+      <VeidPipeline />
+    </DiagramFrame>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Multi-factor capture</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The reference capture flow combines document capture with guided framing and OCR
+          field extraction; selfie capture with active liveness challenges — blink, head
+          turn, smile — and anti-spoofing signals; fingerprint or iris capture through the
+          platform's secure biometric APIs; and device integrity attestation via Google
+          Play Integrity or Apple App Attest, with SafetyNet and DeviceCheck fallbacks for
+          legacy devices.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">On-device processing, encrypted scopes</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Biometric templates and attestation payloads are encrypted into the VEID envelope
+          before anything leaves the device, and stored as consent-gated identity
+          <em>scopes</em> — including dedicated scope types for biometric hardware and
+          device attestation. Data minimisation is a design rule: only the templates and
+          integrity metadata required for verification are stored, encrypted, with
+          lifecycle expiration and revocation.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Consensus scoring, not a central bureau</h3>
+        <p class="prose-inst text-[0.95rem]">
+          Block-proposing validators decrypt submitted scopes with their private keys,
+          score the evidence with machine-learning models, and write the resulting identity
+          trust score into the proposed block; consensus validators repeat the computation
+          and vote. No single verifier's judgement is final, and no central database of
+          documents accumulates anywhere.
+        </p>
+      </article>
+      <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
+        <h3 class="text-lg font-bold">Zero-knowledge presentation</h3>
+        <p class="prose-inst text-[0.95rem]">
+          The x/veid/zk package verifies proofs about identity attributes — validity, tier,
+          uniqueness, or a predicate like being over 18 — without placing the attributes
+          themselves on-chain or handing documents to the relying service. Services learn
+          the answer to their question and nothing else.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Verification tiers"
+    title="Assurance is graduated, not binary"
+    lede="The chain derives a tier from the identity trust score. Services ask for the tier their risk actually requires — a real-person signal for a forum is not the same question as validator onboarding."
+  >
+    <div class="overflow-x-auto rounded-card border border-hairline bg-surface">
+      <table class="w-full min-w-[640px] border-collapse text-left">
+        <caption class="sr-only">VEID verification tiers, their evidence requirements, and what they unlock</caption>
+        <thead>
+          <tr class="border-b border-hairline bg-vellum">
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">Tier</th>
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">Evidence</th>
+            <th scope="col" class="px-5 py-3.5 font-display text-sm font-semibold">Unlocks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            tiers.map((tier, i) => (
+              <tr class="border-b border-hairline last:border-b-0">
+                <th scope="row" class="px-5 py-4 align-top font-display text-sm font-semibold text-ink">
+                  <span class="mr-2 font-mono text-xs text-text-soft">{i}</span>
+                  {tier.name}
+                </th>
+                <td class="px-5 py-4 align-top text-sm text-text-muted">{tier.evidence}</td>
+                <td class="px-5 py-4 align-top text-sm text-text-muted">{tier.unlocks}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="prose-inst mt-6 text-sm">
+      Attestation-required policies apply to high-risk actions: where a device cannot
+      support hardware attestation, the flow records that fact and verification pipelines
+      restrict what the result may be used for.
+    </p>
+  </Section>
+
+  <Section
+    number="03"
+    eyebrow="The service"
+    title="identity.org.au — the program's public face"
+    lede="The Foundation stewards identity.org.au, the plain-language public website for individuals and relying services. The wallet portal is planned for the January 2027 launch window; VEID itself is decentralised validator-operated protocol technology."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">What the property is</h3>
+        <p class="prose-inst text-[0.98rem]">
+          <a href="https://identity.org.au" rel="noopener">identity.org.au</a> explains the
+          wallet, the verification levels, consent and revocation, and what relying
+          services can and cannot see — written for citizens, not cryptographers.
+          <a href="https://identity.org.au/launch" rel="noopener">Join the launch list</a>
+          for the planned wallet portal. identity.org.au is a community service stewarded by the
+          not-for-profit foundation, and it is clearly labelled as not an Australian
+          Government service.
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Honest status</h3>
+        <p class="prose-inst text-[0.98rem]">
+          The wallet is a <strong>reference implementation</strong>: the open repository
+          carries the React Native capture application
+          (<span class="font-mono text-sm">mobile/veid-capture-app</span>) implementing the
+          document, selfie, liveness, biometric-hardware, and attestation flows, with
+          encryption and native ML modules as documented, pluggable extension points. We
+          make no app-store claims and publish no user numbers — the verifiable artifacts
+          are the code, the design documents, and the accepted patent.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    number="04"
+    eyebrow="Rights and consent"
+    title="An identity system constrained by a human-rights clause"
+    lede="The identity program is the most direct expression of the foundation's third purpose: promoting privacy, dignity, autonomy, and equality of access — and protection from unlawful surveillance and private capture of essential digital infrastructure."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">Constitutional grounding</h3>
+        <p class="prose-inst text-[0.98rem]">
+          The human-rights purpose <ClauseRef id="6.1.3" /> is not aspiration — it binds
+          the design. Clause 39 mandates privacy-by-design: minimised collection, minimised
+          central custody, encryption and selective disclosure where feasible, and
+          independent auditability. An identity system operated under this constitution
+          cannot lawfully drift into a surveillance instrument, because the entity running
+          it is constitutionally barred from building one.
+        </p>
+      </article>
+      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-7">
+        <h3 class="text-xl font-bold">The consent framework</h3>
+        <p class="prose-inst text-[0.98rem]">
+          Consent in VEID is scope-based and granular: global settings, per-scope consent
+          with purpose, expiry, and revocation timestamps, and provider-specific grants
+          with whitelists and restrictions. The published consent framework maps the
+          implementation (<span class="font-mono text-sm">x/veid/types/consent.go</span>)
+          against GDPR, CCPA/CPRA, and BIPA, and a biometric data addendum sets specific
+          commitments for biometric handling. Biometric capture requires explicit consent
+          before anything is collected.
+        </p>
+      </article>
+    </div>
+    <p class="prose-inst mt-8">
+      The patent record is public: accepted Australian patent
+      <a href={SITE.patentVeUrl} rel="noopener">{SITE.patentVe}</a> covers the decentralized
+      computing system including the identity-scoring blockchain control layer and on-chain
+      multifactor authentication — held by the foundation to prevent private capture, while
+      the implementation is published under Apache-2.0.
+    </p>
+  </Section>
+
+  <Section
+    number="05"
+    eyebrow="Open questions"
+    title="What the research stream is still working on"
+    lede="Identity is a research program, and its open problems are stated as such on the decentralized-identity topic page."
+  >
+    <ul class="grid gap-2.5 md:max-w-3xl">
+      {
+        [
+          "Liveness robustness against generative-AI presentation attacks",
+          "The recoverability/unlinkability tension in credential re-issuance",
+          "How relying services consume tiered scores without re-identifying users across contexts",
+        ].map((item) => (
+          <li class="prose-inst flex gap-3 text-[0.98rem]">
+            <svg viewBox="0 0 16 16" width="15" height="15" class="mt-1.5 shrink-0" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 8.5l3.5 3.5L13 4.5"></path>
+            </svg>
+            <span>{item}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section number="06" eyebrow="Go deeper" title="The program in the ecosystem">
+    <div class="flex flex-wrap gap-3">
+      <CTA href="https://identity.org.au" rel="noopener">identity.org.au</CTA>
+      <CTA href="/research/decentralized-identity" variant="secondary">Decentralized identity research</CTA>
+      <CTA href="/research/virtengine" variant="secondary">VirtEngine program</CTA>
+      <CTA href={SITE.github} variant="ghost" rel="noopener">Source code</CTA>
+      <CTA href={SITE.patentVeUrl} variant="ghost" rel="noopener">Patent {SITE.patentVe}</CTA>
+    </div>
+  </Section>
+</Base>

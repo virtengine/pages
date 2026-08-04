@@ -1,0 +1,107 @@
+---
+/**
+ * Animated hero artwork: tenants and providers meeting at the chain.
+ * Order flows left→center, bids flow right→center, leases settle outward.
+ * Decorative — parent supplies the text alternative.
+ */
+---
+
+<svg
+  viewBox="0 0 640 420"
+  class="h-auto w-full"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <defs>
+    <radialGradient id="hero-glow" cx="0.5" cy="0.5" r="0.55">
+      <stop offset="0" stop-color="#14b892" stop-opacity="0.22"></stop>
+      <stop offset="1" stop-color="#14b892" stop-opacity="0"></stop>
+    </radialGradient>
+    <marker id="hero-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--color-teal)"></path>
+    </marker>
+  </defs>
+
+  <rect x="120" y="10" width="400" height="400" fill="url(#hero-glow)"></rect>
+
+  <!-- central chain: hexagonal validator ring -->
+  <g transform="translate(320,210)">
+    <g class="orbit-drift" opacity="0.35">
+      <circle r="118" stroke="var(--color-hairline-strong)" stroke-dasharray="3 9"></circle>
+      <circle cx="118" cy="0" r="4" fill="var(--color-teal)"></circle>
+      <circle cx="-118" cy="0" r="4" fill="var(--color-teal)"></circle>
+      <circle cx="0" cy="118" r="3" fill="var(--color-teal-dim)" stroke="var(--color-teal)"></circle>
+      <circle cx="0" cy="-118" r="3" fill="var(--color-teal-dim)" stroke="var(--color-teal)"></circle>
+    </g>
+    <g stroke="var(--color-teal-bright)" stroke-width="1.6">
+      <path d="M0 -74 L64 -37 L64 37 L0 74 L-64 37 L-64 -37 Z"></path>
+      <path d="M0 -74 L0 0 M64 -37 L0 0 M64 37 L0 0 M0 74 L0 0 M-64 37 L0 0 M-64 -37 L0 0" opacity="0.55"></path>
+    </g>
+    <g fill="var(--color-teal-bright)">
+      <circle cx="0" cy="-74" r="6" class="node-pulse"></circle>
+      <circle cx="64" cy="-37" r="6" class="node-pulse" style="animation-delay:-0.5s"></circle>
+      <circle cx="64" cy="37" r="6" class="node-pulse" style="animation-delay:-1s"></circle>
+      <circle cx="0" cy="74" r="6" class="node-pulse" style="animation-delay:-1.5s"></circle>
+      <circle cx="-64" cy="37" r="6" class="node-pulse" style="animation-delay:-2s"></circle>
+      <circle cx="-64" cy="-37" r="6" class="node-pulse" style="animation-delay:-2.5s"></circle>
+    </g>
+    <circle r="11" fill="var(--color-ink)" stroke="var(--color-teal-bright)" stroke-width="1.6"></circle>
+    <text y="102" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--color-teal-glow)">on-chain marketplace</text>
+  </g>
+
+  <!-- tenants (left) -->
+  <g font-family="var(--font-mono)" font-size="10.5" fill="var(--color-text-muted)">
+    <g transform="translate(52,120)">
+      <rect width="88" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <circle cx="20" cy="20" r="5" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></circle>
+      <text x="34" y="24" fill="var(--color-text)">tenant</text>
+    </g>
+    <g transform="translate(28,196)">
+      <rect width="88" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <circle cx="20" cy="20" r="5" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></circle>
+      <text x="34" y="24" fill="var(--color-text)">tenant</text>
+    </g>
+    <g transform="translate(52,272)">
+      <rect width="88" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <circle cx="20" cy="20" r="5" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></circle>
+      <text x="34" y="24" fill="var(--color-text)">tenant</text>
+    </g>
+    <text x="70" y="102">orders</text>
+  </g>
+
+  <!-- providers (right) -->
+  <g font-family="var(--font-mono)" font-size="10.5">
+    <g transform="translate(500,120)">
+      <rect width="96" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <rect x="12" y="13" width="14" height="14" rx="2" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></rect>
+      <text x="34" y="24" fill="var(--color-text)">provider</text>
+    </g>
+    <g transform="translate(524,196)">
+      <rect width="96" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <rect x="12" y="13" width="14" height="14" rx="2" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></rect>
+      <text x="34" y="24" fill="var(--color-text)">provider</text>
+    </g>
+    <g transform="translate(500,272)">
+      <rect width="96" height="40" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <rect x="12" y="13" width="14" height="14" rx="2" fill="none" stroke="var(--color-teal)" stroke-width="1.4"></rect>
+      <text x="34" y="24" fill="var(--color-text)">provider</text>
+    </g>
+    <text x="524" y="102" fill="var(--color-text-muted)">bids</text>
+  </g>
+
+  <!-- flows -->
+  <g stroke="var(--color-teal)" stroke-width="1.5">
+    <path class="flow-dash" d="M142 140 C 196 148, 216 168, 246 186" marker-end="url(#hero-arrow)"></path>
+    <path class="flow-dash" d="M118 216 C 168 214, 196 212, 236 210" marker-end="url(#hero-arrow)" style="animation-delay:-0.4s"></path>
+    <path class="flow-dash" d="M142 292 C 196 284, 216 254, 246 234" marker-end="url(#hero-arrow)" style="animation-delay:-0.8s"></path>
+    <path class="flow-dash" d="M498 140 C 444 148, 424 168, 394 186" marker-end="url(#hero-arrow)" style="animation-delay:-0.2s"></path>
+    <path class="flow-dash" d="M522 216 C 472 214, 444 212, 404 210" marker-end="url(#hero-arrow)" style="animation-delay:-0.6s"></path>
+    <path class="flow-dash" d="M498 292 C 444 284, 424 254, 394 234" marker-end="url(#hero-arrow)" style="animation-delay:-1s"></path>
+  </g>
+
+  <!-- lifecycle caption rail -->
+  <g font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">
+    <text x="320" y="392" text-anchor="middle">order &#8594; bid &#8594; lease &#8594; usage &#8594; settlement</text>
+  </g>
+</svg>

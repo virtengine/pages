@@ -1,0 +1,57 @@
+---
+import Phone from "./Phone.astro";
+import ScreenChrome from "./ScreenChrome.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<Phone
+  label="Wallet app mockup: the zero-knowledge sharing screen. Private fields — name, date of birth, address, document number — stay locked on the device, while a single proof, over 18 yes, is shared."
+  class={className}
+>
+  <ScreenChrome title="Share only what's needed" />
+
+  <text x="160" y="142" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="12.5" font-weight="700" fill="var(--color-ink)">Zero-knowledge proof</text>
+  <text x="160" y="158" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-muted)">Prove the answer — keep the data</text>
+
+  <!-- private vault -->
+  <rect x="32" y="176" width="256" height="196" rx="8" fill="var(--color-alt)" stroke="var(--color-hairline)" />
+  <text x="46" y="200" font-family="Public Sans, sans-serif" font-size="10" font-weight="700" letter-spacing="1" fill="var(--color-steel)">STAYS ON YOUR DEVICE — ENCRYPTED</text>
+  <g font-family="Public Sans, sans-serif" font-size="11" font-weight="600" fill="var(--color-body)">
+    {
+      ["Full name", "Date of birth", "Address", "Document number"].map((label, i) => (
+        <g transform={`translate(46 ${214 + i * 38})`}>
+          <rect x="0" y="0" width="228" height="28" rx="5" fill="#ffffff" stroke="var(--color-hairline)" />
+          <text x="12" y="18">{label}</text>
+          <rect x="196" y="8" width="10" height="8" rx="1.5" fill="none" stroke="var(--color-navy)" stroke-width="1.7" />
+          <path d="M198 8V6.6a3 3 0 0 1 6 0V8" fill="none" stroke="var(--color-navy)" stroke-width="1.7" />
+          <rect x="120" y="10" width="64" height="7" rx="3" fill="var(--color-hairline)" />
+        </g>
+      ))
+    }
+  </g>
+
+  <!-- proof flows out -->
+  <path d="M160 380v34" stroke="var(--color-accent)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7" />
+  <path d="m152 406 8 10 8-10" fill="none" stroke="var(--color-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- shared proof -->
+  <rect x="52" y="426" width="216" height="88" rx="10" fill="#ffffff" stroke="var(--color-accent)" stroke-width="2.4" />
+  <text x="70" y="452" font-family="Public Sans, sans-serif" font-size="10" font-weight="700" letter-spacing="1" fill="var(--color-accent)">SHARED WITH THE SERVICE</text>
+  <circle cx="86" cy="482" r="14" fill="var(--color-success-bg)" stroke="var(--color-success-rule)" stroke-width="2" />
+  <path d="m79 482 5 5 9-11" stroke="var(--color-success-rule)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <text x="112" y="478" font-family="Public Sans, sans-serif" font-size="14" font-weight="800" fill="var(--color-ink)">Over 18 — yes</text>
+  <text x="112" y="496" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-muted)">One answer. Nothing else leaves.</text>
+
+  <!-- footnote -->
+  <rect x="32" y="536" width="256" height="42" rx="6" fill="var(--color-info-bg)" />
+  <rect x="32" y="536" width="4" height="42" fill="var(--color-info-rule)" />
+  <text x="48" y="554" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-body)">The service can verify the proof is genuine</text>
+  <text x="48" y="568" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-body)">without ever seeing your information.</text>
+
+  <rect x="32" y="592" width="256" height="40" rx="5" fill="var(--color-action)" />
+  <text x="160" y="617" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="12.5" font-weight="700" fill="#ffffff">Share proof</text>
+</Phone>

@@ -1,0 +1,17 @@
+---
+/**
+ * Neutral callout panel with a navy left rule — for asides and definitions.
+ */
+interface Props {
+  title?: string;
+  class?: string;
+}
+const { title, class: className } = Astro.props;
+---
+
+<div class:list={["border-l-4 border-l-navy bg-alt rounded-r-tile px-5 py-4", className]}>
+  {title && <p class="m-0 font-bold text-ink">{title}</p>}
+  <div class="text-[0.98rem] text-body [&>p]:mt-2 [&>p:first-child]:mt-0">
+    <slot />
+  </div>
+</div>

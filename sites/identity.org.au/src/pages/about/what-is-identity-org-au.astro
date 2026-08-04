@@ -1,0 +1,135 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import { ABOUT_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "What is identity.org.au", href: "/about/what-is-identity-org-au" },
+];
+---
+
+<Guide
+  title="What is identity.org.au"
+  metaTitle="What is identity.org.au — About | identity.org.au"
+  description="identity.org.au is an open-source community identity service stewarded by a not-for-profit foundation. It is not an Australian Government service — here is exactly how it differs."
+  lede="An open-source community service for privacy-preserving digital identity — and emphatically not a government service."
+  eyebrow="About"
+  breadcrumbs={crumbs}
+  sectionLabel="In this section"
+  sectionNav={ABOUT_NAV}
+>
+  <Alert tone="warning" title="Not an Australian Government service">
+    <p>
+      identity.org.au is not operated or endorsed by the Australian Government or any state or
+      territory government. It is not the Australian Government Digital ID System (AGDIS), not
+      myID, and not myGov. If you are looking for government digital identity, visit the
+      government's own websites.
+    </p>
+    <p>
+      One connection exists and we disclose it: the foundation's predecessor company,
+      DET-IO Pty Ltd, has received NSW Government business-grant funding (a Jobs for NSW
+      Minimum Viable Product grant, disclosed in the Jobs for NSW Annual Report 2019–20 tabled
+      in NSW Parliament), and a further NSW grant application is in progress at the time of
+      writing. That is a funding relationship only — no government operates, controls, or
+      endorses this service.
+    </p>
+    <p>
+      The steward is currently in the process of applying for accreditation under the
+      <em>Digital ID Act 2024</em> Accreditation Scheme, administered by the Digital ID
+      Regulator (the ACCC). Accreditation has not been granted, no accreditation is claimed,
+      and the Digital ID Accreditation Trustmark will only be displayed if and when
+      accreditation is granted and a Trade Mark Licence Agreement is in place. Progress will
+      be reported on this page.
+    </p>
+  </Alert>
+
+  <div class="prose-service mt-8">
+    <h2>What this service is</h2>
+    <p>
+      identity.org.au is two things at once, deliberately. It is an <strong>advocacy and
+      education hub</strong> for privacy-preserving digital identity — publishing plain-English
+      guidance, policy analysis and <a href="/insights">evergreen research explainers</a> about
+      how identity systems should treat people. It is also the public home of the planned
+      <a href="/wallet">Identity Wallet</a>. The wallet and its web portal are planned for the
+      January 2027 launch window; <a href="/launch">join the launch list</a> for updates.
+    </p>
+    <p>
+      The two roles reinforce each other and share one constraint. The analysis we publish holds
+      the service we operate to account — every principle argued in
+      <a href="/insights">Insights</a> is implemented, checkably, in the wallet. The wallet itself
+      is <strong>open-source reference software</strong>, powered by a technology layer called
+      VEID (Verifiable Electronic Identity): a complete, working implementation that anyone can inspect, run and build on.
+    </p>
+    <p>
+      Both roles sit under one steward. identity.org.au is operated — not owned for profit — by
+      {SITE.foundation}, an Australian not-for-profit public company limited by guarantee
+      (ACN {SITE.acn}), whose constitution places the technology under a public-benefit lock: no
+      dividends, no private capture of the IP, and winding-up provisions that pass everything to
+      another public-benefit entity. This stewardship applies to the website and the wallet
+      reference implementation; it does <strong>not</strong> make the Foundation the operator of
+      VEID. VEID is decentralised protocol technology run by participating validators, which
+      anyone may join subject to the network's rules. The education mission and the service are bound by the same
+      document — see <a href="/about/who-runs-it">who runs it</a>.
+    </p>
+
+    <h2>How it differs from government digital ID</h2>
+  </div>
+
+  <div class="mt-6 overflow-x-auto">
+    <table class="table-gov">
+      <caption class="sr-only">Comparison between this service and government digital identity</caption>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">identity.org.au</th>
+          <th scope="col">Government digital ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Operated by</th>
+          <td>A not-for-profit foundation, under a public constitution</td>
+          <td>Government agencies, under legislation</td>
+        </tr>
+        <tr>
+          <th scope="row">Code</th>
+          <td>Fully open source — anyone can inspect it</td>
+          <td>Generally not public</td>
+        </tr>
+        <tr>
+          <th scope="row">Accreditation</th>
+          <td>None claimed. The design aligns with the principles of data minimisation and consent-based sharing, but alignment is not accreditation</td>
+          <td>Operates within a legislated accreditation scheme</td>
+        </tr>
+        <tr>
+          <th scope="row">Where your identity lives</th>
+          <td>Encrypted, anchored to a decentralised network — no single central database</td>
+          <td>Government-operated systems</td>
+        </tr>
+        <tr>
+          <th scope="row">Who can use verification results</th>
+          <td>Services on the VirtEngine network, with your per-request consent</td>
+          <td>Accredited relying parties</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose-service mt-8">
+    <h2>Why we lead with this</h2>
+    <p>
+      Trust in an identity system starts with knowing exactly who runs it. Blurring the line
+      between community infrastructure and government services would be a form of deception — so
+      every page of this site carries the distinction, and we make no claims of government
+      status, endorsement or accreditation anywhere.
+    </p>
+    <p>
+      What we do claim, you can verify: the <a href="/about/open-source">code is public</a>, the
+      <a href="/about/who-runs-it">foundation's constitution</a> is a public document, and the
+      <a href="/about/patents">patent</a> is on the public register.
+    </p>
+  </div>
+</Guide>

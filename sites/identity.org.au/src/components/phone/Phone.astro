@@ -1,0 +1,40 @@
+---
+/**
+ * SVG phone frame. Slot content draws in the same coordinate space
+ * (viewBox 0 0 328 670, device body at 4,4–316,656);
+ * usable screen area: x 16–304, y 42–644 (white surface, rx 26).
+ */
+interface Props {
+  label: string;
+  class?: string;
+}
+const { label, class: className } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 328 670"
+  role="img"
+  aria-label={label}
+  class:list={["block w-full h-auto", className]}
+>
+  <!-- depth shadow -->
+  <rect x="11" y="14" width="312" height="652" rx="38" fill="var(--color-navy)" opacity="0.12" />
+  <!-- side buttons -->
+  <rect x="1.5" y="150" width="4" height="34" rx="2" fill="var(--color-navy-panel)" />
+  <rect x="1.5" y="196" width="4" height="58" rx="2" fill="var(--color-navy-panel)" />
+  <rect x="316.5" y="172" width="4" height="64" rx="2" fill="var(--color-navy-panel)" />
+  <!-- body -->
+  <rect x="4" y="4" width="312" height="652" rx="38" fill="var(--color-navy)" />
+  <rect x="8" y="8" width="304" height="644" rx="34" fill="none" stroke="var(--color-navy-hairline)" stroke-width="1.4" />
+  <rect x="15" y="15" width="290" height="630" rx="27" fill="#ffffff" />
+  <!-- camera + speaker -->
+  <circle cx="122" cy="29" r="3.4" fill="var(--color-navy-panel)" />
+  <circle cx="122" cy="29" r="1.4" fill="#6ea3d8" />
+  <rect x="136" y="26" width="48" height="6" rx="3" fill="var(--color-hairline)" />
+  <!-- status bar -->
+  <circle cx="282" cy="46" r="3" fill="var(--color-hairline-strong)" />
+  <rect x="262" y="43" width="12" height="6" rx="1.5" fill="var(--color-hairline-strong)" />
+  <rect x="36" y="41" width="26" height="9" rx="2" fill="none" stroke="var(--color-hairline-strong)" stroke-width="1.6" />
+  <rect x="39" y="43.5" width="16" height="4" rx="1" fill="var(--color-hairline-strong)" />
+  <slot />
+</svg>

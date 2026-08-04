@@ -1,0 +1,153 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import ProgramCard from "@components/ProgramCard.astro";
+import ProgramVirtArt from "@components/diagrams/ProgramVirtArt.astro";
+import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
+import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
+import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
+import { RESEARCH_TOPICS } from "@data/research";
+
+const breadcrumbs = [
+  { name: "Home", href: "/" },
+  { name: "Research", href: "/research" },
+];
+---
+
+<Base
+  title="Research — programs and topics of DETIO Foundation | det.io"
+  description="The foundation's research portfolio: the VirtEngine decentralized cloud program, the DSEMA multi-agent AI program, the open-source Bosun agent orchestrator, the VEID identity program, and six cross-cutting research topics — decentralized identity, multi-agent safety, confidential computing, protocol governance design, incentive mechanisms, and privacy-preserving verification."
+  path="/research"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs crumbs={breadcrumbs} />
+  <PageHero
+    eyebrow="Research portfolio"
+    title="Open research, grounded in working systems"
+    lede="The foundation's education purpose (constitution clause 6.1.1) obliges public research, open specifications, and safety materials. Everything here is grounded in the actual artifacts — the open VirtEngine repository, the accepted AU2024203136B2 patent, the 103-page DSEMA specification, and the signed constitution. Questions and approaches are stated as such; we do not invent results."
+  />
+
+  <Section
+    number="01"
+    eyebrow="Programs"
+    title="Four programs, one lock"
+    lede="Each program carries its own body of technology, patents, and documentation — and all of it is held under the same constitutional public-benefit lock."
+  >
+    <div class="grid gap-6 lg:grid-cols-2">
+      <ProgramCard
+        program="Program 01 — decentralized cloud"
+        title="VirtEngine"
+        href="/research/virtengine"
+        facts={[
+          ["stack", "Go · CometBFT · Cosmos SDK"],
+          ["license", "Apache-2.0, open source"],
+          ["patent", "AU2024203136B2 (accepted)"],
+          ["identity", "VEID — privacy-preserving"],
+        ]}
+      >
+        <p>
+          A decentralized cloud computing marketplace connecting tenants who need compute with
+          providers who lease capacity — identity, encryption, escrow, and settlement enforced
+          by the chain itself.
+        </p>
+        <Fragment slot="art"><ProgramVirtArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 02 — trustworthy AI"
+        title="DSEMA"
+        href="/research/dsema"
+        facts={[
+          ["subject", "self-evolving multi-agent AI"],
+          ["status", "research — patent pending"],
+          ["control plane", "blockchain orchestration"],
+          ["safety", "constitutional safety layer"],
+        ]}
+      >
+        <p>
+          The Dynamically Self-Evolving Multi-Agent architecture: collectives of specialized AI
+          agents that improve themselves under verifiable on-chain control and an immutable
+          constitutional safety layer.
+        </p>
+        <Fragment slot="art"><ProgramDsemaArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 03 — autonomous engineering"
+        title="Bosun"
+        href="/research/bosun"
+        facts={[
+          ["status", "experimental — open source"],
+          ["license", "Apache-2.0"],
+          ["install", "npm install -g bosun"],
+          ["home", "bosun.engineer"],
+        ]}
+      >
+        <p>
+          A fully open-source, experimental control plane for autonomous software engineering:
+          executor routing with failover, automated PR lifecycles, self-healing recovery — the
+          applied track that informs the DSEMA research.
+        </p>
+        <Fragment slot="art"><ProgramBosunArt /></Fragment>
+      </ProgramCard>
+
+      <ProgramCard
+        program="Program 04 — verifiable identity"
+        title="Identity — VEID"
+        href="/research/identity"
+        facts={[
+          ["layer", "x/veid · x/mfa · x/veid/zk"],
+          ["patent", "AU2024203136B2 (accepted)"],
+          ["service", "identity.org.au"],
+          ["privacy", "on-device · zero-knowledge"],
+        ]}
+      >
+        <p>
+          Verifiable Electronic Identity: multi-factor verification encrypted on-device, scored
+          by chain consensus, presented as zero-knowledge proofs of attributes — with
+          identity.org.au as the citizen-facing service.
+        </p>
+        <Fragment slot="art"><ProgramIdentityArt /></Fragment>
+      </ProgramCard>
+    </div>
+  </Section>
+
+  <Section
+    number="02"
+    eyebrow="Research topics"
+    title="Six questions the programs share"
+    lede="Cross-cutting research streams that run through the programs. Each topic page states the open question, the approach, current work, and the verifiable artifacts behind it."
+  >
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        RESEARCH_TOPICS.map((topic, i) => (
+          <article class="group reveal relative grid content-start gap-3 rounded-card border border-hairline bg-surface p-6 transition-colors hover:border-blue-deep">
+            <p class="font-mono text-xs tracking-[0.14em] text-text-soft uppercase">
+              {String(i + 1).padStart(2, "0")} · {topic.programs.join(" + ")}
+            </p>
+            <h3 class="text-xl font-bold">
+              <a href={`/research/${topic.slug}`} class="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-blue-deep">
+                {topic.title}
+              </a>
+            </h3>
+            <p class="prose-inst text-[0.95rem] italic">{topic.question}</p>
+            <p class="mt-1 inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep">
+              Explore the topic
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="prose-inst mt-8">
+      For the institutional context behind the research — why the foundation is obliged to
+      publish it and how the outputs are locked to the public — see the
+      <a href="/mission">mission</a> and the
+      <a href="/constitution">constitution explorer</a>.
+    </p>
+  </Section>
+</Base>

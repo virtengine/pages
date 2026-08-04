@@ -1,0 +1,110 @@
+---
+/**
+ * Staking topology: delegators → validators → consensus + identity network,
+ * with reward and slashing paths.
+ * Decorative inside DiagramFrame — the frame carries the aria-label.
+ */
+---
+
+<div class="diagram-mobile sm:hidden" aria-hidden="true">
+  <div class="diagram-mobile-card">
+    <strong>Delegators &amp; staking partners</strong>
+    <span>Token holders · staking services</span>
+  </div>
+  <div class="diagram-mobile-flow">delegate ↓</div>
+  <div class="diagram-mobile-card diagram-mobile-validator">
+    <strong>Validator set</strong>
+    <span>Bonded stake weights votes</span>
+  </div>
+  <div class="diagram-mobile-duties">
+    <div><strong>Consensus</strong><span>Propose &amp; commit blocks</span></div>
+    <div><strong>VEID Network</strong><span>VEID scoring duties</span></div>
+    <div><strong>Governance</strong><span>Vote on parameters</span></div>
+  </div>
+  <p class="diagram-mobile-return">Block rewards − commission → delegators</p>
+  <p class="diagram-mobile-warning">Misbehavior → slashing of bonded stake</p>
+</div>
+
+<svg viewBox="0 0 680 340" class="diagram-svg hidden h-auto w-full sm:block" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <marker id="stk-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--color-teal)"></path>
+    </marker>
+    <marker id="stk-warn" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="var(--color-amber)"></path>
+    </marker>
+  </defs>
+
+  <!-- delegators -->
+  <g font-family="var(--font-mono)" font-size="10.5">
+    <text x="24" y="36" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-text)">Delegators &amp; staking partners</text>
+    <g transform="translate(24,52)">
+      <rect width="150" height="38" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="16" y="24" fill="var(--color-text-muted)">token holder</text>
+    </g>
+    <g transform="translate(24,102)">
+      <rect width="150" height="38" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="16" y="24" fill="var(--color-text-muted)">token holder</text>
+    </g>
+    <g transform="translate(24,152)">
+      <rect width="150" height="38" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+      <text x="16" y="24" fill="var(--color-text-muted)">staking service</text>
+    </g>
+  </g>
+
+  <!-- delegation flows -->
+  <g stroke="var(--color-teal)" stroke-width="1.5">
+    <path class="flow-dash" d="M176 71 C 230 78, 250 100, 288 124" marker-end="url(#stk-arrow)"></path>
+    <path class="flow-dash" d="M176 121 C 220 124, 250 130, 288 138" marker-end="url(#stk-arrow)" style="animation-delay:-0.4s"></path>
+    <path class="flow-dash" d="M176 171 C 230 166, 250 152, 288 148" marker-end="url(#stk-arrow)" style="animation-delay:-0.8s"></path>
+  </g>
+  <text x="212" y="102" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">delegate</text>
+
+  <!-- validator set -->
+  <g>
+    <rect x="292" y="52" width="180" height="180" rx="12" fill="var(--color-teal-dim)" fill-opacity="0.28" stroke="var(--color-teal)" stroke-opacity="0.6"></rect>
+    <text x="382" y="80" text-anchor="middle" font-family="var(--font-display)" font-weight="600" font-size="13" fill="var(--color-teal-glow)">Validator set</text>
+    <g transform="translate(382,150)">
+      <g stroke="var(--color-teal-bright)" stroke-width="1.4">
+        <path d="M0 -44 L38 -22 L38 22 L0 44 L-38 22 L-38 -22 Z"></path>
+        <path d="M0 -44 L0 0 M38 -22 L0 0 M38 22 L0 0 M0 44 L0 0 M-38 22 L0 0 M-38 -22 L0 0" opacity="0.5"></path>
+      </g>
+      <g fill="var(--color-teal-bright)">
+        <circle cx="0" cy="-44" r="4.5" class="node-pulse"></circle>
+        <circle cx="38" cy="-22" r="4.5" class="node-pulse" style="animation-delay:-0.5s"></circle>
+        <circle cx="38" cy="22" r="4.5" class="node-pulse" style="animation-delay:-1s"></circle>
+        <circle cx="0" cy="44" r="4.5" class="node-pulse" style="animation-delay:-1.5s"></circle>
+        <circle cx="-38" cy="22" r="4.5" class="node-pulse" style="animation-delay:-2s"></circle>
+        <circle cx="-38" cy="-22" r="4.5" class="node-pulse" style="animation-delay:-2.5s"></circle>
+      </g>
+      <circle r="7" fill="var(--color-ink)" stroke="var(--color-teal-bright)" stroke-width="1.4"></circle>
+    </g>
+    <text x="382" y="222" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">bonded stake weights votes</text>
+  </g>
+
+  <!-- duties -->
+  <g font-family="var(--font-mono)" font-size="10.5">
+    <path class="flow-dash" d="M474 100 H 512" stroke="var(--color-teal)" stroke-width="1.5" marker-end="url(#stk-arrow)" style="animation-delay:-0.2s"></path>
+    <rect x="516" y="76" width="144" height="48" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="532" y="96" fill="var(--color-teal-bright)">consensus</text>
+    <text x="532" y="112" fill="var(--color-text-muted)" font-family="var(--font-sans)">propose &amp; commit blocks</text>
+
+    <path class="flow-dash" d="M474 160 H 512" stroke="var(--color-teal)" stroke-width="1.5" marker-end="url(#stk-arrow)" style="animation-delay:-0.5s"></path>
+    <rect x="516" y="136" width="144" height="48" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="532" y="156" fill="var(--color-teal-bright)">VEID Network</text>
+    <text x="532" y="172" fill="var(--color-text-muted)" font-family="var(--font-sans)">VEID scoring duties</text>
+
+    <path class="flow-dash" d="M474 208 C 496 210, 504 214, 512 218" stroke="var(--color-teal)" stroke-width="1.5" marker-end="url(#stk-arrow)" style="animation-delay:-0.8s"></path>
+    <rect x="516" y="196" width="144" height="48" rx="8" fill="var(--color-panel-raised)" stroke="var(--color-hairline-strong)"></rect>
+    <text x="532" y="216" fill="var(--color-teal-bright)">governance</text>
+    <text x="532" y="232" fill="var(--color-text-muted)" font-family="var(--font-sans)">vote on parameters</text>
+  </g>
+
+  <!-- rewards back -->
+  <path class="flow-dash" d="M382 236 V 276 H 106 V 196" stroke="var(--color-teal)" stroke-width="1.4" opacity="0.6" marker-end="url(#stk-arrow)" style="animation-delay:-1.1s"></path>
+  <text class="diagram-line-label" x="250" y="270" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-teal-glow)">block rewards &#8722; commission &#8594; delegators</text>
+
+  <!-- slashing -->
+  <path d="M472 232 C 500 268, 480 296, 420 306" stroke="var(--color-amber)" stroke-width="1.3" stroke-dasharray="4 5" marker-end="url(#stk-warn)"></path>
+  <text class="diagram-line-label" x="660" y="316" text-anchor="end" font-family="var(--font-mono)" font-size="9.5" font-weight="700" fill="var(--color-amber)">misbehavior &#8594; slashing of bonded stake</text>
+</svg>

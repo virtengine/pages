@@ -1,0 +1,219 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
+import { SITE } from "@data/site";
+
+const whyProvide = [
+  {
+    title: "Monetize idle capacity",
+    body: "Turn unused racks, cloud headroom, or HPC cycles into revenue. The marketplace matches your capacity with tenant demand — you set your own bid pricing strategy.",
+  },
+  {
+    title: "Settlement without invoicing",
+    body: "Usage is metered, reported, and settled by the protocol. Payment releases from escrow automatically after the dispute window — no accounts receivable, no chasing customers.",
+  },
+  {
+    title: "Verified counterparties",
+    body: "VEID identity scoring means you know tenants are verified before workloads land on your hardware, and tenants can verify you — cutting fraud in both directions.",
+  },
+  {
+    title: "Reputation that compounds",
+    body: "Auditor-signed attributes, on-chain hardware benchmarks, and tenant reviews build a portable, tamper-evident track record that wins better-priced leases over time.",
+  },
+];
+
+const daemonDuties = [
+  { name: "Bid engine", detail: "Watches open orders on-chain and places bids per your configured pricing and capacity rules." },
+  { name: "Workload orchestration", detail: "Instantiates leased workloads through Kubernetes, or through SLURM / MOAB / Open OnDemand for HPC jobs." },
+  { name: "Usage metering", detail: "Collects per-workload resource metrics on an hourly cadence and batches them into signed usage records." },
+  { name: "Chain submission", detail: "Submits MsgRecordUsage batches with retry and backoff; reconciles against platform metrics and flags anomalies." },
+];
+
+const onboarding = [
+  {
+    step: "01",
+    title: "Verify your identity",
+    body: "Complete VEID verification. Marketplace access is identity-gated so tenants and providers can trust the other side of every lease.",
+  },
+  {
+    step: "02",
+    title: "Register on-chain",
+    body: "Create your provider record with attributes — region, hardware classes, certifications — via the x/provider module.",
+  },
+  {
+    step: "03",
+    title: "Deploy the provider daemon",
+    body: "Install and configure the daemon against your Kubernetes cluster or HPC scheduler; connect your chain key and set bid pricing.",
+  },
+  {
+    step: "04",
+    title: "Get audited & benchmarked",
+    body: "Optional but valuable: auditor-signed attributes and published hardware benchmarks make your offers stand out to tenants that filter on them.",
+  },
+  {
+    step: "05",
+    title: "Bid, serve, settle",
+    body: "The daemon bids on matching orders. Won leases run on your infrastructure, usage settles hourly, and escrow pays out after the 24-hour dispute window.",
+  },
+];
+---
+
+<Base
+  title="Providers — VirtEngine"
+  description="Lease datacenter, cloud, or HPC capacity into the VirtEngine marketplace. How provider economics, the provider daemon, usage settlement, and onboarding work."
+  path="/providers"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Providers", href: "/providers" },
+  ]}
+>
+  <PageHero
+    eyebrow="For providers"
+    title="Lease your capacity into an open marketplace"
+    lede="Datacenter operators, cloud providers, and HPC facilities earn revenue by serving on-chain leases — with metering, billing, and payment handled by the protocol."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Providers", href: "/providers" },
+    ]}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href={`${SITE.docs}`}>Provider documentation</CTA>
+      <CTA href="#onboarding" variant="secondary">Onboarding path</CTA>
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Why provide" title="What the protocol does for an operator">
+    <div class="grid gap-5 sm:grid-cols-2">
+      {whyProvide.map((item) => <Card title={item.title} class="reveal p-7">{item.body}</Card>)}
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Economics"
+    title="Usage in, payment out"
+    lede="The settlement pipeline connects your running workloads to escrowed tenant funds. Every hop is signed, windowed for disputes, and reconciled."
+  >
+    <DiagramFrame
+      label="Settlement flow diagram in two halves. Left, the provider daemon: a usage meter collects per-workload resource metrics; a scheduled collector produces hourly usage records; the settlement pipeline batches records and runs anomaly detection; a chain submitter sends signed MsgRecordUsage batches. Right, on-chain: the settlement module converts usage into billable line items; a 24-hour dispute window allows corrections; the escrow module holds funds against the lease; then payout — the provider receives the agreed settlement amount with no marketplace commission deducted."
+      caption="fig 01 — usage reporting and settlement pipeline (docs/usage-reporting-settlement.md)"
+      class="reveal"
+    >
+      <SettlementFlow />
+    </DiagramFrame>
+    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
+      <p>
+        Settlement runs on a default one-hour interval. Reported usage sits in a
+        <strong>24-hour dispute window</strong> during which either party can raise
+        corrections; anomaly detection flags outliers automatically before they ever
+        reach the chain. After the window closes, line items settle against lease escrow
+        and the agreed funds transfer to your provider account with no marketplace
+        commission deducted. Low validator transaction fees apply only to the on-chain
+        actions involved.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Provider daemon"
+    title="One daemon between the chain and your infrastructure"
+    lede="The provider daemon is the protocol's on-premises agent. You configure it; it handles the marketplace."
+  >
+    <ul class="grid gap-3 lg:grid-cols-2">
+      {
+        daemonDuties.map((duty) => (
+          <li class="reveal flex gap-4 rounded-card border border-line bg-panel p-5">
+            <svg viewBox="0 0 20 20" width="20" height="20" class="mt-0.5 shrink-0" fill="none" stroke="var(--color-green)" stroke-width="1.6" aria-hidden="true">
+              <rect x="3" y="3" width="14" height="14" rx="4"></rect>
+              <path d="M7 10.5 9 12.5 13.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <div>
+              <h3 class="text-base font-semibold">{duty.name}</h3>
+              <p class="mt-1 text-sm text-slate">{duty.detail}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section
+    eyebrow="HPC"
+    title="Supercomputing capacity is a first-class citizen"
+    lede="If you run SLURM, MOAB, or Open OnDemand, the daemon's HPC integration executes on-chain jobs on your cluster — with usage reporting, state recovery, audit logging, and retry built in."
+  >
+    <div class="grid gap-5 lg:grid-cols-3">
+      <Card title="Scheduler adapters" tag="slurm · moab · ood" class="reveal">
+        Native adapters speak to your existing controller — munge or JWT auth for SLURM,
+        with per-partition configuration. No re-platforming of your cluster.
+      </Card>
+      <Card title="Job lifecycle service" tag="x/hpc" class="reveal">
+        On-chain HPC jobs are polled, dispatched, and tracked with configurable
+        concurrency limits, timeouts, and crash-safe state recovery.
+      </Card>
+      <Card title="Audit trail" tag="usage · security" class="reveal">
+        Job events, security events, and usage reports are logged to a dedicated audit
+        log, and usage batches flow into the same settlement pipeline as cloud workloads.
+      </Card>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Requirements"
+    title="What you need to bring"
+  >
+    <ul class="prose-body grid max-w-3xl gap-3 text-base">
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> Infrastructure: a Kubernetes cluster, or an HPC cluster behind SLURM / MOAB / Open OnDemand.</li>
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> A Linux (amd64/arm64) or macOS host for the <code>virtengine</code> binary and provider daemon.</li>
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> A funded chain account and provider key for registration, bidding, and gas.</li>
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> VEID identity verification, since marketplace participation is identity-gated.</li>
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> Network reachability for tenants to consume the services you host.</li>
+    </ul>
+  </Section>
+
+  <Section eyebrow="Onboarding" title="Five steps to your first lease" id="onboarding">
+    <ol class="grid gap-5 lg:grid-cols-5">
+      {
+        onboarding.map((step) => (
+          <li class="reveal rounded-card border border-line bg-panel p-5">
+            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{step.step}</p>
+            <h3 class="mt-2 text-base font-semibold">{step.title}</h3>
+            <p class="mt-2 text-xs leading-relaxed text-slate">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="reveal mt-10 flex flex-wrap gap-4">
+      <CTA href={SITE.docs}>Start with the provider docs</CTA>
+      <CTA href="/learn/provider-economics" variant="secondary">Provider economics, explained</CTA>
+      <CTA href="/network" variant="ghost">Check network status</CTA>
+    </div>
+  </Section>
+
+  <Section eyebrow="By operator type" title="Solutions for your kind of capacity">
+    <ul class="grid gap-3 sm:grid-cols-3">
+      <li>
+        <a href="/solutions/datacenter-operators" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">Datacenter operators</h3>
+          <p class="mt-1.5 text-sm text-slate">Turn provisioned-but-idle headroom into settled revenue.</p>
+        </a>
+      </li>
+      <li>
+        <a href="/solutions/gpu-compute-providers" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">GPU compute providers</h3>
+          <p class="mt-1.5 text-sm text-slate">Lease accelerator capacity with benchmark-backed offers.</p>
+        </a>
+      </li>
+      <li>
+        <a href="/solutions/hpc-clusters" class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep">
+          <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">HPC clusters</h3>
+          <p class="mt-1.5 text-sm text-slate">Monetize batch cycles through SLURM, MOAB, or Open OnDemand.</p>
+        </a>
+      </li>
+    </ul>
+  </Section>
+</Base>

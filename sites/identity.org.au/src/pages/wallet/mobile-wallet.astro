@@ -1,0 +1,108 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import StatusTag from "@components/StatusTag.astro";
+import DocScanScreen from "@components/phone/DocScanScreen.astro";
+import LivenessScreen from "@components/phone/LivenessScreen.astro";
+import { WALLET_NAV } from "@data/nav-sections";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Wallet", href: "/wallet" },
+  { name: "Mobile wallet", href: "/wallet/mobile-wallet" },
+];
+---
+
+<Guide
+  title="Mobile wallet"
+  metaTitle="Mobile wallet — capture and verify | identity.org.au"
+  description="The mobile wallet is where verification happens: guided document capture, selfie with active liveness, biometric hardware capture, device integrity attestation, and on-device encryption before anything moves."
+  lede="The capture side of the Identity Wallet: your phone's camera, sensors and secure hardware do the verification work — and encrypt everything before it leaves your hands."
+  eyebrow="The service"
+  breadcrumbs={crumbs}
+  sectionLabel="The wallet"
+  sectionNav={WALLET_NAV}
+>
+  <StatusTag tone="info">Open-source reference implementation</StatusTag>
+
+  <div class="prose-service mt-6">
+    <p>
+      Verification evidence can only be produced where the person and the device meet — so the
+      mobile wallet is where your identity is actually verified. It is a guided capture app: it
+      walks you through each evidence step, checks quality as you go, lets you review everything,
+      and encrypts the whole payload on your phone before a single byte is transmitted.
+    </p>
+
+    <h2>The capture pipeline</h2>
+    <ul>
+      <li>
+        <strong>Guided document capture.</strong> Front and back of your identity document, framed
+        with on-screen corner guides. The app checks edges, focus and glare in real time, and the
+        document's text is read by OCR so you can correct any misread field before submission.
+      </li>
+      <li>
+        <strong>Selfie with active liveness.</strong> Short challenges — blink, turn your head,
+        smile — issued unpredictably and verified live. A photo, replayed video or rendered face
+        cannot answer a challenge it has not seen; this is the core defence against
+        <a href="/insights/deepfakes-and-identity-verification">deepfake and replay attacks</a>.
+      </li>
+      <li>
+        <strong>Biometric hardware capture.</strong> For the
+        <a href="/get-started/verification-levels">Trusted level</a>, fingerprint or iris capture
+        runs through your phone's platform-secure APIs — inside secure hardware the operating
+        system cannot read into — with liveness and anti-spoofing signals.
+      </li>
+      <li>
+        <strong>Device integrity attestation.</strong> Google Play Integrity on Android and Apple
+        App Attest on iOS let your device prove the app is genuine and the system untampered,
+        closing off the emulators and injection tools that industrial fraud relies on.
+      </li>
+      <li>
+        <strong>On-device encryption.</strong> Templates and payloads are encrypted on your phone
+        with envelope encryption (X25519-XSalsa20-Poly1305) before transmission. The network
+        receives ciphertext it can verify against but never browse.
+      </li>
+    </ul>
+  </div>
+
+  <div class="mt-10 grid gap-8 sm:grid-cols-2">
+    <div class="mx-auto w-full max-w-[260px]">
+      <DocScanScreen />
+    </div>
+    <div class="mx-auto w-full max-w-[260px]">
+      <LivenessScreen />
+    </div>
+  </div>
+
+  <div class="prose-service mt-10">
+    <h2>What never leaves your phone unprotected</h2>
+    <p>
+      The design rule is simple: raw evidence is processed at the edge, and only encrypted
+      payloads and signed results move. Your document images and biometric templates are encrypted
+      before transmission; verification produces a
+      <a href="/help/understanding-your-veid-score">score and tier</a> recorded on the network;
+      and services that rely on your identity receive
+      <a href="/help/who-can-see-your-data">answers, never evidence</a>. The full model — keys,
+      revocation, deletion — is on the <a href="/wallet/security">wallet security</a> page.
+    </p>
+
+    <h2>After capture: the wallet role</h2>
+    <p>
+      Once verified, the mobile app is also a wallet: your credential card, your shareable proofs
+      and your consent activity live on the device, and requests from services appear there for
+      approval. The same identity is available in the browser at
+      <a href="/wallet/web-wallet">my.identity.org.au</a> — capture is mobile-only, management is
+      everywhere.
+    </p>
+  </div>
+
+  <Alert tone="warning" title="No app-store listings" class="mt-8">
+    <p>
+      The mobile wallet is an open-source <strong>reference implementation</strong> — the working
+      blueprint production wallets build on, published in the
+      <a href="/about/open-source" class="link-plain">VirtEngine repository</a>. There are no
+      official app-store listings at this stage. Treat any store listing claiming to be this
+      wallet as suspect and <a href="/help/recognising-scams-and-phishing" class="link-plain">report it</a>.
+    </p>
+  </Alert>
+</Guide>

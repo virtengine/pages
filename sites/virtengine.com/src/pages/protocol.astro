@@ -1,0 +1,153 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import DiagramFrame from "@components/DiagramFrame.astro";
+import StatCallout from "@components/StatCallout.astro";
+import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
+import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
+import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
+---
+
+<Base
+  title="Protocol — VirtEngine"
+  description="The VirtEngine Protocol architecture: a CometBFT/Cosmos SDK chain with 27 modules covering marketplace, identity, economics, and quality — plus lifecycle, tokenomics, and governance."
+  path="/protocol"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Protocol", href: "/protocol" },
+  ]}
+>
+  <PageHero
+    eyebrow="Protocol"
+    title="One chain that runs a cloud marketplace end to end"
+    lede="VirtEngine is a purpose-built blockchain: consensus, identity verification, resource exchange, and payment settlement in a single Go binary. Here is how it fits together."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Protocol", href: "/protocol" },
+    ]}
+  />
+
+  <Section
+    eyebrow="Architecture"
+    title="From client to cluster"
+    lede="Four layers: clients sign transactions; the chain orders and executes them by consensus; provider daemons translate leases into running workloads; infrastructure delivers the compute."
+  >
+    <DiagramFrame
+      label="Layered architecture diagram. Top layer: clients — the virtengine CLI, approved client interfaces, the VEID mobile wallet, and gRPC/REST endpoints. Second layer: the VirtEngine chain, a CometBFT consensus and Cosmos SDK application in a single binary whose validators also run the identity network; its modules group into marketplace (market, deployment, provider, resources, marketplace, hpc), identity (veid, veidregistry, mfa, cert, roles, encryption, enclave), economics (escrow, settlement, take, bme, oracle, staking, delegation), and quality (audit, benchmark, review, fraud, support, config). Third layer: the provider daemon, which watches orders, places bids, instantiates workloads, and meters and reports usage. Bottom layer: Kubernetes clusters, HPC schedulers (SLURM, MOAB, Open OnDemand), and confidential enclaves."
+      caption="fig 01 — VirtEngine Suite: single `virtengine` binary, CometBFT consensus, Cosmos SDK application"
+      class="reveal"
+    >
+      <ArchitectureMap />
+    </DiagramFrame>
+  </Section>
+
+  <Section
+    eyebrow="Module map"
+    title="Twenty-seven modules, four domains"
+    lede="Everything the marketplace needs lives in x/ modules on the chain — every module has a dedicated reference page."
+  >
+    <div class="space-y-10">
+      {
+        MODULE_GROUPS.map((group) => (
+          <div class="reveal">
+            <div class="mb-4 flex flex-col gap-1">
+              <h3 class="text-xl font-semibold">{group.domain}</h3>
+              <p class="max-w-2xl text-sm text-slate">{group.summary}</p>
+            </div>
+            <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {group.modules.map((mod) => (
+                <li>
+                  <a href={`/modules/${mod.name}`} class="clip-corner group flex items-baseline gap-3 rounded-md border border-line bg-panel px-4 py-3 transition-colors hover:border-green-deep">
+                    <code class="shrink-0 font-mono text-[0.8rem] font-medium text-green-deep group-hover:text-green-dark">x/{mod.name}</code>
+                    <span class="text-sm text-slate">{mod.role}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    <div class="reveal mt-10">
+      <CTA href="/modules">Open the full module reference</CTA>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Lifecycle"
+    title="Order to settlement, on chain"
+    lede="Every marketplace interaction follows the same five-stage state machine."
+  >
+    <DiagramFrame
+      label="Marketplace lifecycle flow diagram in five stages. Stage one, order: a tenant posts a deployment. Stage two, bid: providers compete. Stage three, lease: escrow is funded and the workload starts. Stage four, usage: signed usage records are submitted. Stage five, settlement: escrow is released after the dispute window, paying the agreed amount to the provider with no marketplace commission and returning any remaining escrow to the tenant."
+      caption="fig 02 — order → bid → lease → usage → settlement"
+      class="reveal"
+    >
+      <LifecycleFlow />
+    </DiagramFrame>
+    <dl class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        LIFECYCLE.map((stage) => (
+          <div class="reveal rounded-card border border-line bg-panel p-5">
+            <dt class="text-sm font-semibold">
+              <span class="mr-2 font-mono text-xs text-green-deep">{stage.step}</span>
+              {stage.name}
+            </dt>
+            <dd class="mt-2 text-xs leading-relaxed text-slate">{stage.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <Section
+    eyebrow="Economics"
+    title="Tokenomics designed for a self-balancing network"
+    lede="The economic model is validated by an in-repo simulation and audit framework (pkg/economics) covering inflation dynamics, staking rewards, fee markets, distribution fairness, and attack costs."
+  >
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatCallout value="1B → 10B" label="Initial supply, hard maximum supply" source="docs/tokenomics-analysis.md" />
+      <StatCallout value="14 : 1" label="Eligible humans to Foundation genesis allocation per 15 issued" source="Proposed policy" />
+      <StatCallout value="Identity-led" label="Proposed issuance model" source="Proposed policy" />
+      <StatCallout value="0%" label="Marketplace commission; validator transaction fees are separate" source="Proposed policy" />
+    </div>
+    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
+      <p>
+        Inflation adjusts dynamically: when the staking ratio falls below target, inflation —
+        and therefore staking APR — rises to attract bonding; above target it falls. The
+        21-day unbonding period, burn-and-mint mechanics (<code>x/bme</code>), and a
+        conservative staking rewards round out the incentive design. Details on the
+        <a href="/staking">staking page</a> and in the
+        <a href={`${SITE.docs}`}>protocol documentation</a>.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Governance & security"
+    title="Run by stakeholders, engineered defensively"
+  >
+    <div class="grid gap-5 lg:grid-cols-2">
+      <Card title="On-chain governance" class="reveal p-8">
+        Bonded stake governs the network: validators and delegators vote on parameter
+        changes, upgrades, and chain configuration — including the list of approved
+        client interfaces permitted to submit identity data. Economic parameters are
+        chain state, adjustable by proposal rather than by decree.
+      </Card>
+      <Card title="Security posture" class="reveal p-8">
+        Sensitive on-chain data is public-key encrypted end to end — only intended
+        recipients can decrypt. Validators verify client and user signatures before
+        scoring identity data. Slashing punishes consensus misbehavior, the fraud and
+        audit modules police marketplace conduct, and the economic model is
+        stress-tested against 51%, spam, long-range, and cartel attack scenarios.
+      </Card>
+    </div>
+    <div class="reveal mt-10 flex flex-wrap gap-4">
+      <CTA href={SITE.docs}>Read the protocol docs</CTA>
+      <CTA href={SITE.github} variant="secondary">Browse the source</CTA>
+    </div>
+  </Section>
+</Base>

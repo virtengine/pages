@@ -1,0 +1,46 @@
+---
+/**
+ * The VirtEngine mark: two overlapping inverted-triangle rings with a solid
+ * inverted-triangle core — rebuilt as clean geometry from the original
+ * traced logo (see _agent-context/brand/virtengine/virtengine-mark.svg).
+ * The front ring knocks out of the back ring where they cross, so the mark
+ * works on any surface. Colored via `currentColor`.
+ */
+interface Props {
+  class?: string;
+  /** Rendered size in px (width; height keeps ratio). */
+  size?: number;
+  title?: string;
+}
+
+const { class: className, size = 32, title } = Astro.props;
+// unique mask id per instance (the mark appears in header, footer, etc.)
+const uid = `vem-${Math.random().toString(36).slice(2, 8)}`;
+const w = size;
+const h = Math.round(size * (114 / 140));
+---
+
+<svg
+  viewBox="-10 -6 140 114"
+  width={w}
+  height={h}
+  class={className}
+  role={title ? "img" : undefined}
+  aria-hidden={title ? undefined : "true"}
+  fill="none"
+>
+  {title && <title>{title}</title>}
+  <defs>
+    <mask id={uid} maskUnits="userSpaceOnUse" x="-10" y="-6" width="140" height="114">
+      <rect x="-10" y="-6" width="140" height="114" fill="white"></rect>
+      <!-- knockout halo traced by the front ring -->
+      <polygon points="2,26 78,26 40,92" stroke="black" stroke-width="17" fill="none"></polygon>
+    </mask>
+  </defs>
+  <!-- back ring (upper right), knocked out where the front ring crosses -->
+  <polygon points="42,6 118,6 80,72" stroke="currentColor" stroke-width="10" mask={`url(#${uid})`}></polygon>
+  <!-- front ring (lower left) -->
+  <polygon points="2,26 78,26 40,92" stroke="currentColor" stroke-width="10"></polygon>
+  <!-- solid core -->
+  <polygon points="25,40 55,40 40,66" fill="currentColor" stroke="none"></polygon>
+</svg>
