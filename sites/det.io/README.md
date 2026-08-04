@@ -1,4 +1,4 @@
-# det.io — DETIO Foundation
+# det.io — DET.io Foundation
 
 Static site for **DETIO FOUNDATION LTD** (ACN 699 651 771), a not-for-profit
 public company limited by guarantee (Australia) and technical research

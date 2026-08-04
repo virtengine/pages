@@ -46,7 +46,7 @@
   <!-- text block -->
   <g>
     <text x="90" y="175" font-family="'JetBrains Mono',monospace" font-size="24" letter-spacing="6" fill="#8fd6ee">NOT-FOR-PROFIT RESEARCH ORGANIZATION</text>
-    <text x="90" y="272" font-size="86" font-weight="700" fill="#eaf2f8" letter-spacing="-2">DETIO Foundation</text>
+    <text x="90" y="272" font-size="86" font-weight="700" fill="#eaf2f8" letter-spacing="-2">DET.io Foundation</text>
     <text x="90" y="352" font-size="34" fill="#a2b7c7">Decentralized technologies,</text>
     <text x="90" y="400" font-size="34" fill="#a2b7c7">stewarded for public benefit.</text>
     <text x="90" y="500" font-family="'JetBrains Mono',monospace" font-size="22" fill="#7d94a6">det.io · ACN 699 651 771 · VirtEngine · DSEMA</text>

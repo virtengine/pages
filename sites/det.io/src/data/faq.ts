@@ -12,7 +12,7 @@ export interface FaqItem {
 
 export const FAQ: FaqItem[] = [
   {
-    question: "Is DETIO Foundation a charity?",
+    question: "Is DET.io Foundation a charity?",
     answer:
       "Not yet, and we are careful about the word. DETIO FOUNDATION LTD is a not-for-profit public company limited by guarantee (ACN 699 651 771) established to operate for charitable and public-benefit purposes. Its constitution states that it may apply for registration as a charity with the Australian Charities and Not-for-profits Commission (ACNC). Until any such registration is granted, we describe ourselves as a not-for-profit with charitable purposes — not as a registered charity.",
     links: [{ label: "Purpose and the public-benefit lock", href: "/constitution/purpose-and-public-benefit-lock" }],

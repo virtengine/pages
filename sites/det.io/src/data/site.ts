@@ -1,8 +1,8 @@
 export const SITE = {
-  name: "DETIO Foundation",
+  name: "DET.io Foundation",
   legalName: "DETIO FOUNDATION LTD",
   url: "https://det.io",
-  title: "DETIO Foundation — decentralized technologies, stewarded for public benefit | det.io",
+  title: "DET.io Foundation — decentralized technologies, stewarded for public benefit | det.io",
   description:
     "DETIO FOUNDATION LTD is a not-for-profit technical research organization (ACN 699 651 771, Australia) advancing decentralized technologies for public benefit. Steward of the VirtEngine protocol, the DSEMA multi-agent architecture, the open-source Bosun agent orchestrator, and the VEID identity program.",
   email: "hello@det.io",
