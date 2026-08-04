@@ -7,21 +7,24 @@ interface Props {
   program: string;
   title: string;
   href: string;
+  projectHref: string;
+  projectLabel: string;
+  projectExternal?: boolean;
   /** mono fact rows, e.g. [["status", "patent accepted"], ...] */
   facts: [string, string][];
 }
 
-const { program, title, href, facts } = Astro.props;
+const { program, title, href, projectHref, projectLabel, projectExternal = false, facts } = Astro.props;
 ---
 
 <article class="group grid overflow-hidden rounded-card border border-hairline bg-surface transition-colors hover:border-blue-deep">
-  <div class="border-b border-hairline bg-gradient-to-b from-surface to-vellum p-6" aria-hidden="true">
-    <slot name="art" />
+  <div class="border-b border-hairline bg-gradient-to-b from-surface to-vellum p-4 sm:p-6" aria-hidden="true">
+    <div class="program-art"><slot name="art" /></div>
   </div>
   <div class="grid gap-3 p-6">
     <p class="eyebrow">{program}</p>
     <h3 class="text-2xl font-bold">
-      <a href={href} class="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-blue-deep">
+      <a href={href} class="focus-visible:outline-none group-hover:text-blue-deep">
         {title}
       </a>
     </h3>
@@ -38,17 +41,32 @@ const { program, title, href, facts } = Astro.props;
         ))
       }
     </dl>
-    <p class="mt-1 inline-flex items-center gap-2 font-display text-sm font-semibold text-blue-deep">
-      Program overview
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 8h10M9 4l4 4-4 4"></path>
-      </svg>
-    </p>
+    <div class="mt-1 flex flex-wrap gap-3">
+      <a href={href} class="inline-flex items-center gap-2 rounded-md border border-blue-deep px-3 py-2 font-display text-sm font-semibold text-blue-deep transition-colors hover:bg-blue-deep hover:text-white">
+        Program overview
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+      </a>
+      <a href={projectHref} rel={projectExternal ? "noopener" : undefined} target={projectExternal ? "_blank" : undefined} class="inline-flex items-center gap-2 rounded-md bg-blue-deep px-3 py-2 font-display text-sm font-semibold text-white transition-colors hover:bg-blue-mid">
+        {projectLabel}
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+      </a>
+    </div>
   </div>
 </article>
 
 <style>
   article {
     position: relative;
+  }
+
+  .program-art {
+    overflow-x: auto;
+  }
+
+  .program-art :global(svg) {
+    display: block;
+    width: 100%;
+    min-width: 420px;
+    height: auto;
   }
 </style>
