@@ -15,7 +15,7 @@ const crumbs = [
 const steps = [
   {
     title: "Read and agree to the consent notice",
-    body: "Before anything is captured, the app shows you exactly what will be collected, why, how long it is kept, and how to withdraw. Biometric consent is separate from everything else — you agree to it specifically, or not at all.",
+    body: "When the wallet launches, the app will show exactly what will be collected, why, how long it is kept, and how to withdraw. Biometric consent will be separate from everything else — you will agree to it specifically, or not at all.",
     detail: [
       "Consent is recorded with a timestamp so there is an auditable record.",
       "You can withdraw at any time — see Revoking consent in the help centre.",
@@ -23,7 +23,7 @@ const steps = [
   },
   {
     title: "Scan your identity document — front and back",
-    body: "The camera guides you: corner brackets show where to place the document, and the app checks for glare, blur and cut-off edges as you go. The details on the document are read automatically (OCR).",
+    body: "At launch, the camera will guide you: corner brackets show where to place the document, and the app will check for glare, blur and cut-off edges. Document details will be read automatically (OCR).",
     detail: [
       "Use even light and a plain background — glare is the most common retry cause.",
       "You will see every field the app read and can re-scan if anything is wrong.",
@@ -31,7 +31,7 @@ const steps = [
   },
   {
     title: "Take a selfie with liveness challenges",
-    body: "The app asks you to blink, turn your head, and smile in a random order. These prove that a live person is present — not a photo, a video replay or a mask — and that the person matches the document photo.",
+    body: "The planned app will ask you to blink, turn your head, and smile in a random order. These checks are designed to prove that a live person is present — not a photo, video replay or mask — and matches the document photo.",
     detail: [
       "Face the camera in even light, without a hat or tinted glasses.",
       "Spoken guidance is available for each challenge — see Accessibility support.",
@@ -57,16 +57,24 @@ const steps = [
 ---
 
 <Guide
-  title="Set up your wallet"
-  metaTitle="Set up your wallet — Get started | identity.org.au"
-  description="The full Identity Wallet setup flow, step by step: consent, document scan, selfie with liveness challenges, hardware biometrics, and encrypted submission."
-  lede="Five steps, about ten minutes. You review everything before it is submitted, and everything is encrypted on your phone before it leaves."
+  title="How wallet setup will work"
+  metaTitle="How wallet setup will work — Get started | identity.org.au"
+  description="The planned Identity Wallet setup flow: consent, document scan, liveness challenges, optional hardware biometrics, and encrypted submission. The service is not live yet."
+  lede="This is a preview of the planned five-step setup flow. The Identity Wallet, web portal and verification service are not live yet."
   eyebrow="Get started"
   breadcrumbs={crumbs}
   sectionLabel="In this guide"
   sectionNav={GET_STARTED_NAV}
 >
-  <Alert tone="info" title="Before you start">
+  <Alert tone="warning" title="The service is not live yet">
+    <p>
+      You cannot create a wallet, submit identity documents, complete verification, or sign in today.
+      This guide explains the planned experience only. <a href="/launch" class="link-plain">Join the launch list</a>
+      to be notified when the wallet and web portal become available.
+    </p>
+  </Alert>
+
+  <Alert tone="info" title="What you will need at launch">
     <p>
       Check <a href="/get-started/what-you-need" class="link-plain">what you need</a> — a current
       identity document, a phone with a camera, and good lighting.
@@ -97,7 +105,7 @@ const steps = [
     </figure>
   </div>
 
-  <h2 class="mt-12 text-[1.5rem]">After setup</h2>
+  <h2 class="mt-12 text-[1.5rem]">After setup, once the service launches</h2>
   <div class="prose-service">
     <ul>
       <li>
