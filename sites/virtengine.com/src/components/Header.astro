@@ -37,6 +37,12 @@ const isActive = (href: string) => current === href || current.startsWith(href +
 
     <div class="hidden items-center gap-3 lg:flex">
       <a
+        href="/launch"
+        class="clip-corner rounded-sm border border-green-deep px-3.5 py-1.5 text-sm font-semibold text-green-dark transition-colors hover:bg-green-deep hover:text-white"
+      >
+        Updates
+      </a>
+      <a
         href={SITE.docs}
         class="rounded-sm border border-line-strong px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-green-deep hover:text-green-dark"
       >
@@ -88,6 +94,7 @@ const isActive = (href: string) => current === href || current.startsWith(href +
         <a href="/faq" class="block rounded-sm px-3 py-2.5 text-base font-medium text-slate hover:text-ink">FAQ</a>
       </li>
       <li class="mt-2 flex gap-3 px-3 pb-2">
+        <a href="/launch" class="flex-1 rounded-sm border border-green-deep px-4 py-2.5 text-center text-sm font-semibold text-green-dark">Updates</a>
         <a href={SITE.docs} class="flex-1 rounded-sm border border-line-strong px-4 py-2.5 text-center text-sm font-semibold text-ink">Docs</a>
         <a href={SITE.github} rel="noopener" class="flex-1 rounded-sm bg-green-deep px-4 py-2.5 text-center text-sm font-semibold text-white">GitHub</a>
       </li>

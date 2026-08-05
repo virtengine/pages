@@ -37,6 +37,12 @@ const isCurrent = (href: string) => current === href || (href !== "/" && current
 
     <div class="hidden items-center gap-3 lg:flex">
       <a
+        href="/launch"
+        class="rounded-md bg-blue-deep px-3.5 py-1.5 font-display text-sm font-semibold text-white transition-colors hover:bg-blue-mid"
+      >
+        Updates
+      </a>
+      <a
         href="https://virtengine.com"
         rel="noopener"
         class="rounded-md border border-hairline-strong bg-surface px-3.5 py-1.5 font-display text-sm font-semibold text-ink transition-colors hover:border-blue-deep hover:text-blue-deep"
@@ -79,6 +85,12 @@ const isCurrent = (href: string) => current === href || (href !== "/" && current
         ))
       }
       <li class="mt-2 px-3 pb-2">
+        <a
+          href="/launch"
+          class="mb-2 block rounded-md border border-blue-deep px-4 py-2.5 text-center font-display text-sm font-semibold text-blue-deep"
+        >
+          Get updates
+        </a>
         <a
           href="https://virtengine.com"
           rel="noopener"
