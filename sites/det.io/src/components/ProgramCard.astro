@@ -72,4 +72,18 @@ const { program, title, href, projectHref, projectLabel, projectExternal = false
     min-width: 0;
     height: auto;
   }
+
+  .program-art :global(.mobile-art) {
+    display: none;
+  }
+
+  @media (max-width: 520px) {
+    .program-art :global(.desktop-art) {
+      display: none;
+    }
+
+    .program-art :global(.mobile-art) {
+      display: block;
+    }
+  }
 </style>
