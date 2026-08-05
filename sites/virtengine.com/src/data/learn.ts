@@ -207,7 +207,7 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "what-is-veid",
-    title: "What is VEID?",
+    title: "What is VEID (Verifiable Electronic Identity)?",
     label: "What is VEID?",
     metaDescription:
       "VEID is VirtEngine's privacy-preserving identity layer: on-device capture, active liveness, biometric hardware attestation, validator consensus scoring, and zero-knowledge proofs.",

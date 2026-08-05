@@ -110,14 +110,14 @@ const breadcrumbLd = breadcrumbs
     </main>
     <Footer />
     <script>
-      const firstVeid = [...document.querySelectorAll("main *")].find((element) =>
-        [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && /\bVEID\b/.test(node.textContent ?? "")),
-      );
-      if (firstVeid) {
-        for (const node of firstVeid.childNodes) {
-          if (node.nodeType === Node.TEXT_NODE && /\bVEID\b/.test(node.textContent ?? "")) {
-            node.textContent = (node.textContent ?? "").replace(/\bVEID\b/, "VEID (Verifiable Electronic Identity)");
-            break;
+      for (const element of document.querySelectorAll("main *")) {
+        if (element.closest("svg, script, style")) continue;
+        for (const node of element.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent = (node.textContent ?? "").replace(
+              /\bVEID\b(?!\s*\(|-)/g,
+              "VEID (Verifiable Electronic Identity)",
+            );
           }
         }
       }

@@ -748,7 +748,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: "understanding-your-veid-score",
-    title: "Understanding your VEID score",
+    title: "Understanding your VEID (Verifiable Electronic Identity) score",
     summary:
       "Your verification score in plain terms: what feeds it, how tiers are derived from it, who can see it, and what to do if it seems wrong.",
     category: "Your data and privacy",

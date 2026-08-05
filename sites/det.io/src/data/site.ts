@@ -4,7 +4,7 @@ export const SITE = {
   url: "https://det.io",
   title: "DET.io Foundation — technology research and decentralized systems | det.io",
   description:
-    "DETIO FOUNDATION LTD is an Australian technology research organisation (ACN 699 651 771) developing decentralized systems. Its work includes the VirtEngine protocol, DSEMA multi-agent architecture, open-source Bosun agent orchestrator, and VEID identity program.",
+    "DETIO FOUNDATION LTD is an Australian technology research organisation (ACN 699 651 771) developing decentralized systems. Its work includes the VirtEngine protocol, DSEMA multi-agent architecture, open-source Bosun agent orchestrator, and VEID (Verifiable Electronic Identity) program.",
   email: "hello@det.io",
   github: "https://github.com/virtengine/virtengine",
   bosunSite: "https://bosun.engineer",
