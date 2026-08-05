@@ -17,7 +17,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         question: "Is identity.org.au an Australian Government service?",
         answer:
-          "No. identity.org.au is an open-source community service stewarded by DETIO FOUNDATION LTD, an Australian not-for-profit public company limited by guarantee (ACN 699 651 771). It is not operated or endorsed by any government, and it is not the Australian Government Digital ID System, myID, or myGov. The steward is currently in the process of applying for accreditation under the Digital ID Act 2024 Accreditation Scheme — accreditation has not been granted and none is claimed. For full transparency: the foundation's predecessor company, DET-IO Pty Ltd, has received NSW Government business-grant funding — a funding relationship only, not government operation, control, or endorsement. We state all of this prominently because trust in identity systems depends on knowing exactly who runs them.",
+          "No. identity.org.au is an open-source community service operated by DETIO FOUNDATION LTD, an Australian not-for-profit public company limited by guarantee (ACN 699 651 771). It is independently operated and separate from the Australian Government Digital ID System, myID and myGov. The foundation is currently applying for accreditation under the Digital ID Act 2024 Accreditation Scheme; accreditation has not been granted and none is claimed.",
         more: { label: "What is identity.org.au", href: "/about/what-is-identity-org-au" },
       },
       {
