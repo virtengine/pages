@@ -4,7 +4,7 @@ export const SITE = {
   url: "https://identity.org.au",
   title: "identity.org.au — the Identity Wallet for the VirtEngine ecosystem",
   description:
-    "Set up a privacy-preserving digital Identity Wallet, prove who you are without handing over your documents, and stay in control of your data. An open-source community service stewarded by the not-for-profit DETIO FOUNDATION LTD. Not an Australian Government service.",
+    "Set up a privacy-preserving digital Identity Wallet, prove who you are without handing over your documents, and stay in control of your data. An open-source community service operated by the not-for-profit DETIO FOUNDATION LTD. It is independent of the Australian Government.",
   email: "hello@det.io",
   dpoEmail: "dpo@virtengine.com",
   securityEmail: "security@virtengine.com",

@@ -28,7 +28,7 @@ export const FAQ: FaqEntry[] = [
     category: "General",
     question: "Is the VirtEngine network live?",
     answer:
-      "Mainnet is planned for the January 2027 launch window. It is not live until a formal launch confirmation is published; verify current status from the published release materials before assuming the network is available.",
+      "Mainnet is planned for the January 2027 launch window. Check the published release materials for the official availability confirmation before relying on the network.",
     links: [{ label: "Network status", href: "/network" }],
   },
   {

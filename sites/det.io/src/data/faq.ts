@@ -20,7 +20,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "What is the public-benefit lock?",
     answer:
-      "It is the lattice of constitutional provisions that makes private capture of the foundation structurally impossible: the company must not operate for private commercial interests (clause 2.3); income and assets may only serve the charitable purposes and cannot be distributed to insiders (clause 8); amendments that would defeat the not-for-profit character are void and twenty Protected Provisions are entrenched under the Corporations Act (clause 18, Schedule 1); high-stakes decisions require Founding Member Consent (clause 18A); economic value must be separated from governance so capital cannot buy control (clause 38); and on winding up, surplus assets can only pass to compatible charities (clauses 61–62).",
+      "The constitution combines several safeguards: the company cannot operate for private commercial interests (clause 2.3); income and assets may only serve the charitable purposes and cannot be distributed to insiders (clause 8); amendments that would defeat the not-for-profit character are void and twenty Protected Provisions are entrenched under the Corporations Act (clause 18, Schedule 1); high-stakes decisions require Founding Member Consent (clause 18A); economic value is separated from governance so capital cannot buy control (clause 38); and on winding up, surplus assets can only pass to compatible charities (clauses 61–62).",
     links: [{ label: "Deep dive: the public-benefit lock", href: "/foundation/public-benefit-lock" }],
   },
   {

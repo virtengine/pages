@@ -27,13 +27,13 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
     title: "Who we are",
     eyebrow: "The institution",
     summary:
-      "DETIO FOUNDATION LTD — Dynamic Elastic Technologies, Internet Organization — is a not-for-profit public company limited by guarantee (ACN 699 651 771, Australia) that stewards the VirtEngine protocol and the DSEMA multi-agent architecture for public benefit.",
+      "DETIO FOUNDATION LTD — Digital Elastic Technologies, Internet Organization — is a not-for-profit public company limited by guarantee (ACN 699 651 771, Australia) responsible for the VirtEngine protocol and the DSEMA multi-agent architecture in the public interest.",
     sections: [
       {
         heading: "A research foundation, stated precisely",
         clauses: ["1.1", "2.1", "2.2"],
         body: [
-          "The legal entity is DETIO FOUNDATION LTD, a not-for-profit public company limited by guarantee registered in Australia with ACN 699 651 771. The name behind the acronym is Dynamic Elastic Technologies, Internet Organization. The company is established to operate for charitable and public-benefit purposes and may apply for registration as a charity with the ACNC — an intent recorded in the constitution, not a status we claim before it exists.",
+          "The legal entity is DETIO FOUNDATION LTD, a not-for-profit public company limited by guarantee registered in Australia with ACN 699 651 771. The name behind the acronym is Digital Elastic Technologies, Internet Organization. The company is established to operate for charitable and public-benefit purposes and may apply for registration as a charity with the ACNC. That intention is recorded in the constitution; it is not a status we claim before it exists.",
           "The foundation grew out of DET.io, the earlier private company (DET-IO Pty Ltd) whose cloud-platform work seeded the technology. The constitution records the intended transfer of that company's intellectual property and digital assets to the foundation, and permits DET-IO Pty Ltd to continue only as a subsidiary serving the charitable purposes.",
           "That predecessor's work was supported once by public funding: DET-IO Pty Ltd received a Jobs for NSW Minimum Viable Product grant (up to $27,000), disclosed in the Jobs for NSW Annual Report 2019–20 tabled in NSW Parliament, and a further NSW Government business-grant application is in progress at the time of writing. These are business grants only — no government operates, controls, or endorses the foundation or its programs.",
         ],
@@ -42,7 +42,7 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
         heading: "What we actually do",
         clauses: ["6.2.1", "6.2.2", "6.2.5"],
         body: [
-          "The foundation develops, stewards, publishes, operates, and maintains two flagship public-benefit technology programs: VirtEngine — a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by accepted patent AU2024203136B2 — and DSEMA — a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
+          "The foundation develops, publishes, operates, and maintains two flagship public-benefit technology programs: VirtEngine, a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by accepted patent AU2024203136B2; and DSEMA, a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
           "Around the programs sits the education mandate: public research, open specifications, standards, documentation, and safety materials. This website, the protocol documentation, and the identity research site are all deliverables of that mandate.",
         ],
       },
