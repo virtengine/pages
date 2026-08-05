@@ -27,7 +27,7 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
     title: "Who we are",
     eyebrow: "The institution",
     summary:
-      "DETIO FOUNDATION LTD — Digital Elastic Technologies, Internet Organization — is a not-for-profit public company limited by guarantee (ACN 699 651 771, Australia) responsible for the VirtEngine protocol and the DSEMA multi-agent architecture in the public interest.",
+      "DETIO FOUNDATION LTD — Digital Elastic Technologies, Internet Organization — is an Australian technology research organisation (ACN 699 651 771) responsible for the VirtEngine protocol and the DSEMA multi-agent architecture.",
     sections: [
       {
         heading: "A research foundation, stated precisely",
@@ -42,7 +42,7 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
         heading: "What we actually do",
         clauses: ["6.2.1", "6.2.2", "6.2.5"],
         body: [
-          "The foundation develops, publishes, operates, and maintains two flagship public-benefit technology programs: VirtEngine, a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by accepted patent AU2024203136B2; and DSEMA, a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
+          "The foundation develops, publishes, operates, and maintains two flagship technology programs: VirtEngine, a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by accepted patent AU2024203136B2; and DSEMA, a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
           "Around the programs sits the education mandate: public research, open specifications, standards, documentation, and safety materials. This website, the protocol documentation, and the identity research site are all deliverables of that mandate.",
         ],
       },
