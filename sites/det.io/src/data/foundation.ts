@@ -50,7 +50,7 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
         heading: "The people, honestly scoped",
         clauses: ["11.2", "21.1", "35.1"],
         body: [
-          "The constitution names the people it must name and no more. The Founding Member and first Permanent Director is Jonathan Amir Samuel Philipos. The signing page records Ordinary Members Wail Rimon Philopos and Adel John Nour, and DET-IO PTY. LTD. as a corporate signatory represented by the Founding Member. The board must include at least three directors, at least two ordinarily resident in Australia.",
+          "The constitution names the people it must name and no more. The Founding Member and first Permanent Director is Jonathan Philipos. The signing page records Ordinary Members Wail Rimon Philopos and Adel John Nour, and DET-IO PTY. LTD. as a corporate signatory represented by the Founding Member. The board must include at least three directors, at least two ordinarily resident in Australia.",
           "We do not publish staff counts, adviser lists, or partner logos that do not exist. As the foundation's public record grows — regulatory filings, annual reports, program milestones — this page grows with it.",
         ],
       },

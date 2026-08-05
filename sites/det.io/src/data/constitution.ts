@@ -130,7 +130,7 @@ export const CONSTITUTION_TOPICS: ConstitutionTopic[] = [
         heading: "A deliberately small membership",
         clauses: ["11.1", "11.2", "11.3", "11.5"],
         body: [
-          "The company has exactly two classes of members: the Founding Member — Jonathan Amir Samuel Philipos, named in the constitution itself — and Ordinary Members. Clause 11.3 caps Ordinary Members at two unless the Protected Provisions are amended under clause 18. Clause 11.5 requires Founding Member Consent before anyone is admitted as an Ordinary Member.",
+          "The company has exactly two classes of members: the Founding Member — Jonathan Philipos, named in the constitution itself — and Ordinary Members. Clause 11.3 caps Ordinary Members at two unless the Protected Provisions are amended under clause 18. Clause 11.5 requires Founding Member Consent before anyone is admitted as an Ordinary Member.",
           "This is the opposite of a mass-membership association, and deliberately so: members hold the constitutional levers (amendments, director elections, winding up), so the constitution keeps that group small, known, and consent-gated rather than exposing the public-benefit lock to a membership-drive takeover.",
         ],
       },
@@ -244,7 +244,7 @@ export const CONSTITUTION_TOPICS: ConstitutionTopic[] = [
         heading: "The Permanent Director seat — and its legal limits",
         clauses: ["21.1", "21.2", "21.4", "21.7", "21.8"],
         body: [
-          "The first Permanent Director is the Founding Member, Jonathan Amir Samuel Philipos, and the seat is attached to the Founding Member while eligible. The constitution is explicit about what the seat is not: it does not limit the mandatory director-removal provisions of the Corporations Act (sections 203D and 203E), disqualification law, ACNC Governance Standards, or any court or regulator order.",
+          "The first Permanent Director is the Founding Member, Jonathan Philipos, and the seat is attached to the Founding Member while eligible. The constitution is explicit about what the seat is not: it does not limit the mandatory director-removal provisions of the Corporations Act (sections 203D and 203E), disqualification law, ACNC Governance Standards, or any court or regulator order.",
           "If mandatory law prevents the Permanent Director from acting — including during incapacity — the seat is treated as unavailable to the extent the law requires, and the other directors may appoint an acting director or caretaker for the minimum period and scope necessary. A representative exercising the Founding Member's membership rights may never exercise director duties or board votes on their behalf: member rights are representable, director duties are personal.",
         ],
       },
