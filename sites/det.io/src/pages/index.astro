@@ -18,42 +18,28 @@ import { PURPOSES, SITE } from "@data/site";
   <!-- hero -->
   <div class="relative overflow-hidden border-b border-hairline bg-surface">
     <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
-    <div class="container-site relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.15fr_1fr]">
+    <div class="container-site relative grid items-center gap-10 py-12 md:py-20 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
       <div class="grid gap-6">
         <p class="eyebrow">Digital Elastic Technologies, Internet Organization</p>
-        <h1 class="headline-accent text-4xl font-bold md:text-[3.6rem] md:leading-[1.08]">
-          A research foundation for decentralized technologies — held for the public, by design.
+        <h1 class="headline-accent max-w-[11ch] text-4xl font-bold md:text-[3.75rem] md:leading-[1.04]">
+          A research foundation for digital technologies.
         </h1>
-        <p class="prose-inst text-lg md:text-xl">
-          <strong>DETIO FOUNDATION LTD</strong> is a not-for-profit technical research
-          organization. We develop privacy-preserving digital infrastructure, distributed
-          computing, and trustworthy AI. Our constitution sets clear limits on private benefit
-          and keeps the work focused on its public-purpose commitments.
+        <p class="prose-inst max-w-xl text-lg md:text-xl">
+          <strong>DETIO FOUNDATION LTD</strong> is a not-for-profit research organisation building
+          privacy-preserving infrastructure, distributed computing, and trustworthy AI for the
+          public interest.
         </p>
         <div class="flex flex-wrap gap-3">
           <CTA href="/mission">Our mission</CTA>
           <CTA href="/governance" variant="secondary">How we are governed</CTA>
         </div>
-        <dl class="mt-2 grid max-w-md gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
-          <div class="flex gap-4">
-            <dt class="w-28 shrink-0 uppercase tracking-wide">Legal form</dt>
-            <dd class="text-ink">not-for-profit public company limited by guarantee</dd>
-          </div>
-          <div class="flex gap-4">
-            <dt class="w-28 shrink-0 uppercase tracking-wide">ACN</dt>
-            <dd class="text-ink">699 651 771</dd>
-          </div>
-          <div class="flex gap-4">
-            <dt class="w-28 shrink-0 uppercase tracking-wide">Jurisdiction</dt>
-            <dd class="text-ink">Australia</dd>
-          </div>
-          <div class="flex gap-4">
-            <dt class="w-28 shrink-0 uppercase tracking-wide">Programs</dt>
-            <dd class="text-ink">VirtEngine · DSEMA · Bosun · Identity</dd>
-          </div>
-        </dl>
+        <div class="hero-signals" aria-label="Foundation overview">
+          <div><span>01</span><strong>Australia</strong><small>not-for-profit company</small></div>
+          <div><span>04</span><strong>Programs</strong><small>cloud, AI, identity, engineering</small></div>
+          <div><span>Open</span><strong>Research</strong><small>code and technical work in public</small></div>
+        </div>
       </div>
-      <div class="reveal" role="img" aria-label="Abstract diagram of a decentralized node lattice converging on the DET.io Foundation seal, with a padlock beneath it representing the constitutional public-benefit lock.">
+      <div class="hero-art reveal" role="img" aria-label="Abstract diagram of a distributed node lattice converging on the DET.io Foundation seal.">
         <HeroLattice />
       </div>
     </div>
@@ -320,3 +306,54 @@ import { PURPOSES, SITE } from "@data/site";
     </div>
   </section>
 </Base>
+
+<style>
+  .hero-art {
+    position: relative;
+    padding: clamp(0.5rem, 2vw, 1.5rem);
+    border: 1px solid var(--color-hairline);
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-sky) 20%, transparent), transparent 46%),
+      var(--color-surface);
+    box-shadow: 0 20px 50px color-mix(in srgb, var(--color-blue-deep) 12%, transparent);
+  }
+
+  .hero-art::before {
+    content: "FOUNDATION SYSTEMS · PUBLIC INTEREST";
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1;
+    color: var(--color-text-soft);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-signals {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.625rem;
+    max-width: 42rem;
+    margin-top: 0.4rem;
+  }
+
+  .hero-signals > div {
+    display: grid;
+    gap: 0.22rem;
+    min-width: 0;
+    padding: 0.9rem;
+    border: 1px solid var(--color-hairline);
+    border-top: 2px solid var(--color-blue-deep);
+    background: color-mix(in srgb, var(--color-surface) 92%, var(--color-sky));
+  }
+
+  .hero-signals span { color: var(--color-blue-deep); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; }
+  .hero-signals strong { color: var(--color-ink); font-family: var(--font-display); font-size: 0.95rem; }
+  .hero-signals small { color: var(--color-text-muted); font-size: 0.72rem; line-height: 1.35; }
+
+  @media (max-width: 420px) {
+    .hero-signals { grid-template-columns: 1fr; }
+    .hero-art::before { font-size: 0.54rem; }
+  }
+</style>

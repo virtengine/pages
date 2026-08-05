@@ -60,13 +60,16 @@ const { program, title, href, projectHref, projectLabel, projectExternal = false
   }
 
   .program-art {
+    min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
+    overscroll-behavior-inline: contain;
   }
 
   .program-art :global(svg) {
     display: block;
     width: 100%;
-    min-width: 420px;
+    min-width: 0;
     height: auto;
   }
 </style>

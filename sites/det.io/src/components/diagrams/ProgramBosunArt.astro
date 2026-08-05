@@ -6,7 +6,7 @@
  */
 ---
 
-<svg viewBox="0 0 420 180" class="h-auto w-full" fill="none" aria-hidden="true">
+<svg viewBox="0 0 420 180" class="desktop-art h-auto w-full" fill="none" aria-hidden="true">
   <defs>
     <marker id="pba" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
@@ -77,3 +77,17 @@
   <rect x="150" y="24" width="96" height="1.6" fill="var(--color-steel)" opacity="0.55"></rect>
   <text x="198" y="18" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--color-text-soft)">operator: telegram · mini app</text>
 </svg>
+
+<svg viewBox="0 0 300 350" class="mobile-art h-auto w-full" fill="none" aria-hidden="true">
+  <defs><marker id="pbam" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path></marker></defs>
+  <text x="150" y="18" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">AUTONOMOUS ENGINEERING FLOW</text>
+  <rect x="58" y="36" width="184" height="58" rx="7" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect>
+  <text x="150" y="60" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">task board</text><text x="150" y="78" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">claim · prioritise · queue</text>
+  <rect x="58" y="136" width="184" height="58" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
+  <text x="150" y="160" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">supervisor</text><text x="150" y="178" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-blue-deep)">plan · route · recover</text>
+  <g fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"><rect x="58" y="236" width="184" height="30" rx="5"></rect><rect x="58" y="276" width="184" height="30" rx="5"></rect><rect x="58" y="316" width="184" height="30" rx="5"></rect></g>
+  <g text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-ink)"><text x="150" y="256">copilot</text><text x="150" y="296">claude</text><text x="150" y="336">codex</text></g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" stroke-dasharray="5 7" marker-end="url(#pbam)"><path d="M150 96 V132"></path><path d="M150 196 V232"></path><path d="M250 330 Q278 330 278 118 Q278 106 242 74"></path></g>
+</svg>
+
+<style>.mobile-art { display: none; } @media (max-width: 520px) { .desktop-art { display: none; } .mobile-art { display: block; } }</style>

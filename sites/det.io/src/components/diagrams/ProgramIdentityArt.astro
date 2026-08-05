@@ -7,7 +7,7 @@
  */
 ---
 
-<svg viewBox="0 0 420 180" class="h-auto w-full" fill="none" aria-hidden="true">
+<svg viewBox="0 0 420 180" class="desktop-art h-auto w-full" fill="none" aria-hidden="true">
   <defs>
     <marker id="pia" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
@@ -72,3 +72,16 @@
     <text x="98" y="82">capture</text>
   </g>
 </svg>
+
+<svg viewBox="0 0 300 360" class="mobile-art h-auto w-full" fill="none" aria-hidden="true">
+  <defs><marker id="piam" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path></marker></defs>
+  <text x="150" y="18" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">VERIFIABLE IDENTITY FLOW</text>
+  <rect x="102" y="34" width="96" height="52" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.4"></rect>
+  <circle cx="150" cy="54" r="10" fill="none" stroke="var(--color-blue-deep)" stroke-width="1.4"></circle><path d="M135 76 Q150 62 165 76" stroke="var(--color-blue-deep)" stroke-width="1.4"></path><text x="150" y="104" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">capture on-device</text>
+  <rect x="92" y="132" width="116" height="40" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-deep)" stroke-width="1.6"></rect><path d="M142 149v-5a8 8 0 0 1 16 0v5" stroke="var(--color-blue-deep)" stroke-width="1.5"></path><rect x="138" y="149" width="24" height="14" rx="3" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="1.5"></rect><text x="150" y="191" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">encrypted scope</text>
+  <path d="M150 214 L192 238 L192 286 L150 310 L108 286 L108 238 Z" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></path><text x="150" y="264" text-anchor="middle" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">consensus</text><text x="150" y="280" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-blue-deep)">score, not data</text>
+  <rect x="96" y="326" width="108" height="26" rx="5" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"></rect><text x="150" y="343" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-ink)">proof: attribute only</text>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" stroke-dasharray="5 7" marker-end="url(#piam)"><path d="M150 106 V128"></path><path d="M150 193 V210"></path><path d="M150 312 V322"></path></g>
+</svg>
+
+<style>.mobile-art { display: none; } @media (max-width: 520px) { .desktop-art { display: none; } .mobile-art { display: block; } }</style>

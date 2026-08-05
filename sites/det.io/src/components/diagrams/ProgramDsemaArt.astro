@@ -5,7 +5,7 @@
  */
 ---
 
-<svg viewBox="0 0 420 180" class="h-auto w-full" fill="none" aria-hidden="true">
+<svg viewBox="0 0 420 180" class="desktop-art h-auto w-full" fill="none" aria-hidden="true">
   <defs>
     <marker id="pda" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
@@ -67,3 +67,16 @@
   <!-- safety layer bar -->
   <rect x="130" y="4" width="160" height="1.6" fill="var(--color-amber-deep)" opacity="0.55"></rect>
 </svg>
+
+<svg viewBox="0 0 300 330" class="mobile-art h-auto w-full" fill="none" aria-hidden="true">
+  <defs><marker id="pdam" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path></marker></defs>
+  <text x="150" y="18" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--color-text-soft)">SELF-EVOLVING CONTROL LOOP</text>
+  <rect x="78" y="38" width="144" height="54" rx="8" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
+  <text x="150" y="61" text-anchor="middle" font-family="var(--font-display)" font-size="13" font-weight="600" fill="var(--color-ink)">orchestration</text><text x="150" y="78" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-blue-deep)">on-chain control plane</text>
+  <g fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.3"><rect x="58" y="136" width="184" height="34" rx="6"></rect><rect x="58" y="190" width="184" height="34" rx="6"></rect><rect x="58" y="244" width="184" height="34" rx="6"></rect></g>
+  <g font-family="var(--font-mono)" font-size="10" fill="var(--color-ink)"><text x="150" y="157" text-anchor="middle">A1 · A2  evaluate</text><text x="150" y="211" text-anchor="middle">A3 · A4  adapt</text><text x="150" y="265" text-anchor="middle">A5 · A6  record / re-task</text></g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.5" stroke-dasharray="5 7" marker-end="url(#pdam)"><path d="M150 94 V132"></path><path d="M150 172 V186"></path><path d="M150 226 V240"></path><path d="M250 260 Q280 260 280 115 Q280 104 222 72"></path></g>
+  <text x="260" y="187" text-anchor="middle" font-family="var(--font-mono)" font-size="8.5" fill="var(--color-text-soft)">loop</text>
+</svg>
+
+<style>.mobile-art { display: none; } @media (max-width: 520px) { .desktop-art { display: none; } .mobile-art { display: block; } }</style>
