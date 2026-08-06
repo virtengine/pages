@@ -1,3 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 364 342" aria-hidden="true">
-  <path fill="#60CC5D" fill-rule="evenodd" d="M0 0h64l118 204L300 0h64L182 342zM56 52h252L182 280zM94 83h176L182 234z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -6 140 114" fill="none">
+  <defs>
+    <mask id="v-cutout" maskUnits="userSpaceOnUse" x="-10" y="-6" width="140" height="114">
+      <rect x="-10" y="-6" width="140" height="114" fill="white" />
+      <polygon points="2,26 78,26 40,92" stroke="black" stroke-width="17" fill="none" />
+    </mask>
+  </defs>
+  <polygon points="42,6 118,6 80,72" stroke="#60CC5D" stroke-width="10" mask="url(#v-cutout)" />
+  <polygon points="2,26 78,26 40,92" stroke="#60CC5D" stroke-width="10" />
+  <polygon points="25,40 55,40 40,66" fill="#60CC5D" />
 </svg>
