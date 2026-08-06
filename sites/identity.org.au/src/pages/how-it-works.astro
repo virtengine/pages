@@ -6,6 +6,7 @@ import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
 import ConsentScreen from "@components/phone/ConsentScreen.astro";
 import ZkShareScreen from "@components/phone/ZkShareScreen.astro";
+import ServiceConfirmedScreen from "@components/phone/ServiceConfirmedScreen.astro";
 import LockAndKey from "@components/diagrams/LockAndKey.astro";
 
 const crumbs = [
@@ -106,21 +107,28 @@ const onNetwork = [
       <h2 class="mt-0 text-[1.6rem]">When a service asks about you</h2>
       <p class="text-body measure">
         Verification happens once. Sharing happens as often as you approve it — and only what you
-        approve. Two screens do all the work:
+        approve. Three screens show the complete exchange:
       </p>
-      <div class="mt-8 grid gap-10 md:grid-cols-2">
-        <figure class="m-0 max-w-[280px]">
+      <div class="mt-8 grid items-start gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        <figure class="mx-auto my-0 w-full max-w-[300px]">
           <ConsentScreen />
           <figcaption class="mt-3 text-[0.9rem] text-muted">
             The consent screen: who is asking, exactly what they will see, what they will never
             see, and when the consent expires. Nothing moves until you approve.
           </figcaption>
         </figure>
-        <figure class="m-0 max-w-[280px]">
+        <figure class="mx-auto my-0 w-full max-w-[300px]">
           <ZkShareScreen />
           <figcaption class="mt-3 text-[0.9rem] text-muted">
             Zero-knowledge sharing: your data stays locked on the device; the service receives one
             verifiable answer — nothing else.
+          </figcaption>
+        </figure>
+        <figure class="mx-auto my-0 w-full max-w-[300px] sm:col-span-2 xl:col-span-1">
+          <ServiceConfirmedScreen />
+          <figcaption class="mt-3 text-[0.9rem] text-muted">
+            Service confirmation: the signed answer is valid, the approved service opens, and
+            the service keeps a consent receipt rather than a copy of your identity evidence.
           </figcaption>
         </figure>
       </div>

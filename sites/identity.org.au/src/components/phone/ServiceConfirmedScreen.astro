@@ -1,0 +1,48 @@
+---
+import Phone from "./Phone.astro";
+import ScreenChrome from "./ScreenChrome.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<Phone
+  label="Service confirmation mockup: the service has verified the signed proof, confirmed the user is over 18, and opened the requested service without receiving identity documents or biometric data."
+  class={className}
+>
+  <ScreenChrome title="Proof accepted" />
+
+  <text x="160" y="142" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="12.5" font-weight="700" fill="var(--color-ink)">The service verified your answer</text>
+  <text x="160" y="160" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-muted)">Signed proof checked successfully</text>
+
+  <!-- verified proof -->
+  <rect x="32" y="184" width="256" height="116" rx="10" fill="var(--color-success-bg)" stroke="var(--color-success-rule)" stroke-width="2" />
+  <circle cx="160" cy="222" r="20" fill="#ffffff" stroke="var(--color-success-rule)" stroke-width="2.4" />
+  <path d="m150 222 7 7 14-17" fill="none" stroke="var(--color-success-rule)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="160" y="266" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="15" font-weight="800" fill="var(--color-ink)">Over 18 confirmed</text>
+  <text x="160" y="284" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-body)">Proof valid · request matched</text>
+
+  <!-- access opens -->
+  <path d="M160 314v32" stroke="var(--color-action)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7" />
+  <path d="m152 338 8 10 8-10" fill="none" stroke="var(--color-action)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="46" y="360" width="228" height="132" rx="10" fill="#ffffff" stroke="var(--color-action)" stroke-width="2.2" />
+  <g transform="translate(132 382)">
+    <rect x="0" y="12" width="56" height="60" rx="5" fill="var(--color-tint)" stroke="var(--color-action)" stroke-width="2" />
+    <path d="M10 64V20h30v44M40 20l14-10v54" fill="none" stroke="var(--color-action)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="33" cy="43" r="2.5" fill="var(--color-action)" />
+    <path d="M18 10V4a11 11 0 0 1 22 0" fill="none" stroke="var(--color-success-rule)" stroke-width="2.6" stroke-linecap="round" />
+  </g>
+  <text x="160" y="470" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="14" font-weight="800" fill="var(--color-ink)">Service opened</text>
+
+  <!-- receipt -->
+  <rect x="32" y="518" width="256" height="62" rx="6" fill="var(--color-info-bg)" />
+  <rect x="32" y="518" width="4" height="62" fill="var(--color-info-rule)" />
+  <text x="48" y="540" font-family="Public Sans, sans-serif" font-size="10" font-weight="700" fill="var(--color-ink)">The service received</text>
+  <text x="48" y="556" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-body)">A valid answer and consent receipt.</text>
+  <text x="48" y="571" font-family="Public Sans, sans-serif" font-size="9.5" fill="var(--color-body)">No documents, photos or biometrics.</text>
+
+  <rect x="32" y="598" width="256" height="34" rx="5" fill="var(--color-action)" />
+  <text x="160" y="620" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="12" font-weight="700" fill="#ffffff">Continue to service</text>
+</Phone>

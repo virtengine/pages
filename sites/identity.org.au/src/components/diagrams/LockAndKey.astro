@@ -56,10 +56,10 @@ const { class: className } = Astro.props;
         <circle cx="10" cy="10" r="2.6" fill="var(--color-action)" />
         <path d="M17 17l17 17M28 28l6-6M33 33l5-5" stroke="var(--color-action)" stroke-width="2.6" stroke-linecap="round" />
       </g>
-      <text x="112" y="330" font-size="11.5" font-weight="700" fill="var(--color-ink)">Your keys never</text>
-      <text x="112" y="345" font-size="11.5" font-weight="700" fill="var(--color-ink)">leave this phone</text>
-      <text x="112" y="362" font-size="10.5" fill="var(--color-muted)">Held in secure hardware</text>
-      <text x="112" y="376" font-size="10.5" fill="var(--color-muted)">— not exportable</text>
+      <text x="154" y="330" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--color-ink)">Your keys never</text>
+      <text x="154" y="344" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--color-ink)">leave this phone</text>
+      <text x="154" y="361" text-anchor="middle" font-size="9.5" fill="var(--color-muted)">Held in secure hardware</text>
+      <text x="154" y="374" text-anchor="middle" font-size="9.5" fill="var(--color-muted)">Cannot be exported</text>
     </g>
   </g>
 
@@ -161,7 +161,10 @@ const { class: className } = Astro.props;
       <text x="504" y="361" fill="var(--color-navy-muted)">destroyed when scoring ends</text>
     </g>
 
-    <text x="564" y="412" text-anchor="middle" font-size="10.5" fill="var(--color-navy-muted)">No window · no console · no operator door — by design, not by policy</text>
+    <text x="564" y="405" text-anchor="middle" font-size="9.7" fill="var(--color-navy-muted)">
+      <tspan x="564" dy="0">No window · no console · no operator door</tspan>
+      <tspan x="564" dy="14">Hardware isolation keeps operators outside</tspan>
+    </text>
   </g>
 
   <!-- ================= zone D: only the result leaves ================= -->
@@ -193,7 +196,6 @@ const { class: className } = Astro.props;
 
   <!-- ================= zone E: everyone outside ================= -->
   <g>
-    <text x="564" y="486" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="1" fill="var(--color-steel)">OUTSIDE THE VAULT — NO ACCESS PATH EXISTS</text>
     {
       [
         { x: 448, label: "Operators" },
@@ -212,7 +214,15 @@ const { class: className } = Astro.props;
         </g>
       ))
     }
-    <text x="564" y="600" text-anchor="middle" font-size="11" fill="var(--color-muted)">Designed so that no one — not operators, not providers, not the foundation — can open the processing environment</text>
+    <rect x="408" y="466" width="312" height="36" rx="6" fill="var(--color-alt)" />
+    <text x="564" y="481" text-anchor="middle" font-size="10.2" font-weight="700" letter-spacing="0.9" fill="var(--color-steel)">
+      <tspan x="564" dy="0">OUTSIDE THE VAULT</tspan>
+      <tspan x="564" dy="14">NO OPERATOR ACCESS PATH</tspan>
+    </text>
+    <text x="564" y="596" text-anchor="middle" font-size="10.5" fill="var(--color-muted)">
+      <tspan x="564" dy="0">Operators, providers and foundation staff remain outside the processing environment.</tspan>
+      <tspan x="564" dy="15">The hardware boundary has no administrative entry point.</tspan>
+    </text>
   </g>
 
   <!-- caption -->
