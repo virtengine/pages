@@ -1,7 +1,7 @@
 /**
  * Research topic pages — the foundation's research program areas.
  * Grounded in: the DSEMA v1.0.5 architecture specification, the accepted
- * AU2024203136B2 patent claims, the multi-agent patent claims (v1.2.1),
+ * AU2024203136B2 granted patent claims, the multi-agent patent claims (v1.2.1),
  * the signed constitution, and the open VirtEngine repository
  * (github.com/virtengine/virtengine). Research-program framing only:
  * questions, approach, current work, artifacts — no invented results.

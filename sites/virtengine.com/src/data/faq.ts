@@ -18,7 +18,7 @@ export const FAQ: FaqEntry[] = [
     category: "General",
     question: "What is VirtEngine?",
     answer:
-      "VirtEngine is an open-source, decentralized cloud computing marketplace protocol. It connects tenants who need computing resources with providers who have capacity to lease, through an on-chain exchange with built-in identity verification (VEID), escrow, and usage settlement. It ships as a single Go binary containing a CometBFT-powered blockchain node built on the Cosmos SDK, licensed Apache 2.0, with certain methods protected by patent AU2024203136B2.",
+      "VirtEngine is an open-source, decentralized cloud computing marketplace protocol. It connects tenants who need computing resources with providers who have capacity to lease, through an on-chain exchange with built-in identity verification (VEID), escrow, and usage settlement. It ships as a single Go binary containing a CometBFT-powered blockchain node built on the Cosmos SDK, licensed Apache 2.0, with certain methods protected by granted patent AU2024203136B2, in force until 12 May 2044.",
     links: [
       { label: "Protocol architecture", href: "/protocol" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },

@@ -42,7 +42,7 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
         heading: "What we actually do",
         clauses: ["6.2.1", "6.2.2", "6.2.5"],
         body: [
-          "The foundation develops, publishes, operates, and maintains two flagship technology programs: VirtEngine, a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by accepted patent AU2024203136B2; and DSEMA, a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
+          "The foundation develops, publishes, operates, and maintains two flagship technology programs: VirtEngine, a decentralized cloud computing marketplace with a privacy-preserving identity layer, published under Apache 2.0 and protected by granted patent AU2024203136B2, in force until 12 May 2044; and DSEMA, a patent-pending architecture for safe, accountable, auditable, self-improving multi-agent AI systems.",
           "Around the programs sits the education mandate: public research, open specifications, standards, documentation, and safety materials. This website, the protocol documentation, and the identity research site are all deliverables of that mandate.",
         ],
       },
@@ -102,13 +102,13 @@ export const FOUNDATION_PAGES: FoundationPage[] = [
     title: "Intellectual property stewardship",
     eyebrow: "Patents & licensing",
     summary:
-      "Two patent families held for public benefit: accepted Australian patent AU2024203136B2 covering the VirtEngine system, and the patent-pending DSEMA multi-agent claims — alongside an Apache 2.0 open-source policy and constitutionally bound licensing preferences.",
+      "Two patent families held for public benefit: granted Australian patent AU2024203136B2, in force until 12 May 2044, covering the VirtEngine system, and the patent-pending DSEMA multi-agent claims — alongside an Apache 2.0 open-source policy and constitutionally bound licensing preferences.",
     sections: [
       {
         heading: "The VirtEngine patent — AU2024203136B2",
         clauses: ["32.1.1"],
         body: [
-          "Australian patent AU2024203136B2, 'Decentralized system for identification, authentication, data encryption, cloud and distributed cluster computing', has been accepted with amended claims (August 2025). The claims cover the integrated system: decentralized identity scoring from government-ID, biometric, and device signals; encrypted payload handling; a blockchain-coordinated marketplace matching tenants and providers; and distributed cluster computing under on-chain control.",
+          "Australian patent AU2024203136B2, 'Decentralized system for identification, authentication, data encryption, cloud and distributed cluster computing', is granted and in force until 12 May 2044. The claims cover the integrated system: decentralized identity scoring from government-ID, biometric, and device signals; encrypted payload handling; a blockchain-coordinated marketplace matching tenants and providers; and distributed cluster computing under on-chain control.",
           "The constitution obliges the company to own or control this patent family — including future continuations, divisionals, and foreign equivalents — and to apply it for public benefit. Held this way, the patent works as a defensive instrument: it prevents a competitor from fencing off the invention and charging the public rent on it.",
         ],
       },

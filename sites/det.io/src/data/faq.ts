@@ -50,7 +50,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "What is VirtEngine?",
     answer:
-      "VirtEngine is a decentralized cloud computing marketplace: a Cosmos SDK / CometBFT blockchain (written in Go, Apache 2.0, single virtengine binary) that connects tenants who need compute with providers who lease capacity, with identity, encryption, escrow, usage settlement, and provider auditing enforced by the chain itself. It is protected by accepted Australian patent AU2024203136B2, which the foundation holds for public benefit, and it includes VEID, a privacy-preserving decentralized identity layer.",
+      "VirtEngine is a decentralized cloud computing marketplace: a Cosmos SDK / CometBFT blockchain (written in Go, Apache 2.0, single virtengine binary) that connects tenants who need compute with providers who lease capacity, with identity, encryption, escrow, usage settlement, and provider auditing enforced by the chain itself. It is protected by granted Australian patent AU2024203136B2, in force until 12 May 2044, and includes VEID, a privacy-preserving decentralized identity layer.",
     links: [{ label: "VirtEngine program page", href: "/research/virtengine" }],
   },
   {
@@ -98,7 +98,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Why does a public-benefit foundation hold patents?",
     answer:
-      "Defensively. An accepted patent in private hands lets its owner fence off the invention and charge the public rent. The same patent held by a foundation whose constitution locks it to public benefit does the opposite: it prevents privatisation of the technique. The protocol code is simultaneously published under Apache 2.0, whose explicit patent grant gives users of the open code a licence to the patented invention as embodied in it.",
+      "Defensively. A granted patent in private hands lets its owner fence off the invention and charge the public rent. The same patent held by a foundation whose constitution locks it to public benefit does the opposite: it prevents privatisation of the technique. The protocol code is simultaneously published under Apache 2.0, whose explicit patent grant gives users of the open code a licence to the patented invention as embodied in it.",
     links: [{ label: "Intellectual property stewardship", href: "/foundation/intellectual-property-stewardship" }],
   },
   {
