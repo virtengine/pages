@@ -53,19 +53,19 @@ const integrationGroups = [
   },
 ];
 
-const organizations = [
-  ["ETAIS", "org-1.png"],
-  ["GÉANT", "org-2.png"],
-  ["EGI", "org-3.png"],
-  ["EOSC", "org-4.png"],
-  ["OCRE", "org-5.png"],
-  ["University of Cambridge", "org-6.png"],
-  ["University of Tartu", "org-7.png"],
-  ["CESNET", "org-8.png"],
-  ["CSC", "org-9.png"],
-  ["KIFÜ", "org-10.png"],
-  ["LUMI", "org-11.png"],
-  ["NORDUnet", "org-12.png"],
+const organizationLogos = [
+  "org-1.png",
+  "org-2.png",
+  "org-3.png",
+  "org-4.png",
+  "org-5.png",
+  "cambridge_university.svg",
+  "org-7.png",
+  "org-8.png",
+  "org-9.png",
+  "org-10.png",
+  "org-11.png",
+  "org-12.png",
 ];
 ---
 
@@ -189,10 +189,10 @@ const organizations = [
     title="Organizations featured by Waldur"
     lede="Waldur publishes the following organizations in its own customer and partner showcase."
   >
-    <div class="waldur-logo-grid">
-      {organizations.map(([name, file]) => (
-        <div class="waldur-logo-tile" title={name}>
-          <img src={`https://waldur.com/img/partners/${file}`} alt={name} loading="lazy" decoding="async" />
+    <div class="waldur-logo-grid" aria-label="Organization logos published in Waldur's official showcase">
+      {organizationLogos.map((file) => (
+        <div class="waldur-logo-tile">
+          <img src={`https://waldur.com/img/partners/${file}`} alt="" loading="lazy" decoding="async" />
         </div>
       ))}
     </div>
