@@ -10,12 +10,11 @@ const year = new Date().getFullYear();
   <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]">
     <div class="max-w-sm md:col-span-2 lg:col-span-1">
       <a href="/" class="inline-flex" aria-label="VirtEngine home">
-        <Lockup size={30} byline onDark />
+        <Lockup size={64} byline onDark />
       </a>
       <p class="mt-5 text-sm leading-relaxed">
         The open-source decentralized cloud marketplace protocol. Apache 2.0 licensed,
-        protected by patent {SITE.patentId}, and stewarded by DETIO FOUNDATION LTD as
-        public-benefit infrastructure.
+        protected by patent {SITE.patentId}, and maintained by DETIO FOUNDATION LTD.
       </p>
       <p class="mt-4 font-mono text-sm">
         <a href={`mailto:${SITE.email}`} class="text-night-muted transition-colors hover:text-green">{SITE.email}</a>

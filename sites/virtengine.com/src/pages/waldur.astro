@@ -1,0 +1,219 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+
+const title = "Open-Source Hybrid Cloud Platform & Marketplace — Waldur + VirtEngine";
+const description = "How VirtEngine connects its decentralized marketplace protocol to Waldur, the open-source cloud and HPC management platform developed and stewarded by OpenNode Cloud.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Waldur", href: "/waldur" },
+];
+
+const workflow = [
+  { step: "01", title: "Publish", body: "Providers register offerings on-chain, then the provider daemon synchronizes the catalogue and maps Waldur offering identifiers." },
+  { step: "02", title: "Order", body: "A tenant order and selected bid become protocol state. The bridge routes the matched service request into Waldur." },
+  { step: "03", title: "Provision", body: "Waldur coordinates fulfilment through the configured cloud, HPC or provider-specific integration and returns operational status." },
+  { step: "04", title: "Operate", body: "Signed, replay-protected callbacks report lifecycle changes to VirtEngine. Provider-local infrastructure views remain in Waldur." },
+  { step: "05", title: "Meter", body: "Usage records return to the chain, where the settlement module produces billable line items and releases escrowed funds." },
+];
+
+const integrationGroups = [
+  {
+    label: "Implemented in the VirtEngine bridge",
+    tone: "implemented",
+    items: [
+      ["Waldur marketplace", "Offerings, orders, resources, lifecycle operations and usage records through the official Go client."],
+      ["OpenStack", "Instance, tenant and volume operations exposed through the Waldur client package."],
+      ["Amazon Web Services", "Compute and storage resource operations represented in the current bridge."],
+      ["Microsoft Azure", "Virtual-machine, size and location operations represented in the current bridge."],
+      ["SLURM and HPC", "Allocations and job-state reporting connect scheduler-backed capacity to the marketplace."],
+      ["Object storage and support", "Encrypted object workflows and provider-local support desk operations have dedicated clients."],
+    ],
+  },
+  {
+    label: "Available in Waldur upstream",
+    tone: "upstream",
+    items: [
+      ["Cloud and cluster providers", "Waldur documents OpenStack, Rancher, Kubernetes, VMware, Azure, DigitalOcean, SLURM, MOAB and other provider modules."],
+      ["OpenNebula site agent", "Waldur already documents an OpenNebula site-agent plugin; VirtEngine's first-class chain mapping is still planned."],
+      ["Federation and identity", "Documented options include eduGAIN, eduTEAMS, Keycloak, LDAP, FreeIPA, MyAccessID and TARA."],
+      ["Extensibility", "Remote offerings, custom scripts, OpenPortal and site-agent plugins provide routes for operator-specific services."],
+    ],
+  },
+  {
+    label: "VirtEngine roadmap",
+    tone: "planned",
+    items: [
+      ["Proxmox VE", "A planned provider adapter and catalogue route. It is not presented here as a shipped Waldur or VirtEngine integration."],
+      ["OpenNebula", "A planned first-class VirtEngine bridge using Waldur's existing site-agent capability, with lifecycle and usage mapped to chain state."],
+      ["Production certification", "Each enabled backend still needs versioned profiles, end-to-end provisioning evidence, cleanup, quota and cost-control testing."],
+    ],
+  },
+];
+
+const organizations = [
+  ["ETAIS", "org-1.png"],
+  ["GÉANT", "org-2.png"],
+  ["EGI", "org-3.png"],
+  ["EOSC", "org-4.png"],
+  ["OCRE", "org-5.png"],
+  ["University of Cambridge", "org-6.png"],
+  ["University of Tartu", "org-7.png"],
+  ["CESNET", "org-8.png"],
+  ["CSC", "org-9.png"],
+  ["KIFÜ", "org-10.png"],
+  ["LUMI", "org-11.png"],
+  ["NORDUnet", "org-12.png"],
+];
+---
+
+<Base title={title} description={description} path="/waldur" breadcrumbs={crumbs}>
+  <PageHero
+    eyebrow="Open-source cloud operations"
+    title="Waldur connects VirtEngine to hybrid cloud and HPC infrastructure"
+    lede="Waldur supplies the catalogue, self-service and operational control plane. VirtEngine supplies the decentralized exchange, identity, escrow and settlement protocol. The provider daemon keeps both sides synchronized."
+    crumbs={crumbs}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="https://waldur.com/">Explore Waldur</CTA>
+      <CTA href="https://docs.waldur.com/" variant="secondary">Read Waldur documentation</CTA>
+      <CTA href="https://github.com/virtengine/virtengine/tree/main/pkg/waldur" variant="ghost">Inspect the bridge code</CTA>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Architecture"
+    title="Two systems with a defined boundary"
+    lede="VirtEngine treats the chain as marketplace source of truth. Waldur remains the provider-operated control plane for fulfilment and infrastructure operations."
+  >
+    <div class="waldur-architecture reveal" role="img" aria-label="A tenant uses the VirtEngine marketplace. The provider daemon connects the VirtEngine chain to Waldur MasterMind and HomePort, which integrate with cloud, HPC and storage providers.">
+      <div class="waldur-arch-node waldur-arch-tenant">
+        <span>Tenant</span><small>selects capacity</small>
+      </div>
+      <div class="waldur-arch-arrow" aria-hidden="true">→</div>
+      <div class="waldur-arch-node waldur-arch-chain">
+        <span>VirtEngine chain</span><small>orders · bids · leases · escrow</small>
+      </div>
+      <div class="waldur-arch-bridge">
+        <strong>Provider daemon</strong><small>signed events and API calls</small>
+      </div>
+      <div class="waldur-arch-node waldur-arch-waldur">
+        <span>Waldur</span><small>MasterMind API · HomePort portal</small>
+      </div>
+      <div class="waldur-arch-arrow" aria-hidden="true">→</div>
+      <div class="waldur-arch-targets">
+        <span>Cloud</span><span>HPC</span><span>Storage</span><span>Custom</span>
+      </div>
+    </div>
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Waldur contributes</p>
+        <h3 class="mt-4 text-xl font-semibold">Service management and delivery</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">HomePort gives users a self-service interface. MasterMind provides the API, catalogue, orders, resources, accounting and provider plugins used to fulfil services across hybrid infrastructure.</p>
+      </article>
+      <article class="rounded-card border border-green-deep/30 bg-green-wash p-6">
+        <p class="eyebrow">VirtEngine contributes</p>
+        <h3 class="mt-4 text-xl font-semibold">Exchange, identity and settlement</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">The chain coordinates provider discovery, competitive bids, leases, Verifiable Electronic Identity checks, escrow, metered usage and final settlement. Waldur does not replace that consensus layer.</p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Marketplace flow"
+    title="From catalogue entry to settled usage"
+    lede="The integration follows a chain-first workflow so infrastructure changes can be connected to signed protocol state."
+    class="border-y border-line bg-paper-soft"
+  >
+    <ol class="waldur-workflow">
+      {workflow.map((item) => (
+        <li class="reveal">
+          <span class="waldur-step">{item.step}</span>
+          <div><h3>{item.title}</h3><p>{item.body}</p></div>
+        </li>
+      ))}
+    </ol>
+  </Section>
+
+  <Section
+    eyebrow="Integration map"
+    title="Current code, upstream capability and roadmap"
+    lede="The labels below are deliberate. An upstream Waldur connector is not automatically a production-ready VirtEngine integration."
+  >
+    <div class="grid gap-6 lg:grid-cols-3">
+      {integrationGroups.map((group) => (
+        <article class:list={["waldur-integration-card reveal", `waldur-${group.tone}`]}>
+          <p class="waldur-status">{group.label}</p>
+          <ul>
+            {group.items.map(([name, detail]) => (
+              <li><strong>{name}</strong><span>{detail}</span></li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
+      This status reflects the current repository and published Waldur documentation. “Implemented” means a code path exists; production availability still depends on provider configuration, credentials, backend compatibility and deployment certification.
+    </p>
+  </Section>
+
+  <section class="night-scope border-y border-night-line">
+    <div class="container-site grid gap-10 py-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+      <div>
+        <p class="eyebrow">Project stewardship</p>
+        <h2 class="mt-5 font-display text-3xl text-night-text md:text-4xl">Developed and stewarded by OpenNode Cloud</h2>
+        <p class="mt-5 leading-relaxed text-night-muted">
+          OpenNode Cloud leads Waldur development, support and deployment services. Waldur is open source and is co-developed with the University of Tartu. VirtEngine consumes the public platform and client interfaces; it does not claim ownership of Waldur.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-4">
+          <CTA href="https://opennodecloud.com/">Visit OpenNode Cloud</CTA>
+          <CTA href="https://github.com/waldur" variant="secondary" class="border-night-line-strong text-night-text hover:text-green">Waldur on GitHub</CTA>
+        </div>
+      </div>
+      <div class="waldur-code-window" aria-label="Simplified integration configuration example">
+        <div class="waldur-code-bar"><i></i><i></i><i></i><span>provider-daemon</span></div>
+        <pre><code><span>source</span>      VirtEngine chain
+<span>bridge</span>      provider daemon
+<span>control</span>     Waldur MasterMind
+<span>catalogue</span>   offerings → orders → resources
+<span>feedback</span>    signed lifecycle + usage callbacks
+<span>settlement</span>  on-chain escrow release</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <Section
+    eyebrow="Waldur ecosystem"
+    title="Organizations featured by Waldur"
+    lede="Waldur publishes the following organizations in its own customer and partner showcase."
+  >
+    <div class="waldur-logo-grid">
+      {organizations.map(([name, file]) => (
+        <div class="waldur-logo-tile" title={name}>
+          <img src={`https://waldur.com/img/partners/${file}`} alt={name} loading="lazy" decoding="async" />
+        </div>
+      ))}
+    </div>
+    <p class="mt-6 max-w-4xl text-xs leading-relaxed text-muted">
+      Logos are reproduced from Waldur's published showcase to describe Waldur adoption. Their appearance here does not imply endorsement of VirtEngine or DETIO FOUNDATION LTD.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Primary sources"
+    title="Explore the platform directly"
+    lede="Architecture and integration details on this page are grounded in the VirtEngine repository and Waldur's official material."
+    class="border-t border-line"
+  >
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <a class="waldur-source-link" href="https://waldur.com/"><strong>Waldur platform</strong><span>Features, use cases and organization showcase</span></a>
+      <a class="waldur-source-link" href="https://docs.waldur.com/latest/admin-guide/architecture/"><strong>Architecture</strong><span>HomePort, MasterMind, workers and site agent</span></a>
+      <a class="waldur-source-link" href="https://docs.waldur.com/latest/about/concepts/marketplace/"><strong>Marketplace model</strong><span>Offerings, orders, resources and accounting</span></a>
+      <a class="waldur-source-link" href="https://docs.waldur.com/latest/integrations/"><strong>Integration catalogue</strong><span>Provider, identity and site-agent plugins</span></a>
+      <a class="waldur-source-link" href="https://opennodecloud.com/products/waldur.html"><strong>OpenNode Cloud</strong><span>Development, deployment and support</span></a>
+      <a class="waldur-source-link" href="https://github.com/virtengine/virtengine/tree/main/pkg/waldur"><strong>VirtEngine bridge</strong><span>Current integration source code</span></a>
+    </div>
+  </Section>
+</Base>

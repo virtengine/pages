@@ -319,6 +319,83 @@ h3, h4 {
 .marketplace-icon-cloud::after { left: 0.85rem; top: 0.05rem; width: 1.45rem; height: 1.45rem; border: 2px solid currentColor; border-radius: 50%; background: #f6faf4; }
 .marketplace-icon-storage::before { left: 0.4rem; top: 0.3rem; width: 2.5rem; height: 1.85rem; border: 2px solid currentColor; border-radius: 50% / 20%; box-shadow: 0 0.58rem 0 -1px #f6faf4, 0 0.58rem 0 0 currentColor; }
 .marketplace-icon-storage::after { right: 0.75rem; top: 0.85rem; width: 0.28rem; height: 0.28rem; border-radius: 50%; background: currentColor; }
+
+/* Waldur platform page */
+.waldur-architecture {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.72fr) 2rem minmax(12rem, 1.15fr) minmax(9rem, 0.8fr) minmax(12rem, 1.15fr) 2rem minmax(9rem, 0.8fr);
+  align-items: center;
+  gap: 0.7rem;
+  padding: clamp(1.25rem, 3vw, 2.2rem);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-frame);
+  background: linear-gradient(135deg, #fff 0%, #eff8ee 100%);
+  box-shadow: 0 18px 42px rgba(38, 43, 38, 0.08);
+}
+.waldur-arch-node, .waldur-arch-bridge { min-height: 7rem; display: flex; flex-direction: column; justify-content: center; padding: 1rem; text-align: center; border-radius: var(--radius-card); }
+.waldur-arch-node { border: 1px solid var(--color-line-strong); background: #fff; }
+.waldur-arch-node span, .waldur-arch-bridge strong { color: var(--color-ink); font-size: 1rem; font-weight: 600; }
+.waldur-arch-node small, .waldur-arch-bridge small { margin-top: 0.35rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.66rem; line-height: 1.45; }
+.waldur-arch-chain { border-color: var(--color-green-deep); background: var(--color-green-wash); }
+.waldur-arch-waldur { border: 2px solid var(--color-green); }
+.waldur-arch-bridge { position: relative; min-height: 5.5rem; color: var(--color-night-text); background: var(--color-night-panel); }
+.waldur-arch-bridge strong { color: var(--color-night-text); }
+.waldur-arch-bridge small { color: var(--color-night-muted); }
+.waldur-arch-arrow { color: var(--color-green-deep); font-family: var(--font-mono); font-size: 1.45rem; text-align: center; }
+.waldur-arch-targets { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+.waldur-arch-targets span { padding: 0.55rem 0.35rem; border: 1px solid var(--color-line-strong); border-radius: 0.25rem; background: #fff; color: var(--color-ink); font-family: var(--font-mono); font-size: 0.68rem; text-align: center; }
+.waldur-workflow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--color-line-strong); border-radius: var(--radius-frame); background: var(--color-line-strong); }
+.waldur-workflow li { min-height: 16rem; padding: 1.4rem; background: #fff; }
+.waldur-step { display: grid; width: 2.45rem; height: 2.45rem; place-items: center; border-radius: 50%; background: var(--color-green-wash); color: var(--color-green-deep); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; }
+.waldur-workflow h3 { margin-top: 2.8rem; font-size: 1.05rem; font-weight: 600; }
+.waldur-workflow p { margin-top: 0.65rem; color: var(--color-slate); font-size: 0.84rem; line-height: 1.65; }
+.waldur-integration-card { overflow: hidden; border: 1px solid var(--color-line); border-radius: var(--radius-frame); background: #fff; }
+.waldur-status { padding: 0.8rem 1rem; border-bottom: 1px solid var(--color-line); font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.waldur-implemented .waldur-status { background: var(--color-green-deep); color: #fff; }
+.waldur-upstream .waldur-status { background: var(--color-green-wash); color: var(--color-green-dark); }
+.waldur-planned .waldur-status { background: var(--color-amber-soft); color: var(--color-amber); }
+.waldur-integration-card ul { padding: 0 1.2rem; }
+.waldur-integration-card li { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 0; border-bottom: 1px solid var(--color-line); }
+.waldur-integration-card li:last-child { border: 0; }
+.waldur-integration-card strong { color: var(--color-ink); font-size: 0.88rem; }
+.waldur-integration-card span { color: var(--color-slate); font-size: 0.78rem; line-height: 1.55; }
+.waldur-code-window { overflow: hidden; border: 1px solid var(--color-night-line-strong); border-radius: var(--radius-frame); background: var(--color-night-deep); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+.waldur-code-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-night-line); }
+.waldur-code-bar i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-night-line-strong); }
+.waldur-code-bar span { margin-left: auto; color: var(--color-night-faint); font-family: var(--font-mono); font-size: 0.65rem; }
+.waldur-code-window pre { overflow-x: auto; padding: 1.5rem; color: var(--color-night-text); font-family: var(--font-mono); font-size: clamp(0.72rem, 1.5vw, 0.86rem); line-height: 2; }
+.waldur-code-window code span { display: inline-block; width: 7.2rem; color: var(--color-green-bright); }
+.waldur-logo-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.7rem; }
+.waldur-logo-tile { display: grid; min-height: 7.5rem; place-items: center; padding: 1rem; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: #fff; }
+.waldur-logo-tile img { display: block; max-width: 100%; max-height: 4rem; object-fit: contain; filter: grayscale(1); opacity: 0.8; transition: filter 180ms ease, opacity 180ms ease; }
+.waldur-logo-tile:hover img { filter: none; opacity: 1; }
+.waldur-source-link { display: flex; min-height: 7.2rem; flex-direction: column; justify-content: center; padding: 1.2rem; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: #fff; transition: border-color 180ms ease, transform 180ms ease; }
+.waldur-source-link:hover { border-color: var(--color-green-deep); transform: translateY(-2px); }
+.waldur-source-link strong { color: var(--color-ink); }
+.waldur-source-link span { margin-top: 0.3rem; color: var(--color-muted); font-size: 0.78rem; }
+
+@media (max-width: 1199px) {
+  .waldur-architecture { grid-template-columns: 1fr 2rem 1fr; }
+  .waldur-arch-tenant { grid-column: 1; }
+  .waldur-arch-chain { grid-column: 3; }
+  .waldur-arch-bridge { grid-column: 1 / -1; }
+  .waldur-arch-waldur { grid-column: 1; }
+  .waldur-arch-targets { grid-column: 3; }
+  .waldur-workflow { grid-template-columns: repeat(3, 1fr); }
+  .waldur-logo-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 639px) {
+  .waldur-architecture { grid-template-columns: 1fr; gap: 0.6rem; }
+  .waldur-architecture > * { grid-column: 1; }
+  .waldur-arch-arrow { transform: rotate(90deg); }
+  .waldur-arch-node, .waldur-arch-bridge { min-height: 5.5rem; }
+  .waldur-workflow { grid-template-columns: 1fr; }
+  .waldur-workflow li { min-height: auto; }
+  .waldur-workflow h3 { margin-top: 1.4rem; }
+  .waldur-logo-grid { grid-template-columns: repeat(2, 1fr); }
+  .waldur-logo-tile { min-height: 6.5rem; }
+}
 .marketplace-icon-vm::before { inset: 0.15rem 0.2rem 0.48rem; border: 2px solid currentColor; border-radius: 0.22rem; }
 .marketplace-icon-vm::after { left: 0.85rem; bottom: 0.05rem; width: 1.6rem; height: 0.38rem; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
 .marketplace-icon-custom::before { left: 0.3rem; top: 0.15rem; width: 2.35rem; height: 2.15rem; border: 2px solid currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }

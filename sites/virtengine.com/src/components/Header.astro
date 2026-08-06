@@ -7,12 +7,13 @@ const isActive = (href: string) => current === href || current.startsWith(href +
 ---
 
 <header class="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-sm">
-  <div class="container-site flex h-16 items-center justify-between gap-6">
+  <div class="container-site flex h-20 items-center justify-between gap-4">
     <a href="/" class="flex shrink-0 items-center" aria-label="VirtEngine home">
-      <Lockup size={30} />
+      <Lockup size={60} class="hidden sm:block" />
+      <Lockup size={48} class="sm:hidden" />
     </a>
 
-    <nav aria-label="Primary" class="hidden lg:block">
+    <nav aria-label="Primary" class="hidden xl:block">
       <ul class="flex items-center gap-0.5">
         {
           NAV.map((item) => (
@@ -21,7 +22,7 @@ const isActive = (href: string) => current === href || current.startsWith(href +
                 href={item.href}
                 aria-current={current === item.href ? "page" : undefined}
                 class:list={[
-                  "rounded-sm px-3 py-2 text-sm font-medium transition-colors",
+                  "rounded-sm px-2.5 py-2 text-sm font-medium transition-colors",
                   isActive(item.href)
                     ? "text-green-dark"
                     : "text-slate hover:text-ink",
@@ -35,7 +36,7 @@ const isActive = (href: string) => current === href || current.startsWith(href +
       </ul>
     </nav>
 
-    <div class="hidden items-center gap-3 lg:flex">
+    <div class="hidden items-center gap-3 xl:flex">
       <a
         href="/launch"
         class="clip-corner rounded-sm border border-green-deep px-3.5 py-1.5 text-sm font-semibold text-green-dark transition-colors hover:bg-green-deep hover:text-white"
@@ -60,7 +61,7 @@ const isActive = (href: string) => current === href || current.startsWith(href +
     <button
       id="nav-toggle"
       type="button"
-      class="flex h-10 w-10 items-center justify-center rounded-sm border border-line text-ink lg:hidden"
+      class="flex h-10 w-10 items-center justify-center rounded-sm border border-line text-ink xl:hidden"
       aria-expanded="false"
       aria-controls="mobile-nav"
       aria-label="Open navigation menu"
@@ -72,7 +73,7 @@ const isActive = (href: string) => current === href || current.startsWith(href +
     </button>
   </div>
 
-  <nav id="mobile-nav" aria-label="Primary mobile" hidden class="border-t border-line bg-paper lg:hidden">
+  <nav id="mobile-nav" aria-label="Primary mobile" hidden class="border-t border-line bg-paper xl:hidden">
     <ul class="container-site flex flex-col gap-1 py-4">
       {
         NAV.map((item) => (

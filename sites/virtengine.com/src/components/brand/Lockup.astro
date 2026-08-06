@@ -8,14 +8,35 @@ interface Props {
   onDark?: boolean;
 }
 
-const { class: className, size = 34 } = Astro.props;
+import Mark from "@components/brand/Mark.astro";
+
+const { class: className, size = 34, byline = false, onDark = false } = Astro.props;
+const markSize = Math.round(size * 0.92);
+const wordmarkSize = Math.max(18, Math.round(size * 0.48));
 ---
 
-<img
-  src="/brand/virtengine-original.png"
-  width="1423"
-  height="362"
-  alt="VirtEngine"
-  class={className}
-  style={`display:block;height:${size}px;width:auto;max-width:220px;object-fit:contain;object-position:left center`}
-/>
+{
+  onDark ? (
+    <span
+      class:list={["inline-flex items-center gap-2", className]}
+      style={`height:${size}px`}
+      role="img"
+      aria-label="VirtEngine by DET.io"
+    >
+      <Mark size={markSize} class="shrink-0 text-green" />
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-night-text" style={`font-size:${wordmarkSize}px`}>VirtEngine</span>
+        {byline && <span class="mt-1 text-right font-display text-[0.62rem] tracking-[0.08em] text-night-muted">by DET.io</span>}
+      </span>
+    </span>
+  ) : (
+    <img
+      src="/brand/virtengine-original.png"
+      width="1423"
+      height="362"
+      alt="VirtEngine by DET.io"
+      class={className}
+      style={`display:block;height:${size}px;width:auto;max-width:none;object-fit:contain;object-position:left center`}
+    />
+  )
+}
