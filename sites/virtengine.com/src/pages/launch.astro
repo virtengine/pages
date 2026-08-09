@@ -24,32 +24,92 @@ import Section from "@components/Section.astro";
           <input id="launch-consent" type="checkbox" required class="mt-1" />
           <span>I agree to receive VirtEngine launch updates. I can unsubscribe at any time.</span>
         </label>
-        <div class="cf-turnstile mt-5" data-sitekey="0x4AAAAAAEGUAPwEOuNz9V6u" data-action="launch_signup"></div>
-        <button type="submit" class="clip-corner mt-5 bg-green-deep px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-dark">Join the launch list</button>
+        <div id="launch-turnstile" class="mt-5 min-h-[65px] w-full max-w-full" aria-label="Security check"></div>
+        <p id="launch-security-note" class="mt-2 text-sm text-slate" aria-live="polite">Loading security check…</p>
+        <button type="submit" disabled class="clip-corner mt-5 bg-green-deep px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-dark disabled:cursor-not-allowed disabled:opacity-60">Join the launch list</button>
         <p id="launch-form-note" class="mt-3 text-sm text-slate" aria-live="polite">Your email is securely added to the launch list.</p>
       </form>
     </div>
   </Section>
 
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script id="turnstile-api" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script>
     const form = document.querySelector<HTMLFormElement>("#launch-signup");
     const email = document.querySelector<HTMLInputElement>("#launch-email");
     const consent = document.querySelector<HTMLInputElement>("#launch-consent");
     const note = document.querySelector<HTMLElement>("#launch-form-note");
+    const securityNote = document.querySelector<HTMLElement>("#launch-security-note");
+    const turnstileContainer = document.querySelector<HTMLElement>("#launch-turnstile");
+    const turnstileScript = document.querySelector<HTMLScriptElement>("#turnstile-api");
+    const submit = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+    let turnstileApi: typeof window.turnstile | undefined;
+    let widgetId: string | undefined;
+    let turnstileToken = "";
+
+    const setSecurityState = (message: string, ready = false) => {
+      if (securityNote) securityNote.textContent = message;
+      if (submit) submit.disabled = !ready;
+    };
+
+    const renderTurnstile = () => {
+      if (!turnstileContainer || !window.turnstile || widgetId !== undefined) return;
+      turnstileApi = window.turnstile;
+      const widgetSize = turnstileContainer.clientWidth < 300 ? "compact" : "flexible";
+      widgetId = turnstileApi.render(turnstileContainer, {
+        sitekey: "0x4AAAAAAEGUAPwEOuNz9V6u",
+        action: "launch_signup",
+        theme: "light",
+        size: widgetSize,
+        callback: (token: string) => {
+          turnstileToken = token;
+          setSecurityState("Security check complete.", true);
+        },
+        "error-callback": () => {
+          turnstileToken = "";
+          setSecurityState("The security check could not load. Refresh the page or disable content blocking for challenges.cloudflare.com.");
+          return true;
+        },
+        "expired-callback": () => {
+          turnstileToken = "";
+          setSecurityState("The security check expired and is refreshing…");
+          if (widgetId !== undefined) turnstileApi?.reset(widgetId);
+        },
+        "timeout-callback": () => {
+          turnstileToken = "";
+          setSecurityState("The security check timed out and is refreshing…");
+          if (widgetId !== undefined) turnstileApi?.reset(widgetId);
+        },
+        "unsupported-callback": () => {
+          turnstileToken = "";
+          setSecurityState("This browser cannot run the security check. Update your browser or try another one.");
+        },
+      });
+    };
+
+    if (window.turnstile) renderTurnstile();
+    else turnstileScript?.addEventListener("load", renderTurnstile, { once: true });
+
+    window.setTimeout(() => {
+      if (widgetId === undefined) {
+        setSecurityState("The security check is taking too long to load. Refresh the page or disable content blocking for challenges.cloudflare.com.");
+      }
+    }, 10_000);
+
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!email?.checkValidity() || !consent?.checked) { note!.textContent = "Enter a valid email address and confirm that you agree to receive updates."; return; }
-      const token = document.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]')?.value;
-      if (!token) { note!.textContent = "Complete the security check before joining the list."; return; }
-      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (!turnstileToken) { note!.textContent = "Complete the security check before joining the list."; return; }
       submit!.disabled = true; note!.textContent = "Adding you to the list…";
       try {
-        const response = await fetch("https://foundation-forms-api.jonathan-f0b.workers.dev/v1/launch-signups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.value, consent: true, turnstileToken: token }) });
+        const response = await fetch("https://foundation-forms-api.jonathan-f0b.workers.dev/v1/launch-signups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.value, consent: true, turnstileToken }) });
         if (!response.ok) throw new Error("Signup failed");
         form.reset(); note!.textContent = "You’re on the launch list. Thank you.";
       } catch { note!.textContent = "We could not add you right now. Please try again shortly."; }
-      finally { submit!.disabled = false; window.turnstile?.reset(); }
+      finally {
+        turnstileToken = "";
+        setSecurityState("Refreshing security check…");
+        if (widgetId !== undefined) turnstileApi?.reset(widgetId);
+      }
     });
   </script>
 </Base>
