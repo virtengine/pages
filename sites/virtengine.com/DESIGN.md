@@ -21,8 +21,7 @@ type, spacing, diagram style, and motion are defined here and implemented in
 
 ## 1. Brand foundations
 
-VirtEngine's identity comes from its **original logo** (see
-`_agent-context/brand/virtengine/`): a **nested double inverted-triangle mark** in
+VirtEngine's identity comes from its **original logo** (`public/brand/virtengine-original.png`): a **nested inverted-V mark** in
 green `#60CC5D`, a thin geometric "VirtEngine" wordmark in grey `#575757`, and a
 "by DET.io" byline. The website is built around exactly these assets — nothing invented.
 
@@ -43,17 +42,10 @@ imagery, and the generic dark-slate-with-teal AI template this site previously u
 
 ### 2.1 Construction
 
-The mark is rebuilt as clean geometry from the traced original
-(`virtengine-mark.svg`, potrace output) in `src/components/brand/Mark.astro`:
-
-- **Back ring** — inverted-triangle outline, offset up-right: vertices
-  `(42,6) (118,6) (80,72)`, stroke 10 (viewBox `-10 -6 140 114`).
-- **Front ring** — inverted-triangle outline, offset down-left: vertices
-  `(2,26) (78,26) (40,92)`, stroke 10. Where the rings cross, the front ring
-  **knocks out** of the back ring (17-unit mask halo), exactly as in the original —
-  so the mark works on any surface without a background rectangle.
-- **Core** — solid inverted triangle centered in the front ring: vertices
-  `(25,40) (55,40) (40,66)`.
+The mark is rebuilt as clean path geometry from the canonical raster artwork in
+`src/components/brand/Mark.astro`. Its interlocking outer V and nested inner V
+must retain their original proportions and cut-outs; do not substitute offset
+triangle rings or add a solid core.
 
 The mark takes `currentColor`; brand green is applied via `text-green`.
 
@@ -61,8 +53,8 @@ The mark takes `currentColor`; brand green is applied via `text-green`.
 
 `src/components/brand/Lockup.astro` recreates the full logo lockup:
 
-- Mark at size *S*, gap `0.32 × S`, wordmark **"VirtEngine"** in Questrial at
-  `0.68 × S`, grey `#575757` (`--color-slate`).
+- Mark at `0.92 × S`, gap `0.13 × S`, wordmark **"VirtEngine"** in Questrial at
+  `0.48 × S`, grey `#575757` (`--color-slate`).
 - Optional byline **"by DET.io"** at `0.3 × S`, light grey (`--color-faint`),
   right-aligned under the wordmark — matching the original PNG.
 - On dark surfaces (`onDark`), the wordmark inverts to `--color-night-text`;
@@ -81,7 +73,7 @@ The mark takes `currentColor`; brand green is applied via `text-green`.
 
 **Do:** use the mark alone as a bullet/accent glyph at small sizes; recolor via
 `currentColor` to brand green or night-text white.
-**Don't:** rotate the mark (down is the brand direction), outline the solid core,
+**Don't:** rotate the mark (down is the brand direction), alter its nested cut-outs,
 recolor to anything other than brand green / white / ink, place the green mark on
 green backgrounds, stretch the lockup, or reconstruct the wordmark in another font.
 

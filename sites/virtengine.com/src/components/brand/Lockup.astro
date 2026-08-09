@@ -3,7 +3,7 @@ interface Props {
   class?: string;
   /** Display height in pixels. */
   size?: number;
-  /** Retained for existing callers; the original artwork includes its own treatment. */
+  /** Show the original DET.io attribution beneath the wordmark. */
   byline?: boolean;
   onDark?: boolean;
 }
@@ -15,28 +15,29 @@ const markSize = Math.round(size * 0.92);
 const wordmarkSize = Math.max(18, Math.round(size * 0.48));
 ---
 
-{
-  onDark ? (
+<span
+  class:list={["inline-flex items-center gap-2", className]}
+  style={`height:${size}px`}
+  role="img"
+  aria-label={byline ? "VirtEngine by DET.io" : "VirtEngine"}
+>
+  <Mark size={markSize} class="shrink-0 text-green" />
+  <span class="flex flex-col leading-none">
     <span
-      class:list={["inline-flex items-center gap-2", className]}
-      style={`height:${size}px`}
-      role="img"
-      aria-label="VirtEngine by DET.io"
+      class:list={["font-display", onDark ? "text-night-text" : "text-slate"]}
+      style={`font-size:${wordmarkSize}px`}>VirtEngine</span
     >
-      <Mark size={markSize} class="shrink-0 text-green" />
-      <span class="flex flex-col leading-none">
-        <span class="font-display text-night-text" style={`font-size:${wordmarkSize}px`}>VirtEngine</span>
-        {byline && <span class="mt-1 text-right font-display text-[0.62rem] tracking-[0.08em] text-night-muted">by DET.io</span>}
-      </span>
-    </span>
-  ) : (
-    <img
-      src="/brand/virtengine-original.png"
-      width="1423"
-      height="362"
-      alt="VirtEngine by DET.io"
-      class={className}
-      style={`height:${size}px;width:auto;max-width:none;object-fit:contain;object-position:left center`}
-    />
-  )
-}
+    {
+      byline && (
+        <span
+          class:list={[
+            "mt-1 text-right font-display text-[0.62rem] tracking-[0.08em]",
+            onDark ? "text-night-muted" : "text-faint",
+          ]}
+        >
+          by DET.io
+        </span>
+      )
+    }
+  </span>
+</span>

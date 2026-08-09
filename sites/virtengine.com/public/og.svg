@@ -1,9 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <mask id="k" maskUnits="userSpaceOnUse" x="-20" y="-12" width="280" height="228">
-      <rect x="-20" y="-12" width="280" height="228" fill="white"/>
-      <polygon points="4,52 156,52 80,184" stroke="black" stroke-width="34" fill="none"/>
-    </mask>
     <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
       <path d="M72 0H0V72" fill="none" stroke="#dee3de" stroke-width="1"/>
     </pattern>
@@ -13,11 +9,9 @@
   <rect width="1200" height="630" fill="url(#grid)"/>
   <rect width="1200" height="10" fill="#60cc5d"/>
 
-  <!-- mark: two overlapping inverted-triangle rings + solid core -->
-  <g transform="translate(96,150)" fill="none">
-    <polygon points="84,12 236,12 160,144" stroke="#60cc5d" stroke-width="20" mask="url(#k)"/>
-    <polygon points="4,52 156,52 80,184" stroke="#60cc5d" stroke-width="20"/>
-    <polygon points="50,80 110,80 80,132" fill="#60cc5d"/>
+  <!-- original nested-V brand mark -->
+  <g transform="translate(96,150) scale(.55)">
+    <path fill="#60cc5d" fill-rule="evenodd" d="M0 0h64l118 204L300 0h64L182 342zM56 52h252L182 280zM94 83h176L182 234z"/>
   </g>
 
   <!-- wordmark -->
