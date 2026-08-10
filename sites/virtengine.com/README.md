@@ -26,8 +26,8 @@ full path in PowerShell:
 ## Structure
 
 ```
-public/            favicon.svg (brand mark), robots.txt, og.svg (source) → og.png (generated)
-scripts/og.mjs     rasterizes og.svg → og.png (1200×630) via sharp
+public/            official PNG brand assets, favicon.png, robots.txt, og.png (generated)
+scripts/og.mjs     builds og.png (1200×630) around the official PNG lockup via sharp
 src/
   data/site.ts     site constants, nav, footer columns, module map, lifecycle copy
   data/modules.ts  26-entry module reference → /modules/[slug]

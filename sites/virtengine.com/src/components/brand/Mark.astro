@@ -1,7 +1,7 @@
 ---
 /**
- * The original VirtEngine nested-V mark, traced from the canonical brand
- * artwork in public/brand/virtengine-original.png. Colored via `currentColor`.
+ * The official VirtEngine mark, cropped directly from the canonical PNG.
+ * Never redraw or recolor this asset.
  */
 interface Props {
   class?: string;
@@ -12,21 +12,15 @@ interface Props {
 
 const { class: className, size = 32, title } = Astro.props;
 const w = size;
-const h = Math.round(size * (342 / 364));
+const h = Math.round(size * (362 / 376));
 ---
 
-<svg
-  viewBox="0 0 364 342"
+<img
+  src="/brand/virtengine-icon.png?v=1"
   width={w}
   height={h}
   class={className}
-  role={title ? "img" : undefined}
+  alt={title ?? ""}
   aria-hidden={title ? undefined : "true"}
-  fill="currentColor"
->
-  {title && <title>{title}</title>}
-  <path
-    fill-rule="evenodd"
-    d="M0 0h64l118 204L300 0h64L182 342zM56 52h252L182 280zM94 83h176L182 234z"
-  ></path>
-</svg>
+  decoding="async"
+/>

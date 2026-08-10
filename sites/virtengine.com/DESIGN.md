@@ -26,12 +26,12 @@ green `#60CC5D`, a thin geometric "VirtEngine" wordmark in grey `#575757`, and a
 "by DET.io" byline. The website is built around exactly these assets — nothing invented.
 
 The design language is **engineering paper**: light grey-green surfaces, ruled
-hairlines, strong grey typography, and green used as the *single* accent. Technical
+hairlines, strong grey typography, and green used as the _single_ accent. Technical
 figures render on dark "diagram plates" (night surfaces) like blueprints — the one
 place the site goes dark, deliberately.
 
 The mark's triangles **point down**. In protocol terms that direction is meaningful —
-workloads *deploy down* to infrastructure, usage *settles down* from escrow — and the
+workloads _deploy down_ to infrastructure, usage _settles down_ from escrow — and the
 downward delta recurs as a motif: bullet glyphs, breadcrumb separators, section
 dividers, and clipped panel corners.
 
@@ -42,12 +42,9 @@ imagery, and the generic dark-slate-with-teal AI template this site previously u
 
 ### 2.1 Construction
 
-The mark is rebuilt as clean path geometry from the canonical raster artwork in
-`src/components/brand/Mark.astro`. Its interlocking outer V and nested inner V
-must retain their original proportions and cut-outs; do not substitute offset
-triangle rings or add a solid core.
-
-The mark takes `currentColor`; brand green is applied via `text-green`.
+The mark is the pixel-exact crop `public/brand/virtengine-icon.png`, taken directly
+from the canonical raster artwork. `src/components/brand/Mark.astro` only sizes that
+official asset; it must never trace, redraw, recolor, or alter its geometry.
 
 ### 2.2 Lockup
 
@@ -62,17 +59,16 @@ The mark takes `currentColor`; brand green is applied via `text-green`.
 
 ### 2.3 Usage rules
 
-| Rule | Value |
-| --- | --- |
-| Clearspace | ≥ 0.5 × mark height on all sides |
-| Minimum mark size | 16 px rendered height |
-| Minimum lockup size | 22 px mark size (wordmark stays legible) |
-| Header | lockup without byline, mark 30 px |
-| Footer | lockup **with** byline (the formal, attributed form) |
-| Favicon / avatars | mark only, green on transparent |
+| Rule                | Value                                                |
+| ------------------- | ---------------------------------------------------- |
+| Clearspace          | ≥ 0.5 × mark height on all sides                     |
+| Minimum mark size   | 16 px rendered height                                |
+| Minimum lockup size | 22 px mark size (wordmark stays legible)             |
+| Header              | lockup **with** byline, mark 30 px                   |
+| Footer              | lockup **with** byline (the formal, attributed form) |
+| Favicon / avatars   | mark only, green on transparent                      |
 
-**Do:** use the mark alone as a bullet/accent glyph at small sizes; recolor via
-`currentColor` to brand green or night-text white.
+**Do:** use the official cropped mark alone as a bullet/accent glyph at small sizes.
 **Don't:** rotate the mark (down is the brand direction), alter its nested cut-outs,
 recolor to anything other than brand green / white / ink, place the green mark on
 green backgrounds, stretch the lockup, or reconstruct the wordmark in another font.
@@ -83,48 +79,48 @@ All tokens are defined in `@theme` in `src/styles/global.css`.
 
 ### 3.1 Green scale (from brand green `#60CC5D`)
 
-| Token | Hex | Role |
-| --- | --- | --- |
-| `--color-green` | `#60cc5d` | The brand green: mark, glyphs, fills with dark text, diagram accents |
-| `--color-green-bright` | `#7ddd7a` | Hover/glow on night surfaces |
-| `--color-green-deep` | `#2b7d29` | **Interactive green on light surfaces** (links, buttons) — AA on white |
-| `--color-green-dark` | `#1f611e` | Hover state of `green-deep` |
-| `--color-green-soft` | `#dcf3db` | Tinted borders, quiet emphasis |
-| `--color-green-wash` | `#eff8ee` | Tinted panel backgrounds |
+| Token                  | Hex       | Role                                                                   |
+| ---------------------- | --------- | ---------------------------------------------------------------------- |
+| `--color-green`        | `#60cc5d` | The brand green: mark, glyphs, fills with dark text, diagram accents   |
+| `--color-green-bright` | `#7ddd7a` | Hover/glow on night surfaces                                           |
+| `--color-green-deep`   | `#2b7d29` | **Interactive green on light surfaces** (links, buttons) — AA on white |
+| `--color-green-dark`   | `#1f611e` | Hover state of `green-deep`                                            |
+| `--color-green-soft`   | `#dcf3db` | Tinted borders, quiet emphasis                                         |
+| `--color-green-wash`   | `#eff8ee` | Tinted panel backgrounds                                               |
 
-Rule: `#60CC5D` is a *graphic* color, not a text color on light surfaces (2.1:1 on
+Rule: `#60CC5D` is a _graphic_ color, not a text color on light surfaces (2.1:1 on
 white). Text and interactive elements on light use `green-deep`/`green-dark`.
 
 ### 3.2 Grey scale (from wordmark grey `#575757`)
 
-| Token | Hex | Role |
-| --- | --- | --- |
-| `--color-ink` | `#262b26` | Headings, strong text |
-| `--color-slate` | `#575757` | Body text (the wordmark grey) |
-| `--color-muted` | `#6d736d` | Secondary text |
-| `--color-faint` | `#7c827c` | Small print, mono captions (large/mono only) |
-| `--color-line` | `#dee3de` | Hairlines, card borders |
-| `--color-line-strong` | `#c2cac2` | Emphasized rules, secondary button borders |
+| Token                 | Hex       | Role                                         |
+| --------------------- | --------- | -------------------------------------------- |
+| `--color-ink`         | `#262b26` | Headings, strong text                        |
+| `--color-slate`       | `#575757` | Body text (the wordmark grey)                |
+| `--color-muted`       | `#6d736d` | Secondary text                               |
+| `--color-faint`       | `#7c827c` | Small print, mono captions (large/mono only) |
+| `--color-line`        | `#dee3de` | Hairlines, card borders                      |
+| `--color-line-strong` | `#c2cac2` | Emphasized rules, secondary button borders   |
 
 ### 3.3 Surfaces
 
-| Token | Hex | Role |
-| --- | --- | --- |
-| `--color-paper` | `#f7f8f7` | Page background (engineering paper) |
+| Token                | Hex       | Role                                    |
+| -------------------- | --------- | --------------------------------------- |
+| `--color-paper`      | `#f7f8f7` | Page background (engineering paper)     |
 | `--color-paper-soft` | `#eef1ee` | Alternate bands, inline-code background |
-| `--color-panel` | `#ffffff` | Cards and panels |
+| `--color-panel`      | `#ffffff` | Cards and panels                        |
 
 ### 3.4 Night surfaces (footer + diagram plates)
 
-| Token | Hex | Role |
-| --- | --- | --- |
-| `--color-night` | `#1b201b` | Footer, diagram plate background |
-| `--color-night-deep` | `#141814` | Deepest wells |
-| `--color-night-panel` | `#232923` | Nodes/panels on night |
-| `--color-night-line` / `-strong` | `#313931` / `#465046` | Rules on night |
-| `--color-night-text` | `#e9eee9` | Headings/text on night |
-| `--color-night-muted` | `#a7b1a7` | Body on night |
-| `--color-night-faint` | `#828c82` | Small print on night |
+| Token                            | Hex                   | Role                             |
+| -------------------------------- | --------------------- | -------------------------------- |
+| `--color-night`                  | `#1b201b`             | Footer, diagram plate background |
+| `--color-night-deep`             | `#141814`             | Deepest wells                    |
+| `--color-night-panel`            | `#232923`             | Nodes/panels on night            |
+| `--color-night-line` / `-strong` | `#313931` / `#465046` | Rules on night                   |
+| `--color-night-text`             | `#e9eee9`             | Headings/text on night           |
+| `--color-night-muted`            | `#a7b1a7`             | Body on night                    |
+| `--color-night-faint`            | `#828c82`             | Small print on night             |
 
 The `.night-scope` class applies these and **remaps the diagram components' color
 variables** (legacy `--color-teal-*`, `--color-panel`, etc.) so every technical
@@ -132,35 +128,35 @@ figure renders green-on-night without per-diagram edits.
 
 ### 3.5 Semantic
 
-| Token | Hex | Role |
-| --- | --- | --- |
-| `--color-amber` | `#9a6700` | Risk/warning text (slashing callouts) — AA on light |
-| `--color-amber-soft` | `#fdf3d7` | Warning tint |
+| Token                | Hex       | Role                                                |
+| -------------------- | --------- | --------------------------------------------------- |
+| `--color-amber`      | `#9a6700` | Risk/warning text (slashing callouts) — AA on light |
+| `--color-amber-soft` | `#fdf3d7` | Warning tint                                        |
 
 ## 4. Typography
 
-| Face | Package | Weights | Role |
-| --- | --- | --- | --- |
-| **Questrial** | `@fontsource/questrial` | 400 | Display (h1/h2) and wordmark. Chosen as the closest live match to the original logo's thin geometric sans — circular bowls, single weight, quiet confidence. |
-| **Inter** | `@fontsource/inter` | 400/500/600 | UI, body, card titles (h3/h4 at 600) |
-| **JetBrains Mono** | `@fontsource/jetbrains-mono` | 400/500 | Module names, data, eyebrows, captions, breadcrumbs |
+| Face               | Package                      | Weights     | Role                                                                                                                                                         |
+| ------------------ | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Questrial**      | `@fontsource/questrial`      | 400         | Display (h1/h2) and wordmark. Chosen as the closest live match to the original logo's thin geometric sans — circular bowls, single weight, quiet confidence. |
+| **Inter**          | `@fontsource/inter`          | 400/500/600 | UI, body, card titles (h3/h4 at 600)                                                                                                                         |
+| **JetBrains Mono** | `@fontsource/jetbrains-mono` | 400/500     | Module names, data, eyebrows, captions, breadcrumbs                                                                                                          |
 
 Why this pairing: Questrial carries the brand's geometry at display sizes but has no
 bold — so headings stay light and architectural like the wordmark, while Inter's 600
 does the workhorse emphasis at small sizes where Questrial would fail. Mono marks
-everything that is *data* (module paths, figures, decision records), reinforcing the
+everything that is _data_ (module paths, figures, decision records), reinforcing the
 engineering register.
 
 ### Type scale
 
-| Level | Size | Face/weight |
-| --- | --- | --- |
-| Display (h1) | `text-4xl` → `text-6xl` (2.25–3.75 rem) | Questrial 400, `line-height: 1.1` |
-| Section (h2) | `text-3xl` → `2.6rem` | Questrial 400 |
-| Card title (h3) | `text-base`–`text-lg` | Inter 600, ink |
-| Body | `text-base` (1 rem), `line-height: 1.65` | Inter 400 |
-| Small/support | `text-sm` | Inter 400/500 |
-| Eyebrow / caption | `0.74rem` mono, tracking `0.18em`, uppercase | JetBrains Mono 500 |
+| Level             | Size                                         | Face/weight                       |
+| ----------------- | -------------------------------------------- | --------------------------------- |
+| Display (h1)      | `text-4xl` → `text-6xl` (2.25–3.75 rem)      | Questrial 400, `line-height: 1.1` |
+| Section (h2)      | `text-3xl` → `2.6rem`                        | Questrial 400                     |
+| Card title (h3)   | `text-base`–`text-lg`                        | Inter 600, ink                    |
+| Body              | `text-base` (1 rem), `line-height: 1.65`     | Inter 400                         |
+| Small/support     | `text-sm`                                    | Inter 400/500                     |
+| Eyebrow / caption | `0.74rem` mono, tracking `0.18em`, uppercase | JetBrains Mono 500                |
 
 ## 5. Spacing, grid & radii
 
@@ -197,7 +193,7 @@ Use at most two motifs per viewport region; the motif is seasoning, not soup.
 - Text inside figures: mono for identifiers, small sans for labels; night-muted.
 - Every figure has a complete `aria-label` narration and a mono `figcaption`.
 - Flow direction follows the brand: processes flow left→right, settlement/deployment
-  flows *down*.
+  flows _down_.
 
 ## 8. Motion
 
@@ -213,19 +209,19 @@ Use at most two motifs per viewport region; the motif is seasoning, not soup.
 
 Measured contrast ratios for the canonical combinations:
 
-| Foreground | Background | Ratio | Use |
-| --- | --- | --- | --- |
-| `ink #262b26` | `paper #f7f8f7` | ~13.9:1 | Headings/body ✅ AAA |
-| `slate #575757` | `paper #f7f8f7` | ~6.8:1 | Body ✅ AAA-small |
-| `slate #575757` | `panel #ffffff` | ~7.4:1 | Card body ✅ AAA |
-| `muted #6d736d` | `panel #ffffff` | ~5.0:1 | Secondary ✅ AA |
-| `faint #7c827c` | `panel #ffffff` | ~4.0:1 | Large/mono captions only ✅ AA-large |
-| `green-deep #2b7d29` | `panel #ffffff` | ~4.9:1 | Links/buttons ✅ AA |
-| `white` | `green-deep #2b7d29` | ~4.9:1 | Primary button text ✅ AA |
-| `night-text #e9eee9` | `night #1b201b` | ~14.5:1 | Footer headings ✅ AAA |
-| `night-muted #a7b1a7` | `night #1b201b` | ~7.3:1 | Footer body ✅ AAA |
-| `green #60cc5d` | `night #1b201b` | ~7.6:1 | Diagram accents ✅ AAA |
-| `amber #9a6700` | `panel #ffffff` | ~4.6:1 | Warnings ✅ AA |
+| Foreground            | Background           | Ratio   | Use                                  |
+| --------------------- | -------------------- | ------- | ------------------------------------ |
+| `ink #262b26`         | `paper #f7f8f7`      | ~13.9:1 | Headings/body ✅ AAA                 |
+| `slate #575757`       | `paper #f7f8f7`      | ~6.8:1  | Body ✅ AAA-small                    |
+| `slate #575757`       | `panel #ffffff`      | ~7.4:1  | Card body ✅ AAA                     |
+| `muted #6d736d`       | `panel #ffffff`      | ~5.0:1  | Secondary ✅ AA                      |
+| `faint #7c827c`       | `panel #ffffff`      | ~4.0:1  | Large/mono captions only ✅ AA-large |
+| `green-deep #2b7d29`  | `panel #ffffff`      | ~4.9:1  | Links/buttons ✅ AA                  |
+| `white`               | `green-deep #2b7d29` | ~4.9:1  | Primary button text ✅ AA            |
+| `night-text #e9eee9`  | `night #1b201b`      | ~14.5:1 | Footer headings ✅ AAA               |
+| `night-muted #a7b1a7` | `night #1b201b`      | ~7.3:1  | Footer body ✅ AAA                   |
+| `green #60cc5d`       | `night #1b201b`      | ~7.6:1  | Diagram accents ✅ AAA               |
+| `amber #9a6700`       | `panel #ffffff`      | ~4.6:1  | Warnings ✅ AA                       |
 
 Additional requirements: skip link, single `h1` per page, landmark structure,
 `aria-current` on nav, focus rings in `green-deep` (2 px, 3 px offset), all figures
