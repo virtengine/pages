@@ -9,6 +9,7 @@ import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
 import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
 import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
+import WaldurBridge from "@components/diagrams/WaldurBridge.astro";
 import { LEARN } from "@data/learn";
 import type { LearnDiagram } from "@data/learn";
 
@@ -50,6 +51,11 @@ const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
     label:
       "Layered architecture diagram: clients on top, the VirtEngine chain with its module domains in the middle, the provider daemon below, and Kubernetes, HPC schedulers, and confidential enclaves at the infrastructure layer.",
   },
+  waldur: {
+    component: WaldurBridge,
+    label:
+      "Waldur and VirtEngine integration diagram: the VirtEngine consensus layer exchanges offering, order, lease and settlement state with the provider daemon; the daemon synchronizes and reconciles the Waldur control plane, routes lifecycle actions, validates callbacks and reports usage.",
+  },
 };
 
 const diagram = guide.diagram ? diagrams[guide.diagram] : null;
@@ -86,6 +92,43 @@ const articleLd = {
     )
   }
 
+  {
+    guide.screenshots && (
+      <Section eyebrow="Waldur HomePort" title="See the control plane users actually operate">
+        <div class="grid gap-5 md:grid-cols-2">
+          {guide.screenshots.map((shot, index) => (
+            <figure
+              class:list={[
+                "reveal overflow-hidden rounded-frame border border-line-strong bg-panel shadow-[0_16px_34px_rgba(38,43,38,0.08)]",
+                index === 0 && "md:col-span-2",
+              ]}
+            >
+              <a href={shot.sourceHref} rel="noopener" class="group block" aria-label={`View official source for ${shot.title}`}>
+                <img
+                  src={shot.src}
+                  alt={shot.alt}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  class="block h-auto w-full border-b border-line bg-paper-soft transition-transform duration-300 group-hover:scale-[1.01]"
+                />
+              </a>
+              <figcaption class="p-5">
+                <h3 class="text-base font-semibold text-ink">{shot.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate">{shot.caption}</p>
+                <a href={shot.sourceHref} rel="noopener" class="mt-3 inline-flex text-xs font-semibold text-green-deep underline decoration-green/40 underline-offset-4 hover:text-green-dark">
+                  Official Waldur source
+                </a>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <p class="mt-5 max-w-3xl text-xs leading-relaxed text-muted">
+          Screenshots are reproduced from Waldur's official website and documentation to explain the integration. Waldur is developed independently by the Waldur community; the interface shown is illustrative and can vary by release and deployment branding.
+        </p>
+      </Section>
+    )
+  }
+
   <article>
     {
       guide.sections.map((section) => (
@@ -102,6 +145,27 @@ const articleLd = {
       ))
     }
   </article>
+
+  {
+    guide.sources && (
+      <Section eyebrow="Sources" title="Follow the implementation and upstream model">
+        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {guide.sources.map((source) => (
+            <li>
+              <a
+                href={source.href}
+                rel={source.href.startsWith("http") ? "noopener" : undefined}
+                class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
+              >
+                <strong class="text-sm text-ink group-hover:text-green-dark">{source.label}</strong>
+                <span class="mt-2 text-xs leading-relaxed text-muted">{source.detail}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )
+  }
 
   <Section eyebrow="Related" title="Continue from here">
     <ul class="grid gap-3 sm:grid-cols-2">

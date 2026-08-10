@@ -1,0 +1,56 @@
+<div class="space-y-5 p-4 sm:p-6 md:p-8">
+  <div class="grid items-stretch gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr]">
+    <section class="rounded-card border border-night-line-strong bg-night-panel p-5">
+      <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-green-bright">Consensus layer</p>
+      <h3 class="mt-2 text-base font-semibold text-night-text">VirtEngine chain</h3>
+      <ul class="mt-3 space-y-2 text-xs leading-relaxed text-night-muted">
+        <li>Provider + offering registry</li>
+        <li>Orders, bids + leases</li>
+        <li>VEID, escrow + settlement</li>
+      </ul>
+    </section>
+
+    <div class="grid place-items-center font-mono text-xl text-green-bright" aria-hidden="true">⇄</div>
+
+    <section class="rounded-card border border-green/70 bg-green/10 p-5">
+      <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-green-bright">Translation layer</p>
+      <h3 class="mt-2 text-base font-semibold text-night-text">Provider daemon</h3>
+      <ul class="mt-3 space-y-2 text-xs leading-relaxed text-night-muted">
+        <li>Offering sync + reconciliation</li>
+        <li>Order + lifecycle routing</li>
+        <li>Signed callbacks + usage</li>
+      </ul>
+    </section>
+
+    <div class="grid place-items-center font-mono text-xl text-green-bright" aria-hidden="true">⇄</div>
+
+    <section class="rounded-card border border-night-line-strong bg-night-panel p-5">
+      <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-green-bright">Control plane</p>
+      <h3 class="mt-2 text-base font-semibold text-night-text">Waldur</h3>
+      <ul class="mt-3 space-y-2 text-xs leading-relaxed text-night-muted">
+        <li>HomePort + MasterMind API</li>
+        <li>Projects, catalogue + resources</li>
+        <li>Cloud, HPC + custom plugins</li>
+      </ul>
+    </section>
+  </div>
+
+  <ol class="grid overflow-hidden rounded-card border border-night-line sm:grid-cols-4" aria-label="Integration sequence">
+    <li class="border-b border-night-line p-4 sm:border-b-0 sm:border-r">
+      <span class="font-mono text-xs text-green-bright">01 · SYNC</span>
+      <p class="mt-1 text-xs text-night-muted">Chain offering → Waldur catalogue</p>
+    </li>
+    <li class="border-b border-night-line p-4 sm:border-b-0 sm:border-r">
+      <span class="font-mono text-xs text-green-bright">02 · ROUTE</span>
+      <p class="mt-1 text-xs text-night-muted">Matched lease → Waldur order</p>
+    </li>
+    <li class="border-b border-night-line p-4 sm:border-b-0 sm:border-r">
+      <span class="font-mono text-xs text-green-bright">03 · OPERATE</span>
+      <p class="mt-1 text-xs text-night-muted">Backend state → signed callback</p>
+    </li>
+    <li class="p-4">
+      <span class="font-mono text-xs text-green-bright">04 · SETTLE</span>
+      <p class="mt-1 text-xs text-night-muted">Measured usage → chain escrow</p>
+    </li>
+  </ol>
+</div>
