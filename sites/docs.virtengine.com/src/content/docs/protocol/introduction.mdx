@@ -1,0 +1,76 @@
+---
+title: Introduction
+description: What VirtEngine is, how the decentralized cloud marketplace works, its Akash lineage, patent notice, and licensing.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+VirtEngine is a secure, transparent, and decentralized cloud computing
+marketplace that connects those who need computing resources (**tenants**)
+with those that have computing capacity to lease (**providers**).
+
+Instead of a central operator setting prices and controlling access, the
+marketplace runs as a public blockchain: orders, bids, leases, usage records,
+and payments are all protocol state, validated by a decentralized set of
+validators and settled without an intermediary.
+
+## The VirtEngine Suite
+
+The **VirtEngine Suite** is the reference implementation of the VirtEngine
+Protocol described in patent
+[AU2024203136B2](https://patents.google.com/patent/AU2024203136B2/). It is
+composed of a single binary, `virtengine`, which contains:
+
+- a [CometBFT](https://github.com/cometbft/cometbft)-powered blockchain node
+  implementing the decentralized exchange, and
+- client functionality to access the exchange and network data in general.
+
+The chain is built on the Cosmos SDK, with the marketplace, identity,
+economics, and infrastructure logic implemented as 27 custom modules under
+`x/` — see the [module map](/protocol/modules/) for the full inventory.
+
+## What runs where
+
+| Layer | Component | Role |
+| --- | --- | --- |
+| On-chain | `virtengine` node | Orders, bids, leases, escrow, settlement, identity, governance |
+| Off-chain | Provider daemon | Deploys workloads, meters usage, signs and submits usage reports |
+| Off-chain | HPC node agents | Report node health/capacity from SLURM/MOAB clusters |
+| Client | CLI / SDK / portal | Create deployments, submit jobs, query network state |
+
+## Lineage and license
+
+VirtEngine is written in **Go** and licensed under
+**Apache 2.0**. The repository includes some source code derived from the
+[Akash Network](https://akash.network) decentralized cloud infrastructure
+marketplace; VirtEngine extends that lineage with identity (VEID), HPC
+scheduling, settlement/dispute pipelines, fraud and audit systems, and its own
+economic modules.
+
+<Aside type="note" title="Intellectual property notice">
+You are free to use, modify, and distribute the source code under the Apache
+License 2.0. However, certain methods, processes, and system architectures
+implemented in the codebase are protected by patent claims, including patent
+[AU2024203136B2](https://patents.google.com/patent/AU2024203136B2/). The
+Apache 2.0 license grants a patent license only to the extent of the
+contributions made by the patent holder to the project. Reproducing or
+deploying the patented methods outside the scope of that license may require
+separate authorization from the patent holder.
+</Aside>
+
+## Network status
+
+The repository ships active development from `main`. Mainnet launch
+preparation artifacts are checked in, and the recorded launch decision is
+planned for the **January 2027** launch window. The network should not be
+described as live before formal launch confirmation — see
+[Mainnet Launch Posture](/validators/mainnet-launch/) for details.
+
+## Where to next
+
+- [How the Marketplace Works](/protocol/how-it-works/) — the full order → bid
+  → lease → deploy → usage → settlement lifecycle.
+- [Architecture](/protocol/architecture/) — chain, consensus, and module
+  groups at a glance.
+- [Becoming a Provider](/providers/overview/) or
+  [Tenant Overview](/tenants/overview/) — role-specific onboarding.

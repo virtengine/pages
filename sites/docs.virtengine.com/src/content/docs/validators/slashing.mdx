@@ -1,0 +1,67 @@
+---
+title: Slashing Risks
+description: What gets a VirtEngine validator slashed, what it costs delegators, and how operators minimize the risk.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Slashing burns bonded stake as a penalty for validator misbehavior — and
+delegated stake is slashed alongside the validator's own. Every delegator is
+underwriting their validator's operational competence.
+
+## The offenses
+
+### Double-signing (equivocation)
+
+Signing two different blocks at the same height is the cardinal offense —
+it is the behavior that could fork the chain, so the protocol treats it as
+malicious regardless of intent. In practice, most double-signing incidents
+are **operational accidents**: two nodes running the same consensus key
+during a botched failover, or restored-from-backup state colliding with a
+live signer.
+
+Consequences are severe: a significant stake burn and tombstoning
+(permanent removal) under standard Cosmos-style parameters.
+
+### Downtime
+
+Missing too many blocks in a window gets a validator jailed and a smaller
+portion of stake slashed. Downtime slashing is recoverable — the validator
+can unjail after the penalty — but it is a visible, on-chain operational
+failure that delegators can and do read.
+
+<Aside type="note">
+Exact slashing fractions and windows are chain parameters governed
+on-chain. Check live parameters on the network you delegate to rather than
+relying on documentation snapshots.
+</Aside>
+
+## Why the design is this harsh
+
+The economic analysis framework in `pkg/economics/` models
+**nothing-at-stake** behavior and slashing effectiveness directly (its audit
+input includes `SlashingEnabled` and `SlashingPenaltyBPS`). The conclusion
+built into the protocol: penalties must make dishonest or careless
+validation strictly unprofitable, including for well-capitalized attackers.
+The 21-day unbonding period extends the exposure window so misbehavior
+cannot outrun its consequences.
+
+## Operator mitigations
+
+- **One key, one signer.** Never run two nodes with the same consensus key
+  — including "standby" nodes. Failover must be mutually exclusive by
+  construction, not by procedure.
+- **Guard state restores.** Restoring a validator from backup without
+  double-sign protection is the classic tombstoning story.
+- **Alert on missed blocks** well below the jailing threshold.
+- **Drill failover.** The repository ships DR drill tooling
+  (`infra/dr/run-failover-drill.sh`) that produces evidence bundles —
+  rehearse with it.
+
+## Delegator mitigations
+
+- Prefer validators who publish their key-management and failover
+  architecture.
+- Treat any double-sign history as disqualifying.
+- Diversify across validators — slashing is per-validator, and so is your
+  exposure.

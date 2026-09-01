@@ -1,0 +1,84 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 760 340"
+    width="760"
+    height="340"
+    role="img"
+    aria-label="Staking flow: delegators bond tokens to validators, validators secure consensus and earn block rewards plus VEID verification rewards; rewards flow back minus commission, and misbehavior is slashed."
+  >
+    <defs>
+      <marker id="st-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-accent)"></path>
+      </marker>
+      <marker id="st-warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-orange, #e5a50a)"></path>
+      </marker>
+    </defs>
+    <style>
+      .st-box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); rx: 8; }
+      .st-box-accent { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 8; }
+      .st-title { font: 600 13px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .st-sub { font: 400 11px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .st-flow { stroke: var(--sl-color-accent); stroke-width: 1.6; fill: none; }
+      .st-slash { stroke: var(--sl-color-orange, #e5a50a); stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+      .st-label { font: 400 11.5px var(--sl-font, sans-serif); fill: var(--sl-color-gray-1); }
+      .st-warnlabel { font: 500 11.5px var(--sl-font, sans-serif); fill: var(--sl-color-orange, #e5a50a); }
+    </style>
+
+    <!-- Delegators -->
+    <rect class="st-box" x="30" y="120" width="170" height="80"></rect>
+    <text class="st-title" x="115" y="152" text-anchor="middle">Delegators</text>
+    <text class="st-sub" x="115" y="172" text-anchor="middle">token holders bonding</text>
+    <text class="st-sub" x="115" y="186" text-anchor="middle">stake via x/delegation</text>
+
+    <!-- Validator -->
+    <rect class="st-box-accent" x="300" y="110" width="180" height="100"></rect>
+    <text class="st-title" x="390" y="144" text-anchor="middle">Validator</text>
+    <text class="st-sub" x="390" y="164" text-anchor="middle">signs &amp; proposes blocks</text>
+    <text class="st-sub" x="390" y="178" text-anchor="middle">runs VEID verification</text>
+    <text class="st-sub" x="390" y="192" text-anchor="middle">commission on rewards</text>
+
+    <!-- Network -->
+    <rect class="st-box" x="570" y="120" width="160" height="80"></rect>
+    <text class="st-title" x="650" y="152" text-anchor="middle">Network</text>
+    <text class="st-sub" x="650" y="172" text-anchor="middle">governance-controlled incentives</text>
+    <text class="st-sub" x="650" y="186" text-anchor="middle">staking ratio</text>
+
+    <!-- Flows -->
+    <path class="st-flow" d="M200 145 H297" marker-end="url(#st-arrow)"></path>
+    <text class="st-label" x="248" y="137" text-anchor="middle">delegate stake</text>
+
+    <path class="st-flow" d="M480 145 H567" marker-end="url(#st-arrow)"></path>
+    <text class="st-label" x="524" y="137" text-anchor="middle">secure consensus</text>
+
+    <path class="st-flow" d="M570 180 H483" marker-end="url(#st-arrow)"></path>
+    <text class="st-label" x="526" y="196" text-anchor="middle">block rewards</text>
+
+    <path class="st-flow" d="M300 180 H203" marker-end="url(#st-arrow)"></path>
+    <text class="st-label" x="251" y="196" text-anchor="middle">rewards − commission</text>
+
+    <!-- Unbonding note -->
+    <rect class="st-box" x="30" y="252" width="170" height="56"></rect>
+    <text class="st-title" x="115" y="276" text-anchor="middle">Unbonding</text>
+    <text class="st-sub" x="115" y="294" text-anchor="middle">21-day waiting period</text>
+    <path class="st-flow" d="M115 200 V249" marker-end="url(#st-arrow)"></path>
+
+    <!-- Slashing -->
+    <rect class="st-box" x="300" y="252" width="180" height="56"></rect>
+    <text class="st-warnlabel" x="390" y="276" text-anchor="middle">Slashing</text>
+    <text class="st-sub" x="390" y="294" text-anchor="middle">double-sign · downtime</text>
+    <path class="st-slash" d="M390 210 V249" marker-end="url(#st-warn)"></path>
+
+    <!-- Top labels -->
+    <text class="st-sub" x="390" y="40" text-anchor="middle">Conservative staking incentives are governed by consensus;</text>
+    <text class="st-sub" x="390" y="56" text-anchor="middle">above-target staking ratio lowers them.</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

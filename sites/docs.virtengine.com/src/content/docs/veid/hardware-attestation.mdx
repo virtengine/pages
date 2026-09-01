@@ -1,0 +1,72 @@
+---
+title: Hardware & Device Attestation
+description: Biometric hardware capture and device integrity attestation in VEID — Play Integrity, App Attest, supported sensors, scopes, and fallback policy.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Biometric verification is only as strong as the device that performed it. A
+rooted phone running a tampered app can fake a "verified" result — so VEID
+pairs every biometric capture with **device integrity attestation**.
+
+## Supported platforms
+
+<Tabs>
+  <TabItem label="Android">
+    - **Play Integrity API** (primary) — device integrity and strong
+      integrity verdicts.
+    - **SafetyNet Attestation** — fallback for legacy devices.
+    - Supported sensors: fingerprint (optical, capacitive, ultrasonic) and
+      iris where the OEM hardware supports it.
+  </TabItem>
+  <TabItem label="iOS">
+    - **App Attest** (primary).
+    - **DeviceCheck** — fallback for legacy devices.
+    - Supported sensors: Touch ID / Face ID / iris where available.
+  </TabItem>
+</Tabs>
+
+## How attestation fits the pipeline
+
+During [enrollment](/veid/enrollment/), after biometric hardware capture:
+
+1. The app requests an attestation token from the platform (Play Integrity /
+   App Attest).
+2. The token is verified — proving the app is genuine, unmodified, and
+   running on hardware that meets integrity requirements.
+3. The attestation payload is **encrypted into the vault** alongside the
+   biometric templates.
+4. On-chain scopes of type `biometric_hardware` and `device_attestation`
+   are created, referencing the encrypted payloads.
+5. The verification attestation references those scope IDs, making the whole
+   chain of evidence auditable without exposing any of the underlying data.
+
+## Fallback behavior
+
+Not every device supports attestation APIs. VEID's policy is explicit
+degradation rather than silent failure:
+
+- If the platform cannot attest, the capture flow continues, but the
+  `device_attestation` scope is **marked as unsupported**.
+- Verification pipelines should enforce **attestation-required** policies
+  for high-risk actions (validator onboarding is the canonical example) and
+  may allow fallback for low-risk flows.
+
+Relying parties therefore always know which assurance level a given identity
+actually carries.
+
+## Privacy commitments
+
+The attestation subsystem follows the same rules as the rest of VEID (see
+[Privacy Model](/veid/privacy/)):
+
+- **Data minimization** — only templates and integrity metadata required for
+  verification are stored.
+- **Encryption** — all biometric templates and attestation payloads are
+  encrypted with the VEID envelope before storage.
+- **Consent** — biometric capture requires explicit consent under the
+  Biometric Data Addendum.
+- **Retention** — attestation payloads follow VEID lifecycle policies
+  (expiration and revocation).
+- **Auditability** — attestation failures are recorded on-chain for review
+  and dispute handling.

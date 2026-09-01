@@ -1,0 +1,76 @@
+---
+title: Deploying Workloads
+description: The tenant deployment lifecycle on VirtEngine — creating a deployment, receiving bids, forming a lease, and operating the running workload.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This page walks the deployment lifecycle from the tenant's seat — the same
+flow diagrammed in [How the Marketplace Works](/protocol/how-it-works/),
+with the decisions you actually make at each step.
+
+<Steps>
+
+1. **Describe the workload.** A deployment specifies the services you want
+   to run and groups them with resource requirements — CPU, memory,
+   storage, GPU — using the shared resource definitions from
+   `x/resources`. This is also where you set placement constraints:
+   acceptable regions, required provider attributes, and whether bids must
+   come from audited providers.
+
+2. **Fund escrow.** Deposit into the escrow account that will back the
+   deployment's leases. Size it for your intended runtime — leases close
+   when escrow empties. Unspent funds return to you at close
+   (see [Leases & Escrow](/tenants/leases-and-escrow/)).
+
+3. **Submit and collect bids.** `x/deployment` records the deployment and
+   `x/market` opens an order. Matching providers bid; each bid carries its
+   provider's on-chain record, so you can evaluate price *and* reputation
+   together (see [Choosing Providers](/tenants/choosing-providers/)).
+
+4. **Form the lease.** Accept the winning bid. The lease binds you and the
+   provider at the bid price and becomes the reference for deployment,
+   usage, and billing.
+
+5. **Hand off to the provider.** The provider daemon observes the lease and
+   deploys your workload. Communication between your client and the
+   provider is mutually authenticated with certificates from `x/cert`.
+
+6. **Operate.** Monitor your workload through the provider's endpoints.
+   On-chain, usage records appear on the reporting schedule (hourly by
+   default) — each one disputable for 24 hours
+   (see the [dispute workflow](/concepts/escrow-settlement/#disputes-and-corrections)).
+
+7. **Close.** End the deployment when you're done. The lease closes,
+   final usage settles, and the escrow remainder returns to you. A lease
+   also closes automatically if escrow runs out — top up before that if
+   you want continuity.
+
+</Steps>
+
+## Practical notes
+
+- **Escrow is your kill switch.** You never owe more than you've
+  deposited; conversely, an underfunded escrow account takes your workload
+  down mid-run. Alert on your own escrow balance.
+- **Dispute promptly.** The 24-hour window is firm. If a usage record
+  looks wrong, dispute it inside the window — afterward it settles and
+  pays.
+
+```bash
+virtengine tx settlement dispute-usage \
+  --usage-id usage-1234567890 \
+  --reason "CPU usage appears inflated" \
+  --expected-cpu-hours 10 \
+  --from customer
+```
+
+- **Constraints trade against price.** Requiring audits, specific regions,
+  or high benchmark scores shrinks the bidder pool. Demand the assurance
+  you need, not the maximum available.
+
+## HPC is a separate path
+
+Batch and GPU cluster jobs don't use the bid flow — they route through
+`x/hpc` offerings, queues, and templates with an explicit budget cap. See
+[Submitting HPC Jobs](/tenants/hpc-jobs/).

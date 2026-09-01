@@ -1,0 +1,64 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 860 260"
+    width="860"
+    height="260"
+    role="img"
+    aria-label="HPC job flow: an on-chain job submission passes the routing enforcer, which validates the x/hpc scheduling decision before the scheduler adapter submits to the SLURM, MOAB, or Open OnDemand cluster; usage reports flow back on-chain."
+  >
+    <defs>
+      <marker id="hp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-accent)"></path>
+      </marker>
+    </defs>
+    <style>
+      .hp-box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); rx: 8; }
+      .hp-box-accent { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 8; }
+      .hp-title { font: 600 12.5px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .hp-sub { font: 400 10.5px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .hp-flow { stroke: var(--sl-color-accent); stroke-width: 1.6; fill: none; }
+      .hp-label { font: 400 11px var(--sl-font, sans-serif); fill: var(--sl-color-gray-1); }
+    </style>
+
+    <rect class="hp-box" x="20" y="60" width="150" height="70"></rect>
+    <text class="hp-title" x="95" y="88" text-anchor="middle">Job submission</text>
+    <text class="hp-sub" x="95" y="106" text-anchor="middle">virtengine tx hpc</text>
+    <text class="hp-sub" x="95" y="120" text-anchor="middle">submit-job</text>
+
+    <rect class="hp-box-accent" x="230" y="60" width="160" height="70"></rect>
+    <text class="hp-title" x="310" y="88" text-anchor="middle">Routing enforcer</text>
+    <text class="hp-sub" x="310" y="106" text-anchor="middle">strict / permissive /</text>
+    <text class="hp-sub" x="310" y="120" text-anchor="middle">audit-only</text>
+
+    <rect class="hp-box" x="230" y="170" width="160" height="60"></rect>
+    <text class="hp-title" x="310" y="196" text-anchor="middle">x/hpc decision</text>
+    <text class="hp-sub" x="310" y="214" text-anchor="middle">cluster, capacity, staleness</text>
+    <path class="hp-flow" d="M310 170 V133" marker-end="url(#hp-arrow)"></path>
+
+    <rect class="hp-box" x="450" y="60" width="170" height="70"></rect>
+    <text class="hp-title" x="535" y="88" text-anchor="middle">Scheduler adapter</text>
+    <text class="hp-sub" x="535" y="106" text-anchor="middle">SLURM · MOAB ·</text>
+    <text class="hp-sub" x="535" y="120" text-anchor="middle">Open OnDemand</text>
+
+    <rect class="hp-box" x="680" y="60" width="160" height="70"></rect>
+    <text class="hp-title" x="760" y="88" text-anchor="middle">HPC cluster</text>
+    <text class="hp-sub" x="760" y="106" text-anchor="middle">compute nodes +</text>
+    <text class="hp-sub" x="760" y="120" text-anchor="middle">node agents</text>
+
+    <path class="hp-flow" d="M170 95 H227" marker-end="url(#hp-arrow)"></path>
+    <path class="hp-flow" d="M390 95 H447" marker-end="url(#hp-arrow)"></path>
+    <path class="hp-flow" d="M620 95 H677" marker-end="url(#hp-arrow)"></path>
+
+    <!-- Usage return path -->
+    <path class="hp-flow" d="M760 130 V200 H95 V133" marker-end="url(#hp-arrow)"></path>
+    <text class="hp-label" x="560" y="218" text-anchor="middle">signed usage records + accounting → on-chain settlement</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

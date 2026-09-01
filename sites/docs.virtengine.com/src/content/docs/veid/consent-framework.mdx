@@ -1,0 +1,95 @@
+---
+title: Consent Framework
+description: VEID's scope-based consent system — granular opt-in, revocation, provider whitelists, expiration, and GDPR/CCPA/BIPA alignment.
+---
+
+VEID treats consent as a first-class protocol object, not a checkbox. The
+framework is implemented in `x/veid/types/consent.go` and is designed to
+comply with **GDPR**, **CCPA/CPRA**, **BIPA**, and other applicable data
+protection laws.
+
+## Three levels of granularity
+
+1. **Global settings** — apply to all data processing for an identity.
+2. **Scope-specific consent** — apply to individual data categories
+   (identity scopes such as `veid.biometric` or `veid.document`).
+3. **Provider-specific consent** — apply to specific marketplace providers
+   through per-scope provider whitelists.
+
+## The consent data model
+
+```go
+type ConsentSettings struct {
+    ScopeConsents              map[string]ScopeConsent  // Per-scope consent
+    ShareWithProviders         bool                     // Allow provider access
+    ShareForVerification       bool                     // Allow verification requests
+    AllowReVerification        bool                     // Allow re-verification
+    AllowDerivedFeatureSharing bool                     // Allow feature hash sharing
+    GlobalExpiresAt            *time.Time               // Global expiration
+    LastUpdatedAt              time.Time                // Last modification
+    ConsentVersion             uint32                   // Audit version
+}
+
+type ScopeConsent struct {
+    ScopeID            string      // Scope identifier
+    Granted            bool        // Consent status
+    GrantedAt          *time.Time  // Grant timestamp
+    RevokedAt          *time.Time  // Revocation timestamp
+    ExpiresAt          *time.Time  // Expiration
+    Purpose            string      // Processing purpose
+    GrantedToProviders []string    // Provider whitelist
+    Restrictions       []string    // Additional restrictions
+}
+```
+
+Every consent change carries a timestamp and bumps `ConsentVersion`, giving
+auditors a complete history.
+
+## Scope dependencies
+
+Some scopes depend on others; the framework enforces the graph:
+
+- `veid.trust_score` requires `veid.verification_history`.
+- `veid.biometric` and `veid.document` are independent and can be consented
+  to separately.
+
+Providers may define **custom scopes** using provider-prefixed naming
+(`provider.{address}.{scope}`); custom scopes must obtain explicit consent
+before collection and document their purpose and data.
+
+## Initial opt-in
+
+At first enrollment, the user sees a consent notice with the purpose and
+scope details, reviews collection/retention/sharing policies, and must take
+an unambiguous affirmative action. The GDPR-aligned properties:
+
+- **Unbundled** — consent is separate from the Terms of Service.
+- **Specific** — the processing purpose is stated per scope.
+- **Freely given** — refusal costs nothing beyond the gated feature.
+- **Informed** — the notice links to the Privacy Policy and Biometric Data
+  Addendum.
+- **Recorded** — consent is stored on-chain (encrypted) and indexed
+  off-chain.
+
+```bash
+virtengine veid enroll \
+  --consent-biometric=true \
+  --consent-document=true \
+  --consent-purpose="Marketplace identity verification" \
+  --consent-expiration="2027-01-29T00:00:00Z"
+```
+
+## Revocation and expiration
+
+- Any scope consent can be revoked; `RevokedAt` is recorded and downstream
+  processing for that scope must stop.
+- Consent can be time-boxed per scope (`ExpiresAt`) or globally
+  (`GlobalExpiresAt`); expired consent behaves as revoked.
+- Re-verification is separately gated by `AllowReVerification`.
+
+## Related documents
+
+The repository pairs this technical framework with legal documents:
+`PRIVACY_POLICY.md` and `BIOMETRIC_DATA_ADDENDUM.md` (the addendum governs
+biometric capture specifically). Read them together with the
+[Privacy Model](/veid/privacy/) page.

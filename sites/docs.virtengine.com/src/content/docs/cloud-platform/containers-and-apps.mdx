@@ -1,0 +1,62 @@
+---
+title: Containers & Applications
+description: Legacy platform reference — Docker containers, Bitnami one-click applications, and GitHub-based PaaS deployments.
+sidebar:
+  badge:
+    text: Legacy
+    variant: caution
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+Legacy platform documentation — see the
+[section overview](/cloud-platform/overview/) for context.
+</Aside>
+
+## Containers from the Docker registry
+
+The platform integrated directly with the public Docker registry. Launching
+a container was a two-step search-and-confirm: type the image name
+(e.g., `ubuntu`), select the result, and deploy. This exposed 100k+ Docker
+Hub applications through one intuitive interface.
+
+## One-click applications
+
+Several catalogs were available for single-click deployment and scaling:
+
+- **Bitnami applications** — hundreds of the most popular open-source
+  applications, deployed as VMs from a curated set stored in the
+  platform's database (with support-requested additions).
+- **VirtEngine-maintained images** — hundreds of custom images.
+- **Custom images** — operators could add their own with ease.
+
+## Custom applications (PaaS)
+
+Applications written in Node.js, PHP, Ruby, and a dozen other supported
+languages deployed directly from GitHub repositories — public, or private
+via linked accounts. Enabling **continuous integration** updated the
+application automatically on every code push.
+
+## Services
+
+Databases, load balancers, analytics, and enterprise tools launched
+alongside applications in a click, completing the PaaS story: application
+plus backing services without manual provisioning.
+
+## Domains
+
+The platform's domain management mapped user domains onto deployed
+workloads — pairing launched VMs/containers with name-based routing
+(covered by the `_domains` collection in the original documentation).
+
+## Modern equivalents
+
+On the VirtEngine Protocol, these workflows map to
+[deploying workloads](/tenants/deploying-workloads/) (containerized
+deployments against marketplace providers) and
+[HPC workload templates](/providers/hpc-workload-templates/) (curated,
+governance-approved application definitions). The curated-catalog idea —
+vetted, one-click deployable workloads — survives as the on-chain template
+library with cryptographic signing where the legacy platform used an
+operator-managed database.

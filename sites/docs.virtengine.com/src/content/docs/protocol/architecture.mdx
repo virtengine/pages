@@ -1,0 +1,79 @@
+---
+title: Architecture
+description: How the VirtEngine chain is put together — CometBFT consensus, Cosmos SDK runtime, the single virtengine binary, and the off-chain provider stack.
+---
+
+import ArchitectureDiagram from '../../../components/diagrams/ArchitectureDiagram.astro';
+
+VirtEngine ships as **one binary** — `virtengine` — that contains a full
+blockchain node and the client tooling to interact with it. The protocol's
+functionality is layered: BFT consensus at the bottom, the Cosmos SDK runtime
+above it, and VirtEngine's 27 custom modules on top.
+
+<ArchitectureDiagram caption="The VirtEngine stack. On-chain module groups sit on the Cosmos SDK runtime and CometBFT consensus; provider daemons and compute clusters operate off-chain and communicate through signed transactions." />
+
+## Consensus: CometBFT
+
+The chain is powered by [CometBFT](https://github.com/cometbft/cometbft), a
+Byzantine-fault-tolerant consensus engine. Validators propose and sign blocks;
+as long as more than two-thirds of bonded voting power is honest, the chain
+produces finalized blocks. Validator economics — bonding, delegation,
+commission, slashing — are covered in
+[Governance & Staking](/concepts/governance-staking/).
+
+## Runtime: Cosmos SDK
+
+VirtEngine is a Cosmos SDK application chain. The SDK supplies accounts,
+token transfers (`bank`), on-chain governance (`gov`), transaction routing,
+and the module framework that VirtEngine's custom modules plug into. State
+transitions happen exclusively through typed messages (`Msg…`) validated by
+each module's keeper.
+
+## The module groups
+
+VirtEngine's custom state machine is organized into functional groups (the
+full per-module table is on the [module map](/protocol/modules/) page):
+
+| Group | Modules | Purpose |
+| --- | --- | --- |
+| Marketplace | `market`, `marketplace`, `deployment`, `provider`, `resources`, `hpc` | Orders, bids, leases, offerings, deployments, provider registry, HPC scheduling |
+| Economics | `escrow`, `settlement`, `take`, `bme`, `issuancepolicy`, `staking`, `delegation` | Payment custody, zero-commission settlement, validator-fee policy, VEID-led issuance, stake |
+| Identity & Trust | `veid`, `veidregistry`, `mfa`, `cert`, `roles`, `review`, `audit`, `benchmark`, `fraud` | Identity verification, verifier version registry, MFA, certificates, access roles, reputation, fraud detection |
+| Security & Infra | `encryption`, `enclave`, `oracle`, `config`, `support` | Encrypted payloads, enclave/TEE attestation, external data feeds, chain configuration, support workflows |
+
+## Off-chain components
+
+The chain never touches your infrastructure directly. Two off-chain
+components bridge the gap:
+
+- **Provider daemon** — watches the chain for leases and HPC jobs, deploys
+  workloads onto the provider's Kubernetes or HPC clusters, meters usage, and
+  submits signed usage reports and settlement transactions. See
+  [Provider Daemon](/providers/provider-daemon/).
+- **HPC node agent** — a lightweight daemon (`hpc-node-agent`) on each HPC
+  compute node that reports health, capacity, and latency with Ed25519-signed
+  heartbeats. See [HPC Node Agent](/providers/hpc-node-agent/).
+
+## Deployment topology
+
+Production environments described in the repository's deployment guide run
+the chain node as a Kubernetes `StatefulSet`, with validator workloads pinned
+to dedicated, tainted nodes (`role=validator`, `dedicated=validator:NoSchedule`)
+and provider workloads on `role=workload` nodes. Environments (`dev`,
+`staging`, `prod`) are separated at the cluster and Terraform layer, with
+GitOps sync via ArgoCD. Operators should follow the repo's
+`docs/operations/DEPLOYMENT_GUIDE.md` for the full parity-gated rollout,
+backup/DR, and rollback procedures.
+
+## Design principles
+
+- **Single binary, deterministic state** — everything a validator needs to
+  verify marketplace activity is in `virtengine`; no trusted sidecars are
+  required for consensus.
+- **Signed evidence over trust** — usage records, node heartbeats, HPC
+  templates, and identity attestations are all cryptographically signed and
+  auditable on-chain.
+- **Fail-closed enforcement** — components like the
+  [HPC routing enforcer](/providers/hpc-operations/#routing-enforcement)
+  default to strict modes that reject work rather than bypass on-chain
+  decisions.

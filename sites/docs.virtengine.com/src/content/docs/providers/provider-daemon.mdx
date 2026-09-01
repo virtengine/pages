@@ -1,0 +1,99 @@
+---
+title: Provider Daemon
+description: The off-chain workhorse — how the provider daemon watches leases, deploys workloads, meters usage, and submits settlement transactions.
+---
+
+The provider daemon is the bridge between the chain and your
+infrastructure. It watches on-chain events, acts on them locally, and
+reports back with signed evidence.
+
+## Responsibilities
+
+| Function | Description |
+| --- | --- |
+| Lease handling | Observes leases won by your bids and schedules the workloads |
+| Deployment | Drives Kubernetes (containers/VMs) or HPC schedulers (SLURM/MOAB/OOD) |
+| Usage metering | Collects per-workload metrics on a schedule (hourly default) |
+| Anomaly detection | Screens records before submission (see [Usage Reporting](/concepts/usage-reporting/)) |
+| Chain submission | Batches signed `MsgRecordUsage` transactions |
+| Settlement pipeline | Processes pending usage into settlements, tracks disputes |
+| Reconciliation | Cross-validates metrics on a 6-hour default cadence |
+| Alerts & metrics | Prometheus metrics and alert management |
+
+## Core configuration
+
+The daemon is configured via `provider-daemon.yaml`:
+
+```yaml
+settlement:
+  enabled: true
+  settlement_interval: "1h"
+  dispute_window: "24h"
+  reconciliation_interval: "6h"
+  max_pending_records: 100
+
+chain_submitter:
+  enabled: true
+  gas_limit: 200000
+  gas_price: "0.025uvirt"
+  batch_size: 10
+  batch_interval: "1m"
+
+waldur_reconciler:
+  enabled: true
+  discrepancy_threshold: 10.0  # percentage
+  auto_correct: false
+  auto_correct_threshold: 5.0
+
+alerts:
+  enabled: true
+  default_ttl: "24h"
+  max_alerts: 10000
+```
+
+## Starting the daemon
+
+```bash
+provider-daemon start \
+  --settlement.enabled=true \
+  --chain.rpc=http://localhost:26657
+```
+
+Sensitive material — the provider signing key above all — should come from
+the environment, not config files:
+
+```bash
+export PROVIDER_SIGNING_KEY_PATH="/path/to/key"
+```
+
+## Error recovery
+
+- Failed chain submissions retry automatically (**3 attempts** by default,
+  with backoff).
+- The HPC job service supports state recovery
+  (`enable_state_recovery: true` with a state store path), so a daemon
+  restart does not orphan in-flight jobs.
+- Persistent submission failure shows up as
+  `provider_daemon_submission_failures_total` and a growing
+  `provider_daemon_pending_records` gauge — alert on both.
+
+## Monitoring
+
+Expose the daemon's metrics endpoint to Prometheus:
+
+```yaml
+- job_name: 'provider-daemon'
+  static_configs:
+    - targets: ['localhost:9090']
+  metrics_path: '/metrics'
+```
+
+Baseline alert rules from the repository's operations docs: high dispute
+rate (`rate(provider_daemon_disputes_created_total[1h]) > 0.1`),
+reconciliation score below 50, and pending-record backlog above 500.
+
+## HPC mode
+
+For HPC capacity, the daemon adds a job service, scheduler adapters, routing
+enforcement, and node-agent aggregation — covered in
+[HPC Operations](/providers/hpc-operations/).

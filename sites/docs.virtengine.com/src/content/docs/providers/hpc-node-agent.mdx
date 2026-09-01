@@ -1,0 +1,104 @@
+---
+title: HPC Node Agent
+description: Installing and operating hpc-node-agent — the lightweight daemon that reports node health, capacity, and latency for on-chain node metadata.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+The **HPC node agent** (`hpc-node-agent`) is a lightweight daemon that runs
+on each HPC compute node. It reports health, capacity, and latency metrics
+to the provider daemon, which batches them into on-chain node metadata
+updates (`MsgUpdateNodeMetadata` via `x/hpc`).
+
+```text
+HPC Node Agent  ──signed heartbeats──▶  Provider Daemon  ──batch──▶  Blockchain (x/hpc)
+```
+
+## Installation
+
+<Steps>
+
+1. **Build from source:**
+
+   ```bash
+   # From the repository root
+   go build -o hpc-node-agent ./cmd/hpc-node-agent
+   sudo mv hpc-node-agent /usr/local/bin/
+   ```
+
+2. **Create the configuration** at `/etc/virtengine/hpc-node-agent.yaml`:
+
+   ```yaml
+   node-id: "node-001"
+   cluster-id: "hpc-cluster-1"
+   provider-address: "virtengine1provider..."
+   provider-daemon-url: "http://provider-daemon:8081"
+   heartbeat-interval: 30s
+   key-file: "/etc/virtengine/virtengine-agent.key"
+   region: "us-east-1"
+   datacenter: "dc1"
+   zone: "a"
+   rack: "rack-7"
+   row: "row-2"
+   position: "u14"
+   latency-targets:
+     - "node-002"
+     - "node-003"
+   log-level: "info"
+   ```
+
+3. **Initialize the node's Ed25519 key pair:**
+
+   ```bash
+   hpc-node-agent init --key-file /etc/virtengine/virtengine-agent.key
+   ```
+
+   The command prints the public key — register it with the provider so the
+   node is allowed.
+
+4. **Register and start:**
+
+   ```bash
+   hpc-node-agent register \
+     --node-id node-001 \
+     --cluster-id hpc-cluster-1 \
+     --provider-address virtengine1provider...
+
+   hpc-node-agent start --config /etc/virtengine/hpc-node-agent.yaml
+   ```
+
+   The agent also attempts registration automatically on startup before its
+   first heartbeat. Check current metrics anytime with
+   `hpc-node-agent status`.
+
+</Steps>
+
+## Node states
+
+| State | Description |
+| --- | --- |
+| `pending` | Registered but not yet active |
+| `active` | Healthy and available |
+| `stale` | Missed heartbeat timeout (default: 120 s) |
+| `draining` | Draining jobs before maintenance |
+| `drained` | All jobs drained |
+| `offline` | Exceeded offline threshold (default: 300 s) |
+| `deregistered` | Terminal state |
+
+```text
+pending ──▶ active ──▶ stale ──▶ offline ──▶ deregistered
+              │          └──────────────────────────▲
+              ▼                                     │
+          draining ──▶ drained ─────────────────────┘
+```
+
+Stale-node detection and automatic deactivation protect tenants: jobs are
+never scheduled onto nodes whose heartbeats have gone quiet.
+
+## What a heartbeat carries
+
+Heartbeats are sequence-numbered, signed JSON payloads including capacity
+(CPU cores total/available, memory, GPUs and GPU type, storage), health
+(status, uptime), and latency measurements to configured target nodes —
+plus physical placement metadata (datacenter, zone, rack, row, position)
+useful for topology-aware scheduling.

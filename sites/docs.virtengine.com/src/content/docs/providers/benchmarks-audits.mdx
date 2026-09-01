@@ -1,0 +1,57 @@
+---
+title: Benchmarks & Audits
+description: How on-chain audits, benchmarks, and reviews build provider reputation — and why they directly determine which orders you can win.
+---
+
+On VirtEngine, reputation is not a star rating in a database someone else
+controls. It is on-chain evidence — attestations, measurements, and reviews
+tied to verified identities — and tenants filter orders by it.
+
+## The three reputation signals
+
+### Audits (`x/audit`)
+
+Independent auditors publish signed attestations about your provider record:
+that your infrastructure, practices, or compliance posture meet a defined
+bar. Because tenants can **require audited providers** in their orders, an
+audit attestation is effectively a license to bid on a segment of the
+market. Attestations are living objects — they can be revoked or superseded,
+so staying audited is an ongoing obligation.
+
+### Benchmarks (`x/benchmark`)
+
+Benchmark results are recorded on-chain, converting performance claims into
+verifiable data. Benchmarks matter twice:
+
+1. **Selection** — tenants weigh benchmark data when evaluating bids.
+2. **Verification** — a provider whose delivered performance diverges from
+   its benchmarked profile invites disputes and fraud scrutiny.
+
+### Reviews (`x/review`)
+
+Tenants review providers they have actually leased from. Reviews are tied to
+verified VEID identities and real lease history, which makes both fake
+praise and drive-by sabotage expensive to fake.
+
+## How reputation affects revenue
+
+| Signal | Market effect |
+| --- | --- |
+| Valid audit attestation | Qualify for audit-gated orders (often the highest-value segment) |
+| Strong benchmarks | Win bids at higher prices than unbenchmarked competitors |
+| Positive review history | Reduce tenant risk perception; improve match rates |
+| Revoked audit / poor reviews | Shrinking qualified order set; price pressure |
+
+## Practical guidance
+
+- **Get audited before you need it.** Audit-gated orders won't wait for your
+  audit to complete.
+- **Benchmark honestly.** Benchmarks you can't sustain in production create
+  reconciliation discrepancies — and discrepancies above 25% block
+  settlement outright.
+- **Treat reviews as telemetry.** Recurring review complaints usually
+  predict future disputes; fix the cause before it reaches the
+  [dispute workflow](/concepts/escrow-settlement/#disputes-and-corrections).
+- **Keep your provider attributes current.** Stale region, capability, or
+  endpoint data causes failed deployments, and failed deployments become
+  reviews.

@@ -1,0 +1,64 @@
+---
+title: Choosing Providers
+description: Reading on-chain evidence — audits, benchmarks, reviews, and identity — to pick providers worth leasing from.
+---
+
+Provider selection on VirtEngine is evidence-based: the reputation signals
+are on-chain objects you can query, not testimonials on a landing page.
+
+## The four signals
+
+### 1. Audit attestations (`x/audit`)
+
+Independent auditors publish signed attestations about providers. An
+attestation tells you a third party staked its own on-chain identity on the
+claim. Check **who** audited (auditors have reputations too), **what** the
+attestation covers, and whether it is still valid — attestations can be
+revoked or superseded.
+
+You can also make audits a hard requirement in your order's placement
+constraints, so unaudited providers never appear in your bid set.
+
+### 2. Benchmarks (`x/benchmark`)
+
+On-chain performance measurements. Two uses:
+
+- **Comparative** — rank bidders on measured performance rather than
+  advertised specs.
+- **Contractual** — a provider whose delivered performance diverges from
+  its benchmark profile is generating evidence for your future dispute.
+
+### 3. Reviews (`x/review`)
+
+Reviews come from verified VEID identities with actual lease history —
+which blunts both fake praise and competitor sabotage. Read them the way
+you'd read code review comments: patterns matter more than outliers, and
+recurring specifics (billing disputes, network instability) matter most.
+
+### 4. Identity & fraud history
+
+Providers operate from VEID-verified accounts. Fraud reports (`x/fraud`)
+and dispute history are part of the public record. A provider with repeated
+reconciliation blocks or accepted disputes against them has told you what
+working with them is like.
+
+## Weighing price against evidence
+
+| Bid profile | Interpretation |
+| --- | --- |
+| Low price, no audit, no history | You are the beta test — fine for stateless, disposable workloads |
+| Market price, audited, strong reviews | The default choice for production |
+| Low price, strong benchmarks, mediocre reviews | Read the reviews; performance isn't the only failure mode |
+| Premium price, everything strong | Pay it when workload criticality justifies the assurance |
+
+## Structural protections regardless of choice
+
+Even with an unproven provider, the protocol limits your downside:
+
+- escrow caps your exposure to what you deposited,
+- every usage record has a 24-hour dispute window,
+- reconciliation blocks settlement on >25% metric discrepancies, and
+- mTLS (`x/cert`) authenticates the provider endpoint you talk to.
+
+Choose providers to minimize *operational* disappointment; the *financial*
+rails are protective by construction.

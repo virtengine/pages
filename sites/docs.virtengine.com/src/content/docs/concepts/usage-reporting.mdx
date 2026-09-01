@@ -1,0 +1,102 @@
+---
+title: Usage Reporting
+description: How workload usage is metered, signed, checked for anomalies, and submitted on-chain — the evidence layer behind every VirtEngine payment.
+---
+
+Usage reporting is the evidence layer of the marketplace: providers are paid
+for what tenants actually consumed, and every claim is signed, checked, and
+disputable.
+
+## Collection pipeline
+
+Each active workload has a usage meter. On the default hourly schedule the
+provider daemon:
+
+| Time | Action |
+| --- | --- |
+| XX:00 | Collect metrics for all active workloads |
+| XX:01 | Process metrics into usage records |
+| XX:02 | Detect anomalies |
+| XX:03 | Submit to chain (batched) |
+| XX:05 | Update settlement pipeline |
+
+Records flow from the scheduled collector into the settlement pipeline, past
+an anomaly detector, and finally through the chain submitter as
+`MsgRecordUsage` transactions (batched, with gas configuration such as
+`gas_price: "0.025uvirt"` in the daemon config).
+
+## What a usage record contains
+
+For HPC workloads, for example, records capture wall-clock time, CPU
+core-seconds, memory GB-seconds, GPU-seconds, node-hours, storage GB-hours,
+network transfer, and (where available) energy consumption:
+
+```json
+{
+  "record_id": "cluster-001-job-123-1",
+  "job_id": "job-123",
+  "provider_address": "virtengine1provider...",
+  "customer_address": "virtengine1customer...",
+  "period_start": "2024-01-15T10:00:00Z",
+  "period_end": "2024-01-15T11:00:00Z",
+  "metrics": {
+    "wall_clock_seconds": 3600,
+    "cpu_core_seconds": 14400,
+    "gpu_seconds": 3600
+  },
+  "is_final": false,
+  "job_state": "running",
+  "signature": "abcd1234..."
+}
+```
+
+The signature binds the record to the provider's key; unsigned or improperly
+signed records never settle.
+
+## Anomaly detection
+
+Before submission, records pass automated checks. Detected anomaly types
+include:
+
+| Type | Description | Severity |
+| --- | --- | --- |
+| `duration_too_short` | Record < 1 minute | Medium |
+| `duration_too_long` | Record > 25 hours | High |
+| `negative_values` | Negative metric values | Critical |
+| `cpu_variance` | CPU usage variance > 50% | Variable |
+| `memory_variance` | Memory usage variance > 50% | Variable |
+| `zero_duration_with_usage` | Duration 0 but usage > 0 | Critical |
+
+A separate fraud checker validates timestamp sanity (no future timestamps),
+duration bounds, resource-ratio limits, and signatures. Confirmed fraud
+signals feed the on-chain `x/fraud` module — see
+[Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/).
+
+## Monitoring the pipeline
+
+The provider daemon exposes Prometheus metrics, including:
+
+```text
+provider_daemon_usage_records_collected_total
+provider_daemon_usage_records_submitted_total
+provider_daemon_submission_failures_total
+provider_daemon_settlements_processed_total
+provider_daemon_disputes_created_total
+provider_daemon_anomalies_detected_total
+provider_daemon_pending_records
+provider_daemon_active_disputes
+provider_daemon_reconciliation_score
+```
+
+Recommended alert rules (from the repository's operations docs) fire on a
+high dispute rate, a reconciliation score below 50, and a submission backlog
+above 500 pending records. Failed submissions retry automatically (3
+attempts by default).
+
+## Relationship to settlement
+
+Usage reporting produces the records; the
+[settlement pipeline](/concepts/escrow-settlement/) turns them into money.
+Providers should read
+[Usage Reporting & Payouts](/providers/usage-and-payments/) for the
+operational checklist.

@@ -1,0 +1,87 @@
+---
+title: Usage Reporting & Payouts
+description: The provider's operational guide to getting paid — reporting schedule, settlement cycles, disputes, reconciliation, and the monitoring that protects your revenue.
+---
+
+You are paid for what you can prove. This page is the provider-side
+operational checklist for the usage-reporting and settlement machinery
+described conceptually in [Usage Reporting](/concepts/usage-reporting/) and
+[Escrow & Settlement](/concepts/escrow-settlement/).
+
+## Enable the pipeline
+
+Settlement and chain submission must both be on in `provider-daemon.yaml`:
+
+```yaml
+settlement:
+  enabled: true
+  settlement_interval: "1h"
+  dispute_window: "24h"
+  reconciliation_interval: "6h"
+  max_pending_records: 100
+
+chain_submitter:
+  enabled: true
+  gas_limit: 200000
+  gas_price: "0.025uvirt"
+  batch_size: 10
+  batch_interval: "1m"
+```
+
+```bash
+provider-daemon start --settlement.enabled=true --chain.rpc=http://localhost:26657
+```
+
+## The daily rhythm
+
+| Time | Action |
+| --- | --- |
+| Every hour (XX:00–XX:05) | Collect metrics → build records → anomaly checks → batched chain submission |
+| 00:00 UTC | Daily settlement cycle begins |
+| 00:15 UTC | Unsettled usage records processed |
+| 00:30 UTC | Billable line items generated |
+| 01:00 UTC | Settlement transactions submitted |
+| 02:00 UTC | Reconciliation pass |
+
+Money movement: a usage record submitted at hour *H* becomes payable after
+the **24-hour dispute window**, then settles in the next cycle. Budget your
+cash flow for roughly a one-day lag between delivery and payout.
+
+## Protect your revenue
+
+Three things stop your money; monitor all three.
+
+1. **Disputes.** Records under dispute cannot settle. Watch
+   `provider_daemon_active_disputes`, and respond quickly:
+
+   ```bash
+   virtengine query settlement disputes --status pending --provider <your-address>
+   ```
+
+2. **Reconciliation discrepancies.** Provider metrics are cross-checked
+   against platform metrics; drift above thresholds escalates:
+   5–10% alerts, 10–25% forces review, **>25% blocks settlement**. Watch
+   `provider_daemon_reconciliation_score` (alert below 50) and:
+
+   ```bash
+   virtengine query settlement reconciliation-status --allocation-id <alloc-id>
+   ```
+
+3. **Submission failures.** Failed submissions retry 3 times, then
+   accumulate. Alert on `provider_daemon_submission_failures_total` and a
+   `provider_daemon_pending_records` backlog above 500.
+
+## When something goes wrong
+
+- **A dispute is accepted** — a correction record referencing the original
+  is created and re-tracked; the corrected amount settles normally. Your
+  dispute rate is a reputational signal, so treat root causes seriously.
+- **Settlement is blocked by reconciliation** — find the metric source
+  divergence (container metrics vs. platform component usage) before
+  requesting re-settlement; auto-correction is available but off by default
+  (`auto_correct: false`).
+- **You need to force a settlement** (e.g., after resolving a blocker):
+
+  ```bash
+  virtengine tx settlement settle-order --order-id order-1234567890 --from provider
+  ```

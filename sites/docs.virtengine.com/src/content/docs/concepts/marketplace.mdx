@@ -1,0 +1,82 @@
+---
+title: Marketplace & Bidding
+description: Orders, bids, leases, and offerings — how supply meets demand on the VirtEngine exchange.
+---
+
+VirtEngine pairs a Waldur-connected, multi-service marketplace catalogue with
+a reverse auction. Waldur presents private clouds, storage, VMs and fully
+custom provider offerings; where an offering uses the protocol exchange,
+tenants publish what they need and providers compete to supply it. Three
+on-chain objects carry that process: **orders**, **bids**, and **leases**.
+
+## Orders
+
+An order is opened by `x/market` against a tenant's deployment (from
+`x/deployment`). It captures:
+
+- the resource requirements (CPU, memory, storage, GPU) from the deployment
+  group, expressed through the shared `x/resources` definitions,
+- placement constraints — regions, provider attributes, required audits,
+- pricing bounds the tenant will accept, and
+- the escrow account that will fund the eventual lease.
+
+Orders are visible to every registered provider, which is what makes the
+market contestable: any provider whose inventory matches may bid.
+
+## Bids
+
+Providers respond with bids that state their price and reference their
+on-chain identity (`x/provider`). Because a provider's record carries its
+attributes, audit attestations (`x/audit`), benchmark results
+(`x/benchmark`), and review history (`x/review`), a bid is more than a
+number — it is a priced, reputation-backed offer.
+
+Bidding strategy from the provider side is covered in
+[Pricing & Bidding Strategy](/providers/pricing-bidding/).
+
+## Leases
+
+When an order matches a winning bid, `x/market` forms a **lease** — the
+binding agreement between tenant and provider at the bid price. The lease is
+the anchor object for everything downstream:
+
+- the provider daemon deploys workloads against it,
+- usage records reference it,
+- settlement bills against it, and
+- escrow pays out under it.
+
+A lease closes when the deployment is ended by the tenant, when escrow funds
+are exhausted, or when protocol enforcement (fraud, audit failure) shuts it
+down.
+
+## Offerings and service catalogue
+
+Alongside the order-driven auction flow, `x/marketplace` maintains a catalog
+of **offerings** — published capacity listings created by providers. The
+Waldur integration makes that catalogue available as a self-service
+marketplace and supports private clouds, storage, VMs and provider-defined
+custom services as well as compute workloads. The HPC pipeline uses offerings
+directly: an HPC job submission names the `offering_id` it wants to consume
+(see [Submitting HPC Jobs](/tenants/hpc-jobs/)). Kubernetes and HPC schedulers
+are fulfilment targets for applicable listings, not the only things a provider
+can list.
+
+## Identity gating
+
+Marketplace participation is tied to VEID identity verification. Providers
+and tenants operate from verified accounts, which raises the cost of Sybil
+identities and gives dispute and fraud workflows a real counterparty. The
+verification tiers and privacy model are described in the
+[VEID section](/veid/overview/).
+
+## Lifecycle summary
+
+| Stage | Module | Object | Trigger |
+| --- | --- | --- | --- |
+| Publish workload | `x/deployment` | Deployment | Tenant tx |
+| Open order | `x/market` | Order | Deployment created |
+| Compete | `x/market` | Bid | Provider tx |
+| Match | `x/market` | Lease | Winning bid selected |
+| Deliver | provider daemon | Workload | Lease observed |
+| Bill | `x/settlement` | Line items | Signed usage records |
+| Pay | `x/escrow` + `x/take` | Transfer | Settlement complete |

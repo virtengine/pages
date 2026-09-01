@@ -1,0 +1,56 @@
+---
+title: Settlement Policy & Issuance
+description: Zero marketplace commission, validator transaction fees, and VEID-led issuance mechanics.
+---
+
+Two modules define settlement policy and supply operations: `x/take` and
+`x/bme`.
+
+## Marketplace settlement policy (`x/take`)
+
+When escrow pays a provider for settled usage, the proposed policy applies a
+**0% marketplace commission** before the transfer completes:
+
+- The provider receives the agreed settled lease amount from escrow; no
+  platform or marketplace commission is withheld.
+- Low validator transaction fees apply separately to on-chain messages, such
+  as creating orders, submitting bids and recording usage. These fees
+  compensate validators and are proposed at approximately **90% below**
+  standard network transaction fees.
+- Validator-fee parameters and the zero marketplace-commission policy are
+  governed chain parameters.
+
+The settlement amount is therefore the agreed lease amount in escrow.
+Transaction fees are separate costs of the individual on-chain actions.
+
+## Burn-mint equilibrium (`x/bme`)
+
+The BME module implements token burn and mint operations. Its keeper exposes:
+
+- **`BurnTokens`** — burns tokens from an account, used for token
+  destruction and collateral burning; burn amounts must be positive and the
+  module tracks cumulative `TotalBurned` state in genesis and exports.
+- **`MsgBurnMint`** — a message-level burn/mint operation processed by the
+  module's message server.
+
+Together with issuance controls in `x/issuancepolicy` (governance-managed
+policies with pause support), BME supports the supply rules. The proposed
+primary issuance path is VEID-led: every 15-token batch allocates 14 tokens to
+eligible active verified humans and 1 token to the Foundation-controlled
+genesis account. The Foundation allocation is part of the 15 tokens, not an
+additional mint.
+
+:::note
+The final transaction-fee and issuance parameters are defined by governance
+and genesis configuration. Consult `x/bme`, `x/take` and
+`x/issuancepolicy` in the repository for the authoritative current behavior.
+:::
+
+## Why it matters per audience
+
+| Audience | Relevance |
+| --- | --- |
+| Providers | The agreed lease amount settles from escrow with no marketplace commission withheld. |
+| Tenants | There is no platform commission inside settlement; transaction fees apply only to chain actions. |
+| Token holders | VEID-led issuance splits each 15-token batch: 14 to eligible humans and 1 to the Foundation genesis account. |
+| Validators | Low transaction fees compensate validators and support spam resistance; fee parameters are governance-controlled. |

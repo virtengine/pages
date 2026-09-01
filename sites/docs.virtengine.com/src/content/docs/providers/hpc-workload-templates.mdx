@@ -1,0 +1,138 @@
+---
+title: HPC Workload Templates
+description: Publishing custom HPC workload templates — manifest structure, cryptographic signing, and governance approval.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+VirtEngine ships a curated library of preconfigured HPC workload templates
+(`mpi-standard`, `gpu-compute`, `batch-standard`, `data-processing`,
+`interactive-session`) that simplify job submission and enforce security
+compliance. Providers can publish **custom templates** for specialized
+workloads — with signing and governance approval as guardrails.
+
+## Publishing flow
+
+<Steps>
+
+1. **Define the template manifest.** A template pins its runtime, resource
+   envelope, security policy, entrypoint, and a parameter schema for
+   tenants:
+
+   ```json
+   {
+     "template_id": "my-simulation",
+     "name": "My Simulation Workload",
+     "version": "1.0.0",
+     "description": "Custom simulation workload for physics calculations",
+     "type": "batch",
+     "runtime": {
+       "runtime_type": "singularity",
+       "container_image": "ghcr.io/myorg/simulation:v1.2.3",
+       "image_digest": "sha256:abc123...",
+       "required_modules": ["gcc/11", "openmpi/4.1"]
+     },
+     "resources": {
+       "min_nodes": 1,
+       "max_nodes": 64,
+       "default_nodes": 4,
+       "min_cpus_per_node": 4,
+       "max_cpus_per_node": 128,
+       "default_cpus_per_node": 32,
+       "min_memory_mb_per_node": 8192,
+       "max_memory_mb_per_node": 256000,
+       "default_memory_mb_per_node": 64000,
+       "min_runtime_minutes": 5,
+       "max_runtime_minutes": 2880,
+       "default_runtime_minutes": 60,
+       "network_required": true
+     },
+     "security": {
+       "allowed_registries": ["ghcr.io", "docker.io"],
+       "require_image_digest": true,
+       "allow_network_access": false,
+       "allow_host_mounts": true,
+       "allowed_host_paths": ["/scratch", "/data"],
+       "sandbox_level": "strict"
+     },
+     "entrypoint": {
+       "command": "/opt/simulation/run.sh",
+       "working_directory": "/work",
+       "use_mpirun": true
+     },
+     "environment": [
+       {"name": "SIM_THREADS", "value": "32"},
+       {"name": "OUTPUT_DIR", "value_template": "/scratch/$USER/$SLURM_JOB_ID"}
+     ],
+     "parameter_schema": [
+       {
+         "name": "input_file",
+         "type": "string",
+         "description": "Path to input configuration",
+         "required": true
+       },
+       {
+         "name": "precision",
+         "type": "enum",
+         "enum_values": ["single", "double"],
+         "default": "double"
+       }
+     ],
+     "tags": ["simulation", "physics", "hpc"]
+   }
+   ```
+
+2. **Sign the template.** Templates must be cryptographically signed before
+   publishing:
+
+   ```go
+   import (
+       "github.com/virtengine/virtengine/pkg/hpc_workload_library"
+   )
+
+   privateKey := loadProviderKey()
+   signer := hpc_workload_library.NewTemplateSigner(privateKey)
+   if err := signer.SignTemplate(template); err != nil {
+       return err
+   }
+   ```
+
+3. **Submit for governance approval.** New templates require an on-chain
+   proposal and vote before they can be used:
+
+   ```bash
+   virtengine tx hpc submit-template-proposal \
+       --template-file=my-simulation.json \
+       --title="Add My Simulation Workload" \
+       --description="Custom physics simulation workload for our HPC cluster" \
+       --deposit=1000uvirt \
+       --from=provider
+
+   # Validators and delegators vote
+   virtengine tx gov vote <proposal-id> yes --from=validator
+
+   # Track status
+   virtengine query gov proposal <proposal-id>
+   ```
+
+</Steps>
+
+## Why the security block matters
+
+The template's `security` section is enforced, not advisory: registry
+allowlists, mandatory image digests, network-access policy, host-mount path
+allowlists, and sandbox level (`strict`) all constrain what tenant jobs can
+do on your nodes. Governance review exists precisely so a malicious or
+sloppy template can't become an escape hatch onto provider infrastructure.
+
+## Tenant-side consumption
+
+Tenants discover and use templates through the CLI:
+
+```bash
+virtengine hpc templates list
+virtengine hpc templates show my-simulation
+virtengine tx hpc submit-from-template my-simulation params.yaml --from tenant
+```
+
+See [Submitting HPC Jobs](/tenants/hpc-jobs/) for the parameter-file format.

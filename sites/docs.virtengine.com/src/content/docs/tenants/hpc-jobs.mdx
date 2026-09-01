@@ -1,0 +1,114 @@
+---
+title: Submitting HPC Jobs
+description: Running batch, MPI, GPU, and interactive jobs on VirtEngine HPC clusters — job specs, templates, budgets, and monitoring.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+HPC jobs run on registered provider clusters (SLURM, MOAB, or Open
+OnDemand) and are billed per verified usage against a budget you cap up
+front. Two submission paths exist: raw job specs and curated templates.
+
+## Path 1: Submit a raw job spec
+
+Write a spec file (`schema_version` optional; must be `"1.0"` if present):
+
+```yaml
+schema_version: "1.0"
+offering_id: "OFF-1"
+requested_nodes: 4
+requested_gpus: 8
+max_duration: 3600        # seconds
+max_budget: "1000uve"
+job_script_file: "./job.sh"   # or inline: job_script
+```
+
+Required fields: `offering_id`, `requested_nodes` (> 0), `max_duration`
+(> 0), `max_budget`, and one of `job_script` / `job_script_file` (relative
+paths resolve against the spec file's directory).
+
+```bash
+virtengine tx hpc submit-job job.yaml --from tenant
+```
+
+## Path 2: Submit from a template
+
+Templates are governance-approved workload definitions with validated
+runtimes and security policy — the fastest safe path for common patterns:
+
+| Template ID | Type | Use for |
+| --- | --- | --- |
+| `mpi-standard` | MPI | OpenMPI parallel computing |
+| `gpu-compute` | GPU | CUDA-accelerated compute |
+| `batch-standard` | Batch | Single-node batch processing |
+| `data-processing` | Data Processing | Spark/Dask pipelines |
+| `interactive-session` | Interactive | JupyterLab and terminal sessions |
+
+<Tabs>
+  <TabItem label="Discover">
+
+```bash
+virtengine hpc templates list
+virtengine hpc templates list --type gpu
+virtengine hpc templates show mpi-standard
+virtengine hpc templates types
+```
+
+  </TabItem>
+  <TabItem label="Submit">
+
+```yaml
+# params.yaml
+schema_version: "1.0"
+offering_id: "OFF-1"
+requested_nodes: 2
+requested_gpus: 1
+max_duration: 1800
+max_budget: "500uve"
+job_parameters:
+  nodes: 2
+  gpus: 1
+  runtime_minutes: 30
+batch_config:
+  partition: "gpu"
+  job_name: "demo-job"
+```
+
+```bash
+virtengine tx hpc submit-from-template mpi-standard params.yaml --from tenant
+```
+
+  </TabItem>
+</Tabs>
+
+Templates expose a typed `parameter_schema` (strings, enums, defaults,
+required flags) — `templates show <id>` prints what a given template
+expects.
+
+## What happens after submission
+
+1. `x/hpc` records the job and produces a **scheduling decision** — which
+   cluster runs it.
+2. The provider's routing enforcer validates the decision (strict mode
+   rejects anything stale or mismatched — placement is deterministic and
+   auditable).
+3. The scheduler adapter submits to SLURM/MOAB/OOD; the job walks
+   `pending → queued → starting → running` to a terminal state
+   (`completed`, `failed`, `timeout`, or `cancelled`).
+4. Usage records (wall-clock, CPU core-seconds, GPU-seconds, memory,
+   storage, network) flow back signed every 5 minutes, with final
+   accounting flagged when the job ends.
+
+## Budget behavior
+
+`max_budget` is a hard cap: it bounds what the job can settle against your
+escrow. Size it from the queue's `price_per_hour` × requested scale ×
+`max_duration`, with headroom for storage and network. Underfunded budgets
+fail placement rather than surprise-billing you.
+
+## Interactive sessions
+
+The `interactive-session` template provisions JupyterLab/terminal sessions
+(via Open OnDemand on supporting providers, with OIDC authenticated through
+VEID). Set `max_duration` realistically — sessions bill like any other job
+while idle.

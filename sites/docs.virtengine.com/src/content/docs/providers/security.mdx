@@ -1,0 +1,82 @@
+---
+title: Security Obligations
+description: What the protocol expects from provider operators — key handling, credential hygiene, audit logging, workload isolation, and network exposure.
+---
+
+Providers hold two kinds of trust: tenants trust you with their workloads,
+and the protocol trusts your signatures. Both are revocable. This page
+collects the security obligations spread across the provider tooling.
+
+## Key management
+
+- **The provider signing key is your identity.** Every usage record,
+  settlement transaction, and node-metadata update is signed with it. Ship
+  it via `PROVIDER_SIGNING_KEY_PATH` from a secret store — never in config
+  files or images.
+- **Node agent keys are per-node.** Each `hpc-node-agent` has its own
+  Ed25519 key pair; register public keys explicitly so a compromised node
+  can be individually deregistered.
+- The repository's DR tooling includes key backup
+  (`scripts/dr/backup-keys.sh --type all`) — use it, and store backups
+  offline.
+
+## Credential hygiene
+
+All scheduler and platform credentials come from the environment:
+
+```bash
+export SLURM_JWT_TOKEN="..."
+export MOAB_USERNAME="..."
+export MOAB_PASSWORD="..."
+export OOD_OIDC_CLIENT_SECRET="..."
+```
+
+In Kubernetes deployments, secrets resolve from external secret stores
+(`secret/virtengine/{env}/{service}` paths via ESO/Vault in the reference
+topology) — pods must not carry inline secrets.
+
+For MOAB over SSH, pin host keys: `ssh_host_key_callback: known_hosts` (or
+`pinned`); never ship `insecure` to production.
+
+## Workload isolation
+
+- Enforce template security policy: registry allowlists, required image
+  digests, `sandbox_level: strict`, and host-mount allowlists
+  (see [HPC Workload Templates](/providers/hpc-workload-templates/)).
+- Keep tenant workloads off validator infrastructure. The reference
+  deployment separates them with node labels and taints
+  (`role=validator` + `dedicated=validator:NoSchedule` vs. `role=workload`).
+- Tenant↔provider traffic is authenticated with `x/cert` mTLS certificates.
+
+## Audit logging
+
+Enable the daemon's audit log and keep it:
+
+```yaml
+audit:
+  enabled: true
+  log_path: /var/log/virtengine/hpc-audit.log
+  log_job_events: true
+  log_security_events: true
+  log_usage_reports: true
+```
+
+Audit records are your evidence in disputes and fraud reviews — the
+protocol records its own view on-chain, and you want a matching local
+trail.
+
+## Routing and enforcement posture
+
+Run routing enforcement in `strict` mode in production. `permissive` and
+`audit_only` exist for migration and monitoring windows, not steady state —
+unauthorized fallbacks are a recorded violation type for a reason.
+
+## What the protocol does if you don't
+
+| Failure | Protocol response |
+| --- | --- |
+| Bad or unsigned usage records | Rejected before settlement |
+| Reconciliation drift > 25% | Settlement blocked |
+| Anomalous usage patterns | Fraud reports via `x/fraud`; lease enforcement |
+| Audit lapses | Loss of audit-gated order eligibility |
+| Sustained disputes | Reputation damage via `x/review`, dispute history |

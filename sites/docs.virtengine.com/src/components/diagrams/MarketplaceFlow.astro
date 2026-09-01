@@ -1,0 +1,80 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 860 300"
+    width="860"
+    height="300"
+    role="img"
+    aria-label="Marketplace lifecycle: a tenant order receives provider bids, a lease is formed, the workload deploys, usage is reported, and escrow settles payment."
+  >
+    <defs>
+      <marker id="mf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-accent)"></path>
+      </marker>
+    </defs>
+    <style>
+      .mf-box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); rx: 8; }
+      .mf-box-accent { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 8; }
+      .mf-title { font: 600 13px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .mf-sub { font: 400 11px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .mf-flow { stroke: var(--sl-color-accent); stroke-width: 1.6; fill: none; }
+      .mf-step { font: 500 10px var(--sl-font-mono, monospace); fill: var(--sl-color-accent); }
+    </style>
+
+    <!-- Row 1 -->
+    <rect class="mf-box" x="20" y="40" width="150" height="64"></rect>
+    <text class="mf-title" x="95" y="66" text-anchor="middle">Tenant order</text>
+    <text class="mf-sub" x="95" y="84" text-anchor="middle">x/deployment · x/market</text>
+
+    <rect class="mf-box" x="230" y="40" width="150" height="64"></rect>
+    <text class="mf-title" x="305" y="66" text-anchor="middle">Provider bids</text>
+    <text class="mf-sub" x="305" y="84" text-anchor="middle">price + attributes</text>
+
+    <rect class="mf-box-accent" x="440" y="40" width="150" height="64"></rect>
+    <text class="mf-title" x="515" y="66" text-anchor="middle">Lease</text>
+    <text class="mf-sub" x="515" y="84" text-anchor="middle">winning bid matched</text>
+
+    <rect class="mf-box" x="650" y="40" width="150" height="64"></rect>
+    <text class="mf-title" x="725" y="66" text-anchor="middle">Deploy</text>
+    <text class="mf-sub" x="725" y="84" text-anchor="middle">provider daemon</text>
+
+    <path class="mf-flow" d="M170 72 H228" marker-end="url(#mf-arrow)"></path>
+    <path class="mf-flow" d="M380 72 H438" marker-end="url(#mf-arrow)"></path>
+    <path class="mf-flow" d="M590 72 H648" marker-end="url(#mf-arrow)"></path>
+
+    <!-- Wrap to row 2 -->
+    <path class="mf-flow" d="M725 104 V150 H515 V196" marker-end="url(#mf-arrow)"></path>
+
+    <!-- Row 2 -->
+    <rect class="mf-box" x="440" y="200" width="150" height="64"></rect>
+    <text class="mf-title" x="515" y="226" text-anchor="middle">Usage reports</text>
+    <text class="mf-sub" x="515" y="244" text-anchor="middle">signed, hourly</text>
+
+    <rect class="mf-box" x="230" y="200" width="150" height="64"></rect>
+    <text class="mf-title" x="305" y="226" text-anchor="middle">Settlement</text>
+    <text class="mf-sub" x="305" y="244" text-anchor="middle">x/settlement · disputes</text>
+
+    <rect class="mf-box-accent" x="20" y="200" width="150" height="64"></rect>
+    <text class="mf-title" x="95" y="226" text-anchor="middle">Escrow payout</text>
+    <text class="mf-sub" x="95" y="244" text-anchor="middle">x/escrow · x/take</text>
+
+    <path class="mf-flow" d="M440 232 H382" marker-end="url(#mf-arrow)"></path>
+    <path class="mf-flow" d="M230 232 H172" marker-end="url(#mf-arrow)"></path>
+
+    <!-- Step labels -->
+    <text class="mf-step" x="95" y="30">1 ORDER</text>
+    <text class="mf-step" x="305" y="30">2 BID</text>
+    <text class="mf-step" x="515" y="30">3 LEASE</text>
+    <text class="mf-step" x="725" y="30">4 DEPLOY</text>
+    <text class="mf-step" x="515" y="286">5 REPORT</text>
+    <text class="mf-step" x="305" y="286">6 SETTLE</text>
+    <text class="mf-step" x="95" y="286">7 PAY</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

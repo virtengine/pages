@@ -1,0 +1,65 @@
+---
+title: Governance Participation
+description: The proposal lifecycle on VirtEngine, what validators vote on, and why governance is part of the validator job description.
+---
+
+On VirtEngine, governance is not an occasional token vote — protocol
+operations route through it continuously. Validators who skip governance are
+skipping part of the job.
+
+## What comes up for a vote
+
+| Proposal type | Module | Example |
+| --- | --- | --- |
+| Parameter changes | `gov` + target module | Validator-fee parameters, staking and issuance parameters |
+| Chain configuration | `x/config` | Governance-managed chain parameters |
+| Token issuance policy | `x/issuancepolicy` | Upsert or pause an issuance policy |
+| HPC workload templates | `x/hpc` | Approving a provider's custom template (with its security policy) |
+| VEID verifier versions | `x/veidregistry` | Approving, cancelling, or retiring verifier versions |
+| Software upgrades | upgrade flow | Coordinated binary upgrades |
+
+Two of these deserve emphasis because they are security reviews disguised
+as votes:
+
+- **HPC template approvals** decide what code can run on provider
+  infrastructure and with which sandbox policy — see
+  [HPC Workload Templates](/providers/hpc-workload-templates/).
+- **VEID verifier approvals** decide which verification software the
+  identity layer trusts — and validators must then report readiness for
+  approved versions to earn verification rewards.
+
+## The proposal lifecycle
+
+1. **Submission** — a proposer submits the proposal with a deposit
+   (e.g., `--deposit=1000uvirt` in the HPC template flow).
+2. **Deposit period** — the proposal must reach the minimum deposit to
+   enter voting.
+3. **Voting period** — bonded stake votes `yes`, `no`, `no_with_veto`, or
+   `abstain`.
+4. **Tally** — quorum and threshold parameters decide the outcome; vetoes
+   can burn deposits.
+5. **Execution** — passed proposals execute their payload on-chain.
+
+```bash
+# Vote
+virtengine tx gov vote <proposal-id> yes --from=validator
+
+# Inspect
+virtengine query gov proposal <proposal-id>
+```
+
+## Voting power and delegation
+
+Voting power follows bonded stake. Delegators inherit their validator's
+vote unless they cast their own — which means a validator's governance
+record is part of what delegators are buying. Publish your reasoning on
+contested votes; it is cheap and it compounds trust.
+
+## Practical guidance for validators
+
+- **Vote on everything.** Abstain is a vote; silence is not.
+- **Review template and verifier proposals like the security-sensitive
+  changes they are** — check registries, digests, sandbox levels, and the
+  proposer's history.
+- **Track proposals programmatically** so voting windows never lapse
+  unnoticed.

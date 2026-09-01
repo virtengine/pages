@@ -1,0 +1,66 @@
+---
+title: Tenant Overview
+description: Deploying on the decentralized cloud — what tenants get from VirtEngine, how paying with escrow works, and where to start.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Tenants are the demand side of VirtEngine: teams and individuals who need
+compute — containers, virtual machines, GPU capacity, or HPC clusters — and
+lease it from competing providers on the open marketplace.
+
+## Why deploy on a decentralized marketplace
+
+- **Competitive pricing** — providers bid against each other for your
+  order; you set the acceptable price bounds.
+- **Verifiable providers** — audits, benchmarks, and reviews are on-chain
+  evidence, not marketing claims
+  (see [Choosing Providers](/tenants/choosing-providers/)).
+- **Pay for verified usage** — funds sit in escrow you control and move
+  only after signed usage records survive a 24-hour dispute window.
+- **A real dispute process** — if a provider's usage claims look wrong, you
+  can dispute them on-chain before payment, with immutable evidence.
+- **HPC without procurement** — submit SLURM-class jobs to registered
+  clusters with a budget cap instead of negotiating cluster access
+  (see [Submitting HPC Jobs](/tenants/hpc-jobs/)).
+
+## Your lifecycle in five objects
+
+| Object | What it is | Your control point |
+| --- | --- | --- |
+| Deployment | Your workload description on-chain | Create, update, close |
+| Order | The open request providers bid on | Placement & pricing constraints |
+| Lease | Binding agreement with the winning provider | Accept bid; close anytime |
+| Escrow account | Funds backing your leases | Deposit, top up; unspent funds are yours |
+| Usage records | The provider's billed claims | 24-hour dispute window on every record |
+
+## Costs
+
+You pay the agreed lease price for verified usage. Marketplace settlement has
+0% protocol commission; low validator transaction fees apply only to the
+on-chain actions. Your total exposure
+is capped by what you put in escrow: an empty escrow account closes the
+lease rather than accruing debt.
+
+<CardGrid>
+  <Card title="Deploy your first workload" icon="rocket">
+    The deployment lifecycle from manifest to running lease.
+
+    [Deploying Workloads →](/tenants/deploying-workloads/)
+  </Card>
+  <Card title="Understand payments" icon="seti:license">
+    Escrow accounts, settlement timing, disputes, and closing out.
+
+    [Leases & Escrow →](/tenants/leases-and-escrow/)
+  </Card>
+  <Card title="Pick the right provider" icon="magnifier">
+    Reading audits, benchmarks, and reviews before you lease.
+
+    [Choosing Providers →](/tenants/choosing-providers/)
+  </Card>
+  <Card title="Run HPC jobs" icon="seti:shell">
+    Templates, job specs, budgets, and cluster selection.
+
+    [Submitting HPC Jobs →](/tenants/hpc-jobs/)
+  </Card>
+</CardGrid>

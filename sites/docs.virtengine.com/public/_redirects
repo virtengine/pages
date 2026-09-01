@@ -1,0 +1,10 @@
+# Legacy Jekyll documentation routes retained through the Cloudflare migration.
+/overview/*             /cloud-platform/overview/                 301
+/machines/*             /cloud-platform/machines-and-storage/     301
+/containers/*           /cloud-platform/containers-and-apps/      301
+/customapps/*           /cloud-platform/containers-and-apps/      301
+/prepackagedapps/*      /cloud-platform/containers-and-apps/      301
+/configuration/waldur/* /cloud-platform/waldur/                   301
+/configuration/*        /cloud-platform/overview/                 301
+/installation/*         /cloud-platform/overview/                 301
+/v1.5/*                 /cloud-platform/overview/                 301

@@ -1,0 +1,63 @@
+---
+title: Encryption & Enclaves
+description: The x/encryption envelope model for confidential on-chain payloads and x/enclave trusted-execution attestation.
+---
+
+VirtEngine stores sensitive material — biometric templates, identity scopes,
+attestation payloads — in ways a public blockchain normally cannot. Two
+modules make that possible.
+
+## Encrypted payloads (`x/encryption`)
+
+The encryption module defines the **envelope** format for confidential
+payloads referenced by on-chain state. The pattern is consistent across the
+protocol:
+
+1. Sensitive data is encrypted client-side (or provider-side) into an
+   envelope.
+2. The envelope is stored in an off-chain **vault**.
+3. The chain stores only the encrypted reference plus integrity metadata — a
+   key fingerprint identifies which key material the envelope was encrypted
+   for, without revealing it.
+
+VEID is the heaviest user of this pattern: biometric templates and device
+attestation payloads are encrypted with the VEID envelope and referenced by
+identity scopes (see [VEID Overview](/veid/overview/)). Validators can verify
+that the right party produced or can read a payload without the chain ever
+holding plaintext.
+
+Key properties:
+
+- **No plaintext on-chain, ever.** Consensus nodes replicate ciphertext and
+  references only.
+- **Key fingerprints** bind envelopes to recipient keys for auditability.
+- **Lifecycle controls** — envelopes follow expiration and revocation
+  policies of the data they carry.
+
+## Trusted execution (`x/enclave`)
+
+Some verification work needs to happen on real data — for example, matching a
+biometric template. The enclave module supports registering and attesting
+**trusted execution environments (TEEs)** so that this work happens inside
+hardware-isolated enclaves:
+
+- Enclave identities and their attestation evidence are recorded on-chain.
+- Verification services prove they run approved enclave measurements before
+  they are trusted with decryption or matching tasks.
+- The deployment topology in the repository's operations guide includes
+  readiness/liveness probes for TEE paths alongside validator and provider
+  workloads.
+
+## mTLS between tenants and providers (`x/cert`)
+
+Communication between tenant clients and provider daemons is secured with
+certificates recorded in `x/cert`, giving both sides a chain-anchored way to
+authenticate the other end before any workload or manifest data flows.
+
+## Design intent
+
+The common thread: **the chain is a coordination and audit layer, not a data
+lake.** Every confidential byte lives encrypted in vaults or enclaves;
+what's public is the evidence that the right steps happened — envelope
+references, key fingerprints, attestation records, and signed verification
+results.

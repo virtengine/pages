@@ -1,0 +1,78 @@
+---
+title: How the Marketplace Works
+description: The end-to-end VirtEngine marketplace lifecycle — order creation, provider bidding, lease formation, deployment, usage reporting, and escrow settlement.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import MarketplaceFlow from '../../../components/diagrams/MarketplaceFlow.astro';
+
+Every workload on VirtEngine moves through the same on-chain lifecycle. This
+page follows a deployment from the tenant's first transaction to the
+provider's final payout.
+
+<MarketplaceFlow caption="The marketplace lifecycle: orders attract bids, the winning bid forms a lease, and verified usage drives escrow settlement." />
+
+## The lifecycle, step by step
+
+<Steps>
+
+1. **Tenant creates an order.** The tenant describes the workload —
+   resources, placement requirements, and pricing bounds — and submits it
+   on-chain. The `x/deployment` module records the deployment; `x/market`
+   opens an order against it. The tenant also funds an escrow account that
+   will pay for the lease (see
+   [Escrow & Settlement](/concepts/escrow-settlement/)).
+
+2. **Providers bid.** Registered providers (see `x/provider`) whose inventory
+   matches the order's requirements respond with priced bids. Bids carry the
+   provider's attributes, so tenants can weigh audits, benchmarks, reviews,
+   and region alongside price.
+
+3. **A lease is formed.** The order is matched to a winning bid and `x/market`
+   creates a lease binding tenant, provider, and price. The lease is the
+   billing anchor: everything that follows references it.
+
+4. **The provider deploys.** The off-chain provider daemon observes the lease
+   and schedules the workload onto the provider's infrastructure — Kubernetes
+   for containerized workloads, or SLURM/MOAB/Open OnDemand clusters for
+   [HPC jobs](/concepts/hpc/).
+
+5. **Usage is metered and reported.** The provider daemon collects per-workload
+   metrics on a schedule (hourly by default), converts them into signed usage
+   records, runs anomaly detection, and submits them on-chain in batches via
+   `MsgRecordUsage`. See [Usage Reporting](/concepts/usage-reporting/).
+
+6. **Settlement converts usage into payment.** After a **24-hour dispute
+   window**, undisputed usage records are settled by `x/settlement` into
+   billable line items. The tenant can dispute suspect records inside the
+   window; corrections create new records referencing the original.
+
+7. **Escrow pays out.** `x/escrow` transfers the agreed funds from the
+   tenant's escrow account to the provider with **0% marketplace commission**.
+   Validator transaction fees apply only to the chain messages. If escrow runs
+   dry, the lease closes.
+
+</Steps>
+
+## What makes this trustworthy
+
+- **Signed usage** — every usage record is cryptographically signed by the
+  provider, and fraud checks validate timestamps, durations, and resource
+  ratios before settlement.
+- **Dispute window** — tenants get a guaranteed window to challenge usage
+  before funds move.
+- **Reputation on-chain** — audits (`x/audit`), benchmarks (`x/benchmark`),
+  and reviews (`x/review`) give tenants verifiable signals when choosing
+  providers.
+- **Identity-gated participation** — VEID identity verification
+  (see [VEID Overview](/veid/overview/)) raises the cost of Sybil attacks on
+  both sides of the market.
+
+## Related reading
+
+- [Marketplace & Bidding](/concepts/marketplace/) — orders, bids, and leases
+  in more depth.
+- [Escrow & Settlement](/concepts/escrow-settlement/) — the payment sequence
+  and dispute workflow.
+- [Deploying Workloads](/tenants/deploying-workloads/) — the tenant-side
+  how-to.

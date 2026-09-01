@@ -1,0 +1,69 @@
+---
+title: Privacy Model
+description: What VEID stores where — encrypted vaults, on-chain references, zero-knowledge proofs, and the data-minimization rules that govern the identity layer.
+---
+
+The shortest accurate description of VEID's privacy model: **the chain never
+sees your face.** This page spells out what that means in practice.
+
+## The data placement rules
+
+| Data | Where it lives | Who can read it |
+| --- | --- | --- |
+| Raw document images, selfies | Never persisted beyond processing | — |
+| Biometric templates | Encrypted vault (VEID envelope) | Approved verification services only |
+| Device attestation payloads | Encrypted vault | Approved verification services only |
+| Identity scope records | On-chain, referencing vault payloads | Public (ciphertext references + metadata) |
+| Verification results | On-chain, signed | Public (result, not the data) |
+| Consent settings | On-chain (encrypted) + off-chain index | User-controlled |
+
+The chain stores **references and evidence** — encrypted payload pointers,
+key fingerprints, scope IDs, signed verification attestations — never
+plaintext identity data.
+
+## Data minimization
+
+The protocol stores only what verification requires: templates plus
+integrity metadata. Notable deliberate exclusions:
+
+- `veid.geo_location` covers country and region, **not precise GPS**.
+- Derived-feature sharing (feature hashes) is off unless the user grants
+  `AllowDerivedFeatureSharing`.
+- Attestation payloads follow lifecycle policies — they expire and can be
+  revoked, rather than accumulating forever.
+
+## Zero-knowledge proofs
+
+The `x/veid/zk` package supports zero-knowledge proofs over identity data:
+proving a property (for example, that a verified identity meets a policy)
+without revealing the underlying attributes. This lets relying parties
+consume *assurance* rather than *data* — the strongest form of data
+minimization the protocol offers.
+
+## Enclave-isolated processing
+
+Where verification must touch decrypted data (such as template matching), it
+happens inside attested trusted execution environments registered in
+`x/enclave` — see [Encryption & Enclaves](/concepts/encryption-enclaves/).
+Verification services prove they run approved enclave measurements before
+they are trusted with decryption tasks.
+
+## User rights, operationally
+
+The [Consent Framework](/veid/consent-framework/) implements the control
+surface:
+
+- **Access & transparency** — consent history is versioned and auditable.
+- **Revocation** — per-scope, immediate, recorded on-chain.
+- **Expiration** — consent can be time-boxed globally or per scope.
+- **Provider scoping** — data sharing can be limited to whitelisted
+  providers per scope.
+
+## Compliance posture
+
+The framework is built to align with GDPR (including Article 9 special
+category handling for `veid.biometric`), CCPA/CPRA, and BIPA. The governing
+legal documents live in the repository (`PRIVACY_POLICY.md`,
+`BIOMETRIC_DATA_ADDENDUM.md`, `CONSENT_FRAMEWORK.md`) and are the
+authoritative statements of policy; this page describes the technical
+enforcement behind them.

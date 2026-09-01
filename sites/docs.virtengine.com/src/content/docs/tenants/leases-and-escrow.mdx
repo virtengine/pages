@@ -1,0 +1,76 @@
+---
+title: Leases & Escrow Payments
+description: How tenants pay on VirtEngine — escrow custody, settlement timing, the dispute window, and closing out a lease.
+---
+
+Paying on VirtEngine means funding an escrow account and letting verified
+usage draw it down. You never hand a provider payment credentials, and no
+payment finalizes while you have an open dispute against it.
+
+## The escrow model, tenant-side
+
+- **Deposit** — you fund the escrow account (`x/escrow`) attached to your
+  deployment. This backs every lease under it.
+- **Draw-down** — settled usage transfers the agreed funds to the provider
+  with 0% marketplace commission inside settlement. Validator transaction fees
+  apply only to the relevant chain actions.
+- **Top-up** — deposit more at any time to keep long-running leases alive.
+- **Exhaustion** — an empty escrow account closes the lease. There is no
+  negative balance and no debt.
+- **Refund** — closing your deployment returns the unspent escrow balance
+  to you after final settlement.
+
+## When money actually moves
+
+| Event | Timing |
+| --- | --- |
+| Usage record submitted | Hourly batches, on the reporting schedule |
+| Dispute window | 24 hours from submission — your challenge period |
+| Settlement | Next settlement cycle after the window closes (hourly cycles; daily cycle at 00:00 UTC) |
+| Provider payout | At settlement, the agreed amount with 0% marketplace commission |
+
+Practical implication: charges hit escrow roughly a day behind consumption.
+Reconcile against that lag, not against wall-clock usage.
+
+## Your dispute rights
+
+Every usage record is disputable within the window:
+
+```bash
+virtengine tx settlement dispute-usage \
+  --usage-id usage-1234567890 \
+  --reason "CPU usage appears inflated" \
+  --expected-cpu-hours 10 \
+  --from customer
+```
+
+Guarantees the protocol gives you:
+
+- **Disputed usage cannot settle** while the dispute is open.
+- **Corrections are transparent** — an accepted dispute produces a new
+  correction record referencing the original; history is never silently
+  rewritten.
+- **Evidence is immutable** once recorded.
+
+Dispute states: Created → Pending → Reviewing → Resolved / Rejected /
+Expired.
+
+Beyond the automated path, unresolved disputes can escalate through the
+on-chain support workflows in `x/support`.
+
+## Independent cross-checks
+
+You are not the only line of defense. Before settlement, provider metrics
+are reconciled against independent platform metrics, and discrepancies
+above 25% **block settlement automatically** — large over-billing is caught
+even if you never look at a record. Anomaly and fraud checks (future
+timestamps, impossible durations, negative values) run on every record
+(see [Usage Reporting](/concepts/usage-reporting/)).
+
+## Cost-control checklist
+
+1. Fund escrow for your planned horizon; alert on the balance.
+2. Spot-check usage records against your own workload telemetry.
+3. Dispute inside 24 hours — the window does not extend.
+4. Close deployments you're done with; idle leases keep settling whatever
+   the workload consumes.

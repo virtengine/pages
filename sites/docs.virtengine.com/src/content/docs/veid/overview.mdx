@@ -1,0 +1,85 @@
+---
+title: VEID Overview
+description: VirtEngine's privacy-preserving decentralized identity layer — biometric capture, liveness, hardware attestation, zero-knowledge proofs, and encrypted on-chain scopes.
+---
+
+import VeidPipeline from '../../../components/diagrams/VeidPipeline.astro';
+
+**VEID — Verifiable Electronic Identity** is VirtEngine's decentralized
+identity layer. It lets marketplace participants prove who they are — to the
+strength the situation demands — without surrendering their biometric data
+to a central operator or to the public chain.
+
+<VeidPipeline caption="The VEID capture pipeline. Everything sensitive is captured and encrypted on-device; the chain holds only encrypted scope references and signed verification results." />
+
+## Why a marketplace needs identity
+
+A permissionless compute market is a magnet for Sybil attacks, fake reviews,
+usage fraud, and money-laundering-adjacent behavior. VEID raises the cost of
+all of these by tying marketplace roles — provider registration, validator
+onboarding, tenant accounts, reviews — to verified identities, while keeping
+the verification data itself private.
+
+## The building blocks
+
+| Capability | What it does |
+| --- | --- |
+| Document capture | Front/back identity document photos with OCR extraction |
+| Selfie + active liveness | Anti-spoofing challenges that defeat photos, replays, and masks |
+| Biometric hardware capture | Fingerprint/iris templates via platform-secure APIs |
+| Device integrity attestation | Play Integrity (Android) / App Attest (iOS) verdicts |
+| Encrypted vault | All templates and payloads encrypted via the VEID envelope |
+| On-chain scopes | `x/veid` records referencing encrypted vault payloads |
+| Zero-knowledge proofs | `x/veid/zk` — prove properties of identity data without revealing it |
+| Verifier registry | `x/veidregistry` — governance-approved verifier versions |
+
+## Identity scopes
+
+Identity data is partitioned into consent-scoped categories:
+
+| Scope ID | Data included | GDPR special category |
+| --- | --- | --- |
+| `veid.biometric` | Facial templates, liveness scores | Yes (Art. 9) |
+| `veid.document` | OCR-extracted text, document scans | No |
+| `veid.basic` | Name, date of birth, address | No |
+| `veid.verification_history` | Timestamps, scores, ML versions | No |
+| `veid.trust_score` | Score, factors, confidence | No |
+| `veid.geo_location` | Country, region (not precise GPS) | No |
+| `veid.device_fingerprint` | Browser, OS, device type | No |
+
+Biometric hardware and device attestation payloads add the
+`biometric_hardware` and `device_attestation` scope types. Each scope is
+consented to independently — see the
+[Consent Framework](/veid/consent-framework/).
+
+## Governance and operation
+
+identity.org.au is a Foundation-operated website and public education service.
+VEID is different: it is decentralised protocol technology operated by
+participating validators under the network rules. The Foundation does not run a
+central VEID verification service, and eligible validators may join the network.
+
+## The verification economy
+
+Verification work is performed against governance-approved verifier versions
+tracked in `x/veidregistry` (upsert → approve → retire lifecycle, plus
+validator readiness reporting). Validator compensation remains governed by the
+network's conservative staking and issuance policy; no fixed VEID reward pool
+or yield is promised.
+
+## The reference capture app
+
+The repository ships a mobile reference implementation at
+`mobile/veid-capture-app/` covering the full enrollment pipeline. The
+identity program also maintains a public presence at
+[identity.org.au](https://identity.org.au).
+
+## Section contents
+
+- [Enrollment & Capture Flow](/veid/enrollment/) — the eight-step
+  end-to-end pipeline.
+- [Hardware & Device Attestation](/veid/hardware-attestation/) — Play
+  Integrity, App Attest, and sensor support.
+- [Consent Framework](/veid/consent-framework/) — scope-based consent,
+  revocation, and compliance mapping.
+- [Privacy Model](/veid/privacy/) — what goes on-chain, what never does.

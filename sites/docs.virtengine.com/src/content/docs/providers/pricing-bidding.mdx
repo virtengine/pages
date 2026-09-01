@@ -1,0 +1,75 @@
+---
+title: Pricing & Bidding Strategy
+description: How providers price bids and HPC queues on VirtEngine — cost floors, zero marketplace commission, validator transaction fees, reputation premiums, and common pricing mistakes.
+---
+
+Bidding on VirtEngine is open competition: every qualified provider sees the
+same orders. Sustainable pricing means knowing your cost floor, your
+reputation premium, and the protocol's cut.
+
+## Know your net
+
+Marketplace settlement has **0% protocol commission**. Providers receive the
+agreed lease amount from escrow; low validator transaction fees apply only to
+the on-chain messages involved:
+
+```text
+net_revenue = bid_price × utilization × (1 − 0.04) − operating_cost
+```
+
+Because payment follows **settled usage** — hourly cycles plus a 24-hour
+dispute window — your effective revenue also depends on clean usage
+reporting. Records blocked by reconciliation discrepancies or disputes are
+revenue you've earned but can't collect yet.
+
+## Pricing containers and VMs (bid-side)
+
+For order-driven workloads, you respond to tenant orders with priced bids:
+
+- **Anchor to your marginal cost** per resource-hour (power, amortized
+  hardware, bandwidth, staff), not to what competitors bid this week.
+- **Price your attributes.** Audited, well-benchmarked, well-reviewed
+  providers legitimately clear at higher prices — that premium is the return
+  on your [reputation investment](/providers/benchmarks-audits/).
+- **Mind the escrow horizon.** Long-running leases only pay while tenant
+  escrow stays funded; a lease that closes early from an exhausted escrow
+  account is not a defaulted debt, just ended revenue.
+
+## Pricing HPC capacity (queue-side)
+
+HPC pricing is published rather than bid per order: you create priced queues
+against your registered cluster.
+
+```yaml
+schema_version: "1.0"
+cluster_id: "HPC-1"
+name: "A100 on-demand"
+resource_type: "gpu"
+price_per_hour: "12.5uve"
+min_duration: 3600
+max_duration: 86400
+```
+
+```bash
+virtengine tx hpc create-queue queue.yaml --from provider
+```
+
+Queue design levers:
+
+- **Duration bounds** (`min_duration`/`max_duration`) shape which jobs land
+  on you — short interactive sessions and multi-day batch runs have very
+  different scheduling economics.
+- **Resource-type separation** — separate queues for GPU vs. CPU keep your
+  premium hardware from being consumed at commodity prices.
+- Tenants submit jobs with a `max_budget`; jobs whose budget can't cover
+  your queue price at requested scale won't route to you.
+
+## Common mistakes
+
+| Mistake | Consequence |
+| --- | --- |
+| Pricing below marginal cost to build share | Negative margin at 100% utilization — the market will happily oblige |
+| Ignoring validator transaction fees in cost models | Small operational-cost surprise; fees are proposed at ~90% below standard networks |
+| One queue for all HPC hardware | Premium GPUs sold at CPU prices |
+| Overstated benchmarks | Reconciliation discrepancies; >25% blocks settlement |
+| Counting revenue at lease signing | Cash-flow gaps; revenue arrives at settlement |

@@ -1,0 +1,82 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 860 460"
+    width="860"
+    height="460"
+    role="img"
+    aria-label="VirtEngine architecture: clients talk to the single virtengine binary, which layers on-chain module groups over the Cosmos SDK runtime and CometBFT consensus; provider daemons and HPC clusters operate off-chain."
+  >
+    <style>
+      .ar-layer { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); rx: 8; }
+      .ar-chain { fill: none; stroke: var(--sl-color-accent); stroke-width: 1.6; stroke-dasharray: 6 4; rx: 12; }
+      .ar-group { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 6; }
+      .ar-title { font: 600 13px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .ar-label { font: 600 12px var(--ve-font-display, sans-serif); fill: var(--sl-color-accent-high); }
+      .ar-mod { font: 400 10.5px var(--sl-font-mono, monospace); fill: var(--sl-color-gray-2); }
+      .ar-sub { font: 400 11px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .ar-line { stroke: var(--sl-color-gray-4); stroke-width: 1.4; fill: none; }
+    </style>
+
+    <!-- Clients -->
+    <rect class="ar-layer" x="20" y="16" width="820" height="46"></rect>
+    <text class="ar-title" x="40" y="44">Clients</text>
+    <text class="ar-sub" x="430" y="44" text-anchor="middle">virtengine CLI · TypeScript SDK · Portal · gRPC / REST queries</text>
+
+    <path class="ar-line" d="M430 62 V86"></path>
+
+    <!-- Chain boundary -->
+    <rect class="ar-chain" x="20" y="90" width="820" height="264"></rect>
+    <text class="ar-label" x="40" y="114">virtengine binary — on-chain state machine</text>
+
+    <!-- Module groups -->
+    <rect class="ar-group" x="40" y="130" width="185" height="102"></rect>
+    <text class="ar-title" x="132" y="152" text-anchor="middle">Marketplace</text>
+    <text class="ar-mod" x="132" y="172" text-anchor="middle">market · marketplace</text>
+    <text class="ar-mod" x="132" y="188" text-anchor="middle">deployment · provider</text>
+    <text class="ar-mod" x="132" y="204" text-anchor="middle">resources · hpc</text>
+
+    <rect class="ar-group" x="240" y="130" width="185" height="102"></rect>
+    <text class="ar-title" x="332" y="152" text-anchor="middle">Economics</text>
+    <text class="ar-mod" x="332" y="172" text-anchor="middle">escrow · settlement</text>
+    <text class="ar-mod" x="332" y="188" text-anchor="middle">take · bme · issuancepolicy</text>
+    <text class="ar-mod" x="332" y="204" text-anchor="middle">staking · delegation</text>
+
+    <rect class="ar-group" x="440" y="130" width="185" height="102"></rect>
+    <text class="ar-title" x="532" y="152" text-anchor="middle">Identity &amp; Trust</text>
+    <text class="ar-mod" x="532" y="172" text-anchor="middle">veid · veidregistry · mfa</text>
+    <text class="ar-mod" x="532" y="188" text-anchor="middle">cert · roles · review</text>
+    <text class="ar-mod" x="532" y="204" text-anchor="middle">audit · benchmark · fraud</text>
+
+    <rect class="ar-group" x="640" y="130" width="180" height="102"></rect>
+    <text class="ar-title" x="730" y="152" text-anchor="middle">Security &amp; Infra</text>
+    <text class="ar-mod" x="730" y="172" text-anchor="middle">encryption · enclave</text>
+    <text class="ar-mod" x="730" y="188" text-anchor="middle">oracle · config</text>
+    <text class="ar-mod" x="730" y="204" text-anchor="middle">support</text>
+
+    <!-- SDK / consensus layers -->
+    <rect class="ar-layer" x="40" y="248" width="780" height="40"></rect>
+    <text class="ar-title" x="430" y="273" text-anchor="middle">Cosmos SDK runtime — accounts, bank, gov, tx routing</text>
+
+    <rect class="ar-layer" x="40" y="300" width="780" height="40"></rect>
+    <text class="ar-title" x="430" y="325" text-anchor="middle">CometBFT — BFT consensus &amp; P2P networking</text>
+
+    <path class="ar-line" d="M430 354 V378"></path>
+
+    <!-- Off-chain -->
+    <rect class="ar-layer" x="20" y="382" width="400" height="60"></rect>
+    <text class="ar-title" x="220" y="406" text-anchor="middle">Provider daemon (off-chain)</text>
+    <text class="ar-sub" x="220" y="424" text-anchor="middle">deploys workloads · meters usage · submits reports</text>
+
+    <rect class="ar-layer" x="440" y="382" width="400" height="60"></rect>
+    <text class="ar-title" x="640" y="406" text-anchor="middle">Compute infrastructure</text>
+    <text class="ar-sub" x="640" y="424" text-anchor="middle">Kubernetes · SLURM / MOAB / Open OnDemand clusters</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

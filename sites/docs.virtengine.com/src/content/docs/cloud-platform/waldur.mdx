@@ -1,0 +1,75 @@
+---
+title: Waldur Integration
+description: How Waldur provides VirtEngine's multi-service marketplace surface and provider-defined offering catalogue.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="tip">
+Waldur is the primary marketplace and service-management integration for
+VirtEngine. The VirtEngine protocol remains the decentralized trust and
+settlement layer; Waldur provides the multi-service catalogue and fulfilment
+surface.
+</Aside>
+
+## The marketplace layer
+
+[Waldur](https://waldur.com) is an open-source platform for managing hybrid
+cloud resources, service marketplaces and organizational hierarchies. In the
+VirtEngine architecture, it is the main marketplace and service-management
+integration: the self-service catalogue where providers can publish and users
+can discover more than a single kind of compute service.
+
+The catalogue can include private clouds, storage, VMs, accelerator-backed
+compute and fully custom offerings defined by a provider. This matters because
+not every service is a Kubernetes deployment or an HPC batch job.
+
+For Waldur installation, configuration and administration, use the maintained
+upstream **[Waldur documentation](https://docs.waldur.com)**.
+
+## How Waldur and the protocol divide responsibilities
+
+The VE–Waldur API connects Waldur's catalogue and service-management model to
+the VirtEngine protocol. Waldur handles the user-facing catalogue,
+organization/project context, provisioning hand-off and service accounting.
+VirtEngine supplies the decentralized parts: VEID-gated participation,
+orders and bids, leases, escrow, signed usage and settlement.
+
+After a listing is selected or matched, fulfilment can be handed to a
+Kubernetes deployment, an HPC scheduler such as SLURM, or a custom provider
+integration. Kubernetes and schedulers are execution targets — not the limit
+of the marketplace catalogue.
+
+## Reconciliation and metering
+
+The provider daemon can cross-validate its metering against Waldur platform
+metrics:
+
+```yaml
+waldur_reconciler:
+  enabled: true
+  discrepancy_threshold: 10.0  # percentage
+  auto_correct: false
+  auto_correct_threshold: 5.0
+```
+
+The reconciler compares provider-side sources against Waldur-side sources
+per metric — container metrics vs. component usage for CPU/memory, volume
+stats vs. resource limits for storage, NVIDIA metrics vs. component usage
+for GPU — and feeds the discrepancy-handling policy described in
+[Escrow & Settlement](/concepts/escrow-settlement/#reconciliation-and-discrepancy-handling).
+
+This keeps a useful reconciliation path between the marketplace surface and
+the protocol's signed usage and settlement records.
+
+## Migration guidance
+
+There is no automated migration from every existing cloud platform into this
+architecture. A practical path:
+
+1. Inventory legacy workloads (VMs, containers, apps) and their storage.
+2. Re-express workloads as protocol deployments
+   ([Deploying Workloads](/tenants/deploying-workloads/)) or HPC jobs.
+3. If you operated the platform *as a provider*, evaluate
+   [becoming a marketplace provider](/providers/overview/) — your capacity,
+   and the operational skills the platform demanded, transfer directly.

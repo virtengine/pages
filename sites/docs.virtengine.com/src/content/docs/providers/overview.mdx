@@ -1,0 +1,92 @@
+---
+title: Becoming a Provider
+description: How datacenter, cloud, and HPC operators join the VirtEngine marketplace — registration, requirements, and the path to first revenue.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Providers are the supply side of VirtEngine: operators with real capacity —
+a datacenter, a Kubernetes cluster, spare GPU nodes, or an HPC facility —
+who lease it on the open marketplace and are paid through on-chain escrow.
+
+## What you're signing up for
+
+As a provider you will:
+
+- register an on-chain identity with attributes describing your capacity,
+- run the **provider daemon** alongside your infrastructure,
+- bid on tenant orders (or publish HPC offerings and queues),
+- deploy and operate tenant workloads,
+- submit **signed usage reports** on a schedule, and
+- receive the agreed escrow payouts with 0% marketplace commission.
+
+Your reputation — audits, benchmarks, reviews — accumulates on-chain and
+directly affects which orders you can win.
+
+## Prerequisites
+
+| Requirement | Notes |
+| --- | --- |
+| Verified identity | VEID enrollment for the operator account — see [VEID Overview](/veid/overview/) |
+| Infrastructure | Kubernetes for containerized workloads and/or an HPC scheduler (SLURM, MOAB, Open OnDemand) |
+| Chain access | A synced `virtengine` node (own or trusted RPC) |
+| Keys | Provider signing key for transactions and usage-report signatures |
+| Connectivity | A stable public endpoint for tenant/lease communication, secured via `x/cert` mTLS |
+
+## Onboarding path
+
+<Steps>
+
+1. **Verify your identity.** Enroll through VEID. Provider registration is
+   identity-gated to keep the marketplace free of throwaway operators.
+
+2. **Register on-chain.** Create your provider record (`x/provider`) with
+   attributes — region, capabilities, contact endpoint. For HPC capacity,
+   also register your cluster:
+
+   ```json
+   {
+     "schema_version": "1.0",
+     "name": "A100-east",
+     "cluster_type": "slurm",
+     "region": "us-east-1",
+     "endpoint": "https://hpc.example.com",
+     "total_nodes": 64,
+     "total_gpus": 512
+   }
+   ```
+
+   ```bash
+   virtengine tx hpc register-provider provider.json --from provider
+   ```
+
+3. **Deploy the provider daemon.** Configure it against your chain node and
+   your infrastructure — see [Provider Daemon](/providers/provider-daemon/).
+
+4. **Enable usage reporting and settlement.** Without them you will not be
+   paid — see [Usage Reporting & Payouts](/providers/usage-and-payments/).
+
+5. **Get audited and benchmarked.** Optional but commercially important:
+   auditor attestations and benchmark results widen the set of orders you
+   qualify for — see [Benchmarks & Audits](/providers/benchmarks-audits/).
+
+6. **Start bidding.** Tune your pricing to win profitable leases — see
+   [Pricing & Bidding Strategy](/providers/pricing-bidding/).
+
+</Steps>
+
+## Revenue model at a glance
+
+```text
+payout = settled_usage_value                         # marketplace commission: 0%
+```
+
+Payment arrives when usage records settle (hourly settlement cycles, 24-hour
+dispute window) — not when the lease is signed. Plan cash flow accordingly.
+
+## Operational bar
+
+Tenants and the protocol both hold you to measurable standards: reconciliation
+discrepancies above 25% **block settlement**, fraud signals can shut down
+leases, and audit/review history is permanent. Read
+[Security Obligations](/providers/security/) before going to production.

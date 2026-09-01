@@ -1,0 +1,58 @@
+---
+title: Staking-as-a-Service Partners
+description: Guidance for custodial and non-custodial staking providers offering VirtEngine staking to their customers.
+---
+
+Staking-as-a-service operators — exchanges, custodians, and dedicated
+staking platforms — bring delegators to the network at scale. This page
+covers what is different about offering VirtEngine staking versus a generic
+Cosmos-SDK chain.
+
+## What is standard
+
+If you already operate Cosmos-ecosystem validators, the fundamentals carry
+over: CometBFT consensus, bonded proof of stake, delegation, commission,
+a 21-day unbonding period, and slashing for double-signing and downtime.
+Your existing key-management, sentry, and monitoring architecture applies.
+
+## What is different on VirtEngine
+
+1. **VEID-gated validator onboarding.** Validator onboarding is a high-risk
+   action under VEID policy — expect attestation-required identity
+   verification of the operating entity, not an anonymous validator key.
+   See [Enrollment & Capture Flow](/veid/enrollment/).
+
+2. **Verification participation requires readiness.** Validators that
+   participate in identity-verification work must track approved verifier
+   versions in `x/veidregistry` and report readiness. Compensation follows
+   the governance-controlled conservative incentive policy; no fixed pool
+   or yield is promised.
+
+3. **Governance is operationally dense.** HPC template approvals and
+   verifier version approvals arrive as routine security-review votes (see
+   [Governance Participation](/validators/governance/)). Delegators inherit
+   your vote — enterprise customers will ask about your governance policy.
+
+4. **Variable rewards.** The proposed staking allocation is roughly 90%
+   lower than the previous model. Do not market fixed yields; parameters are
+   set through governance (see [Staking Economics](/validators/staking-economics/)).
+
+## Product and disclosure checklist
+
+- **Unbonding disclosure** — customers must understand the 21-day
+  illiquidity window and that unbonding stake earns nothing.
+- **Slashing pass-through** — be explicit about whether your product
+  absorbs or passes through slashing losses; delegated stake is slashed
+  with the validator (see [Slashing Risks](/validators/slashing/)).
+- **Commission transparency** — on-chain commission history is public;
+  ensure your fee disclosures match it.
+- **No return guarantees** — represent rewards as governance-controlled,
+  variable protocol parameters.
+
+## Network status caveat
+
+Before offering VirtEngine staking to customers, verify the network's
+launch state directly against the repository's posture — the recorded
+mainnet launch is planned for January 2027, and nothing here should be read as
+confirmation the network is live.
+See [Mainnet Launch Posture](/validators/mainnet-launch/).

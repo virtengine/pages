@@ -1,0 +1,18 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), microphone=(), payment=()
+  Content-Security-Policy: base-uri 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/pagefind/*
+  Cache-Control: public, max-age=31536000, immutable
+
+https://docs-virtengine-com.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.docs-virtengine-com.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,98 @@
+---
+title: Building from Source
+description: Compiling the virtengine binary — Go 1.25 toolchain, C dependencies, Makefile targets, and platform support.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+VirtEngine is developed against **Go 1.25.5**. The build is Makefile-driven
+and produces a single binary, `virtengine`, containing the full node and
+client functionality.
+
+## Prerequisites
+
+| Requirement | Notes |
+| --- | --- |
+| Go 1.25.5 | With `GOPATH` set and `$GOPATH/bin` in `$PATH` |
+| C/C++ compiler | `gcc` or `clang` — required for C dependencies (`libusb`, `libhid`) |
+| GNU make 4+ | macOS ships an ancient make; install via Homebrew (keg-only — prepend its gnubin to `PATH`) |
+| direnv ≥ 2.32.x | The repo uses direnv extensively for environment setup |
+
+## Supported platforms
+
+| Platform | Arch | Status |
+| --- | --- | --- |
+| Darwin | amd64 / arm64 | Supported |
+| Linux | amd64 / arm64 | Supported |
+| Linux | armhf (GOARM 5,6,7) | Not supported |
+| Windows | amd64 | Experimental |
+
+## Build
+
+<Steps>
+
+1. **Install dependencies.**
+
+   ```shell
+   # macOS
+   brew install curl wget jq direnv coreutils make npm
+   export PATH="$(brew --prefix)/opt/make/libexec/gnubin:$PATH"
+
+   # Debian-based Linux
+   sudo apt update
+   sudo apt install -y jq curl wget build-essentials ca-certificates npm direnv gcc
+   ```
+
+2. **Clone and build.**
+
+   ```shell
+   git clone https://github.com/virtengine/virtengine
+   cd virtengine
+   make virtengine
+   ```
+
+   The compiled executable is written to `.cache/bin`. Inside the
+   repository environment it takes precedence over any system-wide
+   `virtengine`.
+
+</Steps>
+
+## The `.cache` build environment
+
+The build creates a `.cache` directory at the source root for pinned
+versions of temporary build tools (`protoc` and friends), installed only
+when a target needs them:
+
+```text
+.cache/
+  bin/       # build tools
+  run/       # work directories for _run examples
+  versions/  # version markers used to detect tool upgrades
+```
+
+Set `VE_DEVCACHE` to relocate it. Tool versions and install rules live in
+`make/init.mk` and `make/setup-cache.mk`.
+
+## Installing releases instead
+
+For published release tags, installation paths exist via Homebrew and an
+install script:
+
+```sh
+brew tap virtengine/tap
+brew install virtengine
+```
+
+```sh
+curl -sSfL https://raw.githubusercontent.com/virtengine/virtengine/main/install.sh | sh
+```
+
+Before production use, verify the tag is actually published and the network
+posture matches your deployment — see
+[Mainnet Launch Posture](/validators/mainnet-launch/).
+
+## Next steps
+
+- [Development Environment](/developers/development-environment/) —
+  direnv, frontend tooling, and the Docker localnet.
+- [Contributing](/developers/contributing/) — how changes land.

@@ -1,0 +1,78 @@
+---
+title: Clients & SDKs
+description: Interacting with the VirtEngine chain — the CLI, TypeScript SDK, queries, and where module APIs are defined.
+---
+
+Everything the chain can do is reachable three ways: the `virtengine` CLI,
+gRPC/REST queries, and the TypeScript SDK. All three speak to the same node
+API.
+
+## The CLI
+
+The `virtengine` binary doubles as the client. Transactions and queries are
+namespaced per module — the pattern is consistent across the protocol:
+
+```bash
+# Transactions: virtengine tx <module> <action> [flags]
+virtengine tx hpc submit-job job.yaml --from tenant
+virtengine tx settlement dispute-usage --usage-id usage-123 --from customer
+virtengine tx gov vote 42 yes --from validator
+
+# Queries: virtengine query <module> <query> [flags]
+virtengine query settlement disputes --status pending
+virtengine query gov proposal 42
+
+# Some modules also expose top-level helpers
+virtengine hpc templates list
+virtengine veid enroll --consent-biometric=true ...
+```
+
+Spec-file-driven commands (HPC job submission, provider registration, queue
+creation) accept JSON or YAML with an optional `schema_version: "1.0"` —
+formats are documented in the repo's `docs/hpc-cli-specs.md` and on
+[Submitting HPC Jobs](/tenants/hpc-jobs/).
+
+## TypeScript SDK
+
+A TypeScript SDK lives in the repository at `sdk/ts/` as a pnpm workspace:
+
+```shell
+pnpm -C sdk/ts install
+```
+
+Use it to build web and Node.js integrations against chain queries and
+transaction construction without shelling out to the CLI.
+
+## gRPC and REST
+
+As a Cosmos SDK chain, VirtEngine nodes expose the standard query surfaces:
+gRPC services per module, and REST via gRPC-gateway, alongside CometBFT RPC
+(default `:26657`) for consensus-level queries. Any Cosmos-ecosystem client
+tooling that lets you register custom message types can be adapted.
+
+## Where module APIs are defined
+
+There is no better reference than the module source. For each module
+`x/<name>`:
+
+| Location | Contents |
+| --- | --- |
+| `x/<name>/types/msgs.go` | Message types (`Msg…`) — the transaction API |
+| `x/<name>/types/keys.go` | Module name, store keys |
+| `x/<name>/keeper/` | State logic, query handlers |
+| `x/<name>/types/codec.go` | Registered message routes |
+| `x/<name>/client/` | CLI wiring (where present) |
+
+Example: `x/veidregistry/types/msgs.go` defines
+`MsgUpsertVerifierVersion`, `MsgApproveVerifierVersion`,
+`MsgCancelVerifierVersion`, `MsgRetireVerifierVersion`,
+`MsgReportValidatorReadiness`, and `MsgUpdateParams` — the complete
+verifier-registry transaction surface.
+
+## Related tooling
+
+- **Bosun** — VirtEngine's autonomous AI agent orchestrator
+  (`npm install -g bosun`), used to supervise fleets of coding agents; see
+  the [Bosun repository](https://github.com/virtengine/bosun) for docs.
+- **Economics tooling** — `pkg/economics/` simulation and audit framework;
+  see [Tokenomics](/concepts/tokenomics/).

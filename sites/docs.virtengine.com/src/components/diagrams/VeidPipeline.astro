@@ -1,0 +1,86 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 860 300"
+    width="860"
+    height="300"
+    role="img"
+    aria-label="VEID capture pipeline: consent, document capture with OCR, selfie and active liveness, biometric hardware capture, device attestation, encrypted vault storage, on-chain scope creation, and verification attestation."
+  >
+    <defs>
+      <marker id="ve-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-accent)"></path>
+      </marker>
+    </defs>
+    <style>
+      .vp-box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); rx: 8; }
+      .vp-box-accent { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 8; }
+      .vp-title { font: 600 12.5px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .vp-sub { font: 400 10.5px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .vp-flow { stroke: var(--sl-color-accent); stroke-width: 1.6; fill: none; }
+      .vp-step { font: 500 10px var(--sl-font-mono, monospace); fill: var(--sl-color-accent); }
+      .vp-zone { fill: none; stroke: var(--sl-color-gray-4); stroke-dasharray: 5 4; rx: 10; }
+      .vp-zonelabel { font: 500 10.5px var(--sl-font-mono, monospace); fill: var(--sl-color-gray-3); }
+    </style>
+
+    <!-- Device zone -->
+    <rect class="vp-zone" x="14" y="30" width="618" height="110"></rect>
+    <text class="vp-zonelabel" x="24" y="24">ON DEVICE — capture app</text>
+
+    <rect class="vp-box" x="30" y="52" width="136" height="66"></rect>
+    <text class="vp-title" x="98" y="78" text-anchor="middle">1 · Consent</text>
+    <text class="vp-sub" x="98" y="96" text-anchor="middle">biometric notice + terms</text>
+
+    <rect class="vp-box" x="182" y="52" width="136" height="66"></rect>
+    <text class="vp-title" x="250" y="78" text-anchor="middle">2 · Document</text>
+    <text class="vp-sub" x="250" y="96" text-anchor="middle">front/back + OCR</text>
+
+    <rect class="vp-box" x="334" y="52" width="136" height="66"></rect>
+    <text class="vp-title" x="402" y="78" text-anchor="middle">3 · Liveness</text>
+    <text class="vp-sub" x="402" y="96" text-anchor="middle">selfie + active checks</text>
+
+    <rect class="vp-box" x="486" y="52" width="136" height="66"></rect>
+    <text class="vp-title" x="554" y="78" text-anchor="middle">4 · Biometrics</text>
+    <text class="vp-sub" x="554" y="96" text-anchor="middle">fingerprint / iris</text>
+
+    <path class="vp-flow" d="M166 85 H179" marker-end="url(#ve-arrow)"></path>
+    <path class="vp-flow" d="M318 85 H331" marker-end="url(#ve-arrow)"></path>
+    <path class="vp-flow" d="M470 85 H483" marker-end="url(#ve-arrow)"></path>
+
+    <!-- Attestation -->
+    <rect class="vp-box" x="690" y="52" width="150" height="66"></rect>
+    <text class="vp-title" x="765" y="78" text-anchor="middle">5 · Attestation</text>
+    <text class="vp-sub" x="765" y="96" text-anchor="middle">Play Integrity / App Attest</text>
+    <path class="vp-flow" d="M622 85 H687" marker-end="url(#ve-arrow)"></path>
+
+    <!-- Down to row 2 -->
+    <path class="vp-flow" d="M765 118 V180 H626" marker-end="url(#ve-arrow)"></path>
+
+    <!-- Row 2 -->
+    <rect class="vp-box-accent" x="486" y="150" width="136" height="66"></rect>
+    <text class="vp-title" x="554" y="176" text-anchor="middle">6 · Encrypt</text>
+    <text class="vp-sub" x="554" y="194" text-anchor="middle">envelope → vault</text>
+
+    <rect class="vp-box-accent" x="334" y="150" width="136" height="66"></rect>
+    <text class="vp-title" x="402" y="176" text-anchor="middle">7 · Scopes</text>
+    <text class="vp-sub" x="402" y="194" text-anchor="middle">on-chain references</text>
+
+    <rect class="vp-box-accent" x="182" y="150" width="136" height="66"></rect>
+    <text class="vp-title" x="250" y="176" text-anchor="middle">8 · Verify</text>
+    <text class="vp-sub" x="250" y="194" text-anchor="middle">signed results on-chain</text>
+
+    <path class="vp-flow" d="M486 183 H473" marker-end="url(#ve-arrow)"></path>
+    <path class="vp-flow" d="M334 183 H321" marker-end="url(#ve-arrow)"></path>
+
+    <!-- Privacy note -->
+    <text class="vp-sub" x="430" y="262" text-anchor="middle">Raw biometrics never leave the encrypted vault — the chain stores only encrypted scope references</text>
+    <text class="vp-sub" x="430" y="278" text-anchor="middle">and signed verification attestations.</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

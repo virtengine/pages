@@ -1,0 +1,84 @@
+---
+title: Enrollment & Capture Flow
+description: The end-to-end VEID enrollment pipeline — consent, document capture, liveness, biometric hardware capture, attestation, encryption, and on-chain verification.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Enrollment is the moment VEID earns or loses user trust, so the pipeline is
+strict about ordering: consent comes first, capture happens on-device, and
+nothing leaves the device unencrypted.
+
+## The eight steps
+
+<Steps>
+
+1. **Consent.** The user accepts the biometric data notice and privacy
+   terms. Consent is scope-based and recorded with timestamp and version —
+   no capture can begin without it. See the
+   [Consent Framework](/veid/consent-framework/).
+
+2. **Document capture.** Front and back of the identity document are
+   photographed; OCR extracts the text fields.
+
+3. **Selfie + liveness.** The user takes a selfie and completes **active
+   liveness challenges** with anti-spoofing checks, defeating printed
+   photos, screen replays, and masks.
+
+4. **Biometric hardware capture.** Fingerprint or iris templates are
+   captured through platform-secure APIs (optical/capacitive/ultrasonic
+   fingerprint sensors, iris where OEM hardware supports it; Touch ID /
+   Face ID on iOS).
+
+5. **Device attestation.** The app obtains a device-integrity token —
+   Play Integrity on Android (SafetyNet fallback for legacy devices),
+   App Attest on iOS (DeviceCheck fallback) — and it is verified
+   server-side. Details in
+   [Hardware & Device Attestation](/veid/hardware-attestation/).
+
+6. **Encrypted payload.** Biometric templates and attestation payloads are
+   encrypted into the vault using the VEID envelope
+   (see [Encryption & Enclaves](/concepts/encryption-enclaves/)).
+
+7. **On-chain scope creation.** New identity scopes are created on-chain
+   referencing the encrypted vault payloads — including the
+   `biometric_hardware` and `device_attestation` scope types.
+
+8. **Verification.** The verification service checks attestation evidence
+   and stores signed verification results on-chain. Failures are recorded
+   on-chain too, supporting review and dispute handling.
+
+</Steps>
+
+## CLI enrollment
+
+Enrollment can also be driven from the command line with explicit consent
+flags:
+
+```bash
+virtengine veid enroll \
+  --consent-biometric=true \
+  --consent-document=true \
+  --consent-purpose="Marketplace identity verification" \
+  --consent-expiration="2027-01-29T00:00:00Z"
+```
+
+## Verification tiers in practice
+
+Not every action needs the same identity strength. Verification pipelines
+enforce policy per risk level:
+
+- **High-risk actions** (e.g., validator onboarding) should require
+  **attestation-required** policies — a valid device-integrity verdict plus
+  biometric verification.
+- **Low-risk flows** may proceed with fallback behavior when a device lacks
+  attestation APIs; the capture flow then continues with a
+  `device_attestation` scope explicitly marked unsupported, so relying
+  parties can see exactly what assurance they have.
+
+## Failure and retry behavior
+
+- Attestation failures are recorded on-chain for auditability — a failed
+  enrollment is evidence, not a silent retry.
+- Re-verification requires the user's `AllowReVerification` consent flag;
+  users can decline future re-verification without deleting their identity.

@@ -1,0 +1,79 @@
+---
+title: Machines & Storage
+description: Legacy platform reference — virtual machine deployment, block and object storage, snapshots, and the high-availability models.
+sidebar:
+  badge:
+    text: Legacy
+    variant: caution
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+Legacy platform documentation — see the
+[section overview](/cloud-platform/overview/) for context.
+</Aside>
+
+## Virtual machines
+
+The platform's launcher deployed VMs in three steps:
+
+1. Select a **region**, name the instance, and choose a **flavor**
+   (CPU/RAM/disk profile).
+2. Choose the VM image version — or an app source such as a Git URL.
+3. Provide security credentials and launch.
+
+Users could connect to running machines over SSH/console, attach and
+detach disks, and manage lifecycle from the web UI or API. Docker
+Machine integration was also supported for driving Docker hosts.
+
+## Block storage
+
+Block storage volumes expanded VM datastores and could be detached and
+re-attached to another VM — a low-bandwidth way to move large datasets
+between servers. Because a volume is a separate partition from the OS
+partition, volumes could be removed later without affecting the server —
+safe scaling by design.
+
+## Object storage
+
+Storage nodes doubled as object storage: clients could store any data type
+(images, video, arbitrary files) directly via API or through the UI.
+Object storage was configured redundantly — multiple copies of client
+data, with optional multi-geographical placement for increased redundancy.
+
+## Snapshots
+
+VM state could be snapshotted as a backup to revert to later, or as a
+scaling tool — snapshot a VM, delete it, and relaunch the snapshot when
+needed again. Snapshots were stored automatically in the object storage
+system and billed accordingly.
+
+## High availability
+
+The platform's HA design stored a secondary copy of VMs through a network
+RAID-1-style system, avoiding expensive SAN hardware. Two reference
+setups:
+
+### One-link HA (minimal)
+
+| Node | Storage | Role |
+| --- | --- | --- |
+| Compute & Storage Node 1 | 2×HDD/SSD | One drive for VMs, one storing node 2's data |
+| Compute & Storage Node 2 | 2×HDD/SSD | Mirror arrangement of node 1 |
+| Failover node | 1×HDD/SSD | Standby; on failure, rebuilds from the surviving copy (~1 per 10 compute nodes) |
+
+Double-copy mode stored two copies of each compute node at the cost of
+doubled storage capacity.
+
+### SAN model
+
+| Node | Network | Role |
+| --- | --- | --- |
+| Compute nodes | 1 Gbps private | All drives usable by VMs; copies pushed to storage nodes |
+| Storage nodes | 10 Gbps private | Cluster storing copies from many compute nodes |
+| Failover node | 1 Gbps private | Standby; pulls backups from storage and reboots VMs automatically |
+
+On a hardware failure, VMs migrated to a new host with no data loss and
+minimal interruption — the property that qualified the platform as a true
+cloud rather than static VPS hosting.

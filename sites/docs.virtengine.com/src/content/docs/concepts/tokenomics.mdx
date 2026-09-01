@@ -1,0 +1,79 @@
+---
+title: Tokenomics
+description: The proposed VirtEngine economic model — identity-led issuance, conservative staking rewards, and governance-controlled parameters.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+VirtEngine's proposed token model is led by verified human uniqueness. It is
+designed to reward sustained, eligible participation in the identity network
+while retaining a substantially smaller staking-reward component for the
+validators and delegators who secure the protocol.
+
+## Status of this model
+
+The parameters on this page describe the current proposed policy for the
+January 2027 launch window. They are not live chain parameters, an offer of
+tokens, or a guarantee of eligibility. Network consensus can amend them before
+or after launch.
+
+## Identity-led allocation
+
+When an account reaches the network-defined threshold for a unique verified
+identity, the protocol may unlock an allocation that mints tokens to that
+account over time. The network determines the threshold from its identity
+score, tier and anti-Sybil rules; services do not receive the underlying
+identity evidence just because an account qualifies.
+
+The working model is deliberately long-term:
+
+- allocations accrue over an illustrative **50-year** period;
+- an account must remain active to continue receiving its allocation, with a
+  quarterly sign-in used as the illustrative activity check; and
+- loss of active status pauses future minting until the account again meets
+  the then-current protocol rules.
+
+These details are parameters rather than personal promises. Governance may
+change the qualification threshold, activity definition, accrual period, or
+other safeguards through consensus.
+
+## Foundation allocation
+
+Each **15-token** VEID issuance batch is split between eligible active verified
+humans and DETIO FOUNDATION LTD: **14 tokens** are allocated to eligible
+humans and **1 token** is allocated to the Foundation-controlled genesis
+account. The Foundation allocation is part of the 15-token batch, not an
+additional token minted on top of it. This 14:1 allocation split is
+governance-controlled and may be updated by consensus in the future.
+
+The Foundation operates its own websites and reference services. It does not
+operate VEID as a central service: VEID is decentralised protocol technology
+run by participating validators under the network rules.
+
+## Staking rewards
+
+Staking rewards remain part of the model because validators and delegators
+contribute to network security. The proposed issuance for staking is roughly
+**90% lower** than the previous model. Actual reward rates, validator
+commission, unbonding conditions and slashing rules are governed chain
+parameters and must not be represented as fixed yield.
+
+## Governance and transparency
+
+Economic changes must be proposed and adopted through network consensus. The
+project will publish the final launch parameters and any adopted amendments so
+participants can inspect the rules that apply to issuance, staking and the
+Foundation allocation.
+
+<Aside type="caution" title="No price or return claims">
+This documentation makes no claims about token price, market capitalization,
+or expected returns. Eligibility, allocation and rewards depend on the
+protocol rules in force at the relevant time.
+</Aside>
+
+## Related pages
+
+- [Governance & Staking](/concepts/governance-staking/) — how stake secures
+  the chain.
+- [Staking Economics](/validators/staking-economics/) — the
+  validator/delegator view.

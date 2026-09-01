@@ -1,0 +1,95 @@
+---
+title: HPC Workloads
+description: High-performance computing on VirtEngine — on-chain clusters, queues, job scheduling, workload templates, and routing enforcement.
+---
+
+import HpcFlow from '../../../components/diagrams/HpcFlow.astro';
+
+VirtEngine extends the marketplace beyond containers and VMs to
+**high-performance computing**: batch jobs, MPI workloads, GPU compute, and
+interactive sessions running on real HPC clusters managed by SLURM, MOAB, or
+Open OnDemand.
+
+<HpcFlow caption="An HPC job's path: on-chain submission, routing enforcement against the x/hpc scheduling decision, scheduler adapter submission, and signed usage flowing back to settlement." />
+
+## What `x/hpc` puts on-chain
+
+- **Clusters** — providers register HPC clusters with type, region,
+  endpoint, and capacity.
+- **Queues** — priced queues per cluster (`price_per_hour`, duration
+  bounds, resource type).
+- **Jobs** — tenant submissions referencing an offering, with node/GPU
+  counts, duration, budget, and the job script.
+- **Scheduling decisions** — which cluster a job should run on, recorded
+  on-chain so placement is deterministic and auditable.
+- **Workload templates** — curated, signed job templates approved through
+  governance.
+
+## Job lifecycle
+
+Jobs move through scheduler-mirrored states:
+
+```text
+pending → queued → starting → running → completed
+                                      ↘ failed
+                                      ↘ timeout
+            ↓
+         cancelled
+```
+
+The provider daemon fires lifecycle callbacks on each transition
+(submitted, queued, started, completed, failed, cancelled, timeout,
+suspended, resumed) and reports status on-chain.
+
+## Routing enforcement
+
+Placement is not advisory. The provider daemon's **routing enforcer**
+validates every submission against the on-chain scheduling decision, in one
+of three modes:
+
+| Mode | Behavior |
+| --- | --- |
+| `strict` (default) | Jobs must carry a valid, fresh decision for an available cluster; anything else is rejected |
+| `permissive` | Missing/stale decisions trigger re-scheduling; fallback clusters allowed but logged |
+| `audit_only` | No enforcement; all violations logged for monitoring |
+
+Decisions go stale after ~100 blocks / 600 seconds by default and must be
+refreshed. Violations (`missing_decision`, `stale_decision`,
+`cluster_mismatch`, `cluster_unavailable`, `capacity_exceeded`,
+`unauthorized_fallback`) are recorded as audit records with severity levels.
+
+## Built-in workload templates
+
+Five validated templates ship with the protocol:
+
+| Template ID | Type | Description |
+| --- | --- | --- |
+| `mpi-standard` | MPI | Standard MPI parallel computing with OpenMPI |
+| `gpu-compute` | GPU | GPU-accelerated compute with CUDA support |
+| `batch-standard` | Batch | Single-node batch processing |
+| `data-processing` | Data Processing | Spark/Dask data pipelines |
+| `interactive-session` | Interactive | JupyterLab and terminal sessions |
+
+```bash
+virtengine hpc templates list            # all templates
+virtengine hpc templates list --type gpu # filter by type
+virtengine hpc templates show mpi-standard
+```
+
+Custom templates are cryptographically signed by their publisher and require
+governance approval — the full flow is in
+[HPC Workload Templates](/providers/hpc-workload-templates/).
+
+## Usage and accounting
+
+HPC usage records capture wall-clock seconds, CPU core-seconds, memory
+GB-seconds, GPU-seconds, node-hours, storage GB-hours, network transfer, and
+energy where available — signed and submitted on-chain like every other
+usage record, feeding the standard
+[settlement pipeline](/concepts/escrow-settlement/).
+
+## Audience guides
+
+- Providers: [HPC Operations](/providers/hpc-operations/) and
+  [HPC Node Agent](/providers/hpc-node-agent/).
+- Tenants: [Submitting HPC Jobs](/tenants/hpc-jobs/).

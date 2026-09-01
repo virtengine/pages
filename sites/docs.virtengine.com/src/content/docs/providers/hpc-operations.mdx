@@ -1,0 +1,168 @@
+---
+title: HPC Operations
+description: Configuring and operating SLURM, MOAB, and Open OnDemand scheduler integrations with the VirtEngine provider daemon.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+The provider daemon integrates with HPC schedulers to execute compute jobs
+submitted on-chain. Three schedulers are supported: **SLURM**, **MOAB**, and
+**Open OnDemand (OOD)**.
+
+## Base configuration
+
+```yaml
+hpc:
+  enabled: true
+  scheduler_type: slurm  # Options: slurm, moab, ood
+  cluster_id: "my-hpc-cluster-001"
+
+  job_service:
+    job_poll_interval: 15s
+    job_timeout_default: 24h
+    max_concurrent_jobs: 100
+    enable_state_recovery: true
+    state_store_path: /var/lib/virtengine/hpc-state
+
+  usage_reporting:
+    enabled: true
+    report_interval: 5m
+    batch_size: 50
+    retry_on_failure: true
+
+  retry:
+    max_retries: 3
+    initial_backoff: 1s
+    max_backoff: 30s
+    backoff_multiplier: 2.0
+
+  audit:
+    enabled: true
+    log_path: /var/log/virtengine/hpc-audit.log
+    log_job_events: true
+    log_security_events: true
+    log_usage_reports: true
+```
+
+## Scheduler-specific configuration
+
+<Tabs>
+  <TabItem label="SLURM">
+
+```yaml
+hpc:
+  scheduler_type: slurm
+  slurm:
+    cluster_name: virtengine-hpc
+    controller_host: slurmctld.example.com
+    controller_port: 6817
+    auth_method: munge  # Options: munge, jwt
+    # auth_token: "..."  # Required if auth_method is jwt
+    default_partition: default
+    job_poll_interval: 10s
+    connection_timeout: 30s
+    max_retries: 3
+```
+
+  </TabItem>
+  <TabItem label="MOAB">
+
+```yaml
+hpc:
+  scheduler_type: moab
+  moab:
+    server_host: moab-server.example.com
+    server_port: 42559
+    use_tls: true
+    auth_method: password  # Options: password, key, kerberos
+    default_queue: batch
+    default_account: default
+    job_poll_interval: 15s
+    connection_timeout: 30s
+    waldur_integration: true
+    waldur_endpoint: https://waldur.example.com/api
+    ssh_host_key_callback: known_hosts  # Options: known_hosts, pinned, insecure
+    ssh_known_hosts_path: /home/provider/.ssh/known_hosts
+```
+
+  </TabItem>
+  <TabItem label="Open OnDemand">
+
+```yaml
+hpc:
+  scheduler_type: ood
+  ood:
+    base_url: https://ondemand.example.com
+    cluster: virtengine-hpc
+    oidc_issuer: https://veid.virtengine.com
+    oidc_client_id: provider-daemon
+    # oidc_client_secret provided via environment variable
+    session_poll_interval: 15s
+    connection_timeout: 30s
+    slurm_partition: interactive
+    default_hours: 4
+    enable_file_browser: true
+```
+
+  </TabItem>
+</Tabs>
+
+Credentials belong in the environment, never in config files:
+
+```bash
+export SLURM_JWT_TOKEN="your-jwt-token"        # SLURM JWT auth
+export MOAB_USERNAME="provider-service"        # MOAB auth
+export MOAB_PASSWORD="secure-password"
+export OOD_OIDC_CLIENT_SECRET="client-secret"  # OOD OIDC
+export PROVIDER_SIGNING_KEY_PATH="/path/to/key"
+```
+
+## Routing enforcement
+
+Job placement must follow on-chain `x/hpc` scheduling decisions. Configure
+the enforcement mode deliberately:
+
+```yaml
+routing:
+  enforcement_mode: "strict"          # strict | permissive | audit_only
+  require_decision_for_submission: true
+  allow_automatic_fallback: false
+```
+
+- **strict** (default) — fail closed. Jobs without a valid, fresh decision
+  for an available cluster are rejected. Decisions expire after ~100 blocks
+  / 600 seconds.
+- **permissive** — missing decisions trigger new scheduling; automatic
+  fallback to alternative clusters is allowed and every fallback is recorded
+  with its reason.
+- **audit_only** — log everything, enforce nothing; useful for a monitoring
+  period before enabling enforcement.
+
+All routing violations (`missing_decision`, `stale_decision`,
+`cluster_mismatch`, `cluster_unavailable`, `capacity_exceeded`,
+`unauthorized_fallback`) generate audit records.
+
+## Job lifecycle and audit logging
+
+Jobs progress `pending → queued → starting → running → completed`, with
+`failed`, `timeout`, and `cancelled` exits and `suspended`/`resumed` pauses.
+Every transition fires a lifecycle callback and, with audit enabled, writes
+structured events (`job_submitted`, `job_cancelled`, `job_lifecycle_event`,
+`job_validation_failed`, `job_submission_failed`, `status_reported`,
+`usage_reported`, `accounting_reported`) to the audit log.
+
+## Usage metrics
+
+HPC usage reporting (5-minute default interval) collects wall-clock seconds,
+CPU core-seconds, memory GB-seconds, GPU-seconds, node-hours, storage
+GB-hours, network bytes in/out, and energy joules where available. Final
+accounting is flagged with `is_final: true` when the job reaches a terminal
+state.
+
+## Related pages
+
+- [HPC Node Agent](/providers/hpc-node-agent/) — per-node health and
+  capacity heartbeats.
+- [HPC Workload Templates](/providers/hpc-workload-templates/) — publishing
+  custom templates.
+- [HPC Workloads](/concepts/hpc/) — the on-chain model.

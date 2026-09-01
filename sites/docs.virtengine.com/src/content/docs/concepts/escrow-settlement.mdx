@@ -1,0 +1,95 @@
+---
+title: Escrow & Settlement
+description: How tenant funds are held in escrow, converted into provider payments through the settlement pipeline, and protected by the 24-hour dispute window.
+---
+
+import EscrowSequence from '../../../components/diagrams/EscrowSequence.astro';
+
+Payments on VirtEngine are **usage-driven**: tenants fund an escrow account
+up front, but money only moves to providers after signed usage records
+survive a dispute window and settle on-chain.
+
+<EscrowSequence caption="The settlement sequence. Funds rest in escrow until usage is reported, the dispute window passes, and x/settlement authorizes transfer of the agreed amount with no marketplace commission." />
+
+## Escrow accounts
+
+When a tenant creates a deployment, they deposit funds into an escrow
+account managed by `x/escrow`. The escrow account:
+
+- backs every lease formed under the deployment,
+- is drawn down only by settled usage, and
+- can be topped up at any time; when it empties, the lease closes.
+
+This protects both sides: providers know funded capacity is real, and tenants
+never grant a provider direct pull access to their wallet.
+
+## The settlement pipeline
+
+The provider daemon runs a settlement pipeline that connects metered usage to
+on-chain billing. Its cadence is configurable; the defaults are:
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `settlement_interval` | 1 hour | How often pending usage is processed into settlements |
+| `dispute_window` | 24 hours | Time tenants have to dispute a usage record |
+| `reconciliation_interval` | 6 hours | Cross-validation against platform metrics |
+| `max_pending_records` | 100 | Backlog size that triggers early settlement |
+
+Usage records are submitted on-chain in signed batches (`MsgRecordUsage`),
+then settled by `x/settlement` into billable line items once the dispute
+window has elapsed and no dispute is open.
+
+## Disputes and corrections
+
+A tenant who believes a record is wrong can dispute it inside the window:
+
+```bash
+virtengine tx settlement dispute-usage \
+  --usage-id usage-1234567890 \
+  --reason "CPU usage appears inflated" \
+  --expected-cpu-hours 10 \
+  --from customer
+```
+
+Dispute lifecycle: **Created → Pending → Reviewing → Resolved / Rejected /
+Expired**. Key guarantees:
+
+- usage cannot be settled while a dispute on it is open;
+- accepted disputes produce **corrections** — new usage records that
+  reference the original rather than silently rewriting history;
+- dispute evidence is immutable once recorded.
+
+## Reconciliation and discrepancy handling
+
+Settled usage is cross-checked against independent platform metrics
+(the reconciler compares provider container/volume/GPU metrics with
+platform-side component usage). Discrepancies escalate by size:
+
+| Difference | Severity | Action |
+| --- | --- | --- |
+| 0–5% | Low | Log only |
+| 5–10% | Medium | Alert generated |
+| 10–25% | High | Alert + review |
+| \>25% | Critical | Settlement blocked |
+
+## Zero marketplace commission
+
+At payout, the proposed `x/take` settlement policy is **0% marketplace
+commission**, so `x/escrow` transfers the agreed amount to the provider.
+Validator transaction fees apply separately to on-chain messages and are
+proposed at approximately 90% below standard network transaction fees. The
+issuance and fee-policy model is covered in
+[Settlement Policy & Issuance](/concepts/take-and-bme/).
+
+## Operator commands
+
+```bash
+# Force settlement for an order
+virtengine tx settlement settle-order --order-id order-1234567890 --from provider
+
+# Check reconciliation status
+virtengine query settlement reconciliation-status --allocation-id alloc-1234567890
+
+# List active disputes
+virtengine query settlement disputes --status pending --provider provider-address
+```

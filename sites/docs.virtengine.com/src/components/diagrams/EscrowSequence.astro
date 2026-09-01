@@ -1,0 +1,75 @@
+---
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="ve-diagram">
+  <svg
+    viewBox="0 0 760 430"
+    width="760"
+    height="430"
+    role="img"
+    aria-label="Escrow settlement sequence: the tenant deposits funds into escrow, the provider reports signed usage, the settlement module verifies it after a 24-hour dispute window, then escrow pays the agreed amount to the provider with no marketplace commission."
+  >
+    <defs>
+      <marker id="es-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--sl-color-accent)"></path>
+      </marker>
+    </defs>
+    <style>
+      .es-actor { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); rx: 6; }
+      .es-title { font: 600 13px var(--ve-font-display, sans-serif); fill: var(--sl-color-white); }
+      .es-life { stroke: var(--sl-color-gray-4); stroke-width: 1.2; stroke-dasharray: 4 4; }
+      .es-msg { stroke: var(--sl-color-accent); stroke-width: 1.5; fill: none; }
+      .es-label { font: 400 11.5px var(--sl-font, sans-serif); fill: var(--sl-color-gray-1); }
+      .es-note { font: 400 10.5px var(--sl-font, sans-serif); fill: var(--sl-color-gray-3); }
+      .es-window { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-dasharray: 4 3; rx: 4; }
+    </style>
+
+    <!-- Actors -->
+    <rect class="es-actor" x="30" y="16" width="130" height="36"></rect>
+    <text class="es-title" x="95" y="39" text-anchor="middle">Tenant</text>
+    <rect class="es-actor" x="255" y="16" width="130" height="36"></rect>
+    <text class="es-title" x="320" y="39" text-anchor="middle">x/escrow</text>
+    <rect class="es-actor" x="480" y="16" width="140" height="36"></rect>
+    <text class="es-title" x="550" y="39" text-anchor="middle">x/settlement</text>
+    <rect class="es-actor" x="640" y="16" width="110" height="36"></rect>
+    <text class="es-title" x="695" y="39" text-anchor="middle">Provider</text>
+
+    <!-- Lifelines -->
+    <path class="es-life" d="M95 52 V410"></path>
+    <path class="es-life" d="M320 52 V410"></path>
+    <path class="es-life" d="M550 52 V410"></path>
+    <path class="es-life" d="M695 52 V410"></path>
+
+    <!-- 1 deposit -->
+    <path class="es-msg" d="M95 90 H317" marker-end="url(#es-arrow)"></path>
+    <text class="es-label" x="205" y="82" text-anchor="middle">1 · deposit funds into escrow account</text>
+
+    <!-- 2 usage report -->
+    <path class="es-msg" d="M695 140 H553" marker-end="url(#es-arrow)"></path>
+    <text class="es-label" x="625" y="132" text-anchor="middle">2 · signed usage record</text>
+
+    <!-- dispute window -->
+    <rect class="es-window" x="440" y="165" width="220" height="66"></rect>
+    <text class="es-note" x="550" y="190" text-anchor="middle">24 h dispute window</text>
+    <text class="es-note" x="550" y="207" text-anchor="middle">tenant may dispute; corrections</text>
+    <text class="es-note" x="550" y="221" text-anchor="middle">create referenced new records</text>
+
+    <!-- 3 settle -->
+    <path class="es-msg" d="M550 265 H323" marker-end="url(#es-arrow)"></path>
+    <text class="es-label" x="437" y="257" text-anchor="middle">3 · settle undisputed usage</text>
+
+    <!-- 4 take -->
+    <path class="es-msg" d="M320 320 H190" marker-end="url(#es-arrow)"></path>
+    <text class="es-label" x="255" y="312" text-anchor="middle">4 · settlement policy (x/take)</text>
+    <text class="es-note" x="255" y="336" text-anchor="middle">0% marketplace commission</text>
+
+    <!-- 5 payout -->
+    <path class="es-msg" d="M320 380 H692" marker-end="url(#es-arrow)"></path>
+    <text class="es-label" x="505" y="372" text-anchor="middle">5 · payout to provider (payment − take)</text>
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

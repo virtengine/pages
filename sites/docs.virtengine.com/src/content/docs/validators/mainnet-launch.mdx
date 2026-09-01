@@ -1,0 +1,67 @@
+---
+title: Mainnet Launch Posture
+description: The planned January 2027 mainnet launch window and how to verify current network status.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+This page states the current public launch posture. When in doubt, the
+published launch confirmation and release materials are authoritative.
+
+## The recorded decision
+
+- Mainnet is planned for the **January 2027** launch window.
+- The network is **not live** until a formal launch confirmation is published.
+- Final allocations, genesis materials and the exact launch date will be
+  published through the release process.
+
+<Aside type="caution" title="Do not overstate liveness">
+Do not describe the network as already live before formal launch confirmation.
+Verify current status before making operational or commercial decisions that
+assume a running mainnet.
+</Aside>
+
+## Where the posture lives
+
+| Artifact | Location in repository |
+| --- | --- |
+| Go/no-go decision record | `_docs/operations/mainnet-go-no-go-decision.md` |
+| Mainnet configuration & genesis bundle | `config/mainnet/` |
+| Release process | `RELEASE.md` |
+| Release verification | `VERIFICATION.md` |
+| Compatibility posture | `docs/COMPATIBILITY.md` |
+
+## Verifying before you act
+
+Before installing a release for production use, the README's own checklist
+applies:
+
+1. Confirm the release tag you intend to install has actually been
+   published.
+2. Confirm the target network has an approved launch or upgrade decision.
+3. Confirm the verification and support posture in `VERIFICATION.md` and
+   `docs/COMPATIBILITY.md` matches your intended deployment.
+
+```sh
+# Installation paths exist for published tags:
+brew tap virtengine/tap
+brew install virtengine
+
+# or
+curl -sSfL https://raw.githubusercontent.com/virtengine/virtengine/main/install.sh | sh
+```
+
+Operators should verify the target tag, network posture, and launch status
+before treating any release artifact as production-approved.
+
+## For validators preparing for launch
+
+- Build and verify against the exact tagged release designated for the
+  launch, not `main`.
+- Obtain the published genesis only after it is released and validate it
+  against the publication bundle checksums.
+- Complete VEID identity verification for the operator entity ahead of the
+  window — validator onboarding is attestation-gated.
+- Have monitoring, key isolation, and failover rehearsed before the window
+  opens; the launch window is not the moment to discover a double-sign
+  hazard (see [Slashing Risks](/validators/slashing/)).

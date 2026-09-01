@@ -1,0 +1,67 @@
+---
+title: Cloud Platform Overview
+description: The legacy VirtEngine cloud platform — a Waldur-based management layer for VMs, containers, and storage. Preserved for existing deployments.
+sidebar:
+  badge:
+    text: Legacy
+    variant: caution
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="caution" title="Legacy documentation">
+This section documents the earlier **VirtEngine cloud platform** — a
+managed virtualization product predating the VirtEngine Protocol. It is
+preserved for operators of existing deployments. New users should start
+with the [protocol documentation](/protocol/introduction/). For the
+current upstream platform documentation, see
+[docs.waldur.com](https://docs.waldur.com).
+</Aside>
+
+## What the platform was
+
+VirtEngine began as a virtualization platform that enabled businesses to
+build, run, scale, and manage virtual machines, applications, and
+containers across independent, fault-tolerant clouds. It supported:
+
+- a **public model** — for hosting providers selling cloud services, and
+- a **private model** — for internal enterprise use.
+
+The platform integrated with **OpenNebula**, **Docker**, and **Ceph** to
+offer VMs, containers, and storage to end users, wrapped in a web UI with
+full API support and hourly billing.
+
+## Core capabilities
+
+| Capability | Summary |
+| --- | --- |
+| Virtual machines | On-demand launcher with regions, flavors, and credential injection |
+| Containers | Search and launch from the public Docker registry |
+| Pre-packaged apps | Curated Bitnami catalog, one-click applications, custom images |
+| Custom apps (PaaS) | Deploy from GitHub repositories with optional continuous integration |
+| Block storage | Attachable/detachable volumes, safe scaling separate from the OS partition |
+| Object storage | Redundant, API-accessible storage with multi-geo options |
+| Snapshots | Point-in-time VM state, stored in object storage, redeployable |
+| High availability | Network RAID-1-style secondary copies with automated failover |
+
+## Where the concepts went
+
+The problems this platform solved did not disappear — they moved into the
+protocol:
+
+| Platform concept | Protocol successor |
+| --- | --- |
+| Hosting provider sells capacity | [Provider](/providers/overview/) leasing on the open marketplace |
+| Hourly billing | Usage-based [escrow settlement](/concepts/escrow-settlement/) |
+| Measured service / usage transparency | Signed on-chain [usage reporting](/concepts/usage-reporting/) |
+| Platform trust in one operator | On-chain [audits, benchmarks, reviews](/concepts/fraud-audit-oracles/) |
+| Admin-managed identity | [VEID decentralized identity](/veid/overview/) |
+
+## Section contents
+
+- [Machines & Storage](/cloud-platform/machines-and-storage/) — VMs,
+  volumes, snapshots, and the HA models.
+- [Containers & Applications](/cloud-platform/containers-and-apps/) —
+  Docker, Bitnami, and PaaS deployments.
+- [Waldur Integration](/cloud-platform/waldur/) — the Waldur-based platform
+  generation and where its docs live today.

@@ -1,0 +1,59 @@
+---
+title: Contributing
+description: How to contribute to VirtEngine — license terms, patent notice, contribution guidelines, and where to start.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+VirtEngine is written in Go and licensed **Apache 2.0**. Contributions are
+welcome — whether that means providing feedback, testing existing and new
+features, or hacking on the source.
+
+## Before you start
+
+- Read `CONTRIBUTING.md` in the
+  [repository](https://github.com/virtengine/virtengine) — it is the
+  authoritative guide to becoming a contributor.
+- Set up the [development environment](/developers/development-environment/)
+  and make sure `make virtengine` builds cleanly for you.
+- The repository ships active development from `main`; release automation
+  and version helpers exist for tagged releases.
+
+## Licensing and patents
+
+<Aside type="note" title="Know what you're contributing to">
+The project is Apache 2.0, but certain methods, processes, and system
+architectures implemented in the codebase are protected by patent claims,
+including patent
+[AU2024203136B2](https://patents.google.com/patent/AU2024203136B2/). The
+Apache 2.0 license grants a patent license only to the extent of the
+contributions made by the patent holder to the project. For questions
+regarding patent licensing, contact the project maintainers.
+</Aside>
+
+## Good first contribution surfaces
+
+| Area | Why it's approachable |
+| --- | --- |
+| Module tests (`x/<module>/**_test.go`) | Well-established patterns; high review confidence |
+| Documentation (`docs/`, `_docs/`) | The repo maintains extensive in-tree docs with standards (`docs/AGENTS_STANDARDS.md`) |
+| Economics simulations (`pkg/economics/`) | Self-contained, thoroughly unit-tested framework |
+| CLI spec validation | Spec formats are versioned and documented (`docs/hpc-cli-specs.md`) |
+| SDK / portal workspaces | Standard pnpm TypeScript projects |
+
+## Quality expectations
+
+- Tests accompany behavior changes; the repository runs a quality gate on
+  pushes to `main` (see the badge in the README).
+- Keep changes deterministic — this is consensus code; nondeterminism
+  across platforms is a chain-halting bug class.
+- Sensitive areas (settlement, escrow, VEID, encryption) receive
+  correspondingly deeper review; expect it and write for it.
+
+## Related projects
+
+- [Bosun](https://github.com/virtengine/bosun) — the AI agent orchestrator
+  used in VirtEngine development.
+- The protocol's lineage includes source derived from the Akash Network
+  marketplace; understanding upstream Cosmos SDK and CometBFT conventions
+  will make your contributions land faster.

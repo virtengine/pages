@@ -1,0 +1,87 @@
+---
+title: Running a Validator
+description: Operating a VirtEngine validator — building the node, key management, infrastructure topology, and operational posture.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Validators run the consensus nodes that produce and finalize VirtEngine
+blocks. In return they earn block rewards, fee share, commission on
+delegations, and VEID verification rewards — and they accept slashing risk
+for misbehavior.
+
+## Requirements
+
+| Area | Expectation |
+| --- | --- |
+| Software | The `virtengine` binary, built from source (Go 1.25) or a verified release tag |
+| Platform | Linux amd64/arm64 or macOS (Windows amd64 is experimental) |
+| Keys | Consensus key (never leaves the signing host), operator key, VEID-verified operator identity |
+| Infrastructure | Dedicated nodes; in Kubernetes, `role=validator` labels with `dedicated=validator:NoSchedule` taints |
+| Monitoring | Uptime is a reward component — treat missed blocks as an incident |
+
+## Setup path
+
+<Steps>
+
+1. **Build the binary.**
+
+   ```bash
+   make virtengine
+   # binary lands in .cache/bin
+   ```
+
+   For releases, verify the tag and posture first — see the repository's
+   `RELEASE.md` and `VERIFICATION.md`, and
+   [Mainnet Launch Posture](/validators/mainnet-launch/).
+
+2. **Initialize and configure the node.** Join the target network with the
+   published genesis for that network (mainnet genesis artifacts are checked
+   in under `config/mainnet/` in the repository).
+
+3. **Secure your consensus key.** Double-signing is the most severely
+   slashed offense, and it is almost always caused by key handling mistakes
+   — two nodes sharing a key, or careless failover. One consensus key, one
+   active signer, always.
+
+4. **Verify your identity.** Validator onboarding is a high-risk action in
+   VEID policy terms — attestation-required verification applies. See
+   [Enrollment & Capture Flow](/veid/enrollment/).
+
+5. **Create the validator and attract stake.** Set your commission
+   honestly, publish your operational practices, and remember delegators
+   share your slashing risk — transparency is your marketing.
+
+6. **Report VEID readiness.** Validators report readiness for approved
+   verifier versions (`MsgReportValidatorReadiness` in `x/veidregistry`) to
+   participate in identity-verification rewards.
+
+</Steps>
+
+## Reference topology
+
+The repository's deployment guide runs chain nodes as Kubernetes
+`StatefulSet`s with readiness and liveness probes, dedicated tainted
+validator nodes, environment separation at the Terraform layer, ArgoCD
+GitOps sync, and scripted backup/DR:
+
+```bash
+./scripts/dr/backup-chain-state.sh
+./scripts/dr/backup-keys.sh --type all
+./scripts/dr/dr-test.sh --environment staging --report
+```
+
+Run DR drills before you need them — the drill wrapper emits an evidence
+bundle (`failover-drill-summary.md`, `failover-drill-evidence.json`) you can
+keep for your own audits.
+
+## Day-2 operations
+
+- **Watch your uptime and signing performance** — both feed reward
+  calculations and, past thresholds, downtime slashing/jailing.
+- **Participate in governance** — parameter changes, HPC template approvals,
+  and VEID verifier registry updates all cross your desk as proposals. See
+  [Governance Participation](/validators/governance/).
+- **Plan upgrades** — coordinate binary upgrades with the network's upgrade
+  process; an unprepared validator at an upgrade height is a downtime
+  incident.
