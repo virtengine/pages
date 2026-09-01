@@ -105,7 +105,7 @@ export default defineConfig({
             { label: 'Slashing Risks', slug: 'validators/slashing' },
             { label: 'Governance Participation', slug: 'validators/governance' },
             { label: 'Staking-as-a-Service Partners', slug: 'validators/staking-partners' },
-            { label: 'Mainnet Launch Posture', slug: 'validators/mainnet-launch' },
+            { label: 'Network Launch Schedule', slug: 'validators/mainnet-launch' },
           ],
         },
         {

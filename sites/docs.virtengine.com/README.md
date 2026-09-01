@@ -78,10 +78,12 @@ All protocol content is sourced from the `virtengine` repository
 (`repos/virtengine/` in the parent workspace): README, `docs/*.md`,
 `x/` module sources, `CONSENT_FRAMEWORK.md`, and operations guides.
 Do **not** invent statistics, network-status claims, or parameters — the
-mainnet posture in particular must match
-`_docs/operations/mainnet-go-no-go-decision.md` (GO decision 2026-04-11,
-launch windows 2026-04-18/19 UTC, network not to be described as live
-beyond that).
+network launch posture must match `docs/NETWORK_LAUNCH_SCHEDULE.md` and
+`_docs/operations/network-launch-schedule.md`: TestNet is planned for January
+2027 and MainNet for March 2027 after TestNet exit criteria and a fresh
+production go/no-go decision. The April 2026 MainNet windows did not proceed
+and are historical only. Neither network may be described as live before
+formal confirmation.
 
 ## Design
 
