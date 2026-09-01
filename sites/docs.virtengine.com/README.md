@@ -67,9 +67,9 @@ src/
     cloud-platform/          # Legacy Waldur-based platform docs
   components/diagrams/       # Hand-crafted, theme-aware inline SVG diagrams
   styles/custom.css          # Design tokens & Starlight overrides (see DESIGN.md)
-  assets/                    # Logo SVGs (light/dark)
+  components/SiteTitle.astro # Official VirtEngine header lockup
 public/
-  favicon.svg, og.svg, robots.txt
+  brand/, og.png, robots.txt
 ```
 
 ## Content sourcing rules

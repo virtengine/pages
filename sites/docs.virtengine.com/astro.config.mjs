@@ -11,12 +11,10 @@ export default defineConfig({
       title: 'VirtEngine Docs',
       description:
         'Canonical documentation for the VirtEngine Protocol — a decentralized cloud computing marketplace built on CometBFT and the Cosmos SDK.',
-      logo: {
-        light: './src/assets/logo-light.svg',
-        dark: './src/assets/logo-dark.svg',
-        replacesTitle: true,
+      favicon: '/brand/virtengine-icon.png',
+      components: {
+        SiteTitle: './src/components/SiteTitle.astro',
       },
-      favicon: '/favicon.svg',
       social: [
         {
           icon: 'github',
@@ -28,9 +26,7 @@ export default defineConfig({
         '@fontsource/inter/400.css',
         '@fontsource/inter/500.css',
         '@fontsource/inter/600.css',
-        '@fontsource/space-grotesk/500.css',
-        '@fontsource/space-grotesk/600.css',
-        '@fontsource/space-grotesk/700.css',
+        '@fontsource/questrial/400.css',
         '@fontsource/jetbrains-mono/400.css',
         '@fontsource/jetbrains-mono/500.css',
         './src/styles/custom.css',
@@ -38,11 +34,15 @@ export default defineConfig({
       head: [
         {
           tag: 'meta',
-          attrs: { property: 'og:image', content: 'https://docs.virtengine.com/og.svg' },
+          attrs: { property: 'og:image', content: 'https://docs.virtengine.com/og.png' },
         },
         {
           tag: 'meta',
           attrs: { name: 'twitter:card', content: 'summary_large_image' },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:image', content: 'https://docs.virtengine.com/og.png' },
         },
       ],
       // A custom 404 lives at src/content/docs/404.md; disabling the built-in

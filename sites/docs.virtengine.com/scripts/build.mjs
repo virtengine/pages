@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, delimiter } from 'node:path';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
+await import('./og.mjs');
 const isWin = process.platform === 'win32';
 const env = {
   ...process.env,

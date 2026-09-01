@@ -1,0 +1,79 @@
+---
+const { siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="ve-site-title" aria-label="VirtEngine documentation home">
+  <img
+    src="/brand/virtengine-icon.png"
+    width="376"
+    height="362"
+    alt=""
+    aria-hidden="true"
+    decoding="async"
+  />
+  <span class="ve-lockup">
+    <span class="ve-wordmark">VirtEngine</span>
+    <span class="ve-byline">by DET.io</span>
+  </span>
+  <span class="ve-docs-tag">Docs</span>
+</a>
+
+<style>
+  @layer starlight.core {
+    .ve-site-title {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--ve-wordmark);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    img {
+      width: 2.25rem;
+      height: auto;
+      flex: 0 0 auto;
+    }
+
+    .ve-lockup {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .ve-wordmark {
+      font-family: var(--ve-font-display);
+      font-size: 1.12rem;
+      letter-spacing: 0.005em;
+    }
+
+    .ve-byline {
+      margin-top: 0.24rem;
+      color: var(--sl-color-gray-3);
+      font-family: var(--ve-font-display);
+      font-size: 0.5rem;
+      letter-spacing: 0.08em;
+      text-align: right;
+    }
+
+    .ve-docs-tag {
+      padding: 0.24rem 0.45rem;
+      border: 1px solid var(--sl-color-gray-4);
+      border-radius: 0.2rem;
+      color: var(--sl-color-gray-2);
+      font-family: var(--sl-font-mono);
+      font-size: 0.57rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 25rem) {
+      .ve-docs-tag,
+      .ve-byline {
+        display: none;
+      }
+    }
+  }
+</style>
