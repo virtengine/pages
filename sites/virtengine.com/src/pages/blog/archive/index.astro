@@ -1,0 +1,6 @@
+---
+import BlogArchivePage from "@components/BlogArchivePage.astro";
+import { ARCHIVE_PAGES } from "@data/blog";
+---
+
+<BlogArchivePage posts={ARCHIVE_PAGES[0]} page={1} totalPages={ARCHIVE_PAGES.length} />

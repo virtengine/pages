@@ -239,6 +239,54 @@ h3, h4 {
   -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 0%, black 30%, transparent 100%);
 }
 
+/* Journal typography supports both current writing and the preserved Ghost archive. */
+.blog-prose {
+  color: var(--color-slate);
+  font-size: 1.02rem;
+  line-height: 1.85;
+}
+.blog-prose > * + * { margin-top: 1.45rem; }
+.blog-prose h2,
+.blog-prose h3,
+.blog-prose h4 {
+  margin-top: 3rem;
+  color: var(--color-ink);
+  line-height: 1.25;
+}
+.blog-prose h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 400; }
+.blog-prose h3 { font-size: 1.3rem; font-weight: 600; }
+.blog-prose h4 { font-size: 1.08rem; font-weight: 600; }
+.blog-prose a { color: var(--color-green-deep); text-decoration: underline; text-decoration-color: var(--color-green); text-underline-offset: 3px; }
+.blog-prose a:hover { color: var(--color-green-dark); text-decoration-thickness: 2px; }
+.blog-prose strong { color: var(--color-ink); font-weight: 600; }
+.blog-prose ul,
+.blog-prose ol { display: grid; gap: 0.55rem; padding-left: 1.5rem; }
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose blockquote { padding: 1rem 1.4rem; border-left: 3px solid var(--color-green); background: var(--color-green-wash); color: var(--color-ink); }
+.blog-prose img { width: 100%; height: auto; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-panel); }
+.blog-prose figure { margin-inline: 0; }
+.blog-prose figcaption { margin-top: 0.65rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.5; }
+.blog-prose pre { overflow-x: auto; padding: 1.25rem; border: 1px solid var(--color-night-line-strong); border-radius: var(--radius-card); background: var(--color-night-deep); color: var(--color-night-text); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; }
+.blog-prose :not(pre) > code { padding: 0.12em 0.35em; border: 1px solid var(--color-line); border-radius: 0.25rem; background: var(--color-paper-soft); color: var(--color-ink); font-family: var(--font-mono); font-size: 0.86em; }
+.blog-prose table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 0.9rem; }
+.blog-prose th,
+.blog-prose td { padding: 0.75rem; border: 1px solid var(--color-line-strong); text-align: left; }
+.blog-prose hr { margin-block: 2.5rem; border: 0; border-top: 1px solid var(--color-line-strong); }
+.blog-prose iframe { width: 100%; max-width: 100%; border: 0; }
+
+.archive-warning {
+  padding: 1.2rem 1.35rem;
+  border: 1px solid #e5c774;
+  border-left: 4px solid var(--color-amber);
+  border-radius: var(--radius-card);
+  background: var(--color-amber-soft);
+  color: #624900;
+}
+.archive-warning strong { display: block; color: #513c00; }
+.archive-warning p { margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.65; }
+.archive-warning a { font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
 /* Homepage launch field — a deliberate nod to the original VirtEngine site's
    playful cloud-and-rocket mood, built from CSS so it remains crisp at any size. */
 .hero-playfield {

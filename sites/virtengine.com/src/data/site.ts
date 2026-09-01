@@ -22,6 +22,7 @@ export const NAV: NavItem[] = [
   { label: "Solutions", href: "/solutions" },
   { label: "Waldur", href: "/waldur" },
   { label: "Learn", href: "/learn" },
+  { label: "Blog", href: "/blog" },
   { label: "Providers", href: "/providers" },
   { label: "Staking", href: "/staking" },
   { label: "VEID", href: "/veid" },
@@ -52,6 +53,7 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
     heading: "Learn",
     items: [
       { label: "Guides & explainers", href: "/learn" },
+      { label: "Journal & historic blog", href: "/blog" },
       { label: "FAQ", href: "/faq" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },

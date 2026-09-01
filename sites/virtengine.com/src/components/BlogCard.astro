@@ -1,0 +1,36 @@
+---
+import type { BlogArticle } from "@data/blog";
+import { formatBlogDate } from "@data/blog";
+
+interface Props {
+  article: BlogArticle;
+  featured?: boolean;
+}
+
+const { article, featured = false } = Astro.props;
+---
+
+<article
+  class:list={[
+    "clip-corner flex h-full flex-col border border-line bg-panel p-6 transition hover:-translate-y-1 hover:border-green-deep md:p-8",
+    featured && "md:min-h-[23rem]",
+  ]}
+>
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-muted">
+    <span class:list={[article.kind === "current" ? "text-green-deep" : "text-amber"]}>
+      {article.kind === "current" ? "Journal" : "Historic archive"}
+    </span>
+    <span aria-hidden="true">/</span>
+    <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>
+  </div>
+  <h2 class:list={["mt-5 font-display", featured ? "text-3xl" : "text-2xl"]}>
+    <a class="transition hover:text-green-deep" href={`/blog/${article.slug}`}>{article.title}</a>
+  </h2>
+  <p class="mt-4 text-sm leading-7 text-slate md:text-base">{article.description}</p>
+  <div class="mt-auto flex items-center justify-between gap-4 pt-8 font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted">
+    <span>{article.readingTime}</span>
+    <a class="font-semibold text-green-deep hover:text-green-dark" href={`/blog/${article.slug}`}>
+      Read article <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>

@@ -1,0 +1,72 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import BlogCard from "@components/BlogCard.astro";
+import type { BlogArticle } from "@data/blog";
+
+interface Props {
+  posts: BlogArticle[];
+  page: number;
+  totalPages: number;
+}
+
+const { posts, page, totalPages } = Astro.props;
+const pagePath = page === 1 ? "/blog/archive" : `/blog/archive/page/${page}`;
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Blog", href: "/blog" },
+  { name: "Historic archive", href: "/blog/archive" },
+];
+---
+
+<Base
+  title={`Historic blog archive — Page ${page} | VirtEngine`}
+  description={`Page ${page} of VirtEngine's preserved 2015–2016 blog archive.`}
+  path={pagePath}
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="2015–2016 archive"
+    title="The historic VirtEngine blog"
+    lede="The original articles are preserved verbatim in their original order. Commands, dependencies, links, product names, and security practices may now be obsolete."
+    crumbs={crumbs}
+  >
+    <p class="mt-7 font-mono text-xs uppercase tracking-[0.12em] text-muted">
+      Page {page} of {totalPages} · 64 preserved articles
+    </p>
+  </PageHero>
+
+  <section class="container-site py-14 md:py-20">
+    <div class="grid gap-6 md:grid-cols-2">
+      {posts.map((article) => <BlogCard article={article} />)}
+    </div>
+
+    <nav class="mt-12 flex items-center justify-between border-t border-line pt-8" aria-label="Archive pagination">
+      {
+        page > 1 ? (
+          <a
+            class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-green-deep hover:text-green-dark"
+            href={page === 2 ? "/blog/archive" : `/blog/archive/page/${page - 1}`}
+          >
+            ← Newer posts
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      <span class="font-mono text-xs text-muted">{String(page).padStart(2, "0")} / {String(totalPages).padStart(2, "0")}</span>
+      {
+        page < totalPages ? (
+          <a
+            class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-green-deep hover:text-green-dark"
+            href={`/blog/archive/page/${page + 1}`}
+          >
+            Older posts →
+          </a>
+        ) : (
+          <span />
+        )
+      }
+    </nav>
+  </section>
+</Base>

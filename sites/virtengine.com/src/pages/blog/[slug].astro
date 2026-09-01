@@ -1,0 +1,93 @@
+---
+import Base from "@layouts/Base.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import BlogCard from "@components/BlogCard.astro";
+import { ALL_POSTS, formatBlogDate } from "@data/blog";
+
+export function getStaticPaths() {
+  return ALL_POSTS.map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const sameKindPosts = ALL_POSTS.filter((item) => item.kind === article.kind);
+const sameKindIndex = sameKindPosts.findIndex((item) => item.slug === article.slug);
+const related = [...sameKindPosts.slice(sameKindIndex + 1), ...sameKindPosts.slice(0, sameKindIndex)]
+  .filter((item) => item.slug !== article.slug)
+  .slice(0, 2);
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Blog", href: "/blog" },
+  ...(article.kind === "legacy" ? [{ name: "Historic archive", href: "/blog/archive" }] : []),
+  { name: article.title, href: `/blog/${article.slug}` },
+];
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.title,
+  description: article.description,
+  datePublished: article.publishedAt,
+  dateModified: article.publishedAt,
+  author: { "@type": "Organization", name: article.author },
+  publisher: { "@type": "Organization", name: "VirtEngine", url: "https://virtengine.com" },
+  mainEntityOfPage: `https://virtengine.com/blog/${article.slug}`,
+  isPartOf: { "@type": "Blog", name: "VirtEngine Journal", url: "https://virtengine.com/blog" },
+};
+---
+
+<Base
+  title={`${article.title} | VirtEngine`}
+  description={article.description}
+  path={`/blog/${article.slug}`}
+  breadcrumbs={crumbs}
+  ogType="article"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+
+  <article>
+    <header class="grid-backdrop border-b border-line">
+      <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
+        <Breadcrumbs crumbs={crumbs} class="mb-8" />
+        <p class="eyebrow">{article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}</p>
+        <h1 class="mt-5 max-w-4xl font-display text-4xl md:text-6xl">{article.title}</h1>
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-slate md:text-xl">{article.description}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+          <span>{article.author}</span>
+          <span aria-hidden="true">/</span>
+          <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>
+          <span aria-hidden="true">/</span>
+          <span>{article.readingTime}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-site py-12 md:py-20">
+      <div class="mx-auto max-w-3xl">
+        {
+          article.kind === "legacy" && (
+            <aside class="archive-warning mb-10" aria-label="Historic content notice">
+              <strong>Preserved historic article</strong>
+              <p>
+                Originally published on blog.virtengine.com in 2015–2016. The text and links are preserved as part of the project record; commands, dependencies, products, and security practices may be obsolete. Use the current <a href="https://docs.virtengine.com">VirtEngine documentation</a> for implementation guidance.
+              </p>
+            </aside>
+          )
+        }
+        <div class="blog-prose" set:html={article.html} />
+      </div>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="border-t border-line bg-paper-soft">
+        <div class="container-site py-14 md:py-20">
+          <p class="eyebrow">Continue reading</p>
+          <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
+          <div class="mt-8 grid gap-6 md:grid-cols-2">
+            {related.map((item) => <BlogCard article={item} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Base>
