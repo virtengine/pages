@@ -28,7 +28,7 @@ const artifacts = [
 
 <Base
   title="Network — VirtEngine"
-  description="VirtEngine mainnet status: planned for the January 2027 launch window, with release materials and validator onboarding guidance."
+  description="VirtEngine network status: TestNet is planned for January 2027 and MainNet for March 2027, with separate validation and production approval gates."
   path="/network"
   breadcrumbs={[
     { name: "Home", href: "/" },
@@ -37,7 +37,7 @@ const artifacts = [
 >
   <PageHero
     eyebrow="Network status"
-    title="Mainnet launch posture, straight from the repo"
+    title="A two-stage path to production"
     lede="This page reports exactly what the repository records — no more, no less. The repository is the source of truth for network status."
     crumbs={[
       { name: "Home", href: "/" },
@@ -45,17 +45,22 @@ const artifacts = [
     ]}
   />
 
-  <Section eyebrow="Launch posture" title="Planned for January 2027">
-    <div class="grid gap-4 sm:grid-cols-3">
+  <Section eyebrow="Launch posture" title="TestNet in January; MainNet in March">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div class="reveal rounded-card border border-green-soft bg-green-wash p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Decision</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Current status</p>
         <p class="mt-2 font-display text-3xl text-green-deep">Preparing</p>
         <p class="mt-1.5 font-mono text-xs text-muted">not live</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Launch windows</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
         <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
-        <p class="mt-1.5 font-mono text-xs text-muted">final date to be confirmed</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">public pre-production</p>
+      </div>
+      <div class="reveal rounded-card border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
+        <p class="mt-2 font-display text-2xl text-ink">March 2027</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">production, after approval</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Genesis bundle</p>
@@ -65,10 +70,33 @@ const artifacts = [
     </div>
     <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
       <p>
-        Mainnet is planned for the <strong>January 2027</strong> launch window. Final
-        allocations and release materials remain subject to the governance and release
-        process. The network must not be described as live until a formal launch
-        confirmation is published.
+        <strong>TestNet is planned for January 2027.</strong> It is a public proving
+        environment for validators, providers, integrations, upgrades, recovery, VEID,
+        marketplace, and settlement flows. Its state may be reset, its tokens have no
+        production value, and its data is not guaranteed to carry into MainNet.
+      </p>
+      <p>
+        <strong>MainNet is planned for March 2027.</strong> It is the persistent
+        production network and requires successful TestNet exit evidence, final
+        artifacts, and a fresh go/no-go approval. Exact UTC dates will be confirmed
+        through the formal launch process; neither network is live until officially
+        announced.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Why two stages" title="Validate, remediate, then promote">
+    <div class="prose-body reveal max-w-3xl space-y-4 text-base">
+      <p>
+        The separation is an explicit safety gate. January produces real
+        multi-operator TestNet evidence. February is reserved for observation,
+        fixing and re-testing defects, completing security and operational reviews,
+        freezing the production release, and coordinating the final validator set.
+      </p>
+      <p>
+        March is the MainNet window only after those exit criteria are met. A
+        successful TestNet launch does not automatically approve MainNet; release
+        management must record a separate production decision.
       </p>
     </div>
   </Section>

@@ -245,7 +245,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       ],
     },
     gettingStarted: [
-      { step: "Study the launch posture", detail: "Mainnet is planned for January 2027. Verify formal launch confirmation and release materials before operating." },
+      { step: "Study the launch posture", detail: "TestNet is planned for January 2027; MainNet is planned for March 2027 after TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating." },
       { step: "Provision secure infrastructure", detail: "High-uptime hosts plus hardened key management for consensus and VEID encryption keys." },
       { step: "Plan for identity-network duties", detail: "ML scoring of encrypted scopes runs alongside consensus — size accordingly." },
       { step: "Bond stake and attract delegation", detail: "Self-bond, publish your operational record, and earn delegations." },

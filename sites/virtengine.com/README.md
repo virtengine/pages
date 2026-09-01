@@ -51,9 +51,11 @@ src/
 
 - Facts come from `repos/virtengine/` (README, docs/) and the shared brief —
   never invent statistics, partners, or team members.
-- Mainnet claims must match the repo posture exactly: GO decision 2026-04-11,
-  launch windows 2026-04-18/19 UTC; do not describe the network as live beyond
-  what the repo states.
+- Network launch claims must match the repo posture exactly: TestNet is planned
+  for January 2027; MainNet is planned for March 2027 after TestNet exit
+  criteria and a fresh go/no-go approval. The April 2026 MainNet windows did
+  not proceed and are historical only. Do not describe either network as live
+  before formal confirmation.
 - Patent language: Apache 2.0 + patent AU2024203136B2; the Apache grant covers
   use within the project.
 - Design tokens, logo construction, and diagram conventions are documented in

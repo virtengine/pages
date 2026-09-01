@@ -230,6 +230,6 @@ narrated via `aria-label`, breadcrumbs with `BreadcrumbList` JSON-LD.
 ## 10. Voice
 
 Engineering candor. Claims trace to the repository or the constitution; risk is
-stated plainly (slashing, unbonding, launch posture); mainnet status is quoted
-exactly (GO 2026-04-11, windows 2026-04-18/19 UTC) and never inflated. No emoji,
-no exclamation-mark marketing, no "revolutionary".
+stated plainly (slashing, unbonding, launch posture); network status is quoted
+exactly (TestNet January 2027, MainNet March 2027, separate production approval)
+and never inflated. No emoji, no exclamation-mark marketing, no "revolutionary".

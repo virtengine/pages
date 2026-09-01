@@ -347,7 +347,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "How to read this model",
         paragraphs: [
-          "This is the proposed model for the January 2027 launch window, not a token offer or a promise of allocation. Final parameters and any later amendments should be checked against published governance decisions.",
+          "This is the proposed model for the March 2027 MainNet launch window, not a token offer or a promise of allocation. TestNet is planned for January 2027, but TestNet parameters, tokens, and state are pre-production and are not guaranteed to carry into MainNet. Final parameters and any later amendments should be checked against published governance decisions.",
         ],
       },
       {
@@ -692,16 +692,23 @@ export const LEARN: LearnEntry[] = [
     title: "The road to mainnet",
     label: "Mainnet roadmap",
     metaDescription:
-      "VirtEngine's mainnet posture: planned for the January 2027 launch window, with guidance on verifying status and release materials.",
+      "VirtEngine's launch posture: TestNet planned for January 2027 and MainNet for March 2027, with a validation and promotion gate between them.",
     kicker: "Network",
     intro:
       "VirtEngine's launch posture is unusual for the industry: it is a checked-in, versioned decision record, not a marketing countdown. This guide reports exactly what the repository records and shows you how to verify it yourself.",
     sections: [
       {
-        heading: "The decision record",
+        heading: "The launch sequence",
         paragraphs: [
-          "Mainnet is planned for the January 2027 launch window. The final date and release materials will be published through the formal launch process.",
-          "The network should not be described as live before formal launch confirmation. Verify current status from published release materials rather than assuming a service is available.",
+          "TestNet is planned for the January 2027 launch window. It is the public pre-production environment for multi-operator validation and may be reset; its tokens have no production value and its state is not guaranteed to migrate to MainNet.",
+          "MainNet is planned for the March 2027 launch window. It is the persistent production network and requires TestNet exit evidence, final artifacts, and a fresh go/no-go approval. Exact dates will be published through the formal launch process, and neither network should be described as live before confirmation.",
+        ],
+      },
+      {
+        heading: "Why the windows are separated",
+        paragraphs: [
+          "January provides real public TestNet evidence across consensus, validator and provider operations, VEID, marketplace and settlement flows, upgrades, monitoring, recovery, and incident response.",
+          "February is reserved for observing results, remediating and re-testing defects, completing security and operational reviews, freezing production artifacts, and coordinating validators. March is the MainNet window only after those exit criteria are accepted; TestNet success is not automatic MainNet approval.",
         ],
       },
       {

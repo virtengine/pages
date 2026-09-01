@@ -12,8 +12,20 @@ import Section from "@components/Section.astro";
   <Section
     eyebrow="Launch updates"
     title="Follow the VirtEngine launch"
-    lede="Mainnet is planned for the January 2027 launch window. Join the list for confirmed release and network updates."
+    lede="TestNet is planned for January 2027, followed by MainNet in March 2027 after validation and a separate production approval. Join the list for confirmed dates and network updates."
   >
+    <div class="mb-8 grid max-w-2xl gap-4 sm:grid-cols-2">
+      <div class="rounded-card border border-line bg-panel p-5">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
+        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
+        <p class="mt-2 text-sm text-slate">Public pre-production validation; state may reset and does not automatically migrate to MainNet.</p>
+      </div>
+      <div class="rounded-card border border-green-soft bg-green-wash p-5">
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
+        <p class="mt-2 font-display text-2xl text-green-deep">March 2027</p>
+        <p class="mt-2 text-sm text-slate">Production launch after TestNet exit criteria, remediation, final artifacts, and a fresh go/no-go decision.</p>
+      </div>
+    </div>
     <div class="clip-corner max-w-2xl border border-line-strong bg-panel p-6 md:p-8">
       <h2 class="font-display text-2xl text-ink">Join the launch list</h2>
       <p class="prose-body mt-3">We will only send updates relevant to the protocol launch, releases and network availability.</p>

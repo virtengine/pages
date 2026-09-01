@@ -28,7 +28,7 @@ export const FAQ: FaqEntry[] = [
     category: "General",
     question: "Is the VirtEngine network live?",
     answer:
-      "Mainnet is planned for the January 2027 launch window. Check the published release materials for the official availability confirmation before relying on the network.",
+      "No launch is confirmed live yet. TestNet is planned for January 2027 as a public pre-production network whose state may reset. MainNet is planned for March 2027 as the persistent production network, contingent on TestNet exit criteria and a separate go/no-go approval. Check the published release materials for official availability confirmation.",
     links: [{ label: "Network status", href: "/network" }],
   },
   {
