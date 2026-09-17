@@ -465,8 +465,8 @@ export const MODULES: ModuleEntry[] = [
     domain: "Economics & settlement",
     summary: "Burn-and-mint equilibrium mechanics linking token supply to marketplace demand.",
     whatItDoes: [
-      "The bme module implements supply operations. The proposed primary issuance path is VEID-led: a 15-token batch is issued as eligible active verified humans accrue entitlement, with 14 tokens allocated to those humans and 1 token allocated to the Foundation-controlled genesis account. Staking rewards remain at a much lower proposed level.",
-      "Together with the dynamic inflation mechanism in staking economics, BME is validated by the in-repo simulation framework (pkg/economics) covering supply dynamics, distribution fairness, and attack-cost analysis.",
+      "The bme module implements supply operations. The proposed issuance path is VEID-led: a 15-token batch is issued as eligible active verified humans accrue entitlement, with 14 tokens allocated to those humans and 1 token allocated to the Foundation-controlled genesis account. Staking rewards remain at a much lower proposed level.",
+      "Initial supply is zero and there is no fixed maximum supply. New issuance is conditional on verified human identities. The in-repo simulation framework (pkg/economics) contains legacy inflation assumptions and requires alignment before it can validate this policy.",
     ],
     whyItExists:
       "A pure fixed-supply token disconnects the asset from the service it prices; unconstrained inflation destroys holder trust. BME ties supply mechanics to real consumption of compute, aligning the token's monetary dynamics with the marketplace it exists to serve.",
@@ -533,7 +533,7 @@ export const MODULES: ModuleEntry[] = [
     domain: "Economics & settlement",
     summary: "Governed controls over how and when new tokens are issued.",
     whatItDoes: [
-      "The issuancepolicy module encodes the rules under which new tokens may be minted: schedules, safeguards and policy parameters that staking and identity allocations must respect. The proposed primary model uses VEID-led 15-token issuance batches: 14 tokens to eligible active verified humans and 1 token to the Foundation-controlled genesis account. All policy lives in chain state and can be changed through consensus.",
+      "The issuancepolicy module encodes the rules under which new tokens may be minted: schedules, safeguards and policy parameters that staking and identity allocations must respect. The proposed issuance model uses VEID-led 15-token issuance batches: 14 tokens to eligible active verified humans and 1 token to the Foundation-controlled genesis account. All policy lives in chain state and can be changed through consensus.",
       "Because policy is a module, changing issuance rules is a governance act with a public proposal trail, not a quiet parameter edit.",
     ],
     whyItExists:
@@ -545,7 +545,7 @@ export const MODULES: ModuleEntry[] = [
     ],
     concepts: [
       { term: "Issuance schedule", def: "The governed timetable and limits under which new supply may be minted." },
-      { term: "Max supply", def: "The 10-billion-token hard ceiling on total supply." },
+      { term: "Max supply", def: "No fixed maximum or hard cap. Initial supply is zero; new tokens are issued only through verified human identities, with continued issuance as new identities are verified and the human population grows." },
     ],
   },
   {

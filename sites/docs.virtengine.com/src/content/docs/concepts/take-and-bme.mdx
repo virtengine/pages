@@ -35,10 +35,13 @@ The BME module implements token burn and mint operations. Its keeper exposes:
 
 Together with issuance controls in `x/issuancepolicy` (governance-managed
 policies with pause support), BME supports the supply rules. The proposed
-primary issuance path is VEID-led: every 15-token batch allocates 14 tokens to
+issuance path is VEID-led: every 15-token batch allocates 14 tokens to
 eligible active verified humans and 1 token to the Foundation-controlled
 genesis account. The Foundation allocation is part of the 15 tokens, not an
-additional mint.
+additional mint. Initial supply is **0 tokens** and there is **no maximum
+supply cap**. New tokens are issued only when unique human identities are
+verified; issuance can continue with new verified identities and human
+population growth. Staking does not independently authorize new issuance.
 
 :::note
 The final transaction-fee and issuance parameters are defined by governance

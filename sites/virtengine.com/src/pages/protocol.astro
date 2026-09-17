@@ -106,20 +106,20 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
   <Section
     eyebrow="Economics"
     title="Tokenomics designed for a self-balancing network"
-    lede="The economic model is validated by an in-repo simulation and audit framework (pkg/economics) covering inflation dynamics, staking rewards, fee markets, distribution fairness, and attack costs."
+    lede="Supply starts at zero. New tokens are issued only when unique human identities are verified, with no fixed maximum supply or hard cap."
   >
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCallout value="1B → 10B" label="Initial supply, hard maximum supply" source="docs/tokenomics-analysis.md" />
+      <StatCallout value="0 tokens" label="Initial supply · no maximum supply cap" source="docs/tokenomics-analysis.md" />
       <StatCallout value="14 : 1" label="Eligible humans to Foundation genesis allocation per 15 issued" source="Proposed policy" />
       <StatCallout value="Identity-led" label="Proposed issuance model" source="Proposed policy" />
       <StatCallout value="0%" label="Marketplace commission; validator transaction fees are separate" source="Proposed policy" />
     </div>
     <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
       <p>
-        Inflation adjusts dynamically: when the staking ratio falls below target, inflation —
-        and therefore staking APR — rises to attract bonding; above target it falls. The
-        21-day unbonding period, burn-and-mint mechanics (<code>x/bme</code>), and a
-        conservative staking rewards round out the incentive design. Details on the
+        Supply follows verified human participation and can continue growing as new
+        identities are verified and the human population grows. The Foundation genesis
+        account starts with zero tokens and receives its share through eligible issuance
+        batches. Staking rewards do not independently authorize new token issuance. Details on the
         <a href="/staking">staking page</a> and in the
         <a href={`${SITE.docs}`}>protocol documentation</a>.
       </p>

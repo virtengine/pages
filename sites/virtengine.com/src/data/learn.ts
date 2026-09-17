@@ -319,6 +319,13 @@ export const LEARN: LearnEntry[] = [
       "VirtEngine's proposed economic model recognizes sustained, unique verified identity while retaining a conservative staking component for network security. Parameters are governance-controlled and may change before or after launch.",
     sections: [
       {
+        heading: "Initial and maximum supply",
+        paragraphs: [
+          "Initial supply is 0 tokens. New tokens are issued only when unique human identities are verified. There is no fixed maximum supply or hard cap: issuance follows verified human participation and continues as new identities are verified and the human population grows.",
+          "The Foundation-controlled genesis account starts with zero tokens; its allocation comes from eligible VEID issuance batches, not a premine. Staking rewards do not independently authorize new token issuance.",
+        ],
+      },
+      {
         heading: "Identity-led allocation",
         paragraphs: [
           "When an account reaches the network-defined threshold for a unique verified identity, the protocol may unlock token minting to that account over time. The threshold is based on the network's score, tier and anti-Sybil rules; it is not a guarantee of an individual allocation.",
@@ -335,7 +342,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Staking remains, at a lower level",
         paragraphs: [
-          "Validators and delegators continue to receive staking rewards for contributing to security. The proposed staking issuance is roughly 90% lower than in the previous model. Rates, commission, unbonding and slashing terms are governed parameters; they are not fixed yield or return promises.",
+          "Validators and delegators continue to receive staking rewards for contributing to security. The proposed staking reward allocation is roughly 90% lower than in the previous model. Rates, commission, unbonding and slashing terms are governed parameters; they are not fixed yield or return promises.",
         ],
       },
       {
@@ -354,11 +361,13 @@ export const LEARN: LearnEntry[] = [
         heading: "Proposed parameters at a glance",
         paragraphs: [],
         bullets: [
+          "Initial supply: 0 tokens",
+          "Maximum supply: no cap; issuance follows verified human identities and population growth",
           "Identity allocation: network-defined unique-identity threshold",
           "Activity: illustrative quarterly sign-in requirement",
           "Accrual horizon: illustrative 50 years",
           "Per 15 issued through VEID: 14 to eligible humans, 1 to the Foundation genesis account",
-          "Staking issuance: proposed at roughly 90% lower than the prior model",
+          "Staking reward allocation: proposed at roughly 90% lower than the prior model",
           "All parameters: amendable through consensus",
         ],
       },

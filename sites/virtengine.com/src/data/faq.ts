@@ -123,7 +123,7 @@ export const FAQ: FaqEntry[] = [
     category: "Staking & tokens",
     question: "What links the token's supply to actual usage?",
     answer:
-      "The proposed primary issuance path mints tokens over time to accounts that satisfy the network-defined unique-identity threshold and remain active. Each 15-token VEID issuance batch allocates 14 tokens to eligible humans and 1 token to the Foundation-controlled genesis account; all issuance policy is chain state changeable only by governance.",
+      "Initial supply is 0 tokens, with no fixed maximum supply or hard cap. New tokens are issued only when unique human identities are verified, so issuance can continue with new verified identities and human population growth. The identity-linked issuance path allocates tokens over time to accounts that satisfy the network-defined unique-identity threshold and remain active. Each 15-token VEID issuance batch allocates 14 tokens to eligible humans and 1 token to the Foundation-controlled genesis account; all issuance policy is chain state changeable only by governance.",
     links: [{ label: "x/bme module", href: "/modules/bme" }],
   },
 
