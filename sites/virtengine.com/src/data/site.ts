@@ -17,15 +17,12 @@ export interface NavItem {
 }
 
 export const NAV: NavItem[] = [
-  { label: "Protocol", href: "/protocol" },
-  { label: "Modules", href: "/modules" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Waldur", href: "/waldur" },
-  { label: "Learn", href: "/learn" },
-  { label: "Blog", href: "/blog" },
-  { label: "Providers", href: "/providers" },
-  { label: "Staking", href: "/staking" },
-  { label: "VEID", href: "/veid" },
+ {label: "Our mission", href: "/about"},
+ {label: "The protocol", href: "/protocol"},
+ {label: "Learn", href: "/learn"},
+ {label: "Journal", href: "/blog"},
+ {label: "Get involved", href: "/participate"},
+ {label: "Contact", href: "/contact"},
 ];
 
 export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
@@ -43,7 +40,9 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Participate",
     items: [
-      { label: "Become a provider", href: "/providers" },
+      { label: "Prepare to provide", href: "/providers" },
+      { label: "Contact the Foundation", href: "/contact" },
+      { label: "Our activities", href: "/activities" },
       { label: "Staking & validators", href: "/staking" },
       { label: "Solutions by audience", href: "/solutions" },
       { label: "About the foundation", href: "/about" },
