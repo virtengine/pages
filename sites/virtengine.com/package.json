@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/og.mjs && astro build",
+    "check:links": "node ../../scripts/check-links.mjs dist",
     "migrate:blog": "node ./scripts/migrate-legacy-blog.mjs",
     "preview": "astro preview",
     "astro": "astro"
