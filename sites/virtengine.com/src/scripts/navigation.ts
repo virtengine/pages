@@ -1,6 +1,9 @@
 export function initNavigation() {
- const header=document.querySelector<HTMLElement>('#site-navigation');
- if(!header)return;
+ const headerEl=document.querySelector<HTMLElement>('#site-navigation');
+ if(!headerEl)return;
+ // Closures below (sync/filter) lose the `if(!headerEl)return` narrowing, so bind an
+ // alias whose *declared* type is already non-null. The guard above still runs.
+ const header=headerEl;
  const groups=Array.from(header.querySelectorAll<HTMLDetailsElement>('.mega-group'));
  const toggle=header.querySelector<HTMLButtonElement>('#nav-toggle')!;
  const scrim=document.querySelector<HTMLElement>('.nav-scrim')!;

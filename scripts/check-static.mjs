@@ -77,7 +77,7 @@ for (const file of walk(".")) {
   }
 }
 
-const REQUIRED_SCRIPTS = ["build", "check:links"];
+const REQUIRED_SCRIPTS = ["build", "check:links", "check:types"];
 const sitesDir = "sites";
 if (!existsSync(sitesDir)) {
   failures.push("sites/: directory is missing");
