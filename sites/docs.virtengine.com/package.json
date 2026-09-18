@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/build.mjs",
+    "check:links": "node ../../scripts/check-links.mjs dist",
     "deploy": "pnpm run build && wrangler pages deploy dist --project-name docs-virtengine-com --branch main",
     "preview": "astro preview",
     "astro": "astro"
