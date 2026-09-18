@@ -83,6 +83,17 @@ jobs:
       - name: Install from lockfile
         run: pnpm install --frozen-lockfile
 
+      - name: Type check (astro check)
+        run: |
+          set -o pipefail
+          pnpm run check:types 2>&1 | tee typecheck.log
+          # @astrojs/check prints "Result (N files):" then the counts. Strip ANSI first so a
+          # colourising layer cannot break the guards, then require a real run (N > 0) AND
+          # zero errors — a checker that inspected nothing exits 0 and would look green.
+          sed -e 's/\x1b\[[0-9;]*m//g' typecheck.log > typecheck.plain
+          grep -qE '^Result \([1-9][0-9]* files\)' typecheck.plain
+          grep -qE '^- 0 errors' typecheck.plain
+
       - name: Build
         run: pnpm run build
 

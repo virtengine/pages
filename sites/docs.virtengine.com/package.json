@@ -10,7 +10,8 @@
     "check:links": "node ../../scripts/check-links.mjs dist",
     "deploy": "pnpm run build && wrangler pages deploy dist --project-name docs-virtengine-com --branch main",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:types": "astro check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.0",
@@ -27,6 +28,8 @@
   },
   "packageManager": "pnpm@11.18.0",
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3",
     "wrangler": "^4.127.1"
   }
 }
