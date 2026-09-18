@@ -100,6 +100,52 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^LINKCHECK-OK' linkcheck.log
 
+  typecheck:
+    name: typecheck ${{ matrix.site }}
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(needs.discover.outputs.sites) }}
+    defaults:
+      run:
+        working-directory: sites/${{ matrix.site }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: sites/${{ matrix.site }}/pnpm-lock.yaml
+
+      - name: Install from lockfile
+        run: pnpm install --frozen-lockfile
+
+      # `astro check` needs the TypeScript 6.x programmatic API. A plain
+      # `pnpm add -D typescript` resolves 7.x, and astro check then hard-fails with
+      # "The TypeScript module loaded (found 7.0.2) does not expose the programmatic
+      # API that astro check relies on". So `typescript` is pinned to ^6.0.3 in every
+      # site's package.json (see the "//typescript" key there). Do not "upgrade" it
+      # back to the latest without re-verifying this job.
+      - name: Type check (astro check)
+        run: |
+          set -o pipefail
+          pnpm run check:types 2>&1 | tee typecheck.log
+          # Guard against a checker that exits 0 while checking nothing.
+          checked=$(sed -e 's/\x1b\[[0-9;]*m//g' typecheck.log \
+            | sed -n 's/^Result (\([0-9][0-9]*\) files):.*/\1/p' | tail -1)
+          echo "files type-checked: ${checked:-0}"
+          test -n "$checked" && test "$checked" -gt 0
+
   static:
     name: static checks
     runs-on: ubuntu-latest
@@ -132,7 +178,7 @@ jobs:
   ci:
     name: ci
     if: always()
-    needs: [discover, build, static, worker]
+    needs: [discover, build, typecheck, static, worker]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -142,6 +188,7 @@ jobs:
           for result in \
             "discover=${{ needs.discover.result }}" \
             "build=${{ needs.build.result }}" \
+            "typecheck=${{ needs.typecheck.result }}" \
             "static=${{ needs.static.result }}" \
             "worker=${{ needs.worker.result }}"
           do

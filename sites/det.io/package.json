@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "build": "node ./scripts/og.mjs && astro build",
     "check:links": "node ../../scripts/check-links.mjs dist",
+    "check:types": "astro check",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -23,5 +24,10 @@
   },
   "engines": {
     "node": ">=20.3.0"
+  },
+  "//typescript": "Pinned to ^6 ON PURPOSE. `astro check` (the check:types gate) needs the TypeScript 6.x programmatic API: a plain `pnpm add -D typescript` resolves 7.x and `astro check` then hard-fails with \"The TypeScript module loaded (found 7.0.2) does not expose the programmatic API that astro check relies on\". Do not bump without re-running `pnpm run check:types` in this site.",
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
   }
 }
