@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "build": "node ./scripts/og.mjs && astro build",
     "check:links": "node ../../scripts/check-links.mjs dist",
+    "check:a11y": "node ../../scripts/check-a11y.mjs dist",
     "preview": "astro preview",
     "astro": "astro"
   },
