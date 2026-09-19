@@ -1,0 +1,153 @@
+name: ci
+
+# Build gate for the four production sites in sites/ and workers/blog-redirect.
+# Before this workflow existed the repo had zero workflows: nothing built the sites,
+# so a broken Astro build or a dead internal link could reach production unnoticed.
+#
+# Site list is discovered, not hardcoded, so a new site under sites/ is built too.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: 10.28.2
+  NODE_VERSION: "22"
+
+jobs:
+  discover:
+    name: discover sites
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sites: ${{ steps.list.outputs.sites }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: List every site under sites/
+        id: list
+        run: |
+          set -euo pipefail
+          sites=$(node -e '
+            const fs = require("node:fs");
+            const found = fs
+              .readdirSync("sites", { withFileTypes: true })
+              .filter((d) => d.isDirectory() && fs.existsSync(`sites/${d.name}/package.json`))
+              .map((d) => d.name)
+              .sort();
+            if (found.length === 0) {
+              console.error("no site with a package.json under sites/ — gate would be vacuous");
+              process.exit(1);
+            }
+            process.stdout.write(JSON.stringify(found));
+          ')
+          echo "sites=$sites" >> "$GITHUB_OUTPUT"
+          echo "discovered sites: $sites"
+
+  build:
+    name: build ${{ matrix.site }}
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(needs.discover.outputs.sites) }}
+    defaults:
+      run:
+        working-directory: sites/${{ matrix.site }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: sites/${{ matrix.site }}/pnpm-lock.yaml
+
+      - name: Install from lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Assert the build emitted HTML
+        run: |
+          set -euo pipefail
+          count=$(find dist -type f -name '*.html' | wc -l)
+          echo "html files built: $count"
+          test "$count" -gt 0
+
+      - name: Link check (internal)
+        run: |
+          set -o pipefail
+          pnpm run check:links | tee linkcheck.log
+          # Guard against a checker that silently checks nothing.
+          grep -q '^LINKCHECK-OK' linkcheck.log
+
+  static:
+    name: static checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Syntax, config and build-script checks
+        run: node scripts/check-static.mjs
+
+  worker:
+    name: worker blog-redirect
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: workers/blog-redirect
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Syntax check
+        run: node --check src/index.mjs
+      - name: Unit tests
+        run: node --test
+
+  ci:
+    name: ci
+    if: always()
+    needs: [discover, build, static, worker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every gate must have succeeded
+        run: |
+          set -euo pipefail
+          for result in \
+            "discover=${{ needs.discover.result }}" \
+            "build=${{ needs.build.result }}" \
+            "static=${{ needs.static.result }}" \
+            "worker=${{ needs.worker.result }}"
+          do
+            echo "$result"
+            case "$result" in
+              *"=success") ;;
+              *) echo "::error::required job $result"; exit 1 ;;
+            esac
+          done
