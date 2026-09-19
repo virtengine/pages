@@ -32,6 +32,7 @@ from PIL import Image, ImageFilter
 
 SITE = pathlib.Path(__file__).resolve().parents[1]
 MEDIA = SITE / "public" / "media"
+SOURCES_DIR = SITE / "media-source"  # working masters; never shipped
 MANIFEST = MEDIA / "manifest.json"
 
 API = "https://api.openverse.org/v1/images/"
@@ -420,7 +421,7 @@ def crop_to_aspect(image: Image.Image, aspect: float, bias: float = 0.4) -> Imag
 
 def render(entry: dict, force: bool) -> bool:
     slug = entry["slug"]
-    master_path = MEDIA / f"{slug}-master.jpg"
+    master_path = SOURCES_DIR / f"{slug}-master.jpg"
     files = [MEDIA / f"{slug}-{width}.webp" for width in entry["widths"]]
 
     if not force and master_path.exists() and all(path.exists() for path in files):
@@ -484,6 +485,7 @@ def main() -> None:
     args = parser.parse_args()
 
     MEDIA.mkdir(parents=True, exist_ok=True)
+    SOURCES_DIR.mkdir(parents=True, exist_ok=True)
     targets = [entry for entry in SOURCES if not args.slug or entry["slug"] == args.slug]
     if args.slug and not targets:
         print(f"unknown slug: {args.slug}", file=sys.stderr)
