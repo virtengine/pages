@@ -72,6 +72,20 @@ const readouts = {
     <text x="160" y="288" text-anchor="middle" class="art-mono-xs" fill="#7d8d7e">raw identity never crosses this ring</text>
   </svg>
 
+  {
+    scopes.map((s) => (
+      <>
+        <input class="vs-input" type="radio" name="vs-pick" id={`vs-${s.id}`} />
+        <label
+          class="vs-hit"
+          for={`vs-${s.id}`}
+          aria-hidden="true"
+          style={`left:${((292 / 420) * 100).toFixed(2)}%;top:${((s.y / 300) * 100).toFixed(2)}%;width:${((112 / 420) * 100).toFixed(2)}%;height:${((40 / 300) * 100).toFixed(2)}%`}
+        ></label>
+      </>
+    ))
+  }
+
   <p class="vs-read" aria-hidden="true">
     {
       Object.entries(readouts).map(([id, text]) => (

@@ -1,0 +1,461 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import Card from "@components/Card.astro";
+import CTA from "@components/CTA.astro";
+import PlateFigure from "@components/art/PlateFigure.astro";
+import EnclaveLock from "@components/diagrams/EnclaveLock.astro";
+import { SITE } from "@data/site";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Trusted processing", href: "/trusted-processing" },
+];
+
+const hardware = [
+  {
+    tag: "AMD SEV-SNP",
+    title: "Confidential VMs",
+    body: "Memory is encrypted by the processor itself, with integrity protection and a hardware-rooted attestation report — the confidential-VM path the identity scoring network runs on.",
+  },
+  {
+    tag: "Intel SGX",
+    title: "Measured enclaves",
+    body: "Sealed regions inside a processor where code runs as a measured artifact, with attestation evidence bound to the manufacturer's certificate chain.",
+  },
+  {
+    tag: "AWS Nitro",
+    title: "Hardware-isolated VMs",
+    body: "Enclaves on the Nitro platform — isolated execution with a signed attestation document that names the exact image and configuration running.",
+  },
+];
+
+const stages = [
+  {
+    step: "01",
+    title: "Captured",
+    body: "Documents, a selfie with active liveness, and biometric hardware attestation are read on the handset. Raw evidence never leaves the device unencrypted.",
+  },
+  {
+    step: "02",
+    title: "Sealed",
+    body: "Scopes are sealed to validator recipients with x/encryption envelopes. The chain stores references and key fingerprints — never plaintext.",
+  },
+  {
+    step: "03",
+    title: "Gated",
+    body: "The enclave presents its measurement; x/enclave verifies it on-chain before any envelope is released. No proof, no data.",
+  },
+  {
+    step: "04",
+    title: "Processed",
+    body: "The scoring service and its machine-learning models run as measured code inside the confidential VM — keys derived and sealed in hardware, memory encrypted by the CPU.",
+  },
+  {
+    step: "05",
+    title: "Destroyed",
+    body: "Working copies exist only while scoring runs. When it ends, the enclave retains nothing; envelope expiry and revocation govern anything retained beyond it.",
+  },
+  {
+    step: "06",
+    title: "Results only",
+    body: "A trust score and pass/fail outcome are committed to chain state by consensus. The evidence behind them is not.",
+  },
+];
+
+const marketplace = [
+  {
+    tag: "x/enclave",
+    title: "Verifiable capability",
+    body: "Enclave measurements are recorded and checked on-chain, so confidential compute becomes an attribute that can be priced, filtered, and required in placement constraints.",
+  },
+  {
+    tag: "x/encryption",
+    title: "Proof first, secrets second",
+    body: "Workload secrets are sealed to specific recipients and released only into an enclave whose attestation has verified — enforced by protocol machinery, not provider goodwill.",
+  },
+  {
+    tag: "x/cert",
+    title: "Authenticated transport",
+    body: "Tenant clients and provider daemons authenticate each other with chain-anchored TLS certificates before any manifest or secret flows.",
+  },
+  {
+    tag: "x/audit",
+    title: "Inspectable operation",
+    body: "Providers can carry auditor-signed attributes, so confidentiality claims stand alongside an audit trail rather than replacing it.",
+  },
+];
+
+const visibility = [
+  {
+    data: "Raw documents & biometrics",
+    you: "Only on your device",
+    counterparty: "Never",
+    operators: "Never",
+    foundation: "Never",
+    chain: "Ciphertext references only",
+  },
+  {
+    data: "Envelope keys",
+    you: "Held in your device's hardware",
+    counterparty: "Never",
+    operators: "Never",
+    foundation: "Never",
+    chain: "Key fingerprints only",
+  },
+  {
+    data: "Trust score & tier",
+    you: "In full",
+    counterparty: "Only what you consent to, per request",
+    operators: "Results within the consented scope",
+    foundation: "Public results only",
+    chain: "Committed by consensus",
+  },
+  {
+    data: "Workload secrets",
+    you: "Sealed to attested enclaves",
+    counterparty: "Never",
+    operators: "Never — memory is CPU-encrypted",
+    foundation: "Never",
+    chain: "Ciphertext references only",
+  },
+  {
+    data: "Attestation records",
+    you: "Produced by your device and the hardware",
+    counterparty: "Verifiable by anyone",
+    operators: "Recorded and checked on-chain",
+    foundation: "Public",
+    chain: "Public",
+  },
+];
+
+const sources = [
+  {
+    label: "x/enclave",
+    detail: "Enclave registration and on-chain attestation verification",
+    href: `${SITE.github}/tree/main/x/enclave`,
+  },
+  {
+    label: "x/encryption",
+    detail: "The envelope model and key fingerprints for confidential payloads",
+    href: `${SITE.github}/tree/main/x/encryption`,
+  },
+  {
+    label: "pkg/enclave_runtime",
+    detail: "The enclave runtime and attestation verifier",
+    href: `${SITE.github}/tree/main/pkg/enclave_runtime`,
+  },
+  {
+    label: "Encryption & Enclaves",
+    detail: "Protocol documentation: envelopes, vaults, and TEE attestation",
+    href: `${SITE.docs}/concepts/encryption-enclaves/`,
+  },
+  {
+    label: "Trusted processing — identity.org.au",
+    detail: "The consumer-facing explainer, retention table, and destruction commitments",
+    href: "https://identity.org.au/privacy/trusted-processing",
+  },
+  {
+    label: "VEID identity layer",
+    detail: "How scored identity becomes proofs without disclosure",
+    href: "/veid",
+  },
+];
+
+const related = [
+  { label: "x/enclave module reference", href: "/modules/enclave" },
+  { label: "x/encryption module reference", href: "/modules/encryption" },
+  { label: "Confidential computing, explained", href: "/learn/confidential-computing-on-virtengine" },
+  { label: "Confidential compute for enterprises", href: "/solutions/enterprises-confidential-compute" },
+  { label: "The VEID identity layer", href: "/veid" },
+  { label: "Protocol architecture", href: "/protocol" },
+];
+---
+
+<Base
+  title="Trusted processing — attested enclaves in VirtEngine"
+  description="How VirtEngine processes its most sensitive work inside hardware-sealed enclaves: attestation verified on-chain before any data is released, keys forged and sealed inside the hardware, no operator access path, raw data destroyed when scoring ends, and only results committed to chain state."
+  path="/trusted-processing"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Confidential computing · x/enclave + x/encryption"
+    title="Trusted processing: the lock and the key"
+    lede="VirtEngine's most sensitive work — scoring identity evidence, and running workloads whose data must not touch the operator — happens inside hardware-sealed enclaves. The chain verifies what is running before any byte is released to it, and the keys that open the data are forged in the hardware and never exist outside it."
+    media="hero-infrastructure"
+    mediaCaption="A provider you can see. Memory they cannot read."
+    crumbs={crumbs}
+  >
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="/modules/enclave">x/enclave module</CTA>
+      <CTA href={`${SITE.docs}/concepts/encryption-enclaves/`} variant="secondary">Docs: encryption &amp; enclaves</CTA>
+      <CTA href={`${SITE.github}/tree/main/x/enclave`} variant="ghost">Enclave source</CTA>
+    </div>
+  </PageHero>
+
+  <!-- ==================== ONE SCOPE, START TO FINISH ==================== -->
+  <Section
+    eyebrow="The whole journey"
+    title="One scope, start to finish"
+    lede="An identity scope is sealed on your device, opaque everywhere in between, opened only inside a vault whose key was forged in the silicon, and destroyed once the answer exists. What the network keeps is evidence that the right steps happened — attestation records, envelope references, and results."
+  >
+    <PlateFigure
+      rail="Fig. 01 — the lock and the key"
+      railRight="Attested enclaves"
+      label="Trusted processing drawn as a lock-and-key flow. On the left, encrypted identity scopes — documents, liveness, biometric attestation — are sealed in the wallet with x/encryption. They reach an attestation gate: the enclave signs a measurement of its exact code, verified on-chain by x/enclave using SGX, SEV-SNP and Nitro verifiers, including the AMD KDS certificate chain from VCEK through ASK to ARK with TCB checks. No proof, no data. Only after proof does data enter the trusted processing unit — a confidential VM on AMD SEV-SNP, Intel SGX or AWS Nitro, drawn as a vault with a lock — where the VEID scoring service and its machine-learning models run as measured code, with keys derived and sealed in hardware via vTPM and memory encrypted by the CPU. Below the vault, three blocked access paths marked with crosses: operator, provider, and foundation — no inspection path into the enclave for anyone. Out of the vault, only results leave: a trust score and pass or fail written to chain state — never raw biometric data."
+      caption="fig 01 — sealed in the wallet → attested gate → measured code → destroyed → results only"
+      class="reveal"
+    >
+      <EnclaveLock />
+    </PlateFigure>
+  </Section>
+
+  <!-- ==================== WHAT A TRUSTED PROCESSING UNIT IS ==================== -->
+  <Section
+    eyebrow="Hardware, not policy"
+    title="What a trusted processing unit is"
+    class="border-t border-line"
+  >
+    <div class="prose-body max-w-3xl space-y-5 text-base">
+      <p>
+        A trusted processing unit is a <strong>vault built out of the computer's own hardware</strong>.
+        The technical names are trusted execution environments and confidential virtual machines —
+        AMD SEV-SNP, Intel SGX and AWS Nitro are the three the system supports. Inside one, the
+        processor itself encrypts the running memory, so even the machine's owner, looking at their
+        own hardware, sees only ciphertext.
+      </p>
+      <p>
+        Ordinary servers have doors: an administrator account, a debug console, a memory dump. A
+        trusted processing unit is <strong>designed with no doors at all</strong> — no operator
+        login, no console, no way to read memory from outside. That is not a policy someone
+        promises to follow; it is how the silicon works.
+      </p>
+    </div>
+
+    <div class="mt-8 grid gap-5 lg:grid-cols-3">
+      {
+        hardware.map((h) => (
+          <Card title={h.title} tag={h.tag} class="reveal">
+            {h.body}
+          </Card>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ==================== THE GATE ==================== -->
+  <Section
+    eyebrow="Attestation"
+    title="The gate: attestation, checked on-chain"
+    class="border-t border-line"
+  >
+    <div class="prose-body max-w-3xl space-y-5 text-base">
+      <p>
+        Before encrypted evidence is released to a vault, the vault must prove what it is. It
+        produces an <strong>attestation</strong> — a signed statement from the hardware
+        manufacturer's own certificate chain that says, in effect: <em>"I am genuine sealed
+        hardware, and I am running exactly this code, with this measurement."</em>
+      </p>
+      <p>
+        The VirtEngine chain verifies that attestation <strong>on-chain</strong>, in its
+        <code>x/enclave</code> module, checking the signature and comparing the code's measurement —
+        a cryptographic fingerprint of every byte the enclave will run — against the approved
+        record. If a single byte of code were different, the measurement would not match and
+        <strong> no data would be released to it</strong>. Because the check is on-chain, it is
+        public: anyone can confirm which enclave measurements the network accepts.
+      </p>
+    </div>
+
+    <div class="tp-callout reveal mt-8">
+      <h3>What attestation does and does not prove</h3>
+      <p>
+        Attestation proves the vault is genuine hardware running exactly the approved code —
+        nothing more. The rest of the protection comes from what that approved code does: verify,
+        report a result, destroy the evidence. Both halves are open source, so both halves can be
+        inspected.
+      </p>
+    </div>
+  </Section>
+
+  <!-- ==================== THE KEY ==================== -->
+  <Section
+    eyebrow="Key custody"
+    title="The key: forged inside the hardware"
+    class="border-t border-line"
+  >
+    <div class="prose-body max-w-3xl space-y-5 text-base">
+      <p>
+        The key that decrypts a scope <strong>never exists outside the enclave</strong>. It is
+        derived inside the hardware, from the hardware's own secrets, and sealed so it can only ever
+        be used by that exact enclave running that exact code — hardware-based key derivation with
+        vTPM sealing, in the technical terms.
+      </p>
+      <p>
+        This is why "no one can open it" is a design fact rather than a promise: there is no key to
+        hand over. Not to an operator with root access, not to the provider hosting the machine, not
+        to the foundation that stewards the protocol, not in response to a demand. A key that never
+        leaves the silicon cannot be copied, stolen, or surrendered.
+      </p>
+    </div>
+  </Section>
+
+  <!-- ==================== STAGE BY STAGE ==================== -->
+  <Section
+    eyebrow="Data lifecycle"
+    title="What happens to evidence, stage by stage"
+    lede="The same journey as a lifecycle. Raw evidence exists inside the enclave only for the moments scoring takes — then it is destroyed, and only the result remains."
+    class="border-t border-line"
+  >
+    <ol class="stage-grid">
+      {
+        stages.map((stage) => (
+          <li class="stage-item reveal">
+            <span class="stage-idx">Stage {stage.step}</span>
+            <h3>{stage.title}</h3>
+            <p>{stage.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="mt-5 max-w-3xl text-sm leading-relaxed text-muted">
+      Retention and destruction for the identity programme are published commitments, with figures
+      attached — the Biometric Data Addendum's schedule is set out in full at
+      <a href="https://identity.org.au/privacy/trusted-processing">identity.org.au/privacy/trusted-processing</a>.
+    </p>
+  </Section>
+
+  <!-- ==================== MARKETPLACE ==================== -->
+  <Section
+    eyebrow="Confidential compute"
+    title="The same machinery answers a marketplace question"
+    lede="How does a tenant know a provider's confidential-compute claim is real? The enclave modules turn confidentiality into a verifiable, pricable attribute."
+    class="border-t border-line"
+  >
+    <div class="prose-body max-w-3xl space-y-5 text-base">
+      <p>
+        Attested enclave capability is recorded in <code>x/enclave</code>, and orders can require it
+        as a placement constraint — so unverified capacity never even matches. Workload secrets are
+        sealed with <code>x/encryption</code> envelopes and released only after attestation
+        verifies. The sequence is <strong>proof first, secrets second</strong>, and it is enforced
+        by protocol machinery rather than provider goodwill.
+      </p>
+    </div>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      {
+        marketplace.map((m) => (
+          <Card title={m.title} tag={m.tag} class="reveal">
+            {m.body}
+          </Card>
+        ))
+      }
+    </div>
+
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/solutions/enterprises-confidential-compute">Confidential compute for enterprises</CTA>
+      <CTA href="/learn/confidential-computing-on-virtengine" variant="secondary">Confidential computing, explained</CTA>
+    </div>
+  </Section>
+
+  <!-- ==================== WHO CAN SEE WHAT ==================== -->
+  <Section
+    eyebrow="Visibility"
+    title="Who can see what"
+    lede="The chain is a coordination and audit layer, not a data lake. Outside your device and an attested enclave, confidential material exists only as ciphertext."
+    class="border-t border-line"
+  >
+    <div class="tp-table-wrap reveal">
+      <table class="tp-table">
+        <caption class="sr-only">
+          For each category of data, who can read it — you, the counterparty, providers and
+          operators, the foundation, or the chain
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Data</th>
+            <th scope="col">You</th>
+            <th scope="col">Counterparty</th>
+            <th scope="col">Providers &amp; operators</th>
+            <th scope="col">Foundation</th>
+            <th scope="col">The chain</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            visibility.map((row) => (
+              <tr>
+                <th scope="row">{row.data}</th>
+                <td>{row.you}</td>
+                <td>{row.counterparty}</td>
+                <td>{row.operators}</td>
+                <td>{row.foundation}</td>
+                <td>{row.chain}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-4 mb-0 max-w-3xl text-[0.92rem] text-muted">
+      "Never" in this table is architectural: raw evidence is ciphertext everywhere outside your
+      device and the attested vault, and the vault has no door.
+    </p>
+  </Section>
+
+  <!-- ==================== VERIFICATION ==================== -->
+  <Section
+    eyebrow="Primary sources"
+    title="Verification you can check"
+    lede="Every claim on this page maps to something inspectable in the repository or the documentation."
+    class="border-t border-line"
+  >
+    <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        sources.map((source) => (
+          <li>
+            <a
+              href={source.href}
+              rel={source.href.startsWith("http") ? "noopener" : undefined}
+              class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
+            >
+              <strong class="text-sm text-ink group-hover:text-green-dark">{source.label}</strong>
+              <span class="mt-2 text-xs leading-relaxed text-muted">{source.detail}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="tp-callout tp-callout--warn reveal mt-8">
+      <h3>The honest limits</h3>
+      <p>
+        No security design is beyond all conceivable failure, and we do not claim this one is. What
+        is claimed — checkably — is the design: attestation verified before data moves, keys sealed
+        in hardware, no operator access path, and destruction commitments with dates attached. The
+        network is not live; this page describes the protocol design.
+      </p>
+    </div>
+  </Section>
+
+  <!-- ==================== KEEP READING ==================== -->
+  <Section eyebrow="Related" title="Continue from here" class="border-t border-line">
+    <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        related.map((rel) => (
+          <li>
+            <a
+              href={rel.href}
+              class="clip-corner group flex items-center justify-between gap-4 rounded-card border border-line bg-panel px-5 py-4 transition-colors hover:border-green-deep"
+            >
+              <span class="text-sm font-medium text-ink group-hover:text-green-dark">{rel.label}</span>
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-green-deep">
+                <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</Base>

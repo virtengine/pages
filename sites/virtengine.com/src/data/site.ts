@@ -35,6 +35,7 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
       { label: "Open source", href: "/open-source" },
       { label: "Waldur integration", href: "/waldur" },
       { label: "VEID identity", href: "/veid" },
+      { label: "Trusted processing", href: "/trusted-processing" },
     ],
   },
   {

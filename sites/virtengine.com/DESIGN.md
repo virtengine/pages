@@ -279,7 +279,7 @@ and rendered in `src/components/art/`:
 | `ArchitectureLayers.astro` | Four-layer protocol map; CSS `:has()` hover illuminates a layer. |
 | `SourceTerminal.astro` | Documented `make virtengine` build sequence. |
 | `IdentityPrism.astro` | VEID hero, vertical edition: the device, the trust boundary raw identity never crosses, the validator ring, and the proof surfaces below. |
-| `VeidPhone.astro`    | The VEID wallet as an app mockup (capture / liveness / proof screens). |
+| `VeidWalletDemo.astro` | The VEID wallet as a zero-JS working demo: one phone stepping capture → liveness → proof → receipt, with a single step rail, boundary accounting, and an on-device console. |
 | `HeroArt.astro`      | Compact per-page instruments (`protocol`, `providers`, `staking`, `network`, `learn`, `source`). |
 | `SurfaceMotif.astro` | Four motifs for protocol-surface panels. |
 | `LatticeMark.astro`  | The nested-**downward**-V lattice used as an ambient watermark (footer, closing band). |

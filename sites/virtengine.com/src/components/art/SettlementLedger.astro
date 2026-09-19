@@ -50,6 +50,17 @@ const readouts = {
     <text x="36" y="58" font-family="var(--font-sans)" font-size="16" fill="#e9f0ea">Metered usage becomes the bill.</text>
   </svg>
 
+  {
+    stages.map((s) => (
+      <label
+        class="lg-hit"
+        for={`lg-${s.id}`}
+        aria-hidden="true"
+        style={`left:${((s.x / 460) * 100).toFixed(2)}%;top:${((86 / 300) * 100).toFixed(2)}%;width:${((56 / 460) * 100).toFixed(2)}%;height:${((56 / 300) * 100).toFixed(2)}%`}
+      ></label>
+    ))
+  }
+
   <div class="lg-stepper" role="group" aria-label="Ledger stages">
     {
       stages.map((s, i) => (

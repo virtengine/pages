@@ -12,7 +12,7 @@ import { hits, overlays, readouts } from "@data/network";
   <div class="nf-canvas">
     <svg
       class="network-field"
-      viewBox="0 0 640 700"
+      viewBox="0 0 640 748"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
@@ -35,14 +35,14 @@ import { hits, overlays, readouts } from "@data/network";
           </feMerge>
         </filter>
         <clipPath id="nf-well-clip">
-          <rect x="232" y="548" width="176" height="96" rx="10"></rect>
+          <rect x="220" y="588" width="200" height="104" rx="10"></rect>
         </clipPath>
       </defs>
 
-      <rect width="640" height="700" fill="url(#nf-grid)" opacity="0.35"></rect>
-      <rect width="640" height="700" fill="url(#nf-glow-core)"></rect>
+      <rect width="640" height="748" fill="url(#nf-grid)" opacity="0.35"></rect>
+      <rect width="640" height="748" fill="url(#nf-glow-core)"></rect>
 
-      <path class="nf-spine" d="M320 118 V 548" stroke="#3a4a3c" stroke-width="1.4"></path>
+      <path class="nf-spine" d="M320 118 V 588" stroke="#3a4a3c" stroke-width="1.4"></path>
 
       <g class="nf-g nf-g-order">
         <rect x="232" y="28" width="176" height="86" rx="12" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
@@ -62,7 +62,8 @@ import { hits, overlays, readouts } from "@data/network";
             />
           ))
         }
-        <text x="40" y="78" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">ORDER</text>
+        <text x="48" y="76" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">ORDER</text>
+        <line x1="112" y1="71" x2="224" y2="71" stroke="#253027" stroke-width="1" stroke-dasharray="2 6"></line>
       </g>
 
       <circle class="nf-packet" r="7" fill="#7ddd7a" filter="url(#nf-soft)"></circle>
@@ -92,43 +93,44 @@ import { hits, overlays, readouts } from "@data/network";
       </g>
 
       <g class="nf-g nf-g-bids">
-        <path class="nf-fan" d="M320 432 L140 478 M320 432 L320 478 M320 432 L500 478" stroke="#3a4a3c" stroke-width="1.2"></path>
-        <g class="nf-node nf-bid-a" transform="translate(92,478)">
+        <path class="nf-fan" d="M320 432 L140 472 M320 432 L320 472 M320 432 L500 472" stroke="#3a4a3c" stroke-width="1.2"></path>
+        <g class="nf-node nf-bid-a" transform="translate(92,472)">
           <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
           <path d="M34 14 L62 14 L48 36 Z" fill="#7d8d7e"></path>
-          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.42</text>
+          <text x="48" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.42</text>
         </g>
-        <g class="nf-node nf-bid-win nf-node--win" transform="translate(272,478)">
+        <g class="nf-node nf-bid-win nf-node--win" transform="translate(272,472)">
           <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#60cc5d" stroke-width="2"></rect>
           <path d="M34 14 L62 14 L48 36 Z" fill="#60cc5d"></path>
-          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#7ddd7a">0.39</text>
+          <text x="48" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#7ddd7a">0.39</text>
         </g>
-        <g class="nf-node nf-bid-c" transform="translate(452,478)">
+        <g class="nf-node nf-bid-c" transform="translate(452,472)">
           <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
           <path d="M34 14 L62 14 L48 36 Z" fill="#7d8d7e"></path>
-          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.51</text>
+          <text x="48" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.51</text>
         </g>
-        <text x="40" y="508" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">BID</text>
+        <text x="48" y="502" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">BID</text>
       </g>
 
       <g class="nf-g nf-g-escrow">
-        <rect x="232" y="548" width="176" height="96" rx="10" fill="#121a14" stroke="#3a4a3c" stroke-width="1.5"></rect>
+        <rect x="220" y="588" width="200" height="104" rx="10" fill="#121a14" stroke="#3a4a3c" stroke-width="1.5"></rect>
         <g clip-path="url(#nf-well-clip)">
-          <rect class="nf-fill" x="232" y="548" width="176" height="96" fill="#60cc5d" opacity="0.3"></rect>
+          <rect class="nf-fill" x="220" y="588" width="200" height="104" fill="#60cc5d" opacity="0.3"></rect>
         </g>
-        <text x="248" y="568" font-family="var(--font-mono)" font-size="12.5" letter-spacing="0.16em" fill="#a3b2a4">ESCROW</text>
-        <text x="392" y="568" text-anchor="end" font-family="var(--font-mono)" font-size="11" letter-spacing="0.12em" fill="#7d8d7e">TAKE</text>
-        <line x1="248" y1="582" x2="392" y2="582" stroke="#253027" stroke-width="1"></line>
-        <text x="320" y="620" text-anchor="middle" font-family="var(--font-sans)" font-size="44" font-weight="700" fill="#7ddd7a">0%</text>
-        <text x="320" y="639" text-anchor="middle" font-family="var(--font-mono)" font-size="10" letter-spacing="0.1em" fill="#a3b2a4">no commission charged</text>
+        <text x="236" y="613" font-family="var(--font-mono)" font-size="12.5" letter-spacing="0.16em" fill="#a3b2a4">ESCROW</text>
+        <text x="404" y="613" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" letter-spacing="0.12em" fill="#7d8d7e">TAKE</text>
+        <line x1="236" y1="629" x2="404" y2="629" stroke="#253027" stroke-width="1"></line>
+        <text x="320" y="667" text-anchor="middle" font-family="var(--font-sans)" font-size="32" font-weight="700" fill="#7ddd7a">0%</text>
+        <text x="320" y="684" text-anchor="middle" font-family="var(--font-mono)" font-size="11" letter-spacing="0.06em" fill="#a3b2a4">no commission charged</text>
       </g>
 
       <g class="nf-g nf-g-settle">
-        <rect x="236" y="656" width="168" height="10" rx="5" fill="#1e2a20"></rect>
-        <rect class="nf-usage" x="236" y="656" width="40" height="10" rx="5" fill="#60cc5d"></rect>
+        <rect x="236" y="716" width="168" height="10" rx="5" fill="#1e2a20"></rect>
+        <rect class="nf-usage" x="236" y="716" width="40" height="10" rx="5" fill="#60cc5d"></rect>
         <circle class="nf-tick" r="4" fill="#7ddd7a"></circle>
         <circle class="nf-tick nf-tick-b" r="4" fill="#7ddd7a"></circle>
-        <text x="40" y="666" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">SETTLE</text>
+        <text x="48" y="725" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">SETTLE</text>
+        <line x1="118" y1="721" x2="228" y2="721" stroke="#253027" stroke-width="1" stroke-dasharray="2 6"></line>
       </g>
 
       <g class="nf-overlays">

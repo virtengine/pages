@@ -31,11 +31,11 @@ export const hits: NetworkHit[] = [
   { id: "veid", href: "/veid", label: "VEID — identity scored by validators", x: 12.2, y: 24, w: 15, h: 16 },
   { id: "attest", href: "/providers", label: "Attest — capacity proven on the machine", x: 67.2, y: 25.1, w: 17.5, h: 14.9 },
   { id: "core", href: "/protocol", label: "Protocol — compute, identity, settlement", x: 35.6, y: 35.4, w: 28.8, h: 26.3 },
-  { id: "bid-a", href: "/learn/how-the-marketplace-works", label: "Bid syd-01 — 0.42 per hour", x: 14.4, y: 68.3, w: 15, h: 10.3 },
-  { id: "bid-win", href: "/learn/how-the-marketplace-works", label: "Winning bid mel-gpu — 0.39 per hour", x: 42.5, y: 68.3, w: 15, h: 10.3 },
-  { id: "bid-c", href: "/learn/how-the-marketplace-works", label: "Bid act-hpc — 0.51 per hour", x: 70.6, y: 68.3, w: 15, h: 10.3 },
-  { id: "escrow", href: "/learn/escrow-and-settlement-explained", label: "Escrow — 0% marketplace take", x: 36.25, y: 78.3, w: 27.5, h: 13.7 },
-  { id: "settle", href: "/learn/escrow-and-settlement-explained", label: "Settle — signed usage, then payout", x: 36.9, y: 92.6, w: 26.3, h: 5.2 },
+  { id: "bid-a", href: "/learn/how-the-marketplace-works", label: "Bid syd-01 — 0.42 per hour", x: 14.4, y: 63, w: 15, h: 10 },
+  { id: "bid-win", href: "/learn/how-the-marketplace-works", label: "Winning bid mel-gpu — 0.39 per hour", x: 42.5, y: 63, w: 15, h: 10 },
+  { id: "bid-c", href: "/learn/how-the-marketplace-works", label: "Bid act-hpc — 0.51 per hour", x: 70.6, y: 63, w: 15, h: 10 },
+  { id: "escrow", href: "/learn/escrow-and-settlement-explained", label: "Escrow — 0% marketplace take", x: 34.4, y: 78.6, w: 31.25, h: 14.4 },
+  { id: "settle", href: "/learn/escrow-and-settlement-explained", label: "Settle — signed usage, then payout", x: 36.1, y: 94, w: 27.8, h: 6 },
 ];
 
 export const overlays: NetworkOverlay[] = [
@@ -43,11 +43,11 @@ export const overlays: NetworkOverlay[] = [
   { id: "veid", kind: "circle", x: 126, y: 216, r: 49 },
   { id: "attest", kind: "rect", x: 430, y: 184, w: 112, h: 80, rx: 10 },
   { id: "core", kind: "circle", x: 320, y: 340, r: 96 },
-  { id: "bid-a", kind: "rect", x: 92, y: 478, w: 96, h: 52, rx: 8 },
-  { id: "bid-win", kind: "rect", x: 272, y: 478, w: 96, h: 52, rx: 8 },
-  { id: "bid-c", kind: "rect", x: 452, y: 478, w: 96, h: 52, rx: 8 },
-  { id: "escrow", kind: "rect", x: 232, y: 548, w: 176, h: 96, rx: 10 },
-  { id: "settle", kind: "rect", x: 231, y: 651, w: 178, h: 20, rx: 10 },
+  { id: "bid-a", kind: "rect", x: 92, y: 472, w: 96, h: 52, rx: 8 },
+  { id: "bid-win", kind: "rect", x: 272, y: 472, w: 96, h: 52, rx: 8 },
+  { id: "bid-c", kind: "rect", x: 452, y: 472, w: 96, h: 52, rx: 8 },
+  { id: "escrow", kind: "rect", x: 220, y: 588, w: 200, h: 104, rx: 10 },
+  { id: "settle", kind: "rect", x: 231, y: 711, w: 178, h: 20, rx: 10 },
 ];
 
 export const readouts: Record<string, string> = {

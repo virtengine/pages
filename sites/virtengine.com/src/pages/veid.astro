@@ -5,7 +5,7 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import PlateFigure from "@components/art/PlateFigure.astro";
-import VeidPhone from "@components/art/VeidPhone.astro";
+import VeidWalletDemo from "@components/art/VeidWalletDemo.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
 import { SITE } from "@data/site";
 
@@ -33,7 +33,7 @@ const stages = [
   {
     step: "05",
     title: "Consensus scoring",
-    body: "Validators decrypt, score the data with shared machine-learning models, and commit an identity trust score to the ledger by consensus — the patented core of the protocol.",
+    body: "Validators open the scopes only inside attested enclaves (x/enclave), score the evidence with shared machine-learning models, and commit an identity trust score to the ledger by consensus — the patented core of the protocol.",
   },
   {
     step: "06",
@@ -42,27 +42,21 @@ const stages = [
   },
 ];
 
-const wallet = [
+const trusted = [
   {
-    screen: "capture" as const,
-    note: "01 · capture",
-    body: "Documents are read with OCR on the handset. Nothing is uploaded at capture time.",
-    label:
-      "VEID wallet mockup, capture screen: a document is framed by corner brackets while OCR detects the document type, with a note that nothing is uploaded yet.",
+    tag: "The vault",
+    title: "A room built out of silicon",
+    body: "Scoring runs in confidential VMs — AMD SEV-SNP, Intel SGX or AWS Nitro — where the processor encrypts memory itself. There is no operator login, no debug console, and no memory dump: no access path exists for the provider hosting the hardware, the foundation, or anyone else.",
   },
   {
-    screen: "liveness" as const,
-    note: "02 · liveness + attestation",
-    body: "An active challenge proves a present human; hardware attestation binds the capture to secure silicon.",
-    label:
-      "VEID wallet mockup, liveness screen: a face guide with a 'slowly blink' challenge, progress steps, and a confirm button.",
+    tag: "The gate",
+    title: "Attestation before data",
+    body: "Before any scope is released, the enclave produces a hardware-signed measurement of the exact code it is running. The chain verifies it on-chain in x/enclave against the approved record. If a single byte of code were different, the measurement would not match — and no data would be sent.",
   },
   {
-    screen: "proof" as const,
-    note: "03 · prove without revealing",
-    body: "Name, date of birth, address and document number stay sealed on the device. Only the proof is shared.",
-    label:
-      "VEID wallet mockup, proof screen: private fields stay locked on the device while a single proof — score ≥ threshold — is shared with the verifier.",
+    tag: "The key",
+    title: "Forged inside the enclosure",
+    body: "The key that opens a scope is derived inside the hardware from the hardware's own secrets and sealed to that exact enclave (vTPM sealing). There is no key to hand over — not to an operator, not to a provider, not in response to a demand.",
   },
 ];
 
@@ -167,19 +161,7 @@ const scenarios = [
         </p>
       </div>
 
-      <div class="wallet-row">
-        {
-          wallet.map((w) => (
-            <div class="wallet-spec">
-              <VeidPhone screen={w.screen} label={w.label} class="wallet-device" />
-              <div class="wallet-note">
-                <b>{w.note}</b>
-                <p>{w.body}</p>
-              </div>
-            </div>
-          ))
-        }
-      </div>
+      <VeidWalletDemo class="reveal" />
 
       <p class="mt-10 max-w-3xl text-sm leading-relaxed text-night-muted">
         The wallet is a reference implementation — <code class="font-mono text-green">mobile/veid-capture-app/</code> in
@@ -216,6 +198,65 @@ const scenarios = [
         ))
       }
     </ol>
+  </Section>
+
+  <!-- ==================== TRUSTED PROCESSING ==================== -->
+  <Section
+    eyebrow="Trusted processing · x/enclave"
+    title="Scoring happens where no operator can look"
+    lede="Encrypted scopes are opened only inside hardware-sealed enclaves — confidential VMs whose attestation the chain verifies before any data is released to them."
+  >
+    <div class="grid gap-5 lg:grid-cols-3">
+      {
+        trusted.map((t) => (
+          <Card title={t.title} tag={t.tag} class="reveal">
+            {t.body}
+          </Card>
+        ))
+      }
+    </div>
+
+    <div class="id-split mt-10">
+      <div>
+        <div class="prose-body space-y-4 text-base">
+          <p>
+            The three properties compound: there is no access path into the vault, the code inside
+            is measured and attested before data arrives, and the key that opens a scope is sealed
+            to that exact hardware. Raw documents and biometrics exist in readable form only on the
+            user's device and inside the enclosure — the chain carries ciphertext, attestation
+            records, and results.
+          </p>
+          <p>
+            The same machinery serves confidential workloads in the marketplace: attested enclave
+            capability is a verifiable provider attribute, and tenant secrets are delivered only
+            after attestation verifies — proof first, secrets second, enforced by protocol
+            machinery rather than provider goodwill.
+          </p>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-4">
+          <CTA href="/trusted-processing">How trusted processing works</CTA>
+          <CTA href="/modules/enclave" variant="secondary">x/enclave module</CTA>
+          <CTA href="/modules/encryption" variant="ghost">x/encryption module</CTA>
+        </div>
+      </div>
+
+      <div class="tp-boundary reveal" role="group" aria-label="What crosses the trusted processing boundary">
+        <div class="tp-boundary-row">
+          <span class="tp-boundary-key">Leaves the enclave</span>
+          <p>Attestation records, a trust score, and pass/fail outcomes — written to chain state for verifiers and zero-knowledge proofs to build on.</p>
+        </div>
+        <div class="tp-boundary-row tp-boundary-row--sealed">
+          <span class="tp-boundary-key">Stays sealed</span>
+          <p>Documents, selfies, biometric templates, raw scopes, and the hardware-sealed keys that open them. Working copies are destroyed when scoring ends.</p>
+        </div>
+        <p class="tp-boundary-note">
+          Attestation proves genuine hardware running exactly the approved code — nothing more.
+          The other half is what that code does: verify, report, destroy. Both halves are open
+          source.
+        </p>
+      </div>
+    </div>
   </Section>
 
   <!-- ==================== WHAT A VERIFIER LEARNS ==================== -->
