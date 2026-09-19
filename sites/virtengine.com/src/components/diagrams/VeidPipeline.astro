@@ -53,7 +53,7 @@ const hexPath = hexPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join
         <text x="16" y="32" class="art-mono-xs" fill="var(--color-green)">
           {String(i + 1).padStart(2, "0")} {s.title}
         </text>
-        <text x="16" y="60" font-family="var(--font-sans)" font-size="14" fill="var(--color-night-muted)">
+        <text x="16" y="60" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">
           {s.line}
         </text>
         {i < stages.length - 1 && (

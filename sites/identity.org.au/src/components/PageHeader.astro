@@ -13,12 +13,12 @@ interface Props {
 const { crumbs, eyebrow, title, lede } = Astro.props;
 ---
 
-<div class="bg-alt border-b border-hairline">
-  <div class="container-site py-8 lg:py-10">
+<div class="bg-alt border-b border-hairline page-header-band">
+  <div class="container-site py-8 lg:py-12">
     <Breadcrumbs crumbs={crumbs} />
     {eyebrow && <p class="eyebrow mt-6 mb-0">{eyebrow}</p>}
-    <h1 class="mt-2 mb-0 text-[clamp(1.9rem,4vw,2.7rem)] measure">{title}</h1>
-    {lede && <p class="mt-4 mb-0 text-[1.15rem] text-body measure">{lede}</p>}
+    <h1 class="mt-2 mb-0 text-[clamp(2.1rem,4.4vw,3.1rem)] leading-[1.06] tracking-[-0.02em] measure">{title}</h1>
+    {lede && <p class="mt-4 mb-0 text-[1.2rem] text-body measure">{lede}</p>}
     <slot />
   </div>
 </div>

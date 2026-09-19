@@ -3,6 +3,9 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import GlanceStrip from "@components/GlanceStrip.astro";
+import HowItWorks from "@components/HowItWorks.astro";
+import FaqList from "@components/FaqList.astro";
 import { MODULES, modulesByDomain } from "@data/modules";
 import { SITE } from "@data/site";
 
@@ -28,17 +31,36 @@ const githubPath = `${SITE.github}/tree/main/${mod.path}`;
   path={`/modules/${mod.slug}`}
   breadcrumbs={crumbs}
 >
-  <PageHero eyebrow={`Module reference · ${mod.domain}`} title={`${mod.path} — ${mod.name}`} lede={mod.summary} crumbs={crumbs}>
+  <PageHero
+    eyebrow={`Module reference · ${mod.domain}`}
+    title={`${mod.path} — ${mod.name}`}
+    lede={mod.summary}
+    crumbs={crumbs}
+    media={mod.media}
+    mediaCaption={mod.mediaCaption}
+  >
     <div class="mt-8 flex flex-wrap gap-4">
       <CTA href={githubPath}>Source on GitHub</CTA>
       <CTA href={SITE.docs} variant="secondary">Protocol docs</CTA>
     </div>
   </PageHero>
 
+  <Section eyebrow="At a glance" title={`${mod.name} in three lines`}>
+    <GlanceStrip items={mod.glance} />
+  </Section>
+
   <Section eyebrow="What it does" title={`Inside ${mod.path}`}>
-    <div class="prose-body space-y-5 text-base">
+    <div class="prose-body max-w-3xl space-y-5 text-base">
       {mod.whatItDoes.map((para) => <p>{para}</p>)}
     </div>
+  </Section>
+
+  <Section
+    eyebrow="How it works"
+    title="The flow, step by step"
+    lede="Select each step — the panel walks the sequence in order."
+  >
+    <HowItWorks id={mod.slug} steps={mod.flow} />
   </Section>
 
   <Section eyebrow="Why it exists" title="The design rationale">
@@ -81,6 +103,10 @@ const githubPath = `${SITE.github}/tree/main/${mod.path}`;
         ))
       }
     </dl>
+  </Section>
+
+  <Section eyebrow="Questions" title={`Asked about ${mod.path}`}>
+    <FaqList items={mod.faqs} />
   </Section>
 
   <Section eyebrow="Keep exploring" title={`More from ${mod.domain.toLowerCase()}`}>

@@ -1,0 +1,282 @@
+---
+/**
+ * FieldBackdrop — an animated, pointer-reactive constellation field.
+ *
+ * A light canvas layer that sits behind the hero copy: a drifting mesh of
+ * protocol nodes and edges, with a force field that answers to the pointer and
+ * a parallax that answers to scroll. On-brand greens only, low opacity, and it
+ * degrades to a static frame (or nothing) under `prefers-reduced-motion`.
+ *
+ * No dependencies; one small client script. Pauses when the tab is hidden.
+ */
+interface Props {
+  /** "night" (dark surfaces, default) or "paper" (light surfaces) */
+  tone?: "night" | "paper";
+  /** node density: higher = more + smaller nodes */
+  density?: number;
+  class?: string;
+}
+
+const { tone = "night", density = 1, class: className } = Astro.props;
+---
+
+<div
+  class:list={["field-backdrop", `field-backdrop--${tone}`, className]}
+  data-density={density}
+  aria-hidden="true"
+>
+  <canvas class="field-backdrop-canvas"></canvas>
+</div>
+
+<style>
+  .field-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    mask-image: radial-gradient(
+      120% 100% at 62% 42%,
+      #000 0%,
+      rgba(0, 0, 0, 0.72) 58%,
+      transparent 100%
+    );
+  }
+  .field-backdrop-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .field-backdrop--paper {
+    opacity: 0.75;
+  }
+</style>
+
+<script>
+  type Node = {
+    x: number;
+    y: number;
+    z: number;
+    vx: number;
+    vy: number;
+    r: number;
+    hue: number;
+  };
+
+  function initField(root: HTMLElement) {
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+    let inView = true;
+
+    const tone = root.classList.contains("field-backdrop--paper") ? "paper" : "night";
+    const density = Number(root.dataset.density) || 1;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let nodes: Node[] = [];
+    let raf = 0;
+    let running = false;
+    let last = 0;
+
+    const pointer = { x: -9999, y: -9999, active: false };
+    const para = { x: 0, y: 0, tx: 0, ty: 0 };
+
+    const palette =
+      tone === "paper"
+        ? { line: "22, 104, 63", node: "35, 104, 63", glow: "96, 204, 93", alpha: 0.5 }
+        : { line: "125, 221, 122", node: "125, 221, 122", glow: "96, 204, 93", alpha: 1 };
+
+    function resize() {
+      const rect = root.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+    }
+
+    function build() {
+      const base = tone === "paper" ? 26000 : 19000;
+      const count = Math.max(22, Math.min(110, Math.round((width * height) / (base / density))));
+      nodes = Array.from({ length: count }, () => {
+        const z = 0.32 + Math.random() * 0.68;
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+          z,
+          vx: (Math.random() - 0.5) * 0.16 * z,
+          vy: (Math.random() - 0.5) * 0.16 * z,
+          r: (0.7 + Math.random() * 1.5) * z,
+          hue: Math.random(),
+        };
+      });
+    }
+
+    function step(dt: number) {
+      const targetX = pointer.active ? (pointer.x - width / 2) * -0.02 : 0;
+      const targetY = pointer.active ? (pointer.y - height / 2) * -0.02 : 0;
+      para.tx = targetX;
+      para.ty = targetY;
+      para.x += (para.tx - para.x) * Math.min(1, dt * 0.04);
+      para.y += (para.ty - para.y) * Math.min(1, dt * 0.04);
+
+      const radius = Math.min(280, Math.max(150, width * 0.2));
+      for (const n of nodes) {
+        n.x += n.vx * dt * 0.06;
+        n.y += n.vy * dt * 0.06;
+
+        if (pointer.active) {
+          const dx = n.x - pointer.x;
+          const dy = n.y - pointer.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < radius * radius && d2 > 0.01) {
+            const d = Math.sqrt(d2);
+            const force = ((radius - d) / radius) * 0.6 * n.z;
+            n.x += (dx / d) * force * dt * 0.05;
+            n.y += (dy / d) * force * dt * 0.05;
+          }
+        }
+
+        if (n.x < -40) n.x = width + 40;
+        if (n.x > width + 40) n.x = -40;
+        if (n.y < -40) n.y = height + 40;
+        if (n.y > height + 40) n.y = -40;
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      const link = Math.min(168, Math.max(90, width * 0.11));
+      const link2 = link * link;
+
+      // edges first
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        const ax = a.x + para.x * a.z;
+        const ay = a.y + para.y * a.z;
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > link2) continue;
+          const t = 1 - d2 / link2;
+          const bx = b.x + para.x * b.z;
+          const by = b.y + para.y * b.z;
+          const alpha = t * 0.16 * palette.alpha * Math.min(a.z, b.z);
+          ctx.strokeStyle = `rgba(${palette.line}, ${alpha.toFixed(3)})`;
+          ctx.beginPath();
+          ctx.moveTo(ax, ay);
+          ctx.lineTo(bx, by);
+          ctx.stroke();
+        }
+      }
+
+      // pointer halo
+      if (pointer.active) {
+        const g = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 220);
+        g.addColorStop(0, `rgba(${palette.glow}, 0.12)`);
+        g.addColorStop(1, `rgba(${palette.glow}, 0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(pointer.x, pointer.y, 220, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // nodes
+      for (const n of nodes) {
+        const x = n.x + para.x * n.z;
+        const y = n.y + para.y * n.z;
+        let a = 0.16 + n.z * 0.5;
+        if (pointer.active) {
+          const dx = x - pointer.x;
+          const dy = y - pointer.y;
+          const d = Math.hypot(dx, dy);
+          if (d < 210) a += (1 - d / 210) * 0.7;
+        }
+        a = Math.min(1, a) * palette.alpha;
+        ctx.fillStyle = `rgba(${palette.node}, ${a.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (n.hue > 0.9) {
+          ctx.fillStyle = `rgba(${palette.glow}, ${(a * 0.28).toFixed(3)})`;
+          ctx.beginPath();
+          ctx.arc(x, y, n.r * 3.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function frame(now: number) {
+      if (!running) return;
+      const dt = Math.min(3, last ? (now - last) / 16.667 : 1);
+      last = now;
+      step(dt);
+      draw();
+      raf = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running || !inView || document.hidden) return;
+      running = true;
+      last = 0;
+      raf = requestAnimationFrame(frame);
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    function onPointer(e: PointerEvent) {
+      const rect = root.getBoundingClientRect();
+      pointer.x = e.clientX - rect.left;
+      pointer.y = e.clientY - rect.top;
+      pointer.active =
+        pointer.x >= -60 && pointer.x <= width + 60 && pointer.y >= -60 && pointer.y <= height + 60;
+    }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("pointerleave", () => (pointer.active = false), { passive: true });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else if (!reduce.matches) start();
+    });
+
+    if (reduce.matches) {
+      draw();
+    } else {
+      start();
+    }
+    reduce.addEventListener?.("change", (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        stop();
+        draw();
+      } else start();
+    });
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => {
+          inView = entries[0]?.isIntersecting ?? true;
+          if (inView) start();
+          else stop();
+        },
+        { rootMargin: "140px" }
+      ).observe(root);
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>(".field-backdrop").forEach(initField);
+</script>

@@ -19,24 +19,26 @@ const { label, facts, class: className } = Astro.props;
 ---
 
 <nav class:list={["fact-strip", className]} aria-label={label}>
-  <ul>
-    {
-      facts.map((fact) => (
-        <li>
-          <span class="fact-strip-label">{fact.label}</span>
-          {fact.href ? (
-            <a
-              class="fact-strip-value"
-              href={fact.href}
-              rel={fact.href.startsWith("http") ? "noopener" : undefined}
-            >
-              {fact.value}
-            </a>
-          ) : (
-            <strong class="fact-strip-value">{fact.value}</strong>
-          )}
-        </li>
-      ))
-    }
-  </ul>
+  <div class="container-site">
+    <ul>
+      {
+        facts.map((fact) => (
+          <li>
+            <span class="fact-strip-label">{fact.label}</span>
+            {fact.href ? (
+              <a
+                class="fact-strip-value"
+                href={fact.href}
+                rel={fact.href.startsWith("http") ? "noopener" : undefined}
+              >
+                {fact.value}
+              </a>
+            ) : (
+              <strong class="fact-strip-value">{fact.value}</strong>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </nav>

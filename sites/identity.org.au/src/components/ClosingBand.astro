@@ -1,0 +1,29 @@
+---
+/**
+ * Closing statement band: navy editorial closer with a strong line and action
+ * slots. Used at the end of marketing and service journeys, above the footer.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  body?: string;
+  class?: string;
+}
+
+const { eyebrow = "The Identity Wallet", title, body, class: className } = Astro.props;
+---
+
+<section class:list={["closing-band", className]}>
+  <div class="container-site closing-band-inner">
+    <p class="closing-band-eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    {body && <p class="closing-band-body">{body}</p>}
+    {
+      Astro.slots.has("default") && (
+        <div class="closing-band-actions">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -2,6 +2,7 @@
 import Base from "@layouts/Base.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
+import ClosingBand from "@components/ClosingBand.astro";
 import FactStrip from "@components/FactStrip.astro";
 import Section from "@components/Section.astro";
 import ServiceFigure from "@components/ServiceFigure.astro";
@@ -43,7 +44,7 @@ const portalSteps = [
     title="The Identity Wallet"
     lede="One verified identity, two wallet surfaces. Complete verification once on your phone, then manage credentials, consents and proofs from the web wallet at my.identity.org.au — and use your verification level everywhere the VirtEngine network is accepted."
     statusTone="info"
-    statusLabel="Reference implementation · two surfaces"
+    statusLabel="Two surfaces · one identity"
   >
     <div slot="actions">
       <a href={SITE.walletPortal} class="btn-primary">
@@ -179,4 +180,14 @@ const portalSteps = [
       </Alert>
     </Section>
   </div>
+
+  <ClosingBand
+    eyebrow="The Identity Wallet"
+    title="One identity, two surfaces, no central copy."
+    body="Capture once on your phone; manage and present from any browser. Your documents stay encrypted and your consent stays revocable."
+  >
+    <a href={SITE.walletPortal} class="btn-inverse">Join the launch list</a>
+    <a href="/get-started" class="btn-inverse-ghost">Set up from scratch</a>
+    <a href="/wallet/security" class="btn-inverse-ghost">Read the security model</a>
+  </ClosingBand>
 </Base>

@@ -324,9 +324,9 @@ treatment, so a portrait, a data-centre aisle and a padlock read as one system.
 2. grayscale → contrast → **duotone gradient map** in brand colours
    (`paper`: ink `#12241c` → green `#369642` → paper `#fafcfa`;
    `night`: `#16381f` → green → pale `#c8f2c4`);
-3. optional **halftone dot screen** (cell 8–13 px, 15° screen angle) for subjects with
-   enough contrast to survive it — never on busy patterns or at hero scale where a
-   face must stay legible;
+3. **halftone dot screen** (cell 8–13 px, 15° screen angle) applied to every
+   photograph except the closing band image, which stays a smooth plate;
+   `scripts/halftone-media.py` re-screens in place and keeps the mean tone;
 4. export WebP at 720/1100/1200/1440/1920 depending on placement, quality 70–80.
 
 Images are never placed raw: the duotone treatment *is* the brand layer.

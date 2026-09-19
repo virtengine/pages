@@ -95,7 +95,14 @@ const guideSchema = {
   ogType="article"
   schema={[guideSchema]}
 >
-  <PageHero eyebrow={`Learn · ${guide.kicker}`} title={guide.title} lede={guide.intro} crumbs={crumbs} />
+  <PageHero
+    eyebrow={`Learn · ${guide.kicker}`}
+    title={guide.title}
+    lede={guide.intro}
+    crumbs={crumbs}
+    media={guide.media}
+    mediaCaption={guide.mediaCaption}
+  />
 
   {
     diagram && (

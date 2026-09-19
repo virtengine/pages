@@ -622,6 +622,57 @@
   text-decoration: underline;
   text-underline-offset: 5px;
 }
+/* outlined action button — a real button affordance for in-panel CTAs, so a
+   click always reads as a press (never a bare, transparent focus ring) */
+.btn-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.9rem;
+  padding: 0.7rem 1.15rem;
+  border: 1px solid var(--color-green-deep);
+  border-radius: var(--radius-card);
+  background: var(--color-panel);
+  color: var(--color-green-deep);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+.btn-line:hover {
+  background: var(--color-green-deep);
+  border-color: var(--color-green-deep);
+  color: #ffffff;
+  box-shadow: 0 12px 26px -14px rgba(35, 104, 63, 0.6);
+  transform: translateY(-1px);
+}
+.btn-line:active {
+  background: var(--color-green-dark);
+  border-color: var(--color-green-dark);
+  color: #ffffff;
+  transform: translateY(0);
+}
+.btn-line [aria-hidden] {
+  transition: transform 160ms ease;
+}
+.btn-line:hover [aria-hidden] {
+  transform: translateX(2px);
+}
+.btn-line--night {
+  background: rgba(96, 204, 93, 0.08);
+  border-color: var(--color-night-line-strong);
+  color: var(--color-green-bright);
+}
+.btn-line--night:hover,
+.btn-line--night:active {
+  background: var(--color-green-deep);
+  border-color: var(--color-green-deep);
+  color: #ffffff;
+}
 
 /* status rail — live-ish instrument readout under the hero */
 .status-rail {
@@ -730,6 +781,11 @@
   inset: 0;
   pointer-events: none;
   background: radial-gradient(120% 85% at 20% -10%, rgba(125, 221, 122, 0.09), transparent 60%);
+}
+/* content rides above the interactive field backdrop */
+.band-night > .container-site {
+  position: relative;
+  z-index: 1;
 }
 .band-night h2,
 .band-night h3 {
@@ -2300,7 +2356,7 @@
 .verifier-col + .verifier-col {
   border-left: 1px solid var(--color-line);
 }
-.verifier-col h4 {
+.verifier-col h3 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -2310,10 +2366,10 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
-.verifier-col--shared h4 {
+.verifier-col--shared h3 {
   color: var(--color-green-deep);
 }
-.verifier-col--hidden h4 {
+.verifier-col--hidden h3 {
   color: var(--color-muted);
 }
 .verifier-col ul {
@@ -2392,7 +2448,7 @@
   border-color: color-mix(in oklab, var(--color-green) 45%, var(--color-line));
   background: linear-gradient(180deg, #ffffff, #f4faf3);
 }
-.compare-card h4 {
+.compare-card h3 {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-ink);
@@ -2681,7 +2737,31 @@ body.is-home .mega-header:has(.mega-group[open]) {
     linear-gradient(180deg, #0a100c 0%, #101813 70%, #131d15 100%);
   color: var(--color-night-text);
 }
+/* slow aurora drift behind the interactive field — depth without JS */
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 68% 38%, rgba(96, 204, 93, 0.2), transparent 62%),
+    radial-gradient(34% 42% at 22% 78%, rgba(125, 221, 122, 0.12), transparent 60%),
+    radial-gradient(30% 34% at 88% 82%, rgba(35, 104, 63, 0.28), transparent 64%);
+  filter: blur(6px);
+  animation: hero-aurora 26s ease-in-out infinite alternate;
+}
+@keyframes hero-aurora {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1.02); opacity: 0.85; }
+  50% { transform: translate3d(1.5%, 2%, 0) scale(1.08); opacity: 1; }
+  100% { transform: translate3d(3%, -2%, 0) scale(1.04); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero::before { animation: none; }
+}
 .home-hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
@@ -3746,6 +3826,14 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .cap-tab span { font-size: 0.95rem; font-weight: 600; }
 .cap-tab:hover { background: var(--color-green-wash); }
+.cap-tab:active { background: var(--color-green-soft); }
+.cap-ex:has(#cap-market:focus-visible) .cap-tab[for="cap-market"],
+.cap-ex:has(#cap-veid:focus-visible) .cap-tab[for="cap-veid"],
+.cap-ex:has(#cap-settle:focus-visible) .cap-tab[for="cap-settle"],
+.cap-ex:has(#cap-infra:focus-visible) .cap-tab[for="cap-infra"] {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: -3px;
+}
 .cap-ex:has(#cap-market:checked) .cap-tab[for="cap-market"],
 .cap-ex:has(#cap-veid:checked) .cap-tab[for="cap-veid"],
 .cap-ex:has(#cap-settle:checked) .cap-tab[for="cap-settle"],
@@ -4054,7 +4142,7 @@ body.is-home { background-color: #0a100c; }
   .vs-plot:has(.vs-card[data-vs="evidence"]:hover, #vs-evidence:checked) .vs-card[data-vs="evidence"] .vs-lead,
   .vs-plot:has(.vs-card[data-vs="consensus"]:hover, #vs-consensus:checked) .vs-card[data-vs="consensus"] .vs-lead,
   .vs-plot:has(.vs-card[data-vs="proof"]:hover, #vs-proof:checked) .vs-card[data-vs="proof"] .vs-lead { stroke: var(--color-green); stroke-opacity: 0.7; }
-  .vs-plot:has(.vs-card:hover, .vs-input:checked) .vs-card { opacity: 0.5; }
+  .vs-plot:has(.vs-card:hover, .vs-input:checked) .vs-card { opacity: 0.72; }
   .vs-plot:has(.vs-card[data-vs="scope"]:hover, #vs-scope:checked) .vs-card[data-vs="scope"],
   .vs-plot:has(.vs-card[data-vs="evidence"]:hover, #vs-evidence:checked) .vs-card[data-vs="evidence"],
   .vs-plot:has(.vs-card[data-vs="consensus"]:hover, #vs-consensus:checked) .vs-card[data-vs="consensus"],

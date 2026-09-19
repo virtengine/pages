@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import Section from "@components/Section.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 ---
 
 <Base
@@ -43,6 +44,14 @@ import Section from "@components/Section.astro";
       </form>
     </div>
   </Section>
+
+  <MediaBand
+    slug="hero-infrastructure"
+    eyebrow="Launch posture"
+    title="Two stages, two separate decisions."
+    lede="TestNet validates the protocol in public and its state may reset. MainNet follows only after TestNet exit criteria, remediation, final artifacts, and a fresh go/no-go decision — availability is confirmed through official announcements."
+    caption="TestNet January 2027 · MainNet March 2027, subject to approval."
+  />
 
   <script id="turnstile-api" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script>

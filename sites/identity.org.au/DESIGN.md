@@ -137,18 +137,31 @@ eyebrows.
 ## 5. Layout and editorial system
 
 The rehaul keeps government-service restraint while giving journeys an editorial
-register: stronger section rhythm, captioned light figures, machine-readable
-status facts, and one accessible demonstration pattern.
+register: a navy masthead, stronger section rhythm, captioned light figures,
+machine-readable status facts, statement bands, and one accessible demonstration
+pattern.
 
+- **Masthead strip** (`Header.astro` `.gov-strip`): a navy bar under the header
+  on every page carrying the honesty lock ("not an Australian Government
+  service") and the service status. This is also the site's top visual anchor.
+- **Ridge motif**: a repeating radial-arc texture derived from the Ridgemark's
+  fingerprint ridges, drawn at ~5% ink on heroes and ~5% white on navy bands.
+  It is the only decorative pattern; there is no grain, lattice or noise.
+- **Primary actions are navy** (`--color-navy`), secondary actions are navy
+  outlines; the action blue is reserved for links and focus-affordance text.
+- **Statement bands**: `ClosingBand.astro` closes marketing and service journeys
+  in navy with a strong line and action buttons; the navy top strip and closing
+  band frame the light middle of the site.
 - `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
-  standfirst) and predictable vertical rhythm.
+  standfirst) with a 3px navy rule and predictable vertical rhythm.
 - `ServiceHero.astro`: unified service hero with breadcrumbs, status tag,
-  actions, supporting note, and an optional framed media slot.
-- `FactStrip.astro`: a compact list of checkable facts; every item is text unless
-  it has a destination, and destinations are links.
+  actions, supporting note, and an optional framed media slot; `PageHeader.astro`
+  matches its type scale on guide and policy pages.
+- `FactStrip.astro`: a compact list of checkable facts inside the container,
+  separated by rules; every item is text unless it has a destination.
 - `ServiceFigure.astro`: light alternative to ad-hoc `<figure>` wrappers, with a
-  rail, responsive body, caption, and optional horizontal-scroll preservation for
-  wide diagrams.
+  **navy rail**, responsive body, caption, and optional horizontal-scroll
+  preservation for wide diagrams.
 - `TableScroll.astro`: keyboard-focusable scroll region for tables that cannot be
   simplified; paired with sticky first columns and a minimum table width.
 - `ShareDemo.astro`: a simplified zero-JS consent/proof/receipt demonstration.
@@ -164,7 +177,8 @@ status facts, and one accessible demonstration pattern.
 | Provenance banner | `Footer.astro` (pre-footer strip) | Site-wide "not a government service" notice, steel shield icon, tint surface |
 | Service section | `Section.astro` | Ruled editorial section header and vertical rhythm; optional `index · eyebrow`, headline, standfirst |
 | Feature hero | `ServiceHero.astro` | Breadcrumbs, status tag, eyebrow, headline, standfirst, actions, supporting note, optional framed media |
-| Fact strip | `FactStrip.astro` | Compact machine-readable status facts; plain text unless a destination exists |
+| Closing band | `ClosingBand.astro` | Navy statement band with action slots, used above the footer on key journeys |
+| Fact strip | `FactStrip.astro` | Compact machine-readable status facts inside the container; plain text unless a destination exists |
 | Service figure | `ServiceFigure.astro` | Light rail/caption frame for diagrams and phone mockups; optional scroll preservation for wide SVG diagrams |
 | Sharing demo | `ShareDemo.astro` | Simplified zero-JS request → proof → receipt walkthrough with boundary accounting |
 | Scrollable table | `TableScroll.astro` | Keyboard-focusable region with sticky first column for tables that cannot be simplified; wide variant for four or more columns |

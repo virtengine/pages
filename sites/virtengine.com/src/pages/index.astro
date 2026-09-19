@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import NetworkField from "@components/art/NetworkField.astro";
+import FieldBackdrop from "@components/art/FieldBackdrop.astro";
 import MarketplaceBids from "@components/art/MarketplaceBids.astro";
 import VeidScopes from "@components/art/VeidScopes.astro";
 import SettlementLedger from "@components/art/SettlementLedger.astro";
@@ -95,6 +96,7 @@ const surfaces = [
   description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
 >
   <section class="home-hero">
+    <FieldBackdrop />
     <div class="container-site home-hero-grid">
       <div class="home-hero-copy">
         <p class="status-pill">
@@ -234,7 +236,7 @@ const surfaces = [
                       <li><code>{code}</code>{text}</li>
                     ))}
                   </ul>
-                  <a class="btn-quiet" href={s.href}>
+                  <a class="btn-line" href={s.href}>
                     {s.cta} <span aria-hidden="true">→</span>
                   </a>
                 </div>
@@ -317,6 +319,7 @@ const surfaces = [
   </section>
 
   <section class="home-dev band-night" id="source">
+    <FieldBackdrop density={0.85} />
     <div class="container-site home-dev-grid">
       <div>
         <p class="tag">Source</p>
@@ -338,6 +341,7 @@ const surfaces = [
   </section>
 
   <section class="home-launch band-night" id="status">
+    <FieldBackdrop density={0.8} />
     <div class="container-site">
       <div class="folio-head folio-head--split folio-head--night">
         <div>
@@ -418,7 +422,7 @@ const surfaces = [
             <article class="journal-lead">
               <a class="journal-lead-media" href={`/blog/${journalLead.slug}`}>
                 <MediaFigure
-                  slug="provider-datacenter"
+                  slug="settlement-ledger"
                   ratio="16 / 9"
                   sizes="(min-width: 1024px) 52vw, 100vw"
                 />
@@ -470,8 +474,8 @@ const surfaces = [
   <section class="home-close">
     <img
       class="home-close-bg"
-      src="/media/hero-infrastructure-1920.webp"
-      srcset="/media/hero-infrastructure-960.webp 960w, /media/hero-infrastructure-1440.webp 1440w, /media/hero-infrastructure-1920.webp 1920w"
+      src="/media/network-earth-1920.webp"
+      srcset="/media/network-earth-960.webp 960w, /media/network-earth-1440.webp 1440w, /media/network-earth-1920.webp 1920w"
       sizes="100vw"
       alt=""
       aria-hidden="true"

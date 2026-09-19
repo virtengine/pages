@@ -9,7 +9,9 @@
 import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { media } from "@data/media";
+import type { MediaSlug } from "@data/media";
 
 const assets = Object.entries(media).sort(([a], [b]) => a.localeCompare(b));
 
@@ -31,7 +33,7 @@ const LICENSE_LABEL: Record<string, string> = {
   <PageHero
     eyebrow="Credits"
     title="Where the photography comes from"
-    lede="Every photograph on this site is public-domain or CC0 material — no stock-licence entanglements, no AI-generated imagery. Each image is rendered through the same brand treatment: a green duotone built from the VirtEngine palette, with a print halftone screen where the subject allows it."
+    lede="Every photograph on this site is public-domain or CC0 material — no stock-licence entanglements, no AI-generated imagery. Each image is rendered through the same brand treatment: a green duotone built from the VirtEngine palette, screened with a 15° halftone dot pattern so every photograph reads as one system."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Media credits", href: "/media-credits" },
@@ -49,16 +51,17 @@ const LICENSE_LABEL: Record<string, string> = {
     title="The library"
     lede="One row per image: the treatment applied, the source it was drawn from, and the licence it carries."
   >
-    <div class="media-credits-list">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {
         assets.map(([slug, m]) => (
-          <div class="border-t border-line pt-4">
-            <p class="font-mono text-[0.8rem] uppercase tracking-[0.08em] text-green-deep">{slug}</p>
-            <p class="mt-1">
+          <div class="reveal clip-corner rounded-card border border-line bg-panel p-4">
+            <MediaFigure slug={slug as MediaSlug} ratio="16 / 9" sizes="(min-width: 1024px) 24vw, 50vw" />
+            <p class="mt-4 font-mono text-[0.8rem] uppercase tracking-[0.08em] text-green-deep">{slug}</p>
+            <p class="mt-1 text-sm">
               {m.kind === "night" ? "Duotone on night ground" : "Duotone on paper ground"}
               {m.halftone ? " · halftone screen" : ""} · {m.width}×{m.height} webp
             </p>
-            <p class="mt-1">
+            <p class="mt-1 text-sm">
               {m.source ? (
                 <a href={m.source} rel="noopener noreferrer">
                   {m.credit}

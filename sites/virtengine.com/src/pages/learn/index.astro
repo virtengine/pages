@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { LEARN } from "@data/learn";
 
 const crumbs = [
@@ -53,6 +54,12 @@ const groups = [
                 href={`/learn/${guide.slug}`}
                 class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
               >
+                <MediaFigure
+                  slug={guide.media}
+                  ratio="16 / 9"
+                  sizes="(min-width: 1024px) 30vw, 100vw"
+                  class="mb-5"
+                />
                 <p class="font-mono text-xs font-medium uppercase tracking-[0.16em] text-green-deep">{guide.kicker}</p>
                 <h3 class="mt-2 text-lg font-semibold text-ink group-hover:text-green-dark">{guide.title}</h3>
                 <p class="mt-2.5 flex-1 text-sm leading-relaxed text-slate">{guide.metaDescription}</p>

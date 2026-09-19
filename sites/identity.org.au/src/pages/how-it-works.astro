@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
+import ClosingBand from "@components/ClosingBand.astro";
 import Section from "@components/Section.astro";
 import ServiceFigure from "@components/ServiceFigure.astro";
 import ShareDemo from "@components/ShareDemo.astro";
@@ -168,4 +169,13 @@ const onNetwork = [
       </Alert>
     </Section>
   </div>
+
+  <ClosingBand
+    eyebrow="Start the pipeline"
+    title="Set up once. Prove anything, without the documents."
+    body="The setup takes about ten minutes on a phone. Everything after that is answers, receipts and revocation — never another copy of your licence."
+  >
+    <a href="/get-started" class="btn-inverse">Set up your wallet</a>
+    <a href="/launch" class="btn-inverse-ghost">Join the launch list</a>
+  </ClosingBand>
 </Base>

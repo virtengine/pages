@@ -1,5 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
+import ClosingBand from "@components/ClosingBand.astro";
 import FactStrip from "@components/FactStrip.astro";
 import Section from "@components/Section.astro";
 import ServiceHero from "@components/ServiceHero.astro";
@@ -205,4 +206,13 @@ const integrationSteps = [
       </Alert>
     </Section>
   </div>
+
+  <ClosingBand
+    eyebrow="For services"
+    title="Stop storing the documents you never wanted to hold."
+    body="Verification through the wallet gives you a cryptographic result and nothing to breach. Talk to the foundation before you build."
+  >
+    <a href="/for-services/become-a-verifier" class="btn-inverse">Become a verifier</a>
+    <a href="/for-services/integration-overview" class="btn-inverse-ghost">Integration overview</a>
+  </ClosingBand>
 </Base>

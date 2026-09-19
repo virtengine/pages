@@ -3,9 +3,11 @@ import Base from "@layouts/Base.astro";
 import { repairArchiveLinks } from "../../lib/archive-links";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import BlogCard from "@components/BlogCard.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
 import { SITE } from "@data/site";
 import { articleNode } from "@lib/schema";
+import type { MediaSlug } from "@data/media";
 
 export function getStaticPaths() {
   return ALL_POSTS.map((article) => ({ params: { slug: article.slug }, props: { article } }));
@@ -44,6 +46,24 @@ const crumbs = [
  */
 const metaDescriptionSource =
   article.kind === "legacy" ? `${article.title}: ${article.description}` : article.description;
+
+/* Same deterministic image mapping as BlogCard, so an article and its card
+   always share one photograph from the brand library. */
+const CARD_MEDIA: MediaSlug[] = [
+  "provider-datacenter",
+  "marketplace-hardware",
+  "settlement-ledger",
+  "identity-document",
+  "learn-library",
+  "open-source-screen",
+  "network-earth",
+  "hpc-supercomputer",
+  "hero-infrastructure",
+  "identity-portrait",
+  "provider-technician",
+  "staking-security",
+];
+const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_MEDIA.length];
 ---
 
 <Base
@@ -76,6 +96,7 @@ const metaDescriptionSource =
 
     <div class="container-site py-12 md:py-20">
       <div class="mx-auto max-w-3xl">
+        <MediaFigure slug={heroMedia} ratio="16 / 9" sizes="(min-width: 1024px) 48rem, 100vw" class="mb-10" />
         {
           article.kind === "legacy" && (
             <aside class="archive-warning mb-10" aria-label="Historic content notice">
@@ -91,17 +112,19 @@ const metaDescriptionSource =
     </div>
   </article>
 
-  {
-    related.length > 0 && (
-      <section class="border-t border-line bg-paper-soft">
-        <div class="container-site py-14 md:py-20">
-          <p class="eyebrow">Continue reading</p>
-          <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
-          <div class="mt-8 grid gap-6 md:grid-cols-2">
-            {related.map((item, i) => <BlogCard article={item} mediaIndex={i + 4} />)}
+    {
+      related.length > 0 && (
+        <section class="border-t border-line bg-paper-soft">
+          <div class="container-site py-14 md:py-20">
+            <p class="eyebrow">Continue reading</p>
+            <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
+            <div class="mt-8 grid gap-6 md:grid-cols-2">
+              {related.map((item, i) => (
+                <BlogCard article={item} mediaIndex={(CARD_MEDIA.indexOf(heroMedia) + 1 + i) % CARD_MEDIA.length} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-    )
-  }
+        </section>
+      )
+    }
 </Base>

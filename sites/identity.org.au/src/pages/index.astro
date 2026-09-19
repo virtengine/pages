@@ -2,6 +2,7 @@
 import Base from "@layouts/Base.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
+import ClosingBand from "@components/ClosingBand.astro";
 import FactStrip from "@components/FactStrip.astro";
 import Section from "@components/Section.astro";
 import ServiceFigure from "@components/ServiceFigure.astro";
@@ -37,7 +38,7 @@ const setupSteps = [
     title="Prove what matters. Keep the rest private."
     lede="The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an answer — are you over 18, are you verified — it gets the answer, never your documents."
     statusTone="info"
-    statusLabel="Reference implementation · launch list open"
+    statusLabel="Open source · free to use"
   >
     <div slot="actions">
       <a href={SITE.walletPortal} class="btn-primary">
@@ -354,4 +355,14 @@ const setupSteps = [
       </Section>
     </div>
   </div>
+
+  <ClosingBand
+    eyebrow="Get your wallet"
+    title="Your identity should not live in someone else's database."
+    body="Join the launch list for the January 2027 rollout, follow the build in the open-source repository, or read exactly how your data is protected."
+  >
+    <a href={SITE.walletPortal} class="btn-inverse">Join the launch list</a>
+    <a href="/get-started" class="btn-inverse-ghost">Set up your wallet</a>
+    <a href="/privacy" class="btn-inverse-ghost">Read the privacy model</a>
+  </ClosingBand>
 </Base>

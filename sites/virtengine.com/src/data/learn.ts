@@ -4,6 +4,7 @@
  * usage-reporting-settlement.md, hpc-*.md, veid/, README.md,
  * _docs/operations/mainnet-go-no-go-decision.md. No invented figures.
  */
+import type { MediaSlug } from "@data/media";
 
 export type LearnDiagram = "lifecycle" | "settlement" | "veid" | "staking" | "architecture" | "waldur";
 
@@ -43,6 +44,9 @@ export interface LearnEntry {
   sources?: LearnSource[];
   sections: LearnSection[];
   related: { label: string; href: string }[];
+  /** Brand photography for the hero. */
+  media: MediaSlug;
+  mediaCaption: string;
 }
 
 export const LEARN: LearnEntry[] = [
@@ -106,6 +110,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Become a provider", href: "/providers" },
       { label: "Cost-optimized cloud", href: "/solutions/cost-optimized-cloud" },
     ],
+    media: "marketplace-hardware",
+    mediaCaption: "Demand meets capacity on one exchange.",
   },
   {
     slug: "waldur-and-virtengine",
@@ -255,6 +261,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
       { label: "Become a provider", href: "/providers" },
     ],
+    media: "network-earth",
+    mediaCaption: "The control plane, reconciled with the chain.",
   },
   {
     slug: "escrow-and-settlement-explained",
@@ -307,6 +315,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Provider economics", href: "/learn/provider-economics" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
     ],
+    media: "settlement-ledger",
+    mediaCaption: "Metered usage, settled from escrow.",
   },
   {
     slug: "tokenomics-explained",
@@ -378,6 +388,8 @@ export const LEARN: LearnEntry[] = [
       { label: "For token holders", href: "/solutions/token-holders" },
       { label: "Governance guide", href: "/learn/governance-guide" },
     ],
+    media: "identity-document",
+    mediaCaption: "Issuance that follows verified humans, not a schedule.",
   },
   {
     slug: "what-is-veid",
@@ -431,6 +443,8 @@ export const LEARN: LearnEntry[] = [
       { label: "x/encryption module", href: "/modules/encryption" },
       { label: "For validators", href: "/solutions/validators" },
     ],
+    media: "identity-liveness",
+    mediaCaption: "Proof of a present human, computed on-device.",
   },
   {
     slug: "understanding-slashing",
@@ -489,6 +503,8 @@ export const LEARN: LearnEntry[] = [
       { label: "x/staking module", href: "/modules/staking" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
     ],
+    media: "staking-security",
+    mediaCaption: "Bonded stake, and the conditions that guard it.",
   },
   {
     slug: "provider-economics",
@@ -544,6 +560,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Datacenter operators", href: "/solutions/datacenter-operators" },
       { label: "GPU compute providers", href: "/solutions/gpu-compute-providers" },
     ],
+    media: "provider-technician",
+    mediaCaption: "The economics of serving capacity.",
   },
   {
     slug: "confidential-computing-on-virtengine",
@@ -593,6 +611,8 @@ export const LEARN: LearnEntry[] = [
       { label: "x/encryption module", href: "/modules/encryption" },
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
     ],
+    media: "identity-portrait",
+    mediaCaption: "Confidentiality you can verify, not just trust.",
   },
   {
     slug: "hpc-on-virtengine",
@@ -642,6 +662,8 @@ export const LEARN: LearnEntry[] = [
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
       { label: "Provider overview", href: "/providers" },
     ],
+    media: "hpc-supercomputer",
+    mediaCaption: "Batch capacity, scheduled and settled.",
   },
   {
     slug: "governance-guide",
@@ -695,6 +717,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Open source & patent", href: "/open-source" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
     ],
+    media: "closing-hands",
+    mediaCaption: "Decisions made with the stakeholders who carry them.",
   },
   {
     slug: "mainnet-roadmap",
@@ -755,6 +779,8 @@ export const LEARN: LearnEntry[] = [
       { label: "Staking overview", href: "/staking" },
       { label: "Open source project", href: "/open-source" },
     ],
+    media: "hero-infrastructure",
+    mediaCaption: "From TestNet to MainNet, stage by stage.",
   },
 ];
 
