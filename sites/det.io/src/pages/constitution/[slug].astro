@@ -5,6 +5,8 @@ import PageHero from "@components/PageHero.astro";
 import ClauseRef from "@components/ClauseRef.astro";
 import CTA from "@components/CTA.astro";
 import { CONSTITUTION_TOPICS, getConstitutionTopic } from "@data/constitution";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return CONSTITUTION_TOPICS.map((topic) => ({ params: { slug: topic.slug } }));
@@ -24,6 +26,15 @@ const breadcrumbs = [
   { name: "Constitution", href: "/constitution" },
   { name: topic.title, href: `/constitution/${topic.slug}` },
 ];
+
+const canonical = new URL(`/constitution/${topic.slug}`, SITE.url).href;
+const topicSchema = articleNode({
+  canonical,
+  title: topic.title,
+  description: topic.summary,
+  section: `Constitution · ${topic.source}`,
+  about: [{ name: "Constitution of DETIO FOUNDATION LTD", url: new URL("/constitution", SITE.url).href }],
+});
 ---
 
 <Base
@@ -32,6 +43,7 @@ const breadcrumbs = [
   path={`/constitution/${topic.slug}`}
   breadcrumbs={breadcrumbs}
   ogType="article"
+  schema={[topicSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero eyebrow={`Constitution · ${topic.source}`} title={topic.title} lede={topic.question}>

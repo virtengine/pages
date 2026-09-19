@@ -4,6 +4,8 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import PageHero from "@components/PageHero.astro";
 import CTA from "@components/CTA.astro";
 import { RESEARCH_TOPICS, getResearchTopic } from "@data/research";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return RESEARCH_TOPICS.map((topic) => ({ params: { slug: topic.slug } }));
@@ -20,6 +22,16 @@ const breadcrumbs = [
   { name: "Research", href: "/research" },
   { name: topic.title, href: `/research/${topic.slug}` },
 ];
+
+const canonical = new URL(`/research/${topic.slug}`, SITE.url).href;
+const topicSchema = articleNode({
+  canonical,
+  title: topic.title,
+  description: topic.summary,
+  section: `Research · ${topic.programs.join(" + ")}`,
+  type: "TechArticle",
+  about: topic.programs.map((program) => ({ name: program })),
+});
 ---
 
 <Base
@@ -28,6 +40,7 @@ const breadcrumbs = [
   path={`/research/${topic.slug}`}
   breadcrumbs={breadcrumbs}
   ogType="article"
+  schema={[topicSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero eyebrow={`Research topic · ${topic.programs.join(" + ")}`} title={topic.title} lede={topic.question}>

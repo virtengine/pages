@@ -1,0 +1,21 @@
+---
+/**
+ * SourceTerminal — the documented build sequence, not invented CLI theatre.
+ * Commands match /open-source and the repository Makefile.
+ */
+import { SITE } from "@data/site";
+---
+
+<div class="source-term" aria-hidden="true">
+  <div class="source-term-bar">
+    <span>virtengine — build</span>
+    <span>Go 1.25.5 · Apache 2.0</span>
+  </div>
+  <pre><code><span class="term-cmt"># documented source build</span>
+<span class="term-p">$</span> git clone {SITE.github}.git
+<span class="term-p">$</span> cd virtengine
+<span class="term-p">$</span> make virtengine
+<span class="term-ok"># binary → .cache/bin/virtengine</span>
+<span class="term-p">$</span> .cache/bin/virtengine version
+<span class="term-ok">virtengine  ·  in development  ·  network not live</span></code></pre>
+</div>

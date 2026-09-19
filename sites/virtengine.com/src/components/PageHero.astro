@@ -1,5 +1,7 @@
 ---
 import Breadcrumbs from "@components/Breadcrumbs.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
+import type { MediaSlug } from "@data/media";
 
 interface Crumb {
   name: string;
@@ -12,19 +14,47 @@ interface Props {
   lede: string;
   /** Visible breadcrumb trail (also pass to Base for JSON-LD). */
   crumbs?: Crumb[];
+  /** Brand photography for the hero (preferred over the abstract art slot). */
+  media?: MediaSlug;
+  mediaCaption?: string;
 }
 
-const { eyebrow, title, lede, crumbs } = Astro.props;
+const { eyebrow, title, lede, crumbs, media, mediaCaption } = Astro.props;
+const hasArt = Astro.slots.has("art") || Boolean(media);
+const hasActions = Astro.slots.has("default");
 ---
 
-<div class="grid-backdrop border-b border-line">
-  <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
-    {crumbs && <Breadcrumbs crumbs={crumbs} class="mb-8" />}
-    <p class="eyebrow">{eyebrow}</p>
-    <h1 class="mt-4 max-w-4xl font-display text-4xl md:text-6xl">
-      {title}
-    </h1>
-    <p class="prose-body mt-6 max-w-2xl text-lg md:text-xl">{lede}</p>
-    <slot />
+<div class:list={["page-hero grid-backdrop", !hasArt && "page-hero--solo"]}>
+  <div class="container-site page-hero-grid">
+    <div>
+      {crumbs && <Breadcrumbs crumbs={crumbs} class="mb-7" />}
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p class="page-hero-lede">{lede}</p>
+      {
+        hasActions && (
+          <div class="page-hero-actions">
+            <slot />
+          </div>
+        )
+      }
+    </div>
+    {
+      hasArt && (
+        <div class="page-hero-art">
+          {media ? (
+            <MediaFigure
+              slug={media}
+              ratio="4 / 3"
+              priority
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              caption={mediaCaption}
+            />
+          ) : (
+            <slot name="art" />
+          )}
+        </div>
+      )
+    }
   </div>
 </div>

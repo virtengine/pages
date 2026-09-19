@@ -1,0 +1,39 @@
+---
+/**
+ * MarketplaceBids — a restrained marketplace instrument: one order, three
+ * competing bids, one selected lease. CSS stages the sequence.
+ */
+const bids = [
+  { id: "syd-01", region: "ap-southeast-2", price: "0.42", status: "attested", win: false },
+  { id: "mel-gpu", region: "ap-southeast-2", price: "0.39", status: "selected", win: true },
+  { id: "act-hpc", region: "ap-southeast-1", price: "0.51", status: "attested", win: false },
+];
+---
+
+<div class="mk-board" aria-hidden="true">
+  <div class="mk-rail">
+    <span>x/market</span>
+    <span>order → bid → lease</span>
+  </div>
+  <div class="mk-order">
+    <small>open order</small>
+    <strong>8× GPU · 240 GB VRAM</strong>
+    <span>attributes · confidential=false · region=ap-southeast</span>
+  </div>
+  <ol class="mk-bids">
+    {
+      bids.map((b, i) => (
+        <li class:list={["mk-bid", b.win && "mk-bid--win"]} style={`--i:${i}`}>
+          <span class="mk-id">{b.id}</span>
+          <span class="mk-region">{b.region}</span>
+          <span class="mk-price">${b.price}/hr</span>
+          <span class="mk-status">{b.status}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="mk-lease">
+    <i class="lamp"></i>
+    <span>lease formed · escrow funded · 0% marketplace commission</span>
+  </div>
+</div>

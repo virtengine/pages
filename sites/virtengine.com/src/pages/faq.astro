@@ -5,21 +5,15 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import { FAQ, FAQ_CATEGORIES } from "@data/faq";
 import { SITE } from "@data/site";
+import { faqPageNode } from "@lib/schema";
 
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "FAQ", href: "/faq" },
 ];
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((f) => ({
-    "@type": "Question",
-    name: f.question,
-    acceptedAnswer: { "@type": "Answer", text: f.answer },
-  })),
-};
+const canonical = new URL("/faq", SITE.url).href;
+const faqSchema = faqPageNode(canonical, FAQ);
 ---
 
 <Base
@@ -27,8 +21,8 @@ const faqLd = {
   description="Frequently asked questions about VirtEngine: what the protocol is, mainnet status, provider payments, HPC support, staking economics, slashing risk, VEID privacy, and building on the chain."
   path="/faq"
   breadcrumbs={crumbs}
+  schema={[faqSchema]}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} slot="head" />
   <PageHero
     eyebrow="FAQ"
     title="Questions, answered from the source"

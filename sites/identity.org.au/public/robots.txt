@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# identity.org.au documents the Identity Wallet service operated by
+# DETIO FOUNDATION LTD. The sitemap lists canonical pages only.
+
 Sitemap: https://identity.org.au/sitemap-index.xml

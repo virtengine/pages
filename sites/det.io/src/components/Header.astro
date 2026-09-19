@@ -1,118 +1,31 @@
 ---
-import { NAV } from "@data/site";
+import { NAV_GROUPS, NAV_SEARCH } from "@data/navigation";
 import Lockup from "@components/brand/Lockup.astro";
-
-const current = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isCurrent = (href: string) => current === href || (href !== "/" && current.startsWith(href + "/"));
+import "../styles/navigation.css";
+const current=Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const active=(href:string)=>href.split('#')[0]===current;
 ---
-
-<header class="sticky top-0 z-50 border-b border-hairline bg-paper/92 backdrop-blur-md">
-  <div class="container-site flex h-16 items-center justify-between gap-6">
-    <a href="/" class="flex shrink-0 items-center" aria-label="DET.io Foundation home">
-      <Lockup size={36} foundation />
-    </a>
-
-    <nav aria-label="Primary" class="hidden lg:block">
-      <ul class="flex items-center gap-1">
-        {
-          NAV.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={isCurrent(item.href) ? "page" : undefined}
-                class:list={[
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  isCurrent(item.href)
-                    ? "text-blue-deep underline decoration-2 underline-offset-8"
-                    : "text-text-muted hover:text-ink",
-                ]}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <div class="hidden items-center gap-3 lg:flex">
-      <a
-        href="/launch"
-        class="rounded-md bg-blue-deep px-3.5 py-1.5 font-display text-sm font-semibold text-white transition-colors hover:bg-blue-mid"
-      >
-        Updates
-      </a>
-      <a
-        href="https://virtengine.com"
-        rel="noopener"
-        class="rounded-md border border-hairline-strong bg-surface px-3.5 py-1.5 font-display text-sm font-semibold text-ink transition-colors hover:border-blue-deep hover:text-blue-deep"
-      >
-        virtengine.com
-      </a>
-    </div>
-
-    <button
-      id="nav-toggle"
-      type="button"
-      class="flex h-10 w-10 items-center justify-center rounded-md border border-hairline-strong text-ink lg:hidden"
-      aria-expanded="false"
-      aria-controls="mobile-nav"
-      aria-label="Open navigation menu"
-    >
-      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-        <path class="icon-open" d="M2.5 5.5h15M2.5 10h15M2.5 14.5h15"></path>
-        <path class="icon-close hidden" d="M4 4l12 12M16 4L4 16"></path>
-      </svg>
-    </button>
-  </div>
-
-  <nav id="mobile-nav" aria-label="Primary mobile" hidden class="border-t border-hairline bg-paper lg:hidden">
-    <ul class="container-site flex flex-col gap-1 py-4">
-      {
-        NAV.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              aria-current={isCurrent(item.href) ? "page" : undefined}
-              class:list={[
-                "block rounded-md px-3 py-2.5 font-display text-base font-medium",
-                isCurrent(item.href) ? "text-blue-deep" : "text-text-muted hover:text-ink",
-              ]}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-      <li class="mt-2 px-3 pb-2">
-        <a
-          href="/launch"
-          class="mb-2 block rounded-md border border-blue-deep px-4 py-2.5 text-center font-display text-sm font-semibold text-blue-deep"
-        >
-          Get updates
-        </a>
-        <a
-          href="https://virtengine.com"
-          rel="noopener"
-          class="block rounded-md bg-blue-deep px-4 py-2.5 text-center font-display text-sm font-semibold text-white"
-        >
-          virtengine.com
-        </a>
-      </li>
-    </ul>
-  </nav>
-</header>
-
+<header class="site-header mega-header" id="site-navigation">
+<div class="container-site header-row">
+<a class="nav-brand" href="/" aria-label="DET.io Foundation home"><Lockup size={32} foundation /></a>
+<button id="nav-toggle" class="mega-mobile-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">Menu <span aria-hidden="true">☰</span></button>
+<nav id="primary-navigation" class="mega-navigation" aria-label="Primary">
+{NAV_GROUPS.map(group=><details class="mega-group" data-nav-group={group.id}>
+<summary id={`trigger-${group.id}`} aria-controls={`menu-${group.id}`} class:list={["mega-trigger",{'contains-current':group.categories.some(c=>c.links.some(l=>active(l.href)))}]}>{group.label}<svg viewBox="0 0 12 12" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m2 4 4 4 4-4"/></svg></summary>
+<div class="mega-panel" id={`menu-${group.id}`}>
+<div class="container-site mega-inner">
+<div class="mega-panel-head"><div><span class="nav-eyebrow">EXPLORE / {group.label.toUpperCase()}</span><p>{group.overview.description}</p></div><a href={group.overview.href}>{group.overview.label} <span aria-hidden="true">↗</span></a></div>
+<div class="mega-body"><div class="mega-categories" aria-label={`${group.label} topics`}>
+{group.categories.map((cat,i)=><button type="button" class="mega-category" id={`tab-${group.id}-${cat.id}`} data-category={cat.id} aria-controls={`panel-${group.id}-${cat.id}`}><span>{cat.label}<b aria-hidden="true">→</b></span><small>{cat.description}</small></button>)}
+</div><div class="mega-content">{group.categories.map(cat=><section id={`panel-${group.id}-${cat.id}`} class="mega-topic" data-topic={cat.id} aria-labelledby={`tab-${group.id}-${cat.id}`}><div class="mega-links"><h2>{cat.label}</h2><ul>{cat.links.map(item=><li><a href={item.href} aria-current={active(item.href)?'page':undefined}><span>{item.label.replace(" ↗", "")}<b aria-hidden="true">↗</b></span><small>{item.description}</small></a></li>)}</ul></div><aside class="mega-feature"><span class="nav-eyebrow">A USEFUL NEXT STEP</span><h3>{cat.feature.label.replace(' ↗','')}</h3><p>{cat.feature.description}</p><a href={cat.feature.href}>Explore this topic <span aria-hidden="true">→</span></a><div class="mega-status"><span>PUBLIC-BENEFIT RESEARCH</span><p>Australian not-for-profit.<br/>ACN 699 651 771.</p><a href="/transparency">Read our public record →</a></div></aside></section>)}</div></div>
+<div class="mega-bottom"><a href="/participate">Not sure where to start? <strong>Find your path →</strong></a><button type="button" data-close-menu>Close menu <span aria-hidden="true">×</span></button></div>
+</div></div></details>)}
+<details class="mega-group mega-search-group" data-nav-group="search"><summary class="mega-trigger search-trigger" id="trigger-search" aria-controls="menu-search"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><span>Find a page</span></summary><div class="mega-panel" id="menu-search"><div class="container-site search-inner"><label for="navigation-search">Where would you like to go?</label><div class="search-input-row"><input type="search" id="navigation-search" placeholder="Search topics, guides, modules…" autocomplete="off" /><button type="button" id="clear-navigation-search">Clear</button><button type="button" data-close-menu aria-label="Close page search">Close ×</button></div><p id="search-count" role="status" aria-live="polite">Popular destinations</p><ul id="navigation-results">{NAV_SEARCH.slice(0,6).map(l=><li><a href={l.href}><span>{l.label}</span><small>{l.description}</small></a></li>)}</ul><p id="search-empty" hidden>No pages match. Try “identity”, “membership”, “research”, or <a href="/contact">contact the Foundation</a>.</p><noscript><p>Type-to-search requires JavaScript. All topic menus and their links work without it.</p></noscript></div></div></details>
+</nav><a class="mega-involve" href="/contact">Contact us <span aria-hidden="true">↗</span></a>
+</div>
+<script type="application/json" id="navigation-index" set:html={JSON.stringify(NAV_SEARCH).replace(/</g,'\u003c')} />
+</header><div class="nav-scrim" hidden aria-hidden="true"></div>
 <script>
-  // Minimal mobile-nav toggle; the site is otherwise zero client JS.
-  const toggle = document.getElementById("nav-toggle");
-  const nav = document.getElementById("mobile-nav");
-  toggle?.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    toggle.setAttribute("aria-label", open ? "Open navigation menu" : "Close navigation menu");
-    if (nav) nav.hidden = open;
-    toggle.querySelector(".icon-open")?.classList.toggle("hidden", !open);
-    toggle.querySelector(".icon-close")?.classList.toggle("hidden", open);
-  });
+import { initNavigation } from "../scripts/navigation";
+initNavigation();
 </script>

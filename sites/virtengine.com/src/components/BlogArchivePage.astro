@@ -24,6 +24,7 @@ const crumbs = [
   description={`Page ${page} of VirtEngine's preserved 2015–2016 blog archive.`}
   path={pagePath}
   breadcrumbs={crumbs}
+  noindex={page > 1}
 >
   <PageHero
     eyebrow="2015–2016 archive"
@@ -38,7 +39,7 @@ const crumbs = [
 
   <section class="container-site py-14 md:py-20">
     <div class="grid gap-6 md:grid-cols-2">
-      {posts.map((article) => <BlogCard article={article} />)}
+      {posts.map((article, i) => <BlogCard article={article} mediaIndex={i} />)}
     </div>
 
     <nav class="mt-12 flex items-center justify-between border-t border-line pt-8" aria-label="Archive pagination">

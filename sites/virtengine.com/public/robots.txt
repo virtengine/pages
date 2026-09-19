@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Paginated views of the preserved 2015–2016 blog archive are noindexed;
+# the sitemap lists only canonical, indexable pages.
+
 Sitemap: https://virtengine.com/sitemap-index.xml

@@ -14,6 +14,7 @@ export default defineConfig({
       favicon: '/brand/virtengine-icon.png',
       components: {
         SiteTitle: './src/components/SiteTitle.astro',
+        Head: './src/components/Head.astro',
       },
       social: [
         {

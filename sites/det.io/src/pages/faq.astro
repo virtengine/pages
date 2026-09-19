@@ -4,21 +4,15 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import PageHero from "@components/PageHero.astro";
 import CTA from "@components/CTA.astro";
 import { FAQ } from "@data/faq";
+import { SITE } from "@data/site";
+import { faqPageNode } from "@lib/schema";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
   { name: "FAQ", href: "/faq" },
 ];
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: { "@type": "Answer", text: item.answer },
-  })),
-};
+const faqSchema = faqPageNode(new URL("/faq", SITE.url).href, FAQ);
 ---
 
 <Base
@@ -26,11 +20,8 @@ const faqLd = {
   description="Frequently asked questions about DETIO FOUNDATION LTD: charity status, the public-benefit lock, who controls the foundation, what happens on winding up, tokens, patents, membership, and how to verify every claim."
   path="/faq"
   breadcrumbs={breadcrumbs}
+  schema={[faqSchema]}
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
-  </Fragment>
-
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero
     eyebrow="Frequently asked questions"

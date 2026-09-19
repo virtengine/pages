@@ -9,7 +9,12 @@ export default defineConfig({
   redirects: {
     "/governance": "/about/who-runs-it",
   },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // The 404 page is a client-facing error page; keep it out of the sitemap.
+      filter: (page) => !/\/404\/?$/.test(page),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

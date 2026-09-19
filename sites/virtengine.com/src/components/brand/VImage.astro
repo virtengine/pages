@@ -1,0 +1,38 @@
+---
+/**
+ * VImage — the official VirtEngine mark for use *inside* figure SVGs.
+ *
+ * Renders the canonical brand asset (`public/brand/virtengine-icon.png`) as an
+ * SVG <image>, so every figure uses the real logo geometry — never a redrawn
+ * approximation. Place with x/y (top-left) and `h` (rendered height); width
+ * keeps the asset's 376:362 ratio.
+ *
+ * The markup is injected raw: Astro's compiler normalises a literal <image>
+ * tag to <img>, which then renders as a broken-image box inside SVG.
+ */
+interface Props {
+  x: number;
+  y: number;
+  /** Rendered height; width follows the official 376:362 ratio. */
+  h: number;
+  class?: string;
+  opacity?: number;
+}
+
+const { x, y, h, class: className, opacity } = Astro.props;
+const w = +(h * (376 / 362)).toFixed(2);
+const attrs = [
+  `href="/brand/virtengine-icon.png"`,
+  `x="${x}"`,
+  `y="${y}"`,
+  `width="${w}"`,
+  `height="${h}"`,
+  `preserveAspectRatio="xMidYMid meet"`,
+  className ? `class="${className}"` : "",
+  opacity !== undefined ? `opacity="${opacity}"` : "",
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<Fragment set:html={`<image ${attrs} />`} />

@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# det.io is the foundation site for the VirtEngine, DSEMA, Bosun and VEID
+# programs. Canonical pages only: the sitemap excludes error pages.
+
 Sitemap: https://det.io/sitemap-index.xml

@@ -1,0 +1,83 @@
+---
+/**
+ * Media credits — provenance for every photograph used on the site.
+ *
+ * All images are CC0 / public-domain material sourced through Openverse and
+ * rendered through the brand duotone treatment (DESIGN.md §12). CC0 carries no
+ * attribution obligation; this page records provenance anyway.
+ */
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import { media } from "@data/media";
+
+const assets = Object.entries(media).sort(([a], [b]) => a.localeCompare(b));
+
+const LICENSE_LABEL: Record<string, string> = {
+  cc0: "CC0 1.0 (public domain dedication)",
+  pdm: "Public Domain Mark",
+};
+---
+
+<Base
+  title="Media credits — VirtEngine"
+  description="Provenance for the photography used across virtengine.com: every image is public-domain or CC0 material, rendered through the VirtEngine brand treatment."
+  path="/media-credits"
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Media credits", href: "/media-credits" },
+  ]}
+>
+  <PageHero
+    eyebrow="Credits"
+    title="Where the photography comes from"
+    lede="Every photograph on this site is public-domain or CC0 material — no stock-licence entanglements, no AI-generated imagery. Each image is rendered through the same brand treatment: a green duotone built from the VirtEngine palette, with a print halftone screen where the subject allows it."
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Media credits", href: "/media-credits" },
+    ]}
+  >
+    <p class="mt-6 max-w-2xl text-sm leading-relaxed text-slate">
+      The treatment is applied by a deterministic pipeline in the repository
+      (<code class="font-mono text-green-deep">scripts/</code>), so an image can always be
+      re-derived from its source. Provenance for each file is listed below.
+    </p>
+  </PageHero>
+
+  <Section
+    eyebrow="Provenance"
+    title="The library"
+    lede="One row per image: the treatment applied, the source it was drawn from, and the licence it carries."
+  >
+    <div class="media-credits-list">
+      {
+        assets.map(([slug, m]) => (
+          <div class="border-t border-line pt-4">
+            <p class="font-mono text-[0.8rem] uppercase tracking-[0.08em] text-green-deep">{slug}</p>
+            <p class="mt-1">
+              {m.kind === "night" ? "Duotone on night ground" : "Duotone on paper ground"}
+              {m.halftone ? " · halftone screen" : ""} · {m.width}×{m.height} webp
+            </p>
+            <p class="mt-1">
+              {m.source ? (
+                <a href={m.source} rel="noopener noreferrer">
+                  {m.credit}
+                </a>
+              ) : (
+                m.credit
+              )}{" "}
+              · {LICENSE_LABEL[m.license] ?? m.license}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-8 text-sm leading-relaxed text-slate">
+      Images are cropped and toned for the site; the underlying photographs are unmodified
+      in substance. If you believe an image has been misattributed, contact{" "}
+      <a class="text-green-deep underline decoration-green/50 underline-offset-4" href="mailto:hello@virtengine.com">
+        hello@virtengine.com
+      </a>.
+    </p>
+  </Section>
+</Base>

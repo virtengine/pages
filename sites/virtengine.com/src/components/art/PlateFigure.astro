@@ -1,0 +1,48 @@
+---
+/**
+ * PlateFigure — the instrument frame used by every piece of original artwork
+ * on the site: a night "plate" with a mono rail, optional corner registration
+ * ticks, and a mono caption. The plate is the frame; the slot supplies the SVG.
+ *
+ * Pass `label` to expose the artwork to assistive technology; omit it for
+ * purely decorative compositions.
+ */
+interface Props {
+  /** Left side of the instrument rail (e.g. "FIG. 01 — THE MARKETPLACE CYCLE") */
+  rail?: string;
+  /** Right side of the rail (e.g. "IN DEVELOPMENT") */
+  railRight?: string;
+  /** Show the lit lamp on the rail */
+  lamp?: boolean;
+  /** Mono caption under the artwork */
+  caption?: string;
+  /** Text alternative; when omitted the figure is decorative */
+  label?: string;
+  class?: string;
+}
+
+const { rail, railRight, lamp = false, caption, label, class: className } = Astro.props;
+---
+
+<figure
+  class:list={["plate-figure plate plate--night plate--grid corner-ticks", className]}
+  role={label ? "img" : undefined}
+  aria-label={label}
+>
+  {
+    (rail || railRight) && (
+      <div class="plate-rail">
+        <span>{rail}</span>
+        <span class="plate-rail__right">
+          {lamp && <i class="lamp" aria-hidden="true" />}
+          {railRight}
+        </span>
+      </div>
+    )
+  }
+  <div class="plate-figure-body" aria-hidden={label ? undefined : "true"}>
+    <span class="wipe" aria-hidden="true"></span>
+    <slot />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

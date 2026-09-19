@@ -1,0 +1,75 @@
+---
+/**
+ * MediaBand — a full-width photographic band with copy beside or over the image.
+ *
+ * Layouts:
+ *   split   copy left, media right (default; Azure-style feature band)
+ *   reverse media left, copy right
+ *   full    media as the band background with copy on a paper card
+ */
+import { media, type MediaSlug } from "@data/media";
+
+interface Props {
+  slug: MediaSlug;
+  layout?: "split" | "reverse" | "full";
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  caption?: string;
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  slug,
+  layout = "split",
+  eyebrow,
+  title,
+  lede,
+  caption,
+  priority = false,
+  class: className,
+} = Astro.props;
+
+const m = media[slug];
+const sizes =
+  layout === "full" ? "100vw" : "(min-width: 1024px) 52vw, 100vw";
+---
+
+<section class:list={["media-band", `media-band--${layout}`, `media-band--${m.kind}`, className]}>
+  {
+    layout === "full" && (
+      <div class="media-band-bg" aria-hidden="true">
+        <img src={m.src} srcset={m.srcset} sizes={sizes} alt="" width={m.width} height={m.height} loading={priority ? "eager" : "lazy"} decoding="async" />
+      </div>
+    )
+  }
+
+  <div class="media-band-inner">
+    <div class="media-band-copy">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      {title && <h2>{title}</h2>}
+      {lede && <p class="media-band-lede">{lede}</p>}
+      <div class="media-band-actions"><slot /></div>
+    </div>
+
+    {
+      layout !== "full" && (
+        <div class="media-band-media">
+          <img
+            src={m.src}
+            srcset={m.srcset}
+            sizes={sizes}
+            alt={m.alt}
+            width={m.width}
+            height={m.height}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            fetchpriority={priority ? "high" : undefined}
+          />
+          {caption && <p class="media-band-caption">{caption}</p>}
+        </div>
+      )
+    }
+  </div>
+</section>

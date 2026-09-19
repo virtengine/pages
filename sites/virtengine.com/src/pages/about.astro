@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import PartnerStrip from "@components/PartnerStrip.astro";
 import { SITE } from "@data/site";
 
 const timeline = [
@@ -56,6 +57,9 @@ const timeline = [
       <p><a href="/activities">Explore our activities and public resources</a>, <a href="/participate">Find a way to contribute</a> or <a href="/contact">contact the Foundation</a> about the project.</p>
     </div>
   </Section>
+
+  <PartnerStrip class="partner-strip--page" />
+
   <Section eyebrow="History" title="From DET.io to the foundation">
     <ol class="relative max-w-3xl space-y-10 border-l border-line pl-8">
       {

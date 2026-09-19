@@ -7,6 +7,20 @@ import "../styles/global.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { SITE } from "@data/site";
+import { fitTitle, metaDescription } from "@lib/meta";
+import {
+  DEFAULT_IMAGE,
+  FOUNDATION_ID,
+  WALLET_ID,
+  breadcrumbNode,
+  logoNode,
+  organizationNode,
+  schemaGraph,
+  walletNode,
+  webPageNode,
+  webSiteNode,
+  type SchemaNode,
+} from "@lib/schema";
 
 export interface Breadcrumb {
   name: string;
@@ -20,57 +34,69 @@ interface Props {
   path?: string;
   breadcrumbs?: Breadcrumb[];
   ogType?: "website" | "article";
+  /** Extra JSON-LD nodes merged into this page's @graph. */
+  schema?: (SchemaNode | null | undefined | false)[];
+  /** schema.org WebPage subtype: WebPage, CollectionPage, AboutPage, ContactPage. */
+  pageType?: string;
+  /** ISO date of the last material change, when the data provides one. */
+  modifiedTime?: string;
+  /** Keep a page out of the index. */
+  noindex?: boolean;
+  /** Override the social/structured-data image with an absolute or site path. */
+  image?: string;
 }
 
-const { title, description, path, breadcrumbs, ogType = "website" } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  breadcrumbs,
+  ogType = "website",
+  schema = [],
+  pageType = "WebPage",
+  modifiedTime,
+  noindex = false,
+  image,
+} = Astro.props;
 
-const pathname = path ?? Astro.url.pathname;
+const pathname = (path ?? Astro.url.pathname).replace(/\.html$/, "");
 const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
-const ogImage = new URL("/og.png", SITE.url).href;
+const ogImage = image ? new URL(image, SITE.url).href : DEFAULT_IMAGE;
+/** Search-display shaping only: visible page copy keeps its authored text. */
+const documentTitle = fitTitle(title, { brand: "identity.org.au" });
+const searchDescription = metaDescription(description);
 
-const organizationLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE.foundation,
-  url: "https://det.io",
-  email: SITE.email,
-  identifier: `ACN ${SITE.acn}`,
-  nonprofitStatus: "Nonprofit",
-  sameAs: [SITE.github, "https://virtengine.com"],
-};
+/**
+ * Pages that describe the wallet service itself are about the SoftwareApplication
+ * entity; policy and about pages are about the operator organisation.
+ */
+const isWalletPage =
+  pathname === "/" ||
+  pathname === "" ||
+  pathname.startsWith("/wallet") ||
+  pathname.startsWith("/get-started") ||
+  pathname === "/how-it-works";
 
-const webSiteLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-  publisher: { "@type": "Organization", name: SITE.foundation, url: "https://det.io" },
-};
-
-const serviceLd = {
-  "@context": "https://schema.org",
-  "@type": "Service",
-  name: "Identity Wallet",
-  serviceType: "Digital identity wallet (reference implementation)",
-  provider: { "@type": "Organization", name: SITE.foundation, identifier: `ACN ${SITE.acn}` },
-  areaServed: "AU",
-  url: SITE.url,
-  isRelatedTo: "https://virtengine.com",
-};
-
-const breadcrumbLd = breadcrumbs
-  ? {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: breadcrumbs.map((crumb, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: crumb.name,
-        item: new URL(crumb.href, SITE.url).href,
-      })),
-    }
-  : null;
+const graph = schemaGraph([
+  logoNode(),
+  organizationNode(),
+  webSiteNode(),
+  webPageNode({
+    canonical,
+    title,
+    description,
+    image: ogImage,
+    breadcrumbs,
+    type: pageType,
+    dateModified: modifiedTime,
+    aboutId: isWalletPage ? WALLET_ID : FOUNDATION_ID,
+  }),
+  breadcrumbs && breadcrumbs.length > 0 ? breadcrumbNode(canonical, breadcrumbs) : null,
+  // The wallet entity is declared on every page so cross-page @id references
+  // (WebSite.about) always resolve within the same document.
+  walletNode(),
+  ...schema,
+]);
 ---
 
 <!doctype html>
@@ -78,15 +104,29 @@ const breadcrumbLd = breadcrumbs
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{documentTitle}</title>
+    <meta name="description" content={searchDescription} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
     <link rel="alternate icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="identity.org.au — insights on digital identity"
+      href={new URL("/rss.xml", SITE.url).href}
+    />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#17293a" />
+    <meta name="author" content={SITE.foundation} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex, follow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
+    <meta name="googlebot" content={noindex ? "noindex, follow" : "index, follow"} />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
@@ -96,16 +136,17 @@ const breadcrumbLd = breadcrumbs
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_AU" />
+    {ogType === "article" && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
-    {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
     <slot name="head" />
   </head>
   <body class="bg-paper text-body">

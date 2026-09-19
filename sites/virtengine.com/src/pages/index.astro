@@ -1,19 +1,469 @@
 ---
 import Base from "@layouts/Base.astro";
-import HeroNetwork from "@components/diagrams/HeroNetwork.astro";
-import {CURRENT_POSTS} from "@data/blog";
+import NetworkField from "@components/art/NetworkField.astro";
+import MarketplaceBids from "@components/art/MarketplaceBids.astro";
+import VeidScopes from "@components/art/VeidScopes.astro";
+import SettlementLedger from "@components/art/SettlementLedger.astro";
+import ArchitectureLayers from "@components/art/ArchitectureLayers.astro";
+import SourceTerminal from "@components/art/SourceTerminal.astro";
+import LatticeMark from "@components/art/LatticeMark.astro";
+import SurfaceWash from "@components/art/SurfaceWash.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
+import PartnerStrip from "@components/PartnerStrip.astro";
+import { CURRENT_POSTS } from "@data/blog";
+import { SITE } from "@data/site";
+
+const journalLead = CURRENT_POSTS[0];
+const journalSide = CURRENT_POSTS.slice(1, 3);
+
+const kinds = [
+  { slug: "provider-datacenter" as const, label: "GPU compute", note: "Dense accelerators offered into the market." },
+  { slug: "hpc-supercomputer" as const, label: "HPC", note: "Scheduler-backed clusters, same lease." },
+  { slug: "hero-infrastructure" as const, label: "General cloud", note: "CPU, storage, and regional capacity." },
+  { slug: "marketplace-hardware" as const, label: "Confidential workloads", note: "Attested paths over real interconnect." },
+];
+
+const surfaces = [
+  {
+    id: "cap-market",
+    n: "01",
+    label: "Marketplace",
+    title: "Capacity, discovered in the open.",
+    body: "Orders and bids meet on chain. The winning bid becomes a lease under escrow. Every step is protocol state, not a private arrangement — and the marketplace takes no commission.",
+    facts: [
+      ["x/market", "order → bid → lease state machine"],
+      ["x/escrow", "funds held against active leases"],
+      ["x/take", "zero-rate marketplace settlement policy"],
+    ],
+    href: "/learn/how-the-marketplace-works",
+    cta: "How the marketplace works",
+    art: "market",
+  },
+  {
+    id: "cap-veid",
+    n: "02",
+    label: "VEID",
+    title: "Identity verified by consensus.",
+    body: "Encrypted identity scopes are scored by the validator set. Participants prove facts with zero-knowledge proofs and reveal nothing more. The Foundation does not operate a central VEID verification service.",
+    facts: [
+      ["x/veid", "identity verification and scoring"],
+      ["x/veid/zk", "score-threshold and attribute proofs"],
+      ["x/mfa", "on-chain multi-factor authentication"],
+    ],
+    href: "/veid",
+    cta: "Explore the identity network",
+    art: "veid",
+  },
+  {
+    id: "cap-settle",
+    n: "03",
+    label: "Settlement",
+    title: "Metered usage, settled honestly.",
+    body: "The provider daemon meters workloads, batches signed usage records, and the settlement module converts them into billable line items after a 24-hour dispute window.",
+    facts: [
+      ["usage", "Signed records, submitted on a scheduled cadence"],
+      ["escrow", "Funds release to the provider — no marketplace commission"],
+      ["x/settlement", "usage → line items → payout"],
+    ],
+    href: "/learn/escrow-and-settlement-explained",
+    cta: "Escrow & settlement",
+    art: "settle",
+  },
+  {
+    id: "cap-infra",
+    n: "04",
+    label: "Infrastructure",
+    title: "Independent machines. One market.",
+    body: "GPU clusters, HPC schedulers, general cloud, and confidential interconnects all speak the same lease. VirtEngine does not pretend to be the physical cloud.",
+    facts: [
+      ["GPU", "Dense accelerators offered into the market"],
+      ["HPC", "Scheduler-backed clusters, same lease"],
+      ["Cloud", "CPU, storage, and regional capacity"],
+    ],
+    href: "/providers",
+    cta: "Provider path",
+    art: "infra",
+  },
+];
 ---
-<Base title="VirtEngine — Open infrastructure. Shared possibility." description="A nonprofit-stewarded, open-source cloud marketplace protocol. Explore the research, understand the technology, and help develop public-benefit digital infrastructure.">
-<section class="home-hero container-site">
-<div class="hero-copy"><p class="kicker">OPEN SOURCE. PUBLIC BENEFIT.</p><h1>Open infrastructure.<br/><em>Shared possibility.</em></h1><p class="hero-lede">Our mission is to advance open education, privacy, and access to secure digital infrastructure.</p><p class="hero-body">VirtEngine is an open-source protocol stewarded by DETIO FOUNDATION LTD, an Australian not-for-profit public company limited by guarantee (ACN 699 651 771). We develop and document technology for transparent computing markets, verifiable identity, and privacy.</p><div class="action-row"><a class="button primary" href="/about">Discover our mission <span aria-hidden="true">↗</span></a><a class="text-link" href="/learn/how-the-marketplace-works">How VirtEngine works <span aria-hidden="true">→</span></a></div><p class="hero-footnote">Open to study, build on, and improve. Apache 2.0 licensed.</p></div>
-<figure class="network-plate"><div class="plate-top"><span>THE VIRTENGINE PROTOCOL</span><span class="plate-tag">IN DEVELOPMENT</span></div><div class="plate-heading">Many providers.<br/>One open protocol.</div><div class="network-art" role="img" aria-label="Tenants send orders and providers send bids to a shared network of validators. The protocol coordinates their agreement."><HeroNetwork /></div><figcaption><span>Request capacity</span><span>Verify &amp; coordinate</span><span>Provide resources</span></figcaption><div class="plate-bottom"><span>Designed for transparent participation</span><a href="/protocol" aria-label="Explore protocol architecture">↗</a></div></figure>
-</section>
-<div class="mission-band"><div class="container-site"><p>Technology held in public benefit.</p><span>Nonprofit stewardship</span><span>Open research &amp; education</span><span>Privacy &amp; access</span></div></div>
-<section class="container-site home-section"><div class="section-intro"><div><p class="kicker">01 / WHY WE BUILD</p><h2>What we do.<br/>Who our work serves.</h2></div><p>We publish software, practical learning resources, and open specifications for students, researchers, developers, and infrastructure operators. Our work helps people understand, scrutinise, and contribute to the technology they may rely on.</p></div>
-<div class="program-grid"><article><span class="card-number">01</span><h3>Learn in the open</h3><p>Original guides and module references explain how infrastructure markets work. Students, researchers, and developers can study the design and inspect its implementation.</p><a class="text-link" href="/learn">Explore the learning library →</a></article><article><span class="card-number">02</span><h3>Make infrastructure transparent</h3><p>The protocol describes how people request computing resources, how providers bid, and how usage is recorded. Open specifications make these decisions inspectable.</p><a class="text-link" href="/protocol">Understand the protocol →</a></article><article><span class="card-number">03</span><h3>Build trust with privacy</h3><p>VEID explores verifiable identity for network participation. It is decentralised protocol technology; the Foundation does not operate a central VEID verification service.</p><a class="text-link" href="/veid">Read about VEID →</a></article></div><p class="archive-note"><a href="/activities">Explore our activities, available resources, and intended public benefit →</a></p>
-</section>
-<section class="container-site status-block"><div><p class="kicker">DEVELOPMENT STATUS / 17 SEPTEMBER 2026</p><h2>Building openly.<br/>Launching carefully.</h2><p>The network is not live. You can read the source, review the design, and contribute today. Production services depend on testing and a separate launch approval.</p><a class="text-link" href="/network">Read the launch criteria →</a></div><ol class="launch-line"><li class="current"><span>NOW</span><h3>Research &amp; development</h3><p>Open code, documentation, and release preparation.</p></li><li><span>PLANNED · JAN 2027</span><h3>Public TestNet</h3><p>Validation with operators. Test state may reset.</p></li><li><span>PLANNED · MAR 2027</span><h3>MainNet, subject to approval</h3><p>Only after evidence, remediation, and a go/no-go decision.</p></li></ol></section>
-<section class="container-site home-section"><div class="section-intro"><div><p class="kicker">02 / FIND YOUR WAY IN</p><h2>An open project.<br/>A place to contribute.</h2></div><a class="text-link" href="/participate">All ways to get involved ↗</a></div><div class="path-grid"><a href="/learn"><span>FOR CURIOUS MINDS</span><h3>Understand the technology</h3><p>Start with an accessible guide to the marketplace.</p><b aria-hidden="true">↗</b></a><a href="/participate#developers"><span>FOR DEVELOPERS</span><h3>Help improve the project</h3><p>Explore code, review documentation, and raise an issue.</p><b aria-hidden="true">↗</b></a><a href="/providers"><span>FOR INFRASTRUCTURE OPERATORS</span><h3>Prepare for participation</h3><p>Review requirements before a future test network.</p><b aria-hidden="true">↗</b></a></div></section>
-<section class="container-site home-section journal-section"><div class="section-intro"><div><p class="kicker">03 / FROM THE JOURNAL</p><h2>The thinking behind the protocol.</h2></div><a class="text-link" href="/blog">Read all notes ↗</a></div><div class="journal-grid">{CURRENT_POSTS.slice(0,3).map((post,i)=><article><div class:list={["journal-cover",`cover-${i}`]}><span>FIELD NOTES / 0{i+1}</span><strong>{["An open\nmarketplace.","Trust in\nthe agreement.","Identity with\nprivacy."][i]}</strong><span>VIRTENGINE JOURNAL</span></div><p class="date">{new Date(post.publishedAt).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})} · {post.readingTime}</p><h3><a href={`/blog/${post.slug}`}>{post.title} <span aria-hidden="true">↗</span></a></h3><p>{post.description}</p></article>)}</div><p class="archive-note">Earlier work is preserved in the <a href="/blog/archive">2015–2016 historical archive</a>, separately from current technical guidance.</p></section>
-<section class="container-site final-cta"><div><p class="kicker">LET’S BUILD SOMETHING USEFUL</p><h2>Public-benefit infrastructure<br/>starts with participation.</h2></div><a class="button primary" href="/contact">Talk to the Foundation ↗</a></section>
+
+<Base
+  title="VirtEngine — The open infrastructure network"
+  description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
+>
+  <section class="home-hero">
+    <div class="container-site home-hero-grid">
+      <div class="home-hero-copy">
+        <p class="status-pill">
+          <i class="rail-lamp" aria-hidden="true"></i>
+          Protocol in development · Public TestNet planned
+        </p>
+        <h1>The open infrastructure network.</h1>
+        <p class="home-hero-kicker">Compute. Identity. Settlement. One verifiable protocol.</p>
+        <p class="home-hero-lede">
+          VirtEngine is an open-source protocol for discovering, verifying and using
+          computing infrastructure across independent providers.
+        </p>
+        <div class="action-row">
+          <a class="btn-solid" href="/protocol">
+            Explore the protocol
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path>
+            </svg>
+          </a>
+          <a class="btn-quiet btn-quiet--night" href={SITE.github}>
+            View source <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <p class="home-hero-steward">
+          Stewarded in the public benefit by DETIO FOUNDATION LTD.
+        </p>
+      </div>
+      <div class="home-hero-visual">
+        <NetworkField />
+      </div>
+    </div>
+  </section>
+
+  <nav class="cred-rail" aria-label="Project facts">
+    <div class="container-site">
+      <a href="/open-source"><span>Open source</span><strong>Apache 2.0</strong></a>
+      <a href="/about"><span>Stewardship</span><strong>Australian not-for-profit</strong></a>
+      <a href="/modules"><span>Protocol</span><strong>27 modules</strong></a>
+      <a href="/protocol"><span>Stack</span><strong>Cosmos SDK + CometBFT</strong></a>
+      <a href={SITE.github}><span>Source</span><strong>Public on GitHub ↗</strong></a>
+    </div>
+  </nav>
+
+  <section class="home-philosophy">
+    <SurfaceWash />
+    <div class="container-site">
+      <p class="tag">Why it exists</p>
+      <h2>Infrastructure should be an open market.</h2>
+      <p>
+        Computing capacity already exists in independent facilities — GPU clusters,
+        HPC centres, regional datacentres, confidential enclaves. Today those machines
+        sit behind closed catalogues. VirtEngine is a protocol that lets a tenant
+        describe a workload, lets independent providers bid to run it, and records
+        identity, capacity, and settlement as verifiable state. VirtEngine is not the
+        cloud. It is the market independent infrastructure can join.
+      </p>
+      <ol class="home-stages">
+        <li>
+          <span>01</span>
+          <strong>Request</strong>
+          <small>A tenant posts the workload on chain.</small>
+        </li>
+        <li>
+          <span>02</span>
+          <strong>Verify &amp; coordinate</strong>
+          <small>Identity, capacity, and escrow become protocol state.</small>
+        </li>
+        <li>
+          <span>03</span>
+          <strong>Run</strong>
+          <small>The selected provider instantiates and meters the work.</small>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="home-explore" id="capabilities">
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Protocol surfaces</span><span>Explore</span></div>
+          <h2>See the market work.</h2>
+        </div>
+        <p>
+          Choose a surface. Each panel is a live instrument for that part of the
+          protocol — not a feature card.
+        </p>
+      </div>
+
+      <div class="cap-ex">
+        <input type="radio" name="home-cap" id="cap-market" checked />
+        <input type="radio" name="home-cap" id="cap-veid" />
+        <input type="radio" name="home-cap" id="cap-settle" />
+        <input type="radio" name="home-cap" id="cap-infra" />
+        <div class="cap-tabs" role="tablist" aria-label="Protocol surfaces">
+          {
+            surfaces.map((s) => (
+              <label class="cap-tab" for={s.id}>
+                <small>{s.n}</small>
+                <span>{s.label}</span>
+              </label>
+            ))
+          }
+        </div>
+        <div class="cap-stage">
+          {
+            surfaces.map((s) => (
+              <article class={`cap-panel cap-panel--${s.art}`} data-for={s.id}>
+                <div>
+                  <p class="tag">{s.n} / {s.label}</p>
+                  <h3>{s.title}</h3>
+                  <p class="explorer-lede">{s.body}</p>
+                  <ul class="home-facts tri-list">
+                    {s.facts.map(([code, text]) => (
+                      <li><code>{code}</code>{text}</li>
+                    ))}
+                  </ul>
+                  <a class="btn-quiet" href={s.href}>
+                    {s.cta} <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+                <div class="cap-art">
+                  {s.art === "market" && <MarketplaceBids />}
+                  {s.art === "veid" && <VeidScopes />}
+                  {s.art === "settle" && <SettlementLedger />}
+                  {s.art === "infra" && (
+                    <div class="cap-infra-grid">
+                      {kinds.map((k) => (
+                        <MediaFigure
+                          slug={k.slug}
+                          ratio="4 / 3"
+                          sizes="(min-width: 1024px) 14vw, 40vw"
+                          caption={k.label}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <p class="cap-escape">
+          <a class="btn-quiet" href="/protocol">View the full protocol <span aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-kinds band-night">
+    <div class="container-site">
+      <div class="folio-head folio-head--night">
+        <div>
+          <div class="folio-coord"><span>One protocol</span><span>Many kinds of infrastructure</span></div>
+          <h2>Independent machines. One market.</h2>
+        </div>
+        <p>
+          GPU clusters, HPC schedulers, general cloud, and confidential interconnects
+          all speak the same lease. VirtEngine does not pretend to be the physical cloud.
+        </p>
+      </div>
+      <div class="infra-kinds">
+        {
+          kinds.map((k) => (
+            <div class="infra-kind">
+              <MediaFigure
+                slug={k.slug}
+                ratio="4 / 3"
+                sizes="(min-width: 1024px) 22vw, 50vw"
+                caption={`${k.label} — ${k.note}`}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="home-arch" id="architecture">
+    <SurfaceWash />
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Architecture</span><span>Four layers</span></div>
+          <h2>A protocol, not a portal.</h2>
+        </div>
+        <p>
+          Four layers, one engineered system. Hover a band to see how it connects.
+          The module reference documents all 27 custom modules in the single binary.
+        </p>
+      </div>
+      <ArchitectureLayers />
+      <p class="home-arch-link">
+        <a class="btn-quiet" href="/modules">View all 27 modules <span aria-hidden="true">→</span></a>
+        <a class="btn-quiet" href="/protocol">Protocol architecture <span aria-hidden="true">→</span></a>
+      </p>
+    </div>
+  </section>
+
+  <section class="home-dev band-night" id="source">
+    <div class="container-site home-dev-grid">
+      <div>
+        <p class="tag">Source</p>
+        <h2>Build the binary. Read the chain.</h2>
+        <p>
+          Everything — chain, modules, provider daemon, docs — ships from one
+          repository and compiles with <code>make virtengine</code>. Linux and macOS
+          on amd64/arm64; Windows amd64 is experimental. The network is not live;
+          the code is.
+        </p>
+        <div class="action-row">
+          <a class="btn-solid" href={SITE.docs}>Read the docs</a>
+          <a class="btn-quiet btn-quiet--night" href={SITE.github}>Browse GitHub ↗</a>
+          <a class="btn-quiet btn-quiet--night" href="/modules">Explore modules</a>
+        </div>
+      </div>
+      <SourceTerminal />
+    </div>
+  </section>
+
+  <section class="home-launch band-night" id="status">
+    <div class="container-site">
+      <div class="folio-head folio-head--split folio-head--night">
+        <div>
+          <div class="folio-coord"><span>Launch posture</span><span>Last updated 17 Sep 2026</span></div>
+          <h2>Building openly. Launching carefully.</h2>
+        </div>
+        <p>
+          The network is not live. You can read the source, review the design, and
+          contribute today. Production services depend on testing and a separate
+          launch approval.
+        </p>
+      </div>
+      <ol class="launch-track">
+        <li class="launch-step launch-step--now">
+          <small>Now</small>
+          <h3>Research &amp; development</h3>
+          <p>Open code, documentation, and release preparation.</p>
+        </li>
+        <li class="launch-step">
+          <small>Planned · January 2027</small>
+          <h3>Public TestNet</h3>
+          <p>Validation with operators. Test state may reset.</p>
+        </li>
+        <li class="launch-step">
+          <small>Planned · March 2027</small>
+          <h3>MainNet, subject to approval</h3>
+          <p>Only after evidence, remediation, and a go/no-go decision.</p>
+        </li>
+      </ol>
+      <a class="btn-quiet btn-quiet--night" href="/network">Read the launch criteria <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <PartnerStrip />
+
+  <section class="home-steward">
+    <SurfaceWash />
+    <div class="container-site">
+      <p class="tag">Public-benefit stewardship</p>
+      <h2>Technology held for public benefit.</h2>
+      <div class="home-steward-copy">
+        <p>
+          DETIO FOUNDATION LTD is an Australian not-for-profit public company limited
+          by guarantee (ACN 699 651 771). It stewards the protocol software, reference
+          implementations, and token policy under a constitutional public-benefit lock.
+          The Foundation does not operate the decentralised network, and it does not
+          operate a central VEID verification service.
+        </p>
+        <p>
+          We publish software, specifications, and learning resources so students,
+          researchers, developers, and operators can inspect the design. The intended
+          public benefit is greater access to secure digital infrastructure — and the
+          ability to examine how it works.
+        </p>
+      </div>
+      <ul class="home-trust">
+        <li><a href="/about">Foundation <span aria-hidden="true">↗</span></a></li>
+        <li><a href="/open-source">Open-source licensing &amp; IP <span aria-hidden="true">↗</span></a></li>
+        <li><a href="/about">Australian company details <span aria-hidden="true">↗</span></a></li>
+        <li><a href="/about">Project history <span aria-hidden="true">↗</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="home-journal">
+    <SurfaceWash />
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Journal</span><span>Field notes</span></div>
+          <h2>The thinking behind the protocol.</h2>
+        </div>
+        <a class="btn-quiet self-end" href="/blog">Read all notes <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="journal-editorial">
+        {
+          journalLead && (
+            <article class="journal-lead">
+              <a class="journal-lead-media" href={`/blog/${journalLead.slug}`}>
+                <MediaFigure
+                  slug="provider-datacenter"
+                  ratio="16 / 9"
+                  sizes="(min-width: 1024px) 52vw, 100vw"
+                />
+              </a>
+              <div class="journal-lead-copy">
+                <p class="journal-meta">
+                  {new Date(journalLead.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
+                  · {journalLead.readingTime}
+                </p>
+                <h3>
+                  <a href={`/blog/${journalLead.slug}`}>
+                    {journalLead.title} <span aria-hidden="true">↗</span>
+                  </a>
+                </h3>
+                <p>{journalLead.description}</p>
+              </div>
+            </article>
+          )
+        }
+        <div class="journal-side">
+          {
+            journalSide.map((post) => (
+              <article>
+                <p class="journal-meta">
+                  {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
+                  · {post.readingTime}
+                </p>
+                <h3>
+                  <a href={`/blog/${post.slug}`}>
+                    {post.title} <span aria-hidden="true">↗</span>
+                  </a>
+                </h3>
+                <p>{post.description}</p>
+              </article>
+            ))
+          }
+          <a class="journal-more" href="/blog">All field notes <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <p class="mt-8 text-sm text-slate">
+        Earlier work is preserved in the{" "}
+        <a class="underline decoration-green/50 underline-offset-4 hover:decoration-green-deep" href="/blog/archive">
+          2015–2016 historical archive
+        </a>, separately from current technical guidance.
+      </p>
+    </div>
+  </section>
+
+  <section class="home-close">
+    <img
+      class="home-close-bg"
+      src="/media/hero-infrastructure-1920.webp"
+      srcset="/media/hero-infrastructure-960.webp 960w, /media/hero-infrastructure-1440.webp 1440w, /media/hero-infrastructure-1920.webp 1920w"
+      sizes="100vw"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="home-close-scrim" aria-hidden="true"></span>
+    <div class="container-site home-close-inner">
+      <span class="home-close-lattice" aria-hidden="true">
+        <LatticeMark class="text-green" />
+      </span>
+      <h2>Open infrastructure starts with participation.</h2>
+      <ul class="home-close-links">
+        <li><a href="/learn/how-the-marketplace-works">Understand the technology</a></li>
+        <li><a href={SITE.github}>Contribute on GitHub</a></li>
+        <li><a href="/contact">Talk to the Foundation</a></li>
+      </ul>
+    </div>
+  </section>
 </Base>

@@ -5,6 +5,8 @@ import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { HELP_ARTICLES, RELATED_EXTERNAL, getArticle } from "@data/help";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return HELP_ARTICLES.map((article) => ({ params: { slug: article.slug } }));
@@ -36,16 +38,16 @@ const updatedDisplay = new Date(article.updated).toLocaleDateString("en-AU", {
   year: "numeric",
 });
 
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: article.title,
+const canonical = new URL(`/help/${article.slug}`, SITE.url).href;
+const helpSchema = articleNode({
+  canonical,
+  title: article.title,
   description: article.summary,
   dateModified: article.updated,
-  inLanguage: "en-AU",
-  author: { "@type": "Organization", name: "DETIO FOUNDATION LTD" },
-  mainEntityOfPage: `https://identity.org.au/help/${article.slug}`,
-};
+  section: `Help · ${article.category}`,
+  type: "TechArticle",
+  about: ["Identity Wallet support", article.category],
+});
 ---
 
 <Base
@@ -53,9 +55,9 @@ const articleLd = {
   description={article.summary}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[helpSchema]}
+  modifiedTime={article.updated}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-
   <PageHeader crumbs={crumbs} eyebrow={article.category} title={article.title} lede={article.summary} />
 
   <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">

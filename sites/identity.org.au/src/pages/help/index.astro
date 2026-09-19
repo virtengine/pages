@@ -3,17 +3,31 @@ import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import CardLink from "@components/CardLink.astro";
 import { HELP_ARTICLES, HELP_CATEGORIES } from "@data/help";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
 
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "Help", href: "/help" },
 ];
+
+const helpListSchema = itemListNode(
+  new URL("/help", SITE.url).href,
+  "Identity Wallet help centre",
+  HELP_ARTICLES.map((article) => ({
+    name: article.title,
+    href: `/help/${article.slug}`,
+    description: article.summary,
+  })),
+);
 ---
 
 <Base
   title="Help centre | identity.org.au"
   description="Plain-English help for the Identity Wallet: your data and privacy, using your wallet with services, security, and support."
   breadcrumbs={crumbs}
+  pageType="CollectionPage"
+  schema={[helpListSchema]}
 >
   <PageHeader
     crumbs={crumbs}

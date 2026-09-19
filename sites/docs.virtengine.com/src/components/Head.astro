@@ -1,0 +1,53 @@
+---
+/**
+ * Starlight `Head` override: renders Starlight's own head tags (canonical, OG,
+ * Twitter, ...) and appends the page's JSON-LD graph.
+ *
+ * The graph reuses the entity `@id`s declared on virtengine.com so both hosts
+ * describe one VirtEngine organisation / website pair.
+ */
+import Default from "@astrojs/starlight/components/Head.astro";
+import {
+  SITE_URL,
+  breadcrumbNode,
+  breadcrumbsFromSidebar,
+  logoNode,
+  organizationNode,
+  schemaGraph,
+  webPageNode,
+  webSiteNode,
+} from "@lib/schema";
+
+const route = Astro.locals.starlightRoute;
+
+const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+const title = route.entry.data.title;
+const description = route.entry.data.description;
+
+const breadcrumbs = breadcrumbsFromSidebar(route.sidebar, canonical);
+
+const graph = schemaGraph([
+  logoNode(),
+  organizationNode(),
+  webSiteNode(),
+  webPageNode({
+    canonical,
+    title,
+    description,
+    breadcrumbs,
+    dateModified: route.lastUpdated ? route.lastUpdated.toISOString() : undefined,
+  }),
+  breadcrumbs && breadcrumbs.length > 1 ? breadcrumbNode(canonical, breadcrumbs) : null,
+]);
+
+/** The custom 404 route must never be indexed. */
+const is404 = route.id === "404";
+const robots = is404
+  ? "noindex, follow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+---
+
+<Default />
+<meta name="robots" content={robots} />
+<meta name="author" content="VirtEngine contributors" />
+<script type="application/ld+json" set:html={JSON.stringify(graph)} />

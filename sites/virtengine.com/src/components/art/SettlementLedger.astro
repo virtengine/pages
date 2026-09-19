@@ -1,0 +1,39 @@
+---
+/**
+ * SettlementLedger — Order → Bid → Lease → Usage → Settlement as a
+ * travelling signal on a night ledger, not a flowchart of boxes.
+ */
+const stages = [
+  { x: 36, name: "order" },
+  { x: 124, name: "bid" },
+  { x: 212, name: "lease" },
+  { x: 300, name: "usage" },
+  { x: 388, name: "settle" },
+];
+---
+
+<svg viewBox="0 0 460 300" class="h-auto w-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path class="rail-cursor" d="M52 150 H408" stroke="#60cc5d" stroke-width="1.6" stroke-linecap="round"></path>
+  <path d="M52 150 H408" stroke="#3a4a3c" stroke-width="1.2"></path>
+
+  {
+    stages.map((s, i) => (
+      <g transform={`translate(${s.x},118)`}>
+        <rect width="72" height="64" rx="8" fill="#1e2a20" stroke={i === 4 ? "#60cc5d" : "#3a4a3c"} />
+        <circle cx="36" cy="18" r="4" fill="#60cc5d" class="node-pulse" style={`animation-delay:-${i * 0.4}s`} />
+        <text x="36" y="42" text-anchor="middle" class="art-mono-xs" fill="#e9f0ea">{s.name}</text>
+        <text x="36" y="56" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="#7d8d7e">0{i + 1}</text>
+      </g>
+    ))
+  }
+
+  <g transform="translate(36,214)">
+    <rect width="388" height="56" rx="8" fill="#182219" stroke="#3a4a3c"></rect>
+    <text x="16" y="24" class="art-mono-xs" fill="#7d8d7e">escrow</text>
+    <text x="16" y="42" font-family="var(--font-sans)" font-size="13" fill="#e9f0ea">24h dispute window · funds release to provider</text>
+    <text x="372" y="34" text-anchor="end" class="art-mono-xs" fill="#79d6a3">0% take</text>
+  </g>
+
+  <text x="36" y="36" class="art-mono-xs" fill="#7d8d7e">x/escrow · x/settlement · x/take</text>
+  <text x="36" y="58" font-family="var(--font-sans)" font-size="16" fill="#e9f0ea">Metered usage becomes the bill.</text>
+</svg>

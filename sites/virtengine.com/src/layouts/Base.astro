@@ -7,9 +7,23 @@ import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/500.css";
 import "../styles/global.css";
 import "../styles/site.css";
+import "../styles/instrument.css";
+import "../styles/media.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { SITE } from "@data/site";
+import { fitTitle, metaDescription } from "@lib/meta";
+import {
+  DEFAULT_IMAGE,
+  breadcrumbNode,
+  logoNode,
+  organizationNode,
+  schemaGraph,
+  softwareApplicationNode,
+  webPageNode,
+  webSiteNode,
+  type SchemaNode,
+} from "@lib/schema";
 
 interface Breadcrumb {
   name: string;
@@ -23,49 +37,59 @@ interface Props {
   path?: string;
   breadcrumbs?: Breadcrumb[];
   ogType?: "website" | "article";
+  /** Extra JSON-LD nodes merged into this page's @graph (Article, FAQPage, ...). */
+  schema?: (SchemaNode | null | undefined | false)[];
+  /** ISO date the page content was published / last materially changed. */
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** Article section label used for og:article:section and JSON-LD. */
+  section?: string;
+  /** Keep a page out of the index (e.g. paginated thin listings). */
+  noindex?: boolean;
+  /** Override the social/structured-data image with an absolute or site path. */
+  image?: string;
 }
 
-const { title, description, path, breadcrumbs, ogType = "website" } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  breadcrumbs,
+  ogType = "website",
+  schema = [],
+  publishedTime,
+  modifiedTime,
+  section,
+  noindex = false,
+  image,
+} = Astro.props;
 
 const pathname = (path ?? Astro.url.pathname).replace(/\.html$/, "");
 const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
-const ogImage = new URL("/og.png", SITE.url).href;
+const ogImage = image ? new URL(image, SITE.url).href : DEFAULT_IMAGE;
+/** Search-display shaping only: visible page copy keeps its authored text. */
+const documentTitle = fitTitle(title, { brand: "VirtEngine" });
+const searchDescription = metaDescription(description);
+/** Home page describes the protocol itself; every other page describes a document. */
+const isHome = pathname === "/" || pathname === "";
 
-const organizationLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "VirtEngine",
-  url: SITE.url,
-  logo: new URL("/brand/virtengine-icon.png", SITE.url).href,
-  email: SITE.email,
-  sameAs: [SITE.github, SITE.docs],
-  parentOrganization: {
-    "@type": "Organization",
-    name: "DETIO FOUNDATION LTD",
-    url: "https://det.io",
-  },
-};
-
-const webSiteLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-};
-
-const breadcrumbLd = breadcrumbs
-  ? {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: breadcrumbs.map((crumb, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: crumb.name,
-        item: new URL(crumb.href, SITE.url).href,
-      })),
-    }
-  : null;
+const graph = schemaGraph([
+  logoNode(),
+  organizationNode(),
+  webSiteNode(),
+  webPageNode({
+    canonical,
+    title,
+    description,
+    image: ogImage,
+    breadcrumbs,
+    datePublished: publishedTime,
+    dateModified: modifiedTime,
+  }),
+  breadcrumbs && breadcrumbs.length > 0 ? breadcrumbNode(canonical, breadcrumbs) : null,
+  ...schema,
+  isHome ? softwareApplicationNode(canonical) : null,
+]);
 ---
 
 <!doctype html>
@@ -73,13 +97,27 @@ const breadcrumbLd = breadcrumbs
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{documentTitle}</title>
+    <meta name="description" content={searchDescription} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href="/favicon.png?v=4" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="VirtEngine Journal"
+          href={new URL("/blog/rss.xml", SITE.url).href}
+        />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#f7f8f7" />
+    <meta name="author" content={SITE.name} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex, follow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
+    <meta name="googlebot" content={noindex ? "noindex, follow" : "index, follow"} />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
@@ -89,18 +127,30 @@ const breadcrumbLd = breadcrumbs
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_AU" />
+
+    {
+      ogType === "article" && publishedTime && (
+        <>
+          <meta property="article:published_time" content={publishedTime} />
+          <meta property="article:modified_time" content={modifiedTime ?? publishedTime} />
+          <meta property="article:author" content={SITE.name} />
+          {section && <meta property="article:section" content={section} />}
+        </>
+      )
+    }
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />
-    {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
     <slot name="head" />
   </head>
-  <body class="bg-paper text-slate">
+  <body class:list={["bg-paper text-slate", isHome && "is-home"]}>
     <a href="#main" class="skip-link">Skip to content</a>
     <Header />
     <main id="main">

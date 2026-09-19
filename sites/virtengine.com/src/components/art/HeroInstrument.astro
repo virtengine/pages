@@ -1,0 +1,221 @@
+---
+/**
+ * HeroInstrument — the homepage's signature artwork.
+ *
+ * The protocol as a precision instrument: an outer ruler ring, the validator
+ * hexagon, tenant and provider banks converging on the chain, and a consensus
+ * cycle rail at the base. Deliberately sparse — every label is short and set
+ * large enough to read at the width the plate renders.
+ * Decorative — the surrounding PlateFigure carries the text alternative.
+ */
+import VImage from "@components/brand/VImage.astro";
+
+const CX = 360;
+const CY = 290;
+const RAD = Math.PI / 180;
+
+/** points on a circle, SVG coordinates (y down) */
+const pt = (r: number, deg: number) => ({
+  x: +(CX + r * Math.cos(deg * RAD)).toFixed(1),
+  y: +(CY + r * Math.sin(deg * RAD)).toFixed(1),
+});
+
+/* validator hexagon (pointy-top) */
+const hexR = 166;
+const hexPts = [270, 330, 30, 90, 150, 210].map((a) => pt(hexR, a));
+const hexPath = hexPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+
+/* outer ruler ring: 36 ticks */
+const ticks = Array.from({ length: 36 }, (_, i) => {
+  const a = i * 10;
+  return { a, inner: pt(218, a), outer: pt(i % 3 === 0 ? 234 : 226, a), major: i % 3 === 0 };
+});
+
+/* inner orbital ring satellites */
+const sats = [20, 140, 260].map((a) => pt(100, a));
+
+/* tenant / provider banks */
+const banks = [112, 290, 468];
+const chipX = { left: 20, right: 570 };
+const chipW = 130;
+const chipH = 44;
+
+/* flows: chip edge → hexagon left/right edge */
+const flows = [
+  { l: { x: 150, y: 134 }, r: { x: 570, y: 134 }, tl: { x: 206, y: 196 }, tr: { x: 514, y: 196 } },
+  { l: { x: 150, y: 312 }, r: { x: 570, y: 312 }, tl: { x: 204, y: 290 }, tr: { x: 516, y: 290 } },
+  { l: { x: 150, y: 490 }, r: { x: 570, y: 490 }, tl: { x: 206, y: 384 }, tr: { x: 514, y: 384 } },
+];
+const flowPath = (f: { x: number; y: number }, t: { x: number; y: number }) =>
+  `M${f.x},${f.y} C ${(f.x + t.x) / 2},${f.y} ${(f.x + t.x) / 2},${t.y} ${t.x},${t.y}`;
+
+/* consensus cycle rail */
+const railY = 562;
+const railNodes = ["order", "bid", "lease", "usage", "settlement"].map((name, i) => ({
+  name,
+  x: 132 + i * 114,
+}));
+---
+
+<svg viewBox="0 0 720 640" class="h-auto w-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="hi-core" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.3" />
+      <stop offset="55%" stop-color="#7ddd7a" stop-opacity="0.07" />
+      <stop offset="100%" stop-color="#7ddd7a" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="hi-halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#60cc5d" stop-opacity="0.13" />
+      <stop offset="100%" stop-color="#60cc5d" stop-opacity="0" />
+    </radialGradient>
+    <marker id="hi-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#60cc5d" />
+    </marker>
+  </defs>
+
+  <!-- halo behind the instrument -->
+  <rect x="80" y="20" width="560" height="540" fill="url(#hi-halo)" />
+
+  <!-- outer ruler ring -->
+  <g class="spin-slow" opacity="0.8">
+    <circle cx={CX} cy={CY} r="226" stroke="var(--color-night-line-strong)" stroke-width="1" stroke-dasharray="2 10" />
+    {
+      ticks.map((t) => (
+        <line
+          x1={t.inner.x}
+          y1={t.inner.y}
+          x2={t.outer.x}
+          y2={t.outer.y}
+          stroke={t.major ? "var(--color-night-line-strong)" : "var(--color-night-line)"}
+          stroke-width={t.major ? 1.4 : 1}
+        />
+      ))
+    }
+  </g>
+
+  <!-- validator hexagon -->
+  <g>
+    <path d={hexPath} stroke="var(--color-green)" stroke-opacity="0.7" stroke-width="1.5" />
+    {
+      hexPts.map((p, i) => (
+        <circle
+          cx={p.x}
+          cy={p.y}
+          r="5.5"
+          fill="var(--color-night-panel)"
+          stroke="var(--color-green-bright)"
+          stroke-width="1.6"
+          class="breathe"
+          style={`animation-delay:-${i * 0.7}s`}
+        />
+      ))
+    }
+    <text x={CX} y="104" text-anchor="middle" class="art-mono-sm" fill="var(--color-night-muted)">
+      validator set
+    </text>
+  </g>
+
+  <!-- inner orbital ring -->
+  <g class="spin-rev" opacity="0.85">
+    <circle cx={CX} cy={CY} r="100" stroke="var(--color-night-line-strong)" stroke-width="1" stroke-dasharray="1.5 9" />
+    {
+      sats.map((s, i) => (
+        <circle cx={s.x} cy={s.y} r={i === 1 ? 3.4 : 2.4} fill="var(--color-green)" opacity="0.8" />
+      ))
+    }
+  </g>
+
+  <!-- core: the official mark -->
+  <g>
+    <circle cx={CX} cy={CY} r="86" fill="url(#hi-core)" />
+    <circle cx={CX} cy={CY} r="44" stroke="var(--color-green-bright)" stroke-width="1.4" stroke-opacity="0.85" />
+    <circle cx={CX} cy={CY} r="44" stroke="var(--color-green)" stroke-width="1.4" class="pulse-ring" />
+    <circle cx={CX} cy={CY} r="44" stroke="var(--color-green)" stroke-width="1.2" class="pulse-ring pulse-ring--d1" />
+    <VImage x={CX - 33} y={CY - 32} h={64} />
+    <text x={CX} y="352" text-anchor="middle" class="art-mono-sm" fill="var(--color-green)">
+      on-chain marketplace
+    </text>
+  </g>
+
+  <!-- tenant bank -->
+  <text x={chipX.left} y="88" class="art-mono-sm" fill="var(--color-night-muted)">tenants</text>
+  {
+    banks.map((y) => (
+      <g transform={`translate(${chipX.left},${y})`}>
+        <rect width={chipW} height={chipH} rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <path d="M16,16 L30,16 L23,29 Z" fill="var(--color-green)" fill-opacity="0.85" />
+        <text x="42" y="29" class="art-chip" fill="var(--color-night-text)">tenant</text>
+      </g>
+    ))
+  }
+
+  <!-- provider bank -->
+  <text x={chipX.right + chipW} y="88" text-anchor="end" class="art-mono-sm" fill="var(--color-night-muted)">providers</text>
+  {
+    banks.map((y) => (
+      <g transform={`translate(${chipX.right},${y})`}>
+        <rect width={chipW} height={chipH} rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <rect x="16" y="14" width="16" height="16" rx="3" stroke="var(--color-green)" stroke-width="1.5" />
+        <path d="M24,18 v8 M20,22 h8" stroke="var(--color-green-bright)" stroke-width="1.2" />
+        <text x="42" y="29" class="art-chip" fill="var(--color-night-text)">provider</text>
+      </g>
+    ))
+  }
+
+  <!-- order / bid flows with travelling packets -->
+  {
+    flows.map((f) => {
+      const lp = flowPath(f.l, f.tl);
+      const rp = flowPath(f.r, f.tr);
+      return (
+        <g>
+          <path class="dash-march" d={lp} stroke="var(--color-green)" stroke-width="1.4" marker-end="url(#hi-arrow)" />
+          <path class="dash-march" d={rp} stroke="var(--color-green)" stroke-width="1.4" marker-end="url(#hi-arrow)" style="animation-delay:-0.7s" />
+          <circle r="2.8" fill="var(--color-green-bright)" class="traveler" style={`offset-path: path('${lp.replace("M", "M ")}')`} />
+          <circle r="2.8" fill="var(--color-green-bright)" class="traveler traveler--d1" style={`offset-path: path('${rp.replace("M", "M ")}')`} />
+        </g>
+      );
+    })
+  }
+
+  <!-- consensus cycle rail -->
+  <g>
+    <line x1="96" y1={railY} x2="624" y2={railY} stroke="var(--color-night-line-strong)" stroke-width="1" />
+    <line x1="96" y1={railY} x2="624" y2={railY} stroke="var(--color-green)" stroke-width="1.4" class="rail-cursor" />
+    {
+      railNodes.map((n, i) => (
+        <g>
+          <path
+            d={`M${n.x - 4.5},${railY - 4.5} L${n.x},${railY} L${n.x + 4.5},${railY - 4.5} L${n.x},${railY + 4.5} Z`}
+            fill="var(--color-night)"
+            stroke="var(--color-green)"
+            stroke-width="1.2"
+            class="stage-pulse"
+            style={`animation-delay:${(0.9 + 2.72 * i).toFixed(2)}s`}
+          />
+          <text x={n.x} y={railY + 26} text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">
+            {n.name}
+          </text>
+        </g>
+      ))
+    }
+  </g>
+</svg>
+
+<style>
+  /* This instrument renders ≈544px wide from a 720 viewBox; the mono labels are
+     tuned so they land at ≥11px on the page. */
+  .art-mono-sm {
+    font-size: 18px;
+  }
+  .art-mono-xs {
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .art-chip {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+</style>

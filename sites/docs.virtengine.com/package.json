@@ -9,7 +9,9 @@
     "build": "node ./scripts/build.mjs",
     "deploy": "pnpm run build && wrangler pages deploy dist --project-name docs-virtengine-com --branch main",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:schema": "node ./scripts/check-structured-data.mjs dist https://docs.virtengine.com",
+    "audit:seo": "node ./scripts/audit-seo-meta.mjs ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.0",

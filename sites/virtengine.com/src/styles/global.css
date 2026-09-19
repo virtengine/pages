@@ -11,38 +11,42 @@
   · JetBrains Mono (data, module names, captions).
 */
 @theme {
-  /* surfaces */
-  --color-paper: #f7f8f7;
-  --color-paper-soft: #eef1ee;
+  /* surfaces — engineering paper, warmed toward the brand green */
+  --color-paper: #fbfcfb;
+  --color-paper-soft: #f2f5f1;
+  --color-paper-deep: #e9efe9;
   --color-panel: #ffffff;
 
-  /* grey scale, built from wordmark grey #575757 */
-  --color-ink: #262b26;
-  --color-slate: #575757;
-  --color-muted: #6d736d;
-  --color-faint: #7c827c;
+  /* grey scale, built from wordmark grey #575757 and tuned to the brand */
+  --color-ink: #14291f;
+  --color-ink-deep: #0d1c14;
+  --color-slate: #4c5951;
+  --color-muted: #5f6b62;
+  --color-faint: #7b857d;
 
   /* rules & hairlines */
-  --color-line: #dee3de;
-  --color-line-strong: #c2cac2;
+  --color-line: #e2e7e2;
+  --color-line-strong: #c6d0c8;
 
   /* green scale, built from brand green #60CC5D */
   --color-green: #60cc5d;
   --color-green-bright: #7ddd7a;
-  --color-green-deep: #2b7d29;
-  --color-green-dark: #1f611e;
-  --color-green-soft: #dcf3db;
-  --color-green-wash: #eff8ee;
+  --color-green-deep: #23683f;
+  --color-green-dark: #185132;
+  --color-green-ink: #123f27;
+  --color-green-soft: #d9efdc;
+  --color-green-wash: #eef7ee;
 
-  /* night surfaces (footer + diagram plates) */
-  --color-night: #1b201b;
-  --color-night-deep: #141814;
-  --color-night-panel: #232923;
-  --color-night-line: #313931;
-  --color-night-line-strong: #465046;
-  --color-night-text: #e9eee9;
-  --color-night-muted: #a7b1a7;
-  --color-night-faint: #828c82;
+  /* night surfaces (footer, instrument plates, dark bands) */
+  --color-night: #101813;
+  --color-night-deep: #0a100c;
+  --color-night-panel: #182219;
+  --color-night-raised: #1e2a20;
+  --color-night-line: #253027;
+  --color-night-line-strong: #3a4a3c;
+  --color-night-text: #e9f0ea;
+  --color-night-muted: #a3b2a4;
+  --color-night-faint: #7d8d7e;
 
   /* semantic warning (slashing/risk callouts) */
   --color-amber: #9a6700;
@@ -54,12 +58,16 @@
 
   --radius-card: 0.375rem;
   --radius-frame: 0.5rem;
+  --radius-plate: 0.625rem;
+
+  --shadow-lift: 0 1px 2px rgb(20 41 31 / 0.04), 0 12px 32px -12px rgb(20 41 31 / 0.18);
+  --shadow-plate: 0 24px 60px -24px rgb(10 16 12 / 0.55);
 }
 
 /* ---------- base ---------- */
 
 html {
-  background-color: var(--color-paper);
+  background-color: #050806;
   color: var(--color-slate);
   font-family: var(--font-sans);
   scroll-behavior: smooth;
@@ -80,10 +88,16 @@ html {
 }
 
 body {
-  margin: 0;
+  margin: 0 auto;
   min-height: 100dvh;
+  max-width: 90rem;
+  border-inline: 1px solid #3d5244;
+  background-color: var(--color-paper);
   line-height: 1.65;
   text-rendering: optimizeLegibility;
+}
+html:has(body.is-home) {
+  background-color: #070b08;
 }
 
 ::selection {
@@ -116,17 +130,18 @@ h3, h4 {
 .skip-link {
   position: absolute;
   left: 1rem;
-  top: -4rem;
+  top: 0;
   z-index: 100;
   padding: 0.6rem 1.1rem;
   background: var(--color-green-deep);
   color: #ffffff;
   font-weight: 600;
   border-radius: 0.4rem;
-  transition: top 150ms ease;
+  transform: translateY(-120%);
+  transition: transform 150ms ease;
 }
 .skip-link:focus-visible {
-  top: 1rem;
+  transform: translateY(1rem);
 }
 
 .container-site {
@@ -142,9 +157,9 @@ h3, h4 {
   align-items: center;
   gap: 0.55rem;
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-green-deep);
 }
@@ -231,12 +246,9 @@ h3, h4 {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image:
-    linear-gradient(var(--color-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 95% 85% at 50% 0%, black 30%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 0%, black 30%, transparent 100%);
+  background:
+    radial-gradient(110% 80% at 8% -10%, rgba(96, 204, 93, 0.13), transparent 58%),
+    radial-gradient(80% 70% at 100% 0%, rgba(35, 104, 63, 0.09), transparent 62%);
 }
 
 /* Journal typography supports both current writing and the preserved Ghost archive. */
@@ -286,87 +298,6 @@ h3, h4 {
 .archive-warning strong { display: block; color: #513c00; }
 .archive-warning p { margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.65; }
 .archive-warning a { font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
-
-/* Homepage launch field — a deliberate nod to the original VirtEngine site's
-   playful cloud-and-rocket mood, built from CSS so it remains crisp at any size. */
-.hero-playfield {
-  overflow: hidden;
-  min-height: 25rem;
-  background:
-    radial-gradient(circle at 18% 14%, rgba(125, 221, 122, 0.18) 0 2px, transparent 3px) 0 0 / 28px 28px,
-    linear-gradient(145deg, #18251a 0%, #172218 58%, #213824 100%);
-}
-.hero-playfield > svg { position: relative; z-index: 2; }
-.hero-cloud {
-  position: absolute;
-  z-index: 1;
-  width: 11rem;
-  height: 3.7rem;
-  border-radius: 3rem;
-  background: rgba(116, 177, 226, 0.18);
-  filter: blur(0.2px);
-}
-.hero-cloud::before,
-.hero-cloud::after { content: ""; position: absolute; bottom: 0; border-radius: 50%; background: inherit; }
-.hero-cloud::before { width: 5rem; height: 5rem; left: 1.4rem; }
-.hero-cloud::after { width: 3.8rem; height: 3.8rem; right: 1.1rem; }
-.hero-cloud-a { left: -2rem; bottom: 1.2rem; }
-.hero-cloud-b { right: -1rem; top: 3rem; transform: scale(0.7); opacity: 0.6; }
-.hero-trajectory {
-  position: absolute;
-  z-index: 1;
-  width: 17rem;
-  height: 21rem;
-  right: 21%;
-  bottom: -7rem;
-  border-left: 2px dashed rgba(125, 221, 122, 0.7);
-  border-radius: 55% 0 0 0;
-  transform: rotate(18deg);
-}
-.hero-rocket {
-  position: absolute;
-  z-index: 3;
-  right: 26%;
-  bottom: 15%;
-  width: 2.6rem;
-  height: 6.2rem;
-  border: 2px solid #dcebdd;
-  border-radius: 60% 60% 35% 35%;
-  background: linear-gradient(90deg, #e5eee5 0 48%, #bdd0be 49% 100%);
-  transform: rotate(18deg);
-  box-shadow: 0 0 1.5rem rgba(125, 221, 122, 0.26);
-}
-.hero-rocket-window { position: absolute; left: 50%; top: 1.2rem; width: 0.9rem; height: 0.9rem; border: 2px solid #dcebdd; border-radius: 50%; background: #2b7d29; transform: translateX(-50%); }
-.hero-rocket-fin { position: absolute; bottom: 0.55rem; width: 1.2rem; height: 1.7rem; background: #dd5f4d; }
-.hero-rocket-fin-left { left: -0.8rem; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
-.hero-rocket-fin-right { right: -0.8rem; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-.hero-rocket-flame { position: absolute; left: 50%; bottom: -1.7rem; width: 0.8rem; height: 1.9rem; background: linear-gradient(#f7d45f, #ef794b); clip-path: polygon(50% 100%, 0 0, 100% 0); transform: translateX(-50%); }
-.hero-control-strip { position: relative; z-index: 4; box-shadow: 0 12px 28px rgba(38, 43, 38, 0.12); }
-.hero-control-card { display: flex; align-items: center; gap: 0.9rem; min-height: 5.5rem; padding: 1rem 1.2rem; color: var(--color-slate); text-decoration: none; border-bottom: 1px solid var(--color-line); }
-.hero-control-card:last-child { border-bottom: 0; }
-.hero-control-card:hover { background: var(--color-green-wash); }
-.hero-control-card strong { display: block; color: var(--color-ink); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; }
-.hero-control-card small { display: block; margin-top: 0.15rem; font-size: 0.78rem; }
-.hero-control-icon { position: relative; flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; border: 1.5px solid var(--color-green-deep); border-radius: 0.28rem; }
-.hero-control-cube::before { content: ""; position: absolute; inset: 0.55rem; border: 1.5px solid var(--color-green); transform: rotate(45deg); }
-.hero-control-nodes::before { content: ""; position: absolute; inset: 0.45rem; background: radial-gradient(circle at 10% 50%, var(--color-green-deep) 0 3px, transparent 4px), radial-gradient(circle at 90% 15%, var(--color-green-deep) 0 3px, transparent 4px), radial-gradient(circle at 90% 85%, var(--color-green-deep) 0 3px, transparent 4px); }
-.hero-control-nodes::after { content: ""; position: absolute; left: 0.7rem; top: 1.15rem; width: 1.1rem; height: 1px; background: var(--color-green-deep); transform: rotate(-25deg); box-shadow: 0 0.75rem 0 var(--color-green-deep); }
-.hero-control-proof::before { content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-green-deep); font-size: 1.4rem; font-weight: 700; }
-@media (min-width: 640px) { .hero-control-card { border-bottom: 0; border-right: 1px solid var(--color-line); } .hero-control-card:last-child { border-right: 0; } }
-@media (max-width: 640px) { .hero-playfield { min-height: 20rem; } .hero-rocket { right: 18%; transform: scale(0.75) rotate(18deg); transform-origin: bottom center; } .hero-trajectory { right: 11%; transform: scale(0.75) rotate(18deg); transform-origin: bottom right; } }
-
-/* Waldur-connected catalogue plate — deliberately visual, while keeping the
-   distinction between the marketplace surface, protocol and execution layer visible. */
-.marketplace-console { overflow: hidden; background: linear-gradient(135deg, #fcfdfb, #f3f8f1); }
-.marketplace-console-top { background: linear-gradient(105deg, rgba(81, 153, 80, 0.16), transparent 60%); }
-.marketplace-offering { min-height: 10.25rem; transition: transform 180ms ease, border-color 180ms ease; }
-.marketplace-offering:hover { border-color: var(--color-green-deep); transform: translateY(-3px); }
-.marketplace-offering-icon { position: relative; display: block; width: 3.3rem; height: 2.55rem; color: var(--color-green-deep); }
-.marketplace-offering-icon::before, .marketplace-offering-icon::after { content: ""; position: absolute; box-sizing: border-box; }
-.marketplace-icon-cloud::before { left: 0.25rem; bottom: 0.25rem; width: 2.8rem; height: 1.2rem; border: 2px solid currentColor; border-radius: 1rem; }
-.marketplace-icon-cloud::after { left: 0.85rem; top: 0.05rem; width: 1.45rem; height: 1.45rem; border: 2px solid currentColor; border-radius: 50%; background: #f6faf4; }
-.marketplace-icon-storage::before { left: 0.4rem; top: 0.3rem; width: 2.5rem; height: 1.85rem; border: 2px solid currentColor; border-radius: 50% / 20%; box-shadow: 0 0.58rem 0 -1px #f6faf4, 0 0.58rem 0 0 currentColor; }
-.marketplace-icon-storage::after { right: 0.75rem; top: 0.85rem; width: 0.28rem; height: 0.28rem; border-radius: 50%; background: currentColor; }
 
 /* Waldur platform page */
 .waldur-architecture {
@@ -444,14 +375,6 @@ h3, h4 {
   .waldur-logo-grid { grid-template-columns: repeat(2, 1fr); }
   .waldur-logo-tile { min-height: 6.5rem; }
 }
-.marketplace-icon-vm::before { inset: 0.15rem 0.2rem 0.48rem; border: 2px solid currentColor; border-radius: 0.22rem; }
-.marketplace-icon-vm::after { left: 0.85rem; bottom: 0.05rem; width: 1.6rem; height: 0.38rem; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
-.marketplace-icon-custom::before { left: 0.3rem; top: 0.15rem; width: 2.35rem; height: 2.15rem; border: 2px solid currentColor; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
-.marketplace-icon-custom::after { left: 1.2rem; top: 0.85rem; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: currentColor; box-shadow: -0.8rem 0.43rem 0 -0.06rem currentColor, 0.8rem 0.43rem 0 -0.06rem currentColor; }
-.marketplace-path ol { counter-reset: marketplace-step; }
-.marketplace-path li { display: grid; gap: 0.25rem; padding-left: 0.85rem; border-left: 2px solid rgba(51, 111, 50, 0.35); }
-.marketplace-path strong { color: var(--color-ink); font-weight: 650; }
-.marketplace-path span { line-height: 1.45; }
 
 /* downward-delta section divider (points down = deploy/settle) */
 .delta-divider {

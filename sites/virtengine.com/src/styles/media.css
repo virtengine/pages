@@ -1,0 +1,237 @@
+/* ==========================================================================
+   VirtEngine media system
+   --------------------------------------------------------------------------
+   Photography is the site's "real world" layer: license-clean source images
+   (CC0 / public domain) rendered through a fixed brand treatment — duotone in
+   brand green + ink, some with a print halftone screen — so a portrait of a
+   person, a data-centre aisle and a padlock all read as one system.
+
+   Rules (DESIGN.md §12):
+     * no stock-photo look: the duotone/halftone treatment is applied to every
+       image, so nothing arrives on the page as a raw photograph;
+     * images sit in frames with a hairline border and the card radius — the
+       same geometry as every other surface;
+     * captions are Inter small, credits are mono; never overprint text on a
+       photograph without a scrim.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- figure -- */
+.media-figure {
+  margin: 0;
+}
+.media-figure-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-deep);
+}
+.media-figure--night .media-figure-frame {
+  border-color: var(--color-night-line-strong);
+  background: var(--color-night-deep);
+}
+.media-figure-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.media-figure-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  justify-content: space-between;
+  margin-top: 0.7rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-slate);
+}
+.media-figure--night .media-figure-caption {
+  color: var(--color-night-muted);
+}
+.media-credit {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--color-faint);
+}
+
+/* ------------------------------------------------------------- media band -- */
+.media-band {
+  position: relative;
+}
+.media-band-inner {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  max-width: 74rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 2.5rem);
+}
+@media (min-width: 960px) {
+  .media-band--split .media-band-inner,
+  .media-band--reverse .media-band-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+  .media-band--reverse .media-band-copy {
+    order: 2;
+  }
+}
+.media-band-copy h2 {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1.14;
+  color: var(--color-ink);
+}
+.media-band-lede {
+  margin-top: 1rem;
+  max-width: 34rem;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--color-slate);
+}
+.media-band-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.6rem;
+}
+.media-band-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-frame);
+}
+.media-band-caption {
+  margin-top: 0.7rem;
+  font-size: 0.88rem;
+  color: var(--color-slate);
+}
+
+/* full-bleed variant: photograph behind, copy on a paper card */
+.media-band--full {
+  overflow: hidden;
+  background: var(--color-night-deep);
+}
+.media-band--full .media-band-bg {
+  position: absolute;
+  inset: 0;
+}
+.media-band--full .media-band-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+.media-band--full .media-band-inner {
+  position: relative;
+  grid-template-columns: minmax(0, 44rem);
+}
+.media-band--full .media-band-copy {
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  background: var(--color-panel);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-frame);
+  box-shadow: 0 18px 40px rgba(14, 41, 31, 0.18);
+}
+
+/* night bands (inside .band-night): copy inverts, captions lighten */
+.band-night .media-band-copy h2,
+.media-band--night .media-band-copy h2 {
+  color: var(--color-night-text);
+}
+.band-night .media-band-lede,
+.media-band--night .media-band-lede {
+  color: var(--color-night-muted);
+}
+.media-band--night .media-band-media img {
+  border-color: var(--color-night-line-strong);
+}
+.media-band--night .media-band-caption {
+  color: var(--color-night-muted);
+}
+
+/* ------------------------------------------------------------- media grid -- */
+.media-grid {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+}
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.media-card .media-figure-frame {
+  transition: border-color 180ms ease;
+}
+.media-card:hover .media-figure-frame {
+  border-color: var(--color-green-deep);
+}
+.media-card:hover .media-figure-frame img {
+  transform: scale(1.015);
+}
+.media-card .media-figure-frame img {
+  transition: transform 420ms ease;
+}
+.media-card-index {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.media-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+.media-card p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-slate);
+}
+
+/* --------------------------------------------------------------- credits -- */
+.media-credits-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+.media-credits-list a {
+  color: var(--color-green-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ------------------------------------------------- closing (homepage) ----- */
+/* full-bleed photograph band that ends the homepage: the picture carries the
+   invitation, the copy sits on a paper card so it never fights the image. */
+.closing-media-band {
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+.closing-media-band .media-band-inner {
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+.closing-media-band .media-band-copy h2 {
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+}
+@media (max-width: 720px) {
+  .closing-media-band .media-band--full .media-band-copy {
+    padding: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-card .media-figure-frame img {
+    transition: none;
+  }
+  .media-card:hover .media-figure-frame img {
+    transform: none;
+  }
+}

@@ -4,12 +4,27 @@ import { repairArchiveLinks } from "../../lib/archive-links";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import BlogCard from "@components/BlogCard.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return ALL_POSTS.map((article) => ({ params: { slug: article.slug }, props: { article } }));
 }
 
 const { article } = Astro.props;
+const canonical = new URL(`/blog/${article.slug}`, SITE.url).href;
+const articleSchema = articleNode({
+  canonical,
+  title: article.title,
+  description: article.description,
+  datePublished: article.publishedAt,
+  dateModified: article.publishedAt,
+  authorName: article.author,
+  authorType: "Organization",
+  section: article.kind === "legacy" ? "Historic archive" : "VirtEngine journal",
+  type: "BlogPosting",
+  about: ["Decentralized cloud computing", "VirtEngine protocol"],
+});
 const sameKindPosts = ALL_POSTS.filter((item) => item.kind === article.kind);
 const sameKindIndex = sameKindPosts.findIndex((item) => item.slug === article.slug);
 const related = [...sameKindPosts.slice(sameKindIndex + 1), ...sameKindPosts.slice(0, sameKindIndex)]
@@ -21,29 +36,27 @@ const crumbs = [
   ...(article.kind === "legacy" ? [{ name: "Historic archive", href: "/blog/archive" }] : []),
   { name: article.title, href: `/blog/${article.slug}` },
 ];
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: article.title,
-  description: article.description,
-  datePublished: article.publishedAt,
-  dateModified: article.publishedAt,
-  author: { "@type": "Organization", name: article.author },
-  publisher: { "@type": "Organization", name: "VirtEngine", url: "https://virtengine.com" },
-  mainEntityOfPage: `https://virtengine.com/blog/${article.slug}`,
-  isPartOf: { "@type": "Blog", name: "VirtEngine Journal", url: "https://virtengine.com/blog" },
-};
+/**
+ * Some legacy archive entries share the excerpt they were migrated with, which
+ * would produce duplicate meta descriptions. Prefixing the (unique) title keeps
+ * the description distinct and informative; the visible lede still shows the
+ * original excerpt verbatim.
+ */
+const metaDescriptionSource =
+  article.kind === "legacy" ? `${article.title}: ${article.description}` : article.description;
 ---
 
 <Base
   title={`${article.title} | VirtEngine`}
-  description={article.description}
+  description={metaDescriptionSource}
   path={`/blog/${article.slug}`}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[articleSchema]}
+  publishedTime={article.publishedAt}
+  modifiedTime={article.publishedAt}
+  section={article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-
   <article>
     <header class="grid-backdrop border-b border-line">
       <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
@@ -85,7 +98,7 @@ const articleLd = {
           <p class="eyebrow">Continue reading</p>
           <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
           <div class="mt-8 grid gap-6 md:grid-cols-2">
-            {related.map((item) => <BlogCard article={item} />)}
+            {related.map((item, i) => <BlogCard article={item} mediaIndex={i + 4} />)}
           </div>
         </div>
       </section>

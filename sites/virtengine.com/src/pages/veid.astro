@@ -4,7 +4,8 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
-import DiagramFrame from "@components/DiagramFrame.astro";
+import PlateFigure from "@components/art/PlateFigure.astro";
+import VeidPhone from "@components/art/VeidPhone.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
 import { SITE } from "@data/site";
 
@@ -40,6 +41,90 @@ const stages = [
     body: "Zero-knowledge proofs (x/veid/zk) let users prove facts about their verified identity — score thresholds, attributes — without revealing the underlying data.",
   },
 ];
+
+const wallet = [
+  {
+    screen: "capture" as const,
+    note: "01 · capture",
+    body: "Documents are read with OCR on the handset. Nothing is uploaded at capture time.",
+    label:
+      "VEID wallet mockup, capture screen: a document is framed by corner brackets while OCR detects the document type, with a note that nothing is uploaded yet.",
+  },
+  {
+    screen: "liveness" as const,
+    note: "02 · liveness + attestation",
+    body: "An active challenge proves a present human; hardware attestation binds the capture to secure silicon.",
+    label:
+      "VEID wallet mockup, liveness screen: a face guide with a 'slowly blink' challenge, progress steps, and a confirm button.",
+  },
+  {
+    screen: "proof" as const,
+    note: "03 · prove without revealing",
+    body: "Name, date of birth, address and document number stay sealed on the device. Only the proof is shared.",
+    label:
+      "VEID wallet mockup, proof screen: private fields stay locked on the device while a single proof — score ≥ threshold — is shared with the verifier.",
+  },
+];
+
+const scenarios = [
+  {
+    id: "scn-age",
+    tab: "Age-restricted service",
+    question: "The service asks: is this person over 18?",
+    proof: "proof verified · expires in 24 h",
+    shared: [
+      ["Over 18 — true", "the age band, not the birth date"],
+      ["Proof is genuine", "signed by the validator consensus result"],
+      ["Proof is unexpired", "issued moments ago to this verifier"],
+      ["Bound to one purpose", "not reusable by other services"],
+    ],
+    hidden: [
+      ["Full name", "never leaves the device"],
+      ["Date of birth", "the exact date is not revealed"],
+      ["Address", "not part of this scope"],
+      ["Document number", "sealed on the handset"],
+    ],
+    foot: "Threshold proofs are the smallest useful disclosure: one bit of truth, nothing attached.",
+  },
+  {
+    id: "scn-access",
+    tab: "Marketplace access",
+    question: "The counterparty asks: does this account clear the trust threshold?",
+    proof: "gating result · verified",
+    shared: [
+      ["Trust score ≥ threshold — true", "the score itself stays hidden"],
+      ["Account is VEID-verified", "approved-clients-only upload path"],
+      ["Client signature valid", "the chain's approved-client list applied"],
+      ["Bound to this lease", "not replayable against other orders"],
+    ],
+    hidden: [
+      ["The score value", "hidden even from the counterparty"],
+      ["Identity documents", "encrypted to validators only"],
+      ["Biometrics and selfie", "never leave the capture device"],
+      ["Location history", "outside the scope of this proof"],
+    ],
+    foot: "Providers verify tenants and tenants verify providers — both directions ask the same question and learn nothing more.",
+  },
+  {
+    id: "scn-residency",
+    tab: "Residency attribute",
+    question: "The programme asks: is this operator resident in an accepted jurisdiction?",
+    proof: "attribute proof · verified",
+    shared: [
+      ["Residency attribute — accepted", "jurisdiction class, not the address"],
+      ["Proof is unexpired", "re-attested at the network's cadence"],
+      ["Issued to this programme", "not a general disclosure"],
+      ["Threshold list applied", "accepted jurisdictions are chain state"],
+    ],
+    hidden: [
+      ["Exact address", "sealed on the device"],
+      ["Tax identifiers", "never part of an attribute proof"],
+      ["Document images", "decrypted only inside the validator network"],
+      ["Other scopes", "a proof covers exactly one question"],
+    ],
+    foot: "Attribute proofs generalise the idea: any scope the network can verify can be proven without being shown.",
+  },
+];
 ---
 
 <Base
@@ -55,6 +140,8 @@ const stages = [
     eyebrow="Identity layer"
     title="Identity verified by consensus, revealed by proof"
     lede="VEID (Verifiable Electronic Identity) turns identity verification into a protocol function: encrypted identity scopes are scored by the validator set's shared machine-learning models, and users prove what matters with zero-knowledge proofs — nothing more."
+    media="identity-liveness"
+    mediaCaption="A real person, one active check — then only proofs travel."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "VEID", href: "/veid" },
@@ -66,32 +153,151 @@ const stages = [
     </div>
   </PageHero>
 
+  <!-- ======================= THE WALLET (dark) ======================= -->
+  <section class="band-night mt-16" id="wallet">
+    <div class="container-site py-16 md:py-20">
+      <div class="folio-head folio-head--night folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Fig. 02</span><span>The capture wallet</span></div>
+          <h2>The device does the sensitive work.</h2>
+        </div>
+        <p>
+          Capture, liveness and attestation all happen on the handset. The network receives a
+          sealed scope — never a document archive.
+        </p>
+      </div>
+
+      <div class="wallet-row">
+        {
+          wallet.map((w) => (
+            <div class="wallet-spec">
+              <VeidPhone screen={w.screen} label={w.label} class="wallet-device" />
+              <div class="wallet-note">
+                <b>{w.note}</b>
+                <p>{w.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-10 max-w-3xl text-sm leading-relaxed text-night-muted">
+        The wallet is a reference implementation — <code class="font-mono text-green">mobile/veid-capture-app/</code> in
+        the protocol repository — and the consumer-facing identity programme is presented at
+        <a class="text-green underline decoration-green/50 underline-offset-4 hover:decoration-green" href="https://identity.org.au">identity.org.au</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================== PIPELINE ========================== -->
   <Section
     eyebrow="Pipeline"
     title="From device to ledger"
     lede="Six stages take a user from document capture to a consensus-committed trust score they can use across the marketplace."
   >
-    <DiagramFrame
+    <PlateFigure
+      rail="Fig. 03 — the verification pipeline"
+      railRight="Six stages"
       label="VEID verification pipeline diagram. On device, the VEID capture wallet performs four stages: capture (document OCR and selfie), liveness (active liveness challenge), attestation (fingerprint or iris biometric attestation and device integrity), and encrypt (identity scopes sealed with public-key encryption). The submission, signed by an approved client and the user, flows on-chain to the validator identity network, where validators decrypt with their keys, score identity with shared machine-learning models, and commit the trust score by consensus, using the veid, veidregistry, encryption, and mfa modules. Outputs feed three zero-knowledge verification surfaces: score threshold proofs that prove a score meets a threshold and reveal nothing else, attribute proofs for scopes like age or residency, and marketplace gating where providers and tenants verify each other."
-      caption="fig 01 — capture → liveness → attestation → encryption → consensus scoring → ZK tiers"
+      caption="fig 03 — capture → liveness → attestation → encryption → consensus scoring → zk tiers"
       class="reveal"
     >
       <VeidPipeline />
-    </DiagramFrame>
+    </PlateFigure>
 
-    <ol class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ol class="stage-grid">
       {
         stages.map((stage) => (
-          <li class="reveal rounded-card border border-line bg-panel p-6">
-            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">{stage.step}</p>
-            <h3 class="mt-2 text-base font-semibold">{stage.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-slate">{stage.body}</p>
+          <li class="stage-item reveal">
+            <span class="stage-idx">Stage {stage.step}</span>
+            <h3>{stage.title}</h3>
+            <p>{stage.body}</p>
           </li>
         ))
       }
     </ol>
   </Section>
 
+  <!-- ==================== WHAT A VERIFIER LEARNS ==================== -->
+  <Section
+    eyebrow="Selective disclosure"
+    title="What a verifier learns — and what it never sees"
+    lede="A zero-knowledge proof answers exactly one question. Pick a scenario to see the full accounting of what crosses the boundary."
+  >
+    <div class="verifier reveal">
+      <nav class="verifier-tabs" aria-label="Verification scenarios">
+        {
+          scenarios.map((s, i) => (
+            <a class:list={["verifier-tab", i === 0 && "verifier-tab--default"]} href={`#${s.id}`}>
+              {s.tab}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="verifier-body">
+        {
+          scenarios.map((s, i) => (
+            <section id={s.id} class:list={["verifier-panel", i === 0 && "verifier-panel--default"]} aria-label={s.tab}>
+              <div class="verifier-question">
+                <p>{s.question}</p>
+                <span class="verifier-proof">{s.proof}</span>
+              </div>
+              <div class="verifier-columns">
+                <div class="verifier-col verifier-col--shared">
+                  <h4>Crosses the boundary</h4>
+                  <ul>
+                    {s.shared.map(([claim, note]) => (
+                      <li>
+                        <span>
+                          <b>{claim}</b> — {note}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="verifier-col verifier-col--hidden">
+                  <h4>Stays sealed on the device</h4>
+                  <ul>
+                    {s.hidden.map(([claim, note]) => (
+                      <li>
+                        <span>
+                          <b>{claim}</b> — {note}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <p class="verifier-foot">{s.foot}</p>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="compare reveal">
+      <div class="compare-card">
+        <span class="compare-tag">Conventional verification</span>
+        <h4>Hand over the document</h4>
+        <p>
+          A service photographs your ID, stores an archive it must then protect forever,
+          and you lose track of which copies exist. Verification and data collection become
+          the same act.
+        </p>
+      </div>
+      <div class="compare-card compare-card--good">
+        <span class="compare-tag">VEID verification</span>
+        <h4>Hand over a proof</h4>
+        <p>
+          The network verifies once, by consensus, and you share proofs thereafter. The
+          counterparty can check that a fact holds without ever receiving the data behind it.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ======================= DESIGN PRINCIPLES ======================= -->
   <Section eyebrow="Design principles" title="Privacy is the architecture, not a policy">
     <div class="grid gap-5 lg:grid-cols-3">
       <Card title="Encrypted end to end" tag="x/encryption" class="reveal">
@@ -111,6 +317,7 @@ const stages = [
     </div>
   </Section>
 
+  <!-- ========================= MARKETPLACE ========================= -->
   <Section eyebrow="In the marketplace" title="Why a cloud marketplace needs identity">
     <div class="prose-body reveal max-w-3xl space-y-4 text-base">
       <p>
@@ -123,7 +330,7 @@ const stages = [
       </p>
       <p>
         The VEID wallet reference implementation lives in the protocol repository at
-        <code>mobile/veid-capture-app/</code>. The consumer-facing identity program is
+        <code>mobile/veid-capture-app/</code>. The consumer-facing identity programme is
         presented at <a href="https://identity.org.au">identity.org.au</a>.
       </p>
     </div>

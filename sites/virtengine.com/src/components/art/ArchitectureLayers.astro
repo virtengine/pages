@@ -1,0 +1,56 @@
+---
+/**
+ * ArchitectureLayers — four horizontal layers. Hover/focus illuminates
+ * the related paths (CSS :has). Zero JS.
+ */
+const layers = [
+  {
+    id: "users",
+    href: "/protocol",
+    name: "Users & applications",
+    note: "CLI · approved clients · VEID wallet",
+    chips: ["virtengine", "veid app", "gRPC/REST"],
+  },
+  {
+    id: "market",
+    href: "/learn/how-the-marketplace-works",
+    name: "Marketplace / identity / economics",
+    note: "Orders, evidence, escrow — protocol state, not a private catalogue",
+    chips: ["x/market", "x/veid", "x/escrow"],
+  },
+  {
+    id: "chain",
+    href: "/modules",
+    name: "VirtEngine chain",
+    note: "One Go binary · Cosmos SDK · CometBFT consensus",
+    chips: ["27 modules", "single binary", "validators"],
+  },
+  {
+    id: "infra",
+    href: "/providers",
+    name: "Providers / validators / HPC",
+    note: "Daemons instantiate, meter, and attest on real machines",
+    chips: ["providerd", "Kubernetes", "SLURM"],
+  },
+];
+---
+
+<div class="arch-map">
+  {
+    layers.map((layer, i) => (
+      <a class="arch-layer" href={layer.href} data-layer={layer.id} style={`--i:${i}`}>
+        <span class="arch-idx">0{i + 1}</span>
+        <span class="arch-copy">
+          <strong>{layer.name}</strong>
+          <small>{layer.note}</small>
+        </span>
+        <span class="arch-chips">
+          {layer.chips.map((c) => (
+            <code>{c}</code>
+          ))}
+        </span>
+      </a>
+    ))
+  }
+  <p class="arch-hint">Hover a layer to read its role. All 27 modules sit on the chain.</p>
+</div>

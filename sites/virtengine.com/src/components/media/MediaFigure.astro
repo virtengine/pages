@@ -1,0 +1,64 @@
+---
+/**
+ * MediaFigure — brand photography in a figure frame.
+ *
+ * Every image is CC0/public-domain source material rendered through the brand
+ * duotone treatment (see DESIGN.md §12). Assets come from `@data/media`, so
+ * srcset/alt/intrinsic size stay in one place.
+ */
+import { media, type MediaSlug } from "@data/media";
+
+interface Props {
+  slug: MediaSlug;
+  /** override the manifest alt when the context differs */
+  alt?: string;
+  /** mono caption under the image */
+  caption?: string;
+  /** show the provenance line (default: off — credit lives on /media-credits) */
+  credit?: boolean;
+  /** CSS aspect-ratio override, e.g. "16 / 9" */
+  ratio?: string;
+  /** eager-load for above-the-fold use */
+  priority?: boolean;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  slug,
+  alt,
+  caption,
+  credit = false,
+  ratio,
+  priority = false,
+  sizes = "(min-width: 1024px) 46vw, 100vw",
+  class: className,
+} = Astro.props;
+
+const m = media[slug];
+const style = ratio ? `aspect-ratio:${ratio};` : `aspect-ratio:${m.width} / ${m.height};`;
+---
+
+<figure class:list={["media-figure", `media-figure--${m.kind}`, className]}>
+  <div class="media-figure-frame" style={style}>
+    <img
+      src={m.src}
+      srcset={m.srcset}
+      sizes={sizes}
+      alt={alt ?? m.alt}
+      width={m.width}
+      height={m.height}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={priority ? "high" : undefined}
+    />
+  </div>
+  {
+    (caption || credit) && (
+      <figcaption class="media-figure-caption">
+        {caption && <span>{caption}</span>}
+        {credit && <span class="media-credit">photo · {m.credit} · cc0</span>}
+      </figcaption>
+    )
+  }
+</figure>

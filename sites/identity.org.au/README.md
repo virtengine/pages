@@ -60,3 +60,34 @@ See [DESIGN.md](DESIGN.md) — the Ridgemark logo construction, colour tokens
 with contrast table, Public Sans type system, service-design component
 inventory (banners, steps, cards, tables, tags, side-nav), phone mockup
 system, content/voice rules and honesty locks.
+
+## SEO and structured data
+
+- Every page emits one JSON-LD `@graph` from `src/layouts/Base.astro`, built by
+  `src/lib/schema.ts`. Nodes are linked by stable `@id`s, so the site, its pages,
+  breadcrumbs, articles and the wallet entity form one graph.
+- The operator entity (`DETIO FOUNDATION LTD`) is declared with the same `@id`
+  that det.io uses — `https://det.io/#organization` — so both hosts describe one
+  organisation instead of two lookalikes. Keep that `@id` in sync.
+- The Identity Wallet is a `["SoftwareApplication","WebApplication"]` node
+  (`#wallet`) referenced by `WebSite.about`; wallet pages are *about* it, policy
+  pages are about the foundation.
+- Pages add their own nodes with the `schema` prop: `Article` for `/insights`,
+  `TechArticle` for `/help`, `FAQPage` for `/faq`, and `CollectionPage` +
+  `ItemList` for the `/insights` and `/help` indexes. Never hand-write a
+  `<script type="application/ld+json">` in a page — extend `src/lib/schema.ts`.
+- `modifiedTime` drives `dateModified` and `article:modified_time`; it is set
+  only from the real `updated` field in `src/data/`. Never invent a date.
+- Validate after a build:
+  `pnpm build && node scripts/check-structured-data.mjs` (exit code 1 on any
+  error). It checks JSON validity, required properties per type, `@id`
+  resolution, absolute URLs, headline length, and that FAQ markup is visible.
+- `pnpm audit:seo` reports duplicate/missing/overlong titles and meta
+  descriptions across `dist/` (advisory, always exits 0).
+- `src/lib/meta.ts` shapes `<title>` and the meta description for search display
+  — titles into ~65 characters (dropping a redundant segment or a parenthetical),
+  descriptions into 158 characters at a word boundary. Meta output only: visible
+  headings and ledes keep their authored text.
+- `/rss.xml` is the insights feed, ordered by the real `updated` field and
+  advertised with `<link rel="alternate" type="application/rss+xml">`.
+

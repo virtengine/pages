@@ -1,0 +1,16 @@
+---
+/**
+ * Low-weight nested-V lattices parked in opposite corners of a light section.
+ * Decorative only — never behind small copy at full opacity.
+ */
+import LatticeMark from "./LatticeMark.astro";
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={["surface-wash", className]} aria-hidden="true">
+  <span class="surface-wash-a"><LatticeMark /></span>
+  <span class="surface-wash-b"><LatticeMark /></span>
+</div>

@@ -2,30 +2,23 @@
 import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import { FAQ_FLAT, FAQ_GROUPS } from "@data/faq";
+import { SITE } from "@data/site";
+import { faqPageNode } from "@lib/schema";
 
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "FAQ", href: "/faq" },
 ];
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ_FLAT.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: { "@type": "Answer", text: item.answer },
-  })),
-};
+const faqSchema = faqPageNode(new URL("/faq", SITE.url).href, FAQ_FLAT);
 ---
 
 <Base
   title="Frequently asked questions | identity.org.au"
   description="Answers to common questions about the Identity Wallet: whether it is a government service (no), setup, verification levels, privacy, data deletion, and governance."
   breadcrumbs={crumbs}
+  schema={[faqSchema]}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqLd)} />
-
   <PageHeader
     crumbs={crumbs}
     eyebrow="FAQ"

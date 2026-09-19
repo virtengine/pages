@@ -67,3 +67,37 @@ clause references on the site use the `ClauseRef` component — keep them
 accurate to the signed instrument.
 
 See [DESIGN.md](DESIGN.md) for the design system.
+
+## SEO and structured data
+
+- Every page emits one JSON-LD `@graph` from `src/layouts/Base.astro`, built by
+  `src/lib/schema.ts`. Nodes are linked by stable `@id`s, so the site, its pages,
+  breadcrumbs and articles form one entity graph instead of unrelated blobs.
+- The graph always contains `ImageObject #logo`, `Organization #organization`,
+  `WebSite #website` and a `WebPage` for the page itself, plus a `BreadcrumbList`
+  when the page passes `breadcrumbs`.
+- Pages add their own nodes with the `schema` prop: `Article` for constitution
+  and foundation explainers, `TechArticle` for research topics, `CollectionPage`
+  + `ItemList` for `/constitution`, `/foundation` and `/research` indexes, and
+  `FAQPage` for `/faq`. Never hand-write a `<script type="application/ld+json">`
+  in a page — extend `src/lib/schema.ts` instead.
+- `Article` nodes carry no `datePublished`: the content data has no publication
+  dates and inventing one would be a false claim. Add a real `updated` field to
+  the data first if you want dates in the markup.
+- The organisation entity is `["Organization","NGO"]` with ACN/ABN identifiers
+  and no charity-registration claim, matching what the site states.
+- Validate after a build: `pnpm build && node scripts/check-structured-data.mjs`
+  (exit code 1 on any error). It checks JSON validity, required properties per
+  type, `@id` resolution, absolute URLs, headline length, and that FAQ markup is
+  visible on the page.
+- `pnpm audit:seo` reports duplicate/missing/overlong titles and meta
+  descriptions across `dist/` (advisory, always exits 0).
+- `src/lib/meta.ts` shapes `<title>` and the meta description for search display
+  — titles into ~65 characters by dropping a redundant segment, descriptions into
+  158 characters at a word boundary. It only affects meta output; visible
+  headings and ledes (including the constitution/research `summary` fields) keep
+  their authored text.
+- `/rss.xml` is a feed of the research, constitution and foundation pages. Items
+  carry no `pubDate` because the data has no dates — add an `updated` field to
+  the data before adding dates to the feed or `dateModified` to the markup.
+

@@ -9,7 +9,9 @@
     "build": "node ./scripts/og.mjs && astro build",
     "migrate:blog": "node ./scripts/migrate-legacy-blog.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:schema": "node ./scripts/check-structured-data.mjs dist",
+    "audit:seo": "node ./scripts/audit-seo-meta.mjs ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.0",

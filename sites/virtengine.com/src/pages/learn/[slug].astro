@@ -11,6 +11,7 @@ import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
 import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
 import WaldurBridge from "@components/diagrams/WaldurBridge.astro";
 import { LEARN } from "@data/learn";
+import { SITE } from "@data/site";
 import type { LearnDiagram } from "@data/learn";
 
 export function getStaticPaths() {
@@ -61,14 +62,28 @@ const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
 const diagram = guide.diagram ? diagrams[guide.diagram] : null;
 const otherGuides = LEARN.filter((g) => g.slug !== guide.slug).slice(0, 4);
 
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
+const canonical = new URL(`/learn/${guide.slug}`, SITE.url).href;
+const guideSchema = {
+  "@type": "TechArticle",
+  "@id": `${canonical}#article`,
+  isPartOf: { "@id": `${canonical}#webpage` },
+  mainEntityOfPage: { "@id": `${canonical}#webpage` },
+  url: canonical,
   headline: guide.title,
+  name: guide.title,
   description: guide.metaDescription,
-  author: { "@type": "Organization", name: "VirtEngine" },
-  publisher: { "@type": "Organization", name: "VirtEngine", url: "https://virtengine.com" },
-  mainEntityOfPage: `https://virtengine.com/learn/${guide.slug}`,
+  inLanguage: "en",
+  author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+  publisher: { "@id": `${SITE.url}/#organization` },
+  image: {
+    "@type": "ImageObject",
+    url: new URL("/og.png", SITE.url).href,
+    width: 1200,
+    height: 630,
+  },
+  articleSection: guide.kicker,
+  proficiencyLevel: "Beginner",
+  isAccessibleForFree: true,
 };
 ---
 
@@ -78,8 +93,8 @@ const articleLd = {
   path={`/learn/${guide.slug}`}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[guideSchema]}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(articleLd)} slot="head" />
   <PageHero eyebrow={`Learn · ${guide.kicker}`} title={guide.title} lede={guide.intro} crumbs={crumbs} />
 
   {
