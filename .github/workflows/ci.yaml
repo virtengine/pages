@@ -100,6 +100,30 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^LINKCHECK-OK' linkcheck.log
 
+      - name: Accessibility budget
+        run: |
+          set -o pipefail
+          pnpm run check:a11y | tee a11y.log
+          # Guard against a checker that silently checks nothing.
+          grep -q '^A11Y-OK' a11y.log
+
+  selftest:
+    name: checkers self-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Prove the checkers can fail
+        run: |
+          set -euo pipefail
+          node --test --test-reporter=tap scripts/*.test.mjs | tee selftest.log
+          # A glob that matches no file exits 0 having run nothing — require a real run.
+          grep -qE '^# tests [1-9][0-9]*' selftest.log
+          grep -qE '^# fail 0' selftest.log
+
   static:
     name: static checks
     runs-on: ubuntu-latest
@@ -132,7 +156,7 @@ jobs:
   ci:
     name: ci
     if: always()
-    needs: [discover, build, static, worker]
+    needs: [discover, build, selftest, static, worker]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -142,6 +166,7 @@ jobs:
           for result in \
             "discover=${{ needs.discover.result }}" \
             "build=${{ needs.build.result }}" \
+            "selftest=${{ needs.selftest.result }}" \
             "static=${{ needs.static.result }}" \
             "worker=${{ needs.worker.result }}"
           do
