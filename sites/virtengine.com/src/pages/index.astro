@@ -1,6 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
-import NetworkField from "@components/art/NetworkField.astro";
+import ProtocolEntry from "@components/ProtocolEntry.astro";
 import FieldBackdrop from "@components/art/FieldBackdrop.astro";
 import MarketplaceBids from "@components/art/MarketplaceBids.astro";
 import VeidScopes from "@components/art/VeidScopes.astro";
@@ -13,12 +13,9 @@ import MediaFigure from "@components/media/MediaFigure.astro";
 import PartnerStrip from "@components/PartnerStrip.astro";
 import { CURRENT_POSTS } from "@data/blog";
 import { SITE } from "@data/site";
-import { hits, idleCopy, stageCopy } from "@data/network";
 
 const journalLead = CURRENT_POSTS[0];
 const journalSide = CURRENT_POSTS.slice(1, 3);
-
-const variants = hits.map((h) => ({ id: h.id, href: h.href, ...stageCopy[h.id] }));
 
 const kinds = [
   { slug: "provider-datacenter" as const, label: "GPU compute", note: "Dense accelerators offered into the market." },
@@ -95,62 +92,7 @@ const surfaces = [
   title="VirtEngine — The open infrastructure network"
   description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
 >
-  <section class="home-hero">
-    <FieldBackdrop />
-    <div class="container-site home-hero-grid">
-      <div class="home-hero-copy">
-        <p class="status-pill">
-          <i class="rail-lamp" aria-hidden="true"></i>
-          Protocol in development · Public TestNet planned
-        </p>
-        <div class="hero-swap">
-          <div class="hero-variant hero-variant--idle">
-            <h1>{idleCopy.title}</h1>
-            <p class="home-hero-kicker">{idleCopy.tag}</p>
-            <p class="home-hero-lede">{idleCopy.lede}</p>
-          </div>
-          {variants.map((v) => (
-            <div class={`hero-variant hero-variant--${v.id}`}>
-              <h1>{v.title}</h1>
-              <p class="home-hero-kicker">{v.tag}</p>
-              <p class="home-hero-lede">{v.lede}</p>
-            </div>
-          ))}
-        </div>
-        <div class="action-row">
-          <a class="btn-solid" href="/protocol">
-            Explore the protocol
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path>
-            </svg>
-          </a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.github}>
-            View source <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-        <ol class="hero-stages" aria-label="Protocol stages">
-          <li class="hero-stages-note">
-            <span>Protocol stages</span>
-            <span>Hover to preview · any opens</span>
-          </li>
-          {hits.map((h, i) => (
-            <li class="hero-stage">
-              <a class="hs-chip" data-for={h.id} href={h.href}>
-                <span class="hs-num">{String(i + 1).padStart(2, "0")}</span>
-                <span class="hs-label">{stageCopy[h.id].chip}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-        <p class="home-hero-steward">
-          Stewarded in the public benefit by DETIO FOUNDATION LTD.
-        </p>
-      </div>
-      <div class="home-hero-visual">
-        <NetworkField />
-      </div>
-    </div>
-  </section>
+  <ProtocolEntry />
 
   <nav class="cred-rail" aria-label="Project facts">
     <div class="container-site">
