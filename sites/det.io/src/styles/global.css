@@ -33,14 +33,10 @@
   --color-navy: #233040; /* the cloud under-shadow */
   --color-amber-deep: #8a5c12;
 
-  /* field-edition accents (Amendment A) — stamps, tickets, signal type.
-     Federal blue is display/large-scale only; body links stay blue-deep. */
-  --color-federal: #2235c4;
-  --color-federal-deep: #17238c;
-  --color-signal: #d9481f;
-  --color-signal-deep: #a32e10;
-  --color-gold: #b98a1d;
-  --color-stamp: #c63f1a;
+  /* field-edition accents (Amendment A, pastel revision) — everything stays
+     inside the pastel brand family: sky, blue-deep/mid, steel, sage. No
+     primary brights; emphasis comes from ink linework, not saturated fills. */
+  --color-mist: #eef4f6; /* pale blue-grey plate tint for figure bands */
 
   /* night band (footer, closing sections) — deep navy, from the shadow tone */
   --color-night: #16202b;

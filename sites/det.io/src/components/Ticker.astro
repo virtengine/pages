@@ -7,15 +7,15 @@
  */
 interface Props {
   items: string[];
-  variant?: "federal" | "signal";
+  variant?: "sand" | "sky";
   label?: string;
 }
 
-const { items, variant = "federal", label = "Foundation record" } = Astro.props;
+const { items, variant = "sand", label = "Foundation record" } = Astro.props;
 const loop = [...items, ...items];
 ---
 <div
-  class:list={["ticker", variant === "signal" && "ticker--signal"]}
+  class:list={["ticker", variant === "sky" && "ticker--sky"]}
   role="marquee"
   aria-label={label}
 >

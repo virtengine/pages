@@ -264,16 +264,18 @@ unchanged. What changes is *surface and rhythm*, fusing two references:
 
 ### A.1 New tokens (`global.css` `@theme`)
 
+Pastel revision: the first cut introduced primary brights (federal blue,
+signal red) that clashed with the pastel brand family. They are removed.
+The only addition is one pastel plate tint:
+
 | Token | Hex | Role |
 | --- | --- | --- |
-| `--color-federal` | `#2235c4` | Signal display blue (headings accents, tags, buttons). Display/large-scale; body links stay `blue-deep`. |
-| `--color-signal` | `#d9481f` | Rubber-stamp red (stamps, underlines, ticker variant). |
-| `--color-gold` | `#b98a1d` | Tertiary terminal-dot accent. |
-| `--color-stamp` | `#c63f1a` | Stamp ink (AA-large only on paper). |
+| `--color-mist` | `#eef4f6` | Pale blue-grey figure-plate band behind program diagrams. |
 
 Paper tokens warmed to archival stock: `paper #f5f0e2`, `surface #fdfbf3`,
 `vellum #ece4cf`, `sage #e0d6bc`, hairlines `#d8cdb2 / #a89a76`, ink
-`#1d1a13`. Sky `#5DBADB` remains graphic-only on light.
+`#1d1a13`. Sky `#5DBADB` remains graphic-only on light. All accents stay
+inside sky / blue-deep `#1a6f97` / blue-mid / steel `#4c7094` / sage.
 
 ### A.2 New patterns (`styles/retro.css`, `components/Ticker.astro`)
 
@@ -282,23 +284,31 @@ Paper tokens warmed to archival stock: `paper #f5f0e2`, `surface #fdfbf3`,
 - **Hero**: uppercase Space Grotesk 700 with an outlined ghost word, federal
   kicker chip with hard shadow, rubber-stamp badge, ticket-stub plate
   (perforation + foot link), ghost numeral backdrop, film grain.
-- **Ticker ribbon**: federal/signal marquee (`ticker-scroll` 28s, pause on
-  hover, `prefers-reduced-motion` collapses, screen-reader text preserved).
-- **Field numerals**: Hermes-style giant outlined `01/02/03` column heads.
-- **Program files**: Mozilla-style kicker-tag cards (area tag + status mono
-  + plain-language body + arrow link) with hard-shadow lift on hover.
-- **Terminal band**: night strip with `git clone` commands for the two real
-  repositories only — no invented install commands or statistics.
-- **Stub tickets**: participation cards as perforated tickets with
-  colour-coded headers.
-- **Footer colophon**: giant outlined `DET·IO` wordmark + record line.
-- Hard-shadow buttons (`.btn-hard`) with press-down active state; all motion
-  guarded by `prefers-reduced-motion`.
+- **Ticker ribbon**: pastel marquee in sand (sage) and sky (sky-wash)
+  variants (`ticker-scroll` 28s, pause on hover, `prefers-reduced-motion`
+  collapses, screen-reader text preserved).
+- **Field numerals**: Hermes-style giant outlined `01/02/03` column heads,
+  outlined in blue-deep.
+- **Program files**: stacked cards — full-width pastel figure plate on top
+  (mist band, 300 px desktop), file body below with area tag + status mono
+  + plain-language body + arrow link; hard-shadow lift on hover.
+- **Figure plates**: each program diagram carries a hairline grid, a soft
+  sky glow, a steel `FIG 0n` caption, and blue-deep corner ticks; flow
+  strokes render bolder on the plate via a scoped rule. Pastel fills only.
+- **Field-kit band**: light vellum panel; the terminal itself stays a small
+  navy sticker card (functional, not a colour field). `git clone` commands
+  for the two real repositories only — no invented install commands.
+- **Stub tickets**: headers in blue-deep / steel / sage — no brights.
+- **Governance certificate**: light panel (was a night band) to keep large
+  surfaces pastel; the footer night band is unchanged.
+- Hard-shadow buttons (`.btn-hard`, blue-deep) with press-down active
+  state; all motion guarded by `prefers-reduced-motion`.
+- Width discipline: grid/flex children get `min-width: 0`, hero display
+  type steps down at ≤760 px, `body { overflow-x: clip }` (sticky-safe).
 
 ### A.3 Constraints carried forward
 
 No new webfonts (Space Grotesk / Inter / JetBrains Mono only). No invented
 claims, statistics, newsletters, or install commands. Contrast (verified):
-federal `#2235c4` on paper ≈ 7.8:1 (AAA); ink on paper ≈ 15.3:1;
-`blue-deep` on surface ≈ 5.4:1 (AA). Signal red (≈ 3.8:1) never carries
-small body text — stamps, numerals, and display accents only.
+ink on paper ≈ 15.3:1; `blue-deep` on surface ≈ 5.4:1 (AA); steel
+`#4c7094` on paper ≈ 4.9:1 (AA). Sky `#5DBADB` never carries small text.

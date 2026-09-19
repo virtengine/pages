@@ -11,7 +11,25 @@
     <marker id="pba" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="var(--color-blue-mid)"></path>
     </marker>
+    <pattern id="pba-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+      <path d="M26 0H0V26" fill="none" stroke="var(--color-hairline-strong)" stroke-width="1" opacity="0.55"></path>
+    </pattern>
+    <radialGradient id="pba-glow" cx="50%" cy="46%" r="65%">
+      <stop offset="0%" stop-color="#5DBADB" stop-opacity="0.3"></stop>
+      <stop offset="100%" stop-color="#5DBADB" stop-opacity="0"></stop>
+    </radialGradient>
   </defs>
+
+  <!-- pastel plate dressing -->
+  <rect x="0" y="0" width="420" height="180" fill="url(#pba-grid)"></rect>
+  <rect x="0" y="0" width="420" height="180" fill="url(#pba-glow)"></rect>
+  <text x="18" y="25" font-family="var(--font-mono)" font-size="10.5" letter-spacing="2" fill="var(--color-steel)">FIG 03 · TASK FLOW</text>
+  <g stroke="var(--color-blue-deep)" stroke-width="2.2" opacity="0.8">
+    <path d="M8 22 V8 H22"></path>
+    <path d="M398 8 H412 V22"></path>
+    <path d="M8 158 V172 H22"></path>
+    <path d="M398 172 H412 V158"></path>
+  </g>
 
   <!-- task board -->
   <g>

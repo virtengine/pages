@@ -98,11 +98,11 @@ const waysIn = [
         return (
           <article class="f-file">
             <div class="f-file-visual" aria-hidden="true">
-              <p class="f-index">0{i + 1} / Program file</p>
               <Art />
             </div>
             <div class="f-file-body">
-              <span class="f-tag">{p.area}</span><span class="f-status">{p.status}</span>
+              <p class="f-index">0{i + 1} / Program file</p>
+              <p style="margin-top:0.7rem"><span class="f-tag">{p.area}</span><span class="f-status">{p.status}</span></p>
               <h3><a href={p.href}>{p.name}<span aria-hidden="true">↗</span></a></h3>
               <p>{p.body}</p>
               <p style="margin-top:1rem"><a class="f-link" href={p.href}>Explore the program →</a></p>
@@ -186,7 +186,7 @@ const waysIn = [
 
   <div style="margin-top:clamp(3rem,6vw,4.5rem)">
     <Ticker
-      variant="signal"
+      variant="sky"
       items={["DETIO Foundation Ltd", "ACN 699 651 771", "Not-for-profit", "Technology for public benefit"]}
       label="Foundation identity"
     />
