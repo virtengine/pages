@@ -1,0 +1,131 @@
+---
+title: Acquisition Pathways
+description: The two ways to acquire capacity on VirtEngine, the supply options providers have, and the fulfilment backends behind every listing — explained end to end.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+VirtEngine is easiest to understand as two independent questions:
+
+1. **How does demand meet supply?** (the *commercial path*)
+2. **Where does the work actually run?** (the *fulfilment backend*)
+
+They are separate. Bidding is not a backend, and Kubernetes is not a way to
+buy. This page lays out both axes and how they combine.
+
+## Two ways to acquire
+
+Every listing on VirtEngine can be acquired in one of two styles. Both styles
+resolve to the same on-chain objects — an **order**, a **lease**, and a
+**capacity reservation** — so billing, escrow, and disputes behave identically.
+
+### 1. Browse and buy (direct)
+
+The catalogue shows every **public listing**, whether it was published natively
+on-chain or mirrored from a connected Waldur instance. You pick a listing and
+buy it at its published price. Resolution is immediate.
+
+Use this when you already know what you want and price is fixed and
+transparent.
+
+### 2. Open an order and let providers compete (bidding)
+
+You publish what you need — category, regions, minimum specs, and a maximum
+price — without naming a provider. Providers respond with priced **bids**, and
+the protocol's deterministic resolution engine selects the best eligible offer
+when the bidding window closes.
+
+Use this when you want the market to find you the best combination of price
+and provider reputation.
+
+<Aside type="note">
+A listing is a **standing ask** and a bid is a **standing bid**. The resolution
+engine ranks both with the same rule, so "browse and buy" and "open an order"
+are two views of one book.
+</Aside>
+
+## How providers supply capacity
+
+Providers can participate through any of these, and the resolver treats them
+all as supply:
+
+| Supply option | What it is | Best for |
+| --- | --- | --- |
+| **Native listing** | A price and capacity published directly in the protocol catalogue | Fixed-price services you want always-visible |
+| **Waldur listing** | An offering published in a Waldur instance and mirrored on-chain as a `source=waldur` listing | Multi-cloud, VM, storage, and custom services |
+| **Positional bid** | A priced quote against a specific open order | Winning contested, custom, or time-sensitive demand |
+| **HPC offering** | A priced queue or plan on a registered cluster | Batch and GPU compute (SLURM/MOAB/Open OnDemand) |
+
+Offerings can declare whether they accept direct purchase, bidding, or both;
+providers that only publish fixed prices still appear as standing asks.
+
+## The resolution engine
+
+When an order can be resolved, the engine:
+
+1. collects every eligible **listing** (standing ask) and every open **bid**
+   (standing bid) that matches the order and is within its price cap;
+2. ranks them deterministically — **price**, then capacity fit, then provider
+   reputation, then source and sequence; and
+3. reserves capacity and forms a lease for the winner(s).
+
+Direct orders resolve in the same block. Bidding orders resolve when their
+matching deadline closes. Orders can be resolved across multiple providers when
+partial fills are enabled, otherwise they are all-or-nothing. Ties always break
+the same way on every node, so the result is reproducible and auditable.
+
+Participation on both sides is [VEID](/veid/overview/) identity-gated, and
+offerings carry their own identity and MFA requirements.
+
+## Fulfilment backends
+
+Once a lease exists, the provider daemon turns it into running capacity on
+whatever backend the provider operates:
+
+| Backend | Typical listing |
+| --- | --- |
+| **Kubernetes** | Containers and applications |
+| **OpenStack / VMware / AWS / Azure** | Virtual machines, volumes, networking |
+| **SLURM / MOAB / Open OnDemand** | HPC jobs and batch workloads |
+
+Kubernetes and HPC schedulers are execution targets, not separate marketplaces.
+A single catalogue can route the same purchase flow to any of them.
+
+## Where Waldur fits
+
+Waldur is the richest marketplace, provider-integration, metering, and
+administration surface available to the network, so VirtEngine uses it where it
+is strongest — without letting a non-deterministic service into consensus.
+
+| Concern | Owner |
+| --- | --- |
+| Catalogue, orders, bids, leases, capacity reservations, escrow | **The chain** (deterministic) |
+| Offering discovery, provider onboarding, service accounting, admin UI | **Waldur** (off-chain) |
+| VM/cloud/HPC provisioning execution | **Provider daemon** (off-chain) |
+| Metering reconciliation | Provider daemon vs. Waldur |
+
+Waldur listings enter the chain as **signed snapshots** verified against a
+registered Waldur key, so every validator sees the same catalogue. When a
+Waldur-backed listing is purchased, the chain emits a durable command that an
+off-chain adapter executes in Waldur. The chain remains the source of truth for
+commercial state; Waldur remains the operational and administrative plane.
+
+In short: **the marketplace semantics run on validators as protocol code; the
+Waldur service runs at the edge.** See [Waldur Integration](/cloud-platform/waldur/)
+for the integration detail.
+
+## Pathway matrix
+
+| Commercial path | Fulfilment backend | Notes |
+| --- | --- | --- |
+| Browse & buy | Kubernetes, VM, or HPC | Immediate resolution against a published listing |
+| Open an order | Kubernetes, VM, or HPC | Providers compete; engine resolves at the deadline |
+| HPC job | SLURM / MOAB / OOD | Direct job submission against an HPC offering |
+
+## Related reading
+
+- [Marketplace & Bidding](/concepts/marketplace/) — orders, bids, and leases.
+- [How the Marketplace Works](/protocol/how-it-works/) — the end-to-end lifecycle.
+- [Pricing & Bidding Strategy](/providers/pricing-bidding/) — supplying capacity.
+- [Choosing Providers](/tenants/choosing-providers/) — buying capacity.
+- [Waldur Integration](/cloud-platform/waldur/) — the off-chain marketplace plane.

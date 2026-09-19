@@ -64,6 +64,7 @@ export default defineConfig({
           label: 'Core Concepts',
           items: [
             { label: 'Marketplace & Bidding', slug: 'concepts/marketplace' },
+            { label: 'Acquisition Pathways', slug: 'concepts/acquisition-pathways' },
             { label: 'Escrow & Settlement', slug: 'concepts/escrow-settlement' },
             { label: 'Usage Reporting', slug: 'concepts/usage-reporting' },
             { label: 'Tokenomics', slug: 'concepts/tokenomics' },
