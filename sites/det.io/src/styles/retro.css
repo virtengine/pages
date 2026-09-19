@@ -21,7 +21,12 @@ body {
 .f-sec-head > *,
 .f-terminal-grid > *,
 .f-gov > *,
-.f-closing > * {
+.f-closing > *,
+.charter-grid > * {
+  min-width: 0;
+}
+.charter-grid ol,
+.charter-grid li {
   min-width: 0;
 }
 
@@ -129,15 +134,14 @@ body {
 .f-ghost {
   position: absolute;
   z-index: 0;
-  right: -0.5rem;
-  bottom: -2.2rem;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(9rem, 26vw, 22rem);
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--color-hairline-strong);
-  opacity: 0.5;
+  right: 0;
+  bottom: -1.1rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
   user-select: none;
   pointer-events: none;
 }
@@ -535,6 +539,105 @@ body {
   color: var(--color-blue-deep);
 }
 
+/* ---------- charter band: four purposes, quiet proof layer ---------- */
+.charter-band {
+  margin-top: clamp(3.5rem, 7vw, 5.5rem);
+  border-block: 2px solid var(--color-ink);
+  background: var(--color-surface);
+}
+.charter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding-block: clamp(2rem, 4vw, 3rem);
+  align-items: start;
+}
+.charter-grid h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  margin: 0.7rem 0 0.8rem;
+  text-wrap: balance;
+}
+.charter-grid > div > p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+  max-width: 26rem;
+}
+.clause-chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-blue-deep);
+  background: var(--color-vellum);
+  border: 1px solid var(--color-ink);
+  border-radius: 3px;
+  padding: 0.15rem 0.45rem;
+  white-space: nowrap;
+}
+.charter-grid ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border-top: 1.5px solid var(--color-ink);
+}
+.charter-grid li a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.95rem 0.2rem;
+  border-bottom: 1px solid var(--color-hairline);
+  text-decoration: none;
+  transition: background-color 120ms ease, padding-left 120ms ease;
+}
+.charter-grid li a:hover {
+  background: var(--color-vellum);
+  padding-left: 0.6rem;
+}
+.charter-grid li strong {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.charter-grid li a > span:last-child {
+  margin-left: auto;
+  color: var(--color-blue-mid);
+}
+
+/* stub contents (ethereum-model path contents) */
+.f-stub-starts {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed var(--color-hairline-strong);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  line-height: 1.8;
+}
+
+/* :has() moment — hovering a program's links lights its figure */
+.f-file-visual svg {
+  transition: transform 300ms ease;
+}
+.f-file:hover .f-file-visual svg,
+.f-file:focus-within .f-file-visual svg {
+  transform: scale(1.025);
+}
+@media (prefers-reduced-motion: reduce) {
+  .f-file-visual svg {
+    transition: none;
+  }
+}
+
 /* ---------- field-kit band (light panel, dark terminal sticker) ---------- */
 .f-terminal-band {
   margin-top: clamp(3.5rem, 7vw, 5.5rem);
@@ -805,6 +908,103 @@ body {
   font-size: 1rem;
 }
 
+/* ================================================================
+   FIELD QUIET — the interior-pages sibling of the homepage voice.
+   Same paper, ink, type, and kickers; hairlines instead of shadows.
+   Offset shadows appear ONLY on primary buttons and figure plates.
+   ================================================================ */
+
+/* quiet section head (Section.astro): hairline rule, sentence-case h2 */
+.q-sec-head {
+  display: grid;
+  gap: 0.9rem;
+  padding-top: 1.6rem;
+  border-top: 2px solid var(--color-ink);
+}
+.q-sec-head h2 {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin-top: 0.7rem;
+  text-wrap: balance;
+}
+
+/* quiet hero (PageHero.astro): paper, lattice, chip kicker, ink title */
+.q-hero {
+  position: relative;
+  overflow: clip;
+  border-bottom: 1px solid var(--color-hairline-strong);
+  background: var(--color-paper);
+}
+.f-kicker--sm {
+  font-size: 0.62rem;
+  padding: 0.35rem 0.65rem;
+  box-shadow: 2px 2px 0 var(--color-ink);
+}
+.q-hero-title {
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+.q-hero-motif {
+  position: absolute;
+  right: clamp(1rem, 6vw, 5rem);
+  top: 50%;
+  transform: translateY(-50%) rotate(3deg);
+  opacity: 0.9;
+  pointer-events: none;
+}
+@media (max-width: 900px) {
+  .q-hero-motif {
+    display: none;
+  }
+}
+
+/* quiet figure frame (DiagramFrame.astro) */
+.frame-quiet {
+  background:
+    radial-gradient(70% 90% at 50% 20%, rgba(93, 186, 219, 0.16) 0%, transparent 60%),
+    var(--color-surface);
+  border: 1.5px solid var(--color-hairline-strong);
+  border-radius: 8px;
+}
+.frame-quiet:hover {
+  border-color: var(--color-ink);
+}
+
+/* small hard button (card-level CTAs) */
+.btn-hard--sm {
+  padding: 0.55rem 0.9rem;
+  font-size: 0.82rem;
+  box-shadow: 3px 3px 0 var(--color-ink);
+}
+.btn-hard--sm:hover {
+  box-shadow: 5px 5px 0 var(--color-ink);
+}
+.btn-hard--sm:active {
+  box-shadow: 1px 1px 0 var(--color-ink);
+}
+
+/* quiet program card (ProgramCard.astro): flat, lifts on hover */
+.card-quiet {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-hairline-strong);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+.card-quiet:hover {
+  border-color: var(--color-ink);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--color-ink);
+}
+.card-quiet-art {
+  background:
+    radial-gradient(70% 90% at 50% 30%, rgba(93, 186, 219, 0.2) 0%, transparent 65%),
+    var(--color-mist);
+  border-bottom: 1.5px solid var(--color-hairline-strong);
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
   .f-hero-grid {
@@ -832,8 +1032,8 @@ body {
     overflow-wrap: break-word;
   }
   .f-ghost {
-    font-size: 10rem;
-    bottom: -1.4rem;
+    font-size: 0.62rem;
+    bottom: -0.9rem;
   }
   .f-columns {
     grid-template-columns: 1fr;

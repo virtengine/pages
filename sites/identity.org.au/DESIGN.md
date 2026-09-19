@@ -19,7 +19,8 @@ deep trust-blue as its single action colour.
 2. [Colour tokens + contrast table](#colour-tokens)
 3. [Typography](#typography)
 4. [Spacing, grid, measure](#spacing-grid-measure)
-5. [Component inventory](#component-inventory)
+5. [Layout and editorial system](#layout-and-editorial-system)
+6. [Component inventory](#component-inventory)
 6. [Phone mockup system](#phone-mockup-system)
 7. [Content and voice rules](#content-and-voice-rules)
 8. [Motion](#motion)
@@ -133,14 +134,43 @@ eyebrows.
 - Radius: `--radius-tile 0.375rem` (cards, buttons, alerts) — small radii only,
   nothing pill-shaped except phone-screen chips
 
-## Component inventory
+## 5. Layout and editorial system
+
+The rehaul keeps government-service restraint while giving journeys an editorial
+register: stronger section rhythm, captioned light figures, machine-readable
+status facts, and one accessible demonstration pattern.
+
+- `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
+  standfirst) and predictable vertical rhythm.
+- `ServiceHero.astro`: unified service hero with breadcrumbs, status tag,
+  actions, supporting note, and an optional framed media slot.
+- `FactStrip.astro`: a compact list of checkable facts; every item is text unless
+  it has a destination, and destinations are links.
+- `ServiceFigure.astro`: light alternative to ad-hoc `<figure>` wrappers, with a
+  rail, responsive body, caption, and optional horizontal-scroll preservation for
+  wide diagrams.
+- `TableScroll.astro`: keyboard-focusable scroll region for tables that cannot be
+  simplified; paired with sticky first columns and a minimum table width.
+- `ShareDemo.astro`: a simplified zero-JS consent/proof/receipt demonstration.
+  One radio control set drives the illustrated phone and panel; boundary
+  accounting is explicit; the phone is decorative and panels carry meaning.
+- Headings follow page context: `Steps.astro` accepts `headingLevel={2|3}` so a
+  step list directly under an `h1` does not create an `h1 → h3` skip.
+
+## 6. Component inventory
 
 | Component | File | Pattern |
 | --- | --- | --- |
-| Provenance banner | `Header.astro` (bottom strip) | Site-wide "not a government service" notice, steel shield icon, tint surface |
-| Notice/alert | `Alert.astro` | Left rule + tinted surface + drawn SVG icon; `info` / `warning` / `success` |
+| Provenance banner | `Footer.astro` (pre-footer strip) | Site-wide "not a government service" notice, steel shield icon, tint surface |
+| Service section | `Section.astro` | Ruled editorial section header and vertical rhythm; optional `index · eyebrow`, headline, standfirst |
+| Feature hero | `ServiceHero.astro` | Breadcrumbs, status tag, eyebrow, headline, standfirst, actions, supporting note, optional framed media |
+| Fact strip | `FactStrip.astro` | Compact machine-readable status facts; plain text unless a destination exists |
+| Service figure | `ServiceFigure.astro` | Light rail/caption frame for diagrams and phone mockups; optional scroll preservation for wide SVG diagrams |
+| Sharing demo | `ShareDemo.astro` | Simplified zero-JS request → proof → receipt walkthrough with boundary accounting |
+| Scrollable table | `TableScroll.astro` | Keyboard-focusable region with sticky first column for tables that cannot be simplified; wide variant for four or more columns |
+| Notice/alert | `Alert.astro` | Left rule + tinted surface + drawn SVG icon; `info` / `warning` / `success`, with live-region semantics |
 | Callout | `Callout.astro` | Neutral navy left-rule panel for asides and definitions |
-| Steps | `Steps.astro` | Gov numbered-steps: navy discs joined by a vertical rule, optional detail bullets |
+| Steps | `Steps.astro` | Gov numbered-steps: navy discs joined by a vertical rule, optional detail bullets, screen-reader step position, contextual `headingLevel` |
 | Card link | `CardLink.astro` | Chevron-affordance card list with optional tag + description |
 | Status tag | `StatusTag.astro` | Uppercase bordered tag: `neutral` / `info` / `success` / `warning` |
 | Breadcrumbs | `Breadcrumbs.astro` | On every interior page; BreadcrumbList JSON-LD emitted by `Base.astro` |
@@ -155,25 +185,25 @@ eyebrows.
 | Browser mockup | `components/phone/WebPortalFrame.astro` | Desktop-browser frame of the my.identity.org.au portal (credential, proofs, consents, session security) |
 | Phone mockups | `components/phone/*` | See below |
 
-## Phone mockup system
+## 7. Phone mockup system
 
 Refined SVG phone frames replace abstract hero art. `Phone.astro` draws the
-device (viewBox 0 0 320 660; screen area x 16–304, y 42–644) and slots screen
-content; `ScreenChrome.astro` adds the navy app bar (with the mark) and 5-step
-progress dots. Screens are accurate to the reference capture app
-(`mobile/veid-capture-app`):
+device (viewBox 0 0 328 670, device body at 4,4–316,656; usable screen area x
+16–304, y 42–644) and slots screen content; `ScreenChrome.astro` adds the navy
+app bar (with the mark) and 5-step progress dots. Screens are accurate to the
+reference capture app (`mobile/veid-capture-app`):
 
 | Screen | Shows | Used on |
 | --- | --- | --- |
-| `DocScanScreen` | Guided document capture: corner brackets, edge/glare checks, on-device processing note | set-up-your-wallet |
-| `LivenessScreen` | Active liveness: blink ✓ / head-turn in progress / smile next | set-up-your-wallet |
-| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | home hero |
-| `ConsentScreen` | Sharing request: requester, "they will see" / "they will never see", expiry, approve/decline | how-it-works |
-| `ZkShareScreen` | Zero-knowledge share: locked fields stay, one proof leaves | home, how-it-works |
+| `DocScanScreen` | Guided document capture: corner brackets, edge/glare checks, on-device processing note | set-up-your-wallet, mobile-wallet |
+| `LivenessScreen` | Active liveness: blink ✓ / head-turn in progress / smile next | set-up-your-wallet, mobile-wallet |
+| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | home hero, wallet overview |
+| `ZkShareScreen` | Zero-knowledge share: locked fields stay, one proof leaves | home, credentials |
+| `WebPortalFrame` | Browser portal: credential, proofs, consents, session security | wallet overview, web wallet |
 
 Every phone SVG has `role="img"` and a full-sentence `aria-label`.
 
-## Content and voice rules
+## 8. Content and voice rules
 
 - **Plain English first.** Every technical concept gets a plain sentence before
   any term of art; jargon is defined on first use ("a zero-knowledge proof — a
@@ -210,15 +240,17 @@ invention creeps in:
   major argument; a related-articles rail; cross-links into `/wallet`,
   `/help` and `/get-started`.
 
-## Motion
+## 9. Motion
 
 Near zero. The only scripted behaviour on the site is the mobile menu toggle;
-FAQ accordions are native `<details>`. Transitions are 140–160ms colour/border
-eases on hover. There are no scroll animations, no parallax, no animated SVG.
+FAQ accordions are native `<details>`, and the sharing demonstration uses CSS-only
+radio state. Transitions are 140–160ms colour/border eases on hover; the demo's
+flow line is the only looping keyframe animation. There are no scroll animations,
+no parallax, no animated SVG beyond these restrained diagram cues.
 `prefers-reduced-motion: reduce` collapses all remaining transition durations
-to 0.01ms globally.
+to 0.01ms globally and disables looping demonstration/diagram motion.
 
-## Honesty locks
+## 10. Honesty locks
 
 Enforced in components so they cannot drift page-by-page:
 
@@ -227,4 +259,6 @@ Enforced in components so they cannot drift page-by-page:
 3. First FAQ question answers it explicitly (FAQPage JSON-LD included).
 4. No accreditation claims anywhere — "aligns with the principles of" is the
    ceiling. No app-store links, no user counts, no invented partners.
+5. Illustrated interactions are labelled as demonstrations, and sharing controls
+   never imply that data is transmitted by the marketing site.
 5. Schema.org uses `Organization` + `Service` — never `GovernmentService`.

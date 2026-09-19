@@ -4,12 +4,35 @@
  * economics figures come from docs/tokenomics-analysis.md and
  * docs/usage-reporting-settlement.md. No invented statistics.
  */
+import type { MediaSlug } from "@data/media";
+import type { LearnDiagram } from "@data/learn";
 
 export interface SolutionSection {
   heading: string;
   paragraphs: string[];
   /** Optional bullet list rendered after the paragraphs. */
   bullets?: string[];
+}
+
+/** One at-a-glance fact card rendered under the hero. */
+export interface SolutionHighlight {
+  kicker: string;
+  title: string;
+  body: string;
+}
+
+/** One step of the interactive "how it works" stepper. */
+export interface SolutionFlowStep {
+  label: string;
+  title: string;
+  body: string;
+}
+
+/** One page-level FAQ entry. */
+export interface SolutionFaq {
+  question: string;
+  answer: string;
+  links?: { label: string; href: string }[];
 }
 
 export interface SolutionEntry {
@@ -26,6 +49,18 @@ export interface SolutionEntry {
   economics: SolutionSection;
   gettingStarted: { step: string; detail: string }[];
   related: { label: string; href: string }[];
+  /** Brand photography for the hero. */
+  media: MediaSlug;
+  mediaCaption: string;
+  /** Three at-a-glance facts rendered under the hero. */
+  highlights: SolutionHighlight[];
+  /** Interactive stepper: how this audience moves through the protocol. */
+  flow: SolutionFlowStep[];
+  /** Page-level FAQ rendered as an accordion. */
+  faqs: SolutionFaq[];
+  /** Optional site diagram rendered mid-page. */
+  diagram?: LearnDiagram;
+  diagramCaption?: string;
 }
 
 export const SOLUTIONS: SolutionEntry[] = [
@@ -84,6 +119,79 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "x/benchmark module", href: "/modules/benchmark" },
       { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
     ],
+    media: "hero-infrastructure",
+    mediaCaption: "Accelerator racks, listed as measured offers.",
+    highlights: [
+      {
+        kicker: "Payout",
+        title: "Hourly settlement from escrow",
+        body: "Usage meters hourly and releases from funded escrow after the 24-hour dispute window — no invoicing, no receivables, 0% marketplace commission.",
+      },
+      {
+        kicker: "Discovery",
+        title: "Benchmark-backed offers",
+        body: "Published hardware benchmarks let tenants compare your capacity on measured performance instead of spec sheets.",
+      },
+      {
+        kicker: "Trust",
+        title: "Verified tenants, funded leases",
+        body: "Every counterparty is VEID-verified and every lease is backed by escrow you can verify on-chain before serving a single hour.",
+      },
+    ],
+    flow: [
+      {
+        label: "Verify",
+        title: "Complete VEID verification",
+        body: "Marketplace participation is identity-gated in both directions. Operator verification is the entry requirement for providing capacity.",
+      },
+      {
+        label: "Register",
+        title: "Register with GPU attributes",
+        body: "Create your provider record on-chain with accelerator classes, region, and certifications — the attributes tenant orders filter on.",
+      },
+      {
+        label: "Benchmark",
+        title: "Publish measured performance",
+        body: "Measured GPU performance data makes your offers stand out to tenants filtering on capability rather than marketing claims.",
+      },
+      {
+        label: "Bid",
+        title: "Deploy the daemon and bid",
+        body: "Point the provider daemon at your Kubernetes cluster, connect your chain key, and set pricing rules. It watches open orders and bids per your strategy.",
+      },
+      {
+        label: "Settle",
+        title: "Serve, meter, get paid",
+        body: "Won leases instantiate on your cluster; usage meters hourly as signed records and settles from escrow after the dispute window.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How is GPU usage metered?",
+        answer:
+          "The provider daemon meters usage per workload on an hourly cadence and submits it on-chain as signed records. Records clear a 24-hour dispute window before escrow releases payment, and anomaly detection flags outliers before submission.",
+      },
+      {
+        question: "Who sets the price for my capacity?",
+        answer:
+          "You do. The daemon bids per your configured pricing strategy against open tenant orders, and benchmark data supports premium pricing for premium hardware. The protocol takes 0% marketplace commission at payout.",
+        links: [{ label: "Provider economics explained", href: "/learn/provider-economics" }],
+      },
+      {
+        question: "What happens if a tenant doesn't pay?",
+        answer:
+          "They can't start without paying first: every lease is backed by escrow funded before the workload starts. Settlement draws provider payouts from that escrow, so payment risk is settled before you commit capacity.",
+        links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
+      },
+      {
+        question: "Do I need to rebuild my infrastructure stack?",
+        answer:
+          "No. The provider daemon translates on-chain leases into workloads on your existing Kubernetes infrastructure. You operate hardware; the protocol operates the exchange.",
+        links: [{ label: "Provider overview", href: "/providers" }],
+      },
+    ],
+    diagram: "lifecycle",
+    diagramCaption: "From order to payout: the five stages every GPU lease passes through.",
   },
   {
     slug: "datacenter-operators",
@@ -140,6 +248,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
       { label: "Provider economics explained", href: "/learn/provider-economics" },
     ],
+    media: "provider-datacenter",
+    mediaCaption: "Headroom on the floor, listed on the market.",
+    highlights: [
+      {
+        kicker: "Operations",
+        title: "Your stack stays yours",
+        body: "The provider daemon translates on-chain leases into workloads on your existing Kubernetes infrastructure — the marketplace interface is software you run.",
+      },
+      {
+        kicker: "Discovery",
+        title: "Attributes and audits do the selling",
+        body: "Auditor-signed attributes turn your claims into attestations, and on-chain reviews build a track record that belongs to you permanently.",
+      },
+      {
+        kicker: "Payout",
+        title: "Escrow before capacity",
+        body: "Every lease is backed by escrow funded before the workload starts. Usage settles hourly with a 24-hour dispute window; marketplace commission is 0%.",
+      },
+    ],
+    flow: [
+      {
+        label: "Verify",
+        title: "Verify with VEID",
+        body: "Operator identity verification is the entry requirement for providing. Counterparties on the other side are verified too.",
+      },
+      {
+        label: "Register",
+        title: "Register your provider record",
+        body: "Declare region, hardware, and certification attributes on-chain — the filters tenants use to find capacity like yours.",
+      },
+      {
+        label: "Attest",
+        title: "Engage an auditor",
+        body: "Auditor-signed attributes command trust from tenants filtering on attested claims, and convert self-claims into verifiable attestations.",
+      },
+      {
+        label: "Connect",
+        title: "Deploy the provider daemon",
+        body: "Connect it to Kubernetes, configure capacity and pricing, and go live. It bids on matching orders automatically.",
+      },
+      {
+        label: "Compound",
+        title: "Serve and compound reputation",
+        body: "Served leases accrue reviews and standing that win better-priced leases over time — reputation that no platform can hold hostage.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What do tenants actually see about my infrastructure?",
+        answer:
+          "Only what your provider record declares: region, tier, certifications, and hardware classes — plus auditor-signed attestations and your on-chain review history. Your internal topology stays internal.",
+        links: [{ label: "x/audit module", href: "/modules/audit" }],
+      },
+      {
+        question: "What does the provider daemon need from us?",
+        answer:
+          "A Kubernetes cluster to schedule into, a chain key for bidding and usage submission, and pricing rules. It watches open orders, bids, instantiates won leases, meters usage per workload, and reports signed records back to the chain.",
+      },
+      {
+        question: "How do reviews and reputation work?",
+        answer:
+          "Every completed lease can carry a review between the real counterparties, recorded on-chain (x/review). Because participation is VEID identity-gated, manufacturing reputation is costly — standing compounds honestly.",
+      },
+      {
+        question: "What if a tenant misbehaves on our hardware?",
+        answer:
+          "Tenants are VEID-verified and accountable, with fraud reporting and enforcement behind the marketplace if conduct goes wrong. Lease closure — voluntary, for non-payment, or through enforcement — flows through the same auditable state machine.",
+        links: [{ label: "How the marketplace works", href: "/learn/how-the-marketplace-works" }],
+      },
+    ],
+    diagram: "lifecycle",
+    diagramCaption: "Every lease, from open order to settled payout.",
   },
   {
     slug: "hpc-clusters",
@@ -202,6 +382,77 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "Provider overview", href: "/providers" },
       { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
     ],
+    media: "hpc-supercomputer",
+    mediaCaption: "Batch capacity, priced per job on the exchange.",
+    highlights: [
+      {
+        kicker: "Integration",
+        title: "No re-platforming the cluster",
+        body: "Native adapters for SLURM, MOAB, and Open OnDemand — your scheduler, partitions, and auth stay exactly as they are.",
+      },
+      {
+        kicker: "Model",
+        title: "A job marketplace, not a container shim",
+        body: "On-chain HPC jobs carry resource, walltime, and partition requirements — batch work expressed natively, priced through the same exchange.",
+      },
+      {
+        kicker: "Payout",
+        title: "Standard settlement rails",
+        body: "HPC usage flows into the usual pipeline: signed records, 24-hour dispute window, escrow release. Finance sees settled payments, not a new billing system.",
+      },
+    ],
+    flow: [
+      {
+        label: "Review",
+        title: "Review the HPC provider docs",
+        body: "The HPC provider operations documentation covers the full operational model — adapters, auth, concurrency, and recovery.",
+      },
+      {
+        label: "Register",
+        title: "Register as a provider",
+        body: "Declare HPC attributes on-chain: scheduler type, partitions, and hardware.",
+      },
+      {
+        label: "Connect",
+        title: "Configure the scheduler adapter",
+        body: "Connect the daemon's adapter to your controller with munge or JWT auth, per-partition configuration, concurrency limits, and timeouts.",
+      },
+      {
+        label: "Expose",
+        title: "Expose partitions",
+        body: "Choose which partitions and job classes the marketplace may schedule into — primary allocations stay untouched.",
+      },
+      {
+        label: "Settle",
+        title: "Serve jobs and settle",
+        body: "On-chain jobs dispatch through your scheduler with crash-safe recovery; usage settles from tenant escrow.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Which schedulers are supported?",
+        answer:
+          "SLURM with munge or JWT authentication and per-partition configuration, plus MOAB and Open OnDemand adapters for existing deployments. A job lifecycle service handles polling, dispatch, tracking, and recovery, with a dedicated audit log for job and security events.",
+        links: [{ label: "HPC on VirtEngine explained", href: "/learn/hpc-on-virtengine" }],
+      },
+      {
+        question: "How are HPC jobs priced?",
+        answer:
+          "Facilities set their own pricing per partition and job class, offered through the same exchange economics as the rest of the marketplace. Jobs are paid from tenant escrow like any lease, with no protocol commission deducted at settlement.",
+      },
+      {
+        question: "Will marketplace jobs disturb our primary allocations?",
+        answer:
+          "Only the partitions and job classes you expose are schedulable from the market. Allocation commitments to primary users stay under your scheduler's control; the marketplace sees spare cycles, nothing more.",
+      },
+      {
+        question: "What audit trail does a job leave?",
+        answer:
+          "Two layers: the daemon's dedicated audit log for job events, security events, and usage, plus the on-chain record — job, usage batches, and settlement — validated by consensus and queryable by your finance and compliance teams.",
+      },
+    ],
+    diagram: "architecture",
+    diagramCaption: "Where the cluster plugs in: the daemon between chain and scheduler.",
   },
   {
     slug: "validators",
@@ -257,6 +508,79 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "Network status & genesis", href: "/network" },
       { label: "What is VEID?", href: "/learn/what-is-veid" },
     ],
+    media: "network-earth",
+    mediaCaption: "Consensus and identity scoring under one bonded stake.",
+    highlights: [
+      {
+        kicker: "Mandate",
+        title: "Consensus plus the VEID Network",
+        body: "The same bonded set that orders blocks also decrypts identity scopes, scores them with shared ML models, and commits trust scores by consensus.",
+      },
+      {
+        kicker: "Moat",
+        title: "Patented identity consensus",
+        body: "The validator identity-scoring method is covered by granted Australian patent AU2024203136B2, in force until 12 May 2044.",
+      },
+      {
+        kicker: "Voice",
+        title: "Governance is operational duty",
+        body: "Validators vote on parameters, upgrades, and the approved-client list controlling which interfaces may submit identity data.",
+      },
+    ],
+    flow: [
+      {
+        label: "Study",
+        title: "Study the launch posture",
+        body: "TestNet is planned for January 2027 and MainNet for March 2027 after TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating.",
+      },
+      {
+        label: "Provision",
+        title: "Provision secure infrastructure",
+        body: "High-uptime hosts plus hardened key management for both consensus keys and VEID encryption keys.",
+      },
+      {
+        label: "Size",
+        title: "Plan for identity-network duties",
+        body: "ML scoring of encrypted scopes runs alongside consensus — size compute and operations accordingly.",
+      },
+      {
+        label: "Bond",
+        title: "Bond stake and attract delegation",
+        body: "Self-bond, publish your operational record, and earn delegations. Bonded stake weights voting power.",
+      },
+      {
+        label: "Govern",
+        title: "Participate in governance",
+        body: "Vote on upgrades and configuration from day one — governance participation is part of the mandate.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What exactly are the validator's duties?",
+        answer:
+          "Three: propose and validate blocks under CometBFT; operate the VEID Network by decrypting sealed identity scopes, running the shared scoring models, and committing trust scores by consensus; and vote on governance — parameters, upgrades, and chain configuration.",
+        links: [{ label: "What is VEID?", href: "/learn/what-is-veid" }],
+      },
+      {
+        question: "How are validators paid for identity work?",
+        answer:
+          "Compensation is governed by the conservative staking and issuance policy — validator income remains governance-controlled and conservative relative to the prior model. No fixed VEID pool or fixed return is promised.",
+      },
+      {
+        question: "What can get a validator slashed?",
+        answer:
+          "Double-signing and extended downtime are slashable, and slashing applies to delegated stake too — which is why delegators should choose on operational quality. Unbonding and slashing conditions are protocol parameters, not fixed-return promises.",
+        links: [{ label: "Understanding slashing", href: "/learn/understanding-slashing" }],
+      },
+      {
+        question: "When can validators start?",
+        answer:
+          "TestNet is planned for January 2027, followed by MainNet in March 2027 subject to testing and separate approval. Confirm the official launch decision before operating — the network page tracks the current posture.",
+        links: [{ label: "Network status & genesis", href: "/network" }],
+      },
+    ],
+    diagram: "staking",
+    diagramCaption: "One bonded set, three duties: consensus, identity, governance.",
   },
   {
     slug: "staking-partners",
@@ -311,6 +635,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
       { label: "Understanding slashing", href: "/learn/understanding-slashing" },
     ],
+    media: "staking-security",
+    mediaCaption: "Bonded stake, with the conditions in writing.",
+    highlights: [
+      {
+        kicker: "Lifecycle",
+        title: "Delegate to unbond, all on-chain",
+        body: "Delegation, redelegation, unbonding, and reward collection are protocol state in x/delegation — standard chain messaging your product integrates once.",
+      },
+      {
+        kicker: "Custody",
+        title: "Weight, not custody",
+        body: "Delegation grants validators voting weight, never custody. Client funds remain in client control — which simplifies the story for regulated partners.",
+      },
+      {
+        kicker: "Candor",
+        title: "Risk parameters are chain state",
+        body: "Slashing exposure and the 21-day unbonding period are quotable from the source. Represent them plainly; the protocol supports the duty of candor.",
+      },
+    ],
+    flow: [
+      {
+        label: "Model",
+        title: "Decide the operating model",
+        body: "Run validators, aggregate delegations to third-party validators, or both — the delegation lifecycle supports each shape.",
+      },
+      {
+        label: "Integrate",
+        title: "Integrate x/delegation",
+        body: "Delegate, redelegate, unbond, and claim through standard chain messages. No bespoke custody plumbing required.",
+      },
+      {
+        label: "Disclose",
+        title: "Build risk disclosure in",
+        body: "Surface slashing and the 21-day unbonding period explicitly in the client experience — during unbonding, stake earns nothing and remains slashable for prior offenses.",
+      },
+      {
+        label: "Select",
+        title: "Select validators on quality",
+        body: "Uptime and standing, not just commission, drive client outcomes. On-chain performance records make quality verifiable.",
+      },
+      {
+        label: "Serve",
+        title: "Earn on aggregated stake",
+        body: "Partner revenue is validator commission and/or service fees on aggregated delegations, with reward composition worth explaining to clients.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What do staking partners earn?",
+        answer:
+          "Validator commission and/or service fees on aggregated delegations. Validator selection is the product: operational quality determines both reward capture and slashing exposure.",
+        links: [{ label: "Tokenomics explained", href: "/learn/tokenomics-explained" }],
+      },
+      {
+        question: "How does unbonding work for clients?",
+        answer:
+          "Unbonding takes 21 days, during which stake earns nothing and remains slashable for prior offenses. Build this into product copy and timelines — it is chain state, not policy fine print.",
+      },
+      {
+        question: "What drives delegator rewards?",
+        answer:
+          "Rewards derive from governance-controlled validator incentives, net of commission. The proposed staking allocation is roughly 90% lower than the prior model, and no fixed APR is promised — represent that plainly.",
+      },
+      {
+        question: "Do client funds move to the partner?",
+        answer:
+          "No. Delegation grants voting weight, not custody — funds remain in client control on-chain. That separation is what makes the custodial story workable for regulated partners.",
+        links: [{ label: "x/delegation module", href: "/modules/delegation" }],
+      },
+    ],
+    diagram: "staking",
+    diagramCaption: "Delegated stake flows to validators; rewards flow back minus commission.",
   },
   {
     slug: "token-holders",
@@ -365,6 +761,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "x/bme module", href: "/modules/bme" },
       { label: "Governance guide", href: "/learn/governance-guide" },
     ],
+    media: "settlement-ledger",
+    mediaCaption: "Every payout written from escrow — minus nothing.",
+    highlights: [
+      {
+        kicker: "Utility",
+        title: "A working asset, not a voucher",
+        body: "The token prices compute, funds escrow, bonds validators, weights governance votes, and burns against marketplace demand.",
+      },
+      {
+        kicker: "Custody",
+        title: "Delegate without giving up custody",
+        body: "Bonded tokens remain yours while earning a share of validator rewards — and spreading stake across smaller validators strengthens decentralization.",
+      },
+      {
+        kicker: "Supply",
+        title: "Supply that responds to usage",
+        body: "Issuance policy is chain state, changeable only by governance, with burn-and-mint mechanics linking supply to real marketplace demand.",
+      },
+    ],
+    flow: [
+      {
+        label: "Learn",
+        title: "Understand the economics",
+        body: "Read the tokenomics explainer before bonding anything — issuance, burn-and-mint, and reward composition are all documented there.",
+      },
+      {
+        label: "Research",
+        title: "Research validators",
+        body: "Uptime history, self-bond, commission, and governance participation all matter. Delegated stake is slashable for your validator's misbehavior.",
+      },
+      {
+        label: "Delegate",
+        title: "Delegate",
+        body: "Bond stake via x/delegation from any supported wallet or interface. You earn a share of block, VEID, and uptime rewards net of commission.",
+      },
+      {
+        label: "Vote",
+        title: "Vote",
+        body: "Bonded stake votes on parameter changes, upgrades, the approved-client list, fee parameters, and issuance policy.",
+      },
+      {
+        label: "Watch",
+        title: "Monitor and redelegate",
+        body: "Performance is on-chain and verifiable. Redelegate if your validator's operational quality slips — your stake, your call.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What does holding the token actually let me do?",
+        answer:
+          "Pay for compute, fund lease escrow, bond to validators for rewards, vote in governance, and hold an asset whose supply burns against marketplace demand. Passive holding alone secures nothing — delegation is the participation step.",
+        links: [{ label: "Tokenomics explained", href: "/learn/tokenomics-explained" }],
+      },
+      {
+        question: "Can I lose staked tokens to slashing?",
+        answer:
+          "Yes. Delegated stake is slashable for your validator's misbehavior — double-signing or extended downtime. Choose validators on operational quality, and treat any staking-service marketing that omits this as a red flag.",
+        links: [{ label: "Understanding slashing", href: "/learn/understanding-slashing" }],
+      },
+      {
+        question: "How long does unbonding take?",
+        answer:
+          "Twenty-one days, during which stake earns nothing and remains slashable for prior offenses. Plan exits around that window.",
+      },
+      {
+        question: "Is there a fixed APR?",
+        answer:
+          "No. Rewards vary with the dynamic inflation mechanism and governance-controlled parameters. Anything marketed as guaranteed yield on this token is misrepresenting the protocol.",
+      },
+    ],
+    diagram: "settlement",
+    diagramCaption: "Usage becomes payout: meter, dispute window, escrow release.",
   },
   {
     slug: "web3-developers",
@@ -419,6 +887,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
       { label: "Protocol architecture", href: "/protocol" },
     ],
+    media: "open-source-screen",
+    mediaCaption: "A typed module surface, open source from day one.",
+    highlights: [
+      {
+        kicker: "Surface",
+        title: "Twenty-seven typed modules",
+        body: "Query orders and bids, inspect provider records, track settlement and escrow, resolve VEID registry state — all over standard Cosmos SDK gRPC and REST.",
+      },
+      {
+        kicker: "Client",
+        title: "One binary, node and client",
+        body: "Create deployments, manage mTLS certificates, fund escrow, and query lease state from the CLI or programmatically.",
+      },
+      {
+        kicker: "Identity",
+        title: "A governed path for identity apps",
+        body: "Identity-data submission runs through the x/config approved-client list — study the VEID capture reference app to walk it.",
+      },
+    ],
+    flow: [
+      {
+        label: "Clone",
+        title: "Clone the repo",
+        body: "github.com/virtengine/virtengine — Go 1.25.5, `make virtengine` builds the binary. Apache 2.0 throughout.",
+      },
+      {
+        label: "Read",
+        title: "Read the module docs",
+        body: "The module reference on this site plus protocol docs at docs.virtengine.com cover every message and query surface.",
+      },
+      {
+        label: "Run",
+        title: "Run a local environment",
+        body: "The development-environment guide walks through local chain setup so you can exercise the full lifecycle offline.",
+      },
+      {
+        label: "Build",
+        title: "Build against gRPC/REST",
+        body: "Standard Cosmos SDK client patterns apply across all modules — wallets, dashboards, marketplaces, analytics.",
+      },
+      {
+        label: "Ship",
+        title: "Ship without permission",
+        body: "Deployment tooling, provider dashboards, staking interfaces, and analytics require no approval. Only identity-data submission needs approved-client governance.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What stack is VirtEngine built on?",
+        answer:
+          "A CometBFT/Cosmos SDK chain written in Go, partly derived from the Akash Network codebase. If you have built on any Cosmos SDK chain, the client patterns — gRPC, REST, CLI — transfer directly.",
+        links: [{ label: "Open source project", href: "/open-source" }],
+      },
+      {
+        question: "Do I need permission to build?",
+        answer:
+          "No — except for one path. Deployment tooling, dashboards, staking interfaces, and analytics need no approval. Submitting VEID identity data requires going through approved-client governance in x/config, since validators only score submissions from approved clients.",
+      },
+      {
+        question: "Where is the module surface documented?",
+        answer:
+          "Start with the module reference on this site for what each module does and how they connect, then docs.virtengine.com for message-level and API documentation.",
+        links: [{ label: "Module reference", href: "/modules" }],
+      },
+      {
+        question: "Is there a reference app for identity clients?",
+        answer:
+          "Yes — the VEID capture reference app in mobile/veid-capture-app/ shows the full on-device flow: capture, liveness, attestation, and encrypted scope submission. It is the fastest way to understand the approved-client path end to end.",
+      },
+    ],
+    diagram: "architecture",
+    diagramCaption: "The module surface developers build against.",
   },
   {
     slug: "enterprises-confidential-compute",
@@ -473,6 +1013,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "x/encryption module", href: "/modules/encryption" },
       { label: "What is VEID?", href: "/learn/what-is-veid" },
     ],
+    media: "identity-portrait",
+    mediaCaption: "Prove compliance. Reveal nothing else.",
+    highlights: [
+      {
+        kicker: "Proof",
+        title: "Attestation as marketplace state",
+        body: "Hardware-signed evidence of the exact measured code running in a TEE, verified through x/enclave — orders can require it as a placement constraint.",
+      },
+      {
+        kicker: "Secrecy",
+        title: "Secrets sealed to verified targets",
+        body: "Workload secrets stay encrypted until attestation verifies, and client-to-provider links authenticate mutually via chain-anchored TLS certificates.",
+      },
+      {
+        kicker: "Assurance",
+        title: "Counterparties you can underwrite",
+        body: "VEID-verified providers with audited attributes, benchmarks, and on-chain reviews — plus fraud enforcement with a rule-bound consequence path.",
+      },
+    ],
+    flow: [
+      {
+        label: "Define",
+        title: "Define the trust requirements",
+        body: "Decide which workloads need attested enclaves and which measurements you will accept — the policy your placement constraints will encode.",
+      },
+      {
+        label: "Constrain",
+        title: "Constrain orders to attested capacity",
+        body: "Require enclave attributes and auditor-signed claims in placement constraints so unverified capacity can never match your orders.",
+      },
+      {
+        label: "Verify",
+        title: "Verify the attestation flow",
+        body: "Confirm measurement verification and encrypted secret delivery end to end before production data moves.",
+      },
+      {
+        label: "Contain",
+        title: "Start with a contained workload",
+        body: "Prove the model on a bounded dataset, then scale scope. Escrow-backed leases and hourly settlement give finance a clean, auditable cost trail throughout.",
+      },
+      {
+        label: "Scale",
+        title: "Scale under the same guarantees",
+        body: "Every additional workload inherits the same verification: attested execution, sealed secrets, verified counterparties, disputable usage.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What actually proves the enclave is genuine?",
+        answer:
+          "Hardware-signed attestation evidence — measurements of the exact code and configuration running inside the TEE — verified through x/enclave. Because attestation is marketplace state, orders can demand it as a placement constraint rather than taking a vendor's word.",
+        links: [{ label: "x/enclave module", href: "/modules/enclave" }],
+      },
+      {
+        question: "Who can read our workload secrets?",
+        answer:
+          "Only verified targets. The encryption module releases workload secrets encrypted to specific recipients after attestation verifies, and mTLS between your clients and provider endpoints uses chain-anchored certificates from x/cert.",
+        links: [{ label: "x/encryption module", href: "/modules/encryption" }],
+      },
+      {
+        question: "What does the compliance trail look like?",
+        answer:
+          "On-chain attestations, auditor-signed provider attributes, published benchmarks, lease-bound reviews, and signed hourly usage records — every claim your auditors need is protocol state, queryable and timestamped.",
+      },
+      {
+        question: "Does confidential capacity cost a vendor-style premium?",
+        answer:
+          "Its premium is set by open bidding, not an enterprise price list: attested enclave capability is a provider attribute, so supply and demand price it like everything else on the market.",
+      },
+    ],
+    diagram: "veid",
+    diagramCaption: "Prove the answer, keep the data: the verification pipeline behind every lease.",
   },
   {
     slug: "ai-ml-workloads",
@@ -527,6 +1139,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "Confidential computing", href: "/learn/confidential-computing-on-virtengine" },
       { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
     ],
+    media: "marketplace-hardware",
+    mediaCaption: "Training and inference over the same open interconnect.",
+    highlights: [
+      {
+        kicker: "Leverage",
+        title: "Demand-side market power",
+        body: "Post an order; provider daemons bid against it. Competition happens per order, continuously — not per contract cycle.",
+      },
+      {
+        kicker: "Verification",
+        title: "Hardware you can check",
+        body: "Benchmark records let you verify measured accelerator performance before accepting a bid — never trust the SKU alone.",
+      },
+      {
+        kicker: "Scale",
+        title: "A real HPC path for large runs",
+        body: "On-chain jobs with walltime and partition requirements execute on SLURM-class clusters — supercomputing-grade interconnects included.",
+      },
+    ],
+    flow: [
+      {
+        label: "Describe",
+        title: "Describe the workload",
+        body: "Resources, accelerator classes, region, and attribute constraints go into a deployment spec — training or inference alike.",
+      },
+      {
+        label: "Require",
+        title: "Set placement requirements",
+        body: "Benchmarked hardware, audited attributes, or attested enclaves for proprietary weights and sensitive training data.",
+      },
+      {
+        label: "Fund",
+        title: "Fund escrow and post the order",
+        body: "Bids arrive from matching providers; you choose the winner. Escrow you control backs the lease.",
+      },
+      {
+        label: "Run",
+        title: "Run and monitor",
+        body: "Metered usage records and settlement state are queryable chain data. Idle budget returns when the deployment closes.",
+      },
+      {
+        label: "Protect",
+        title: "Protect the model itself",
+        body: "Require attested enclave execution and encrypted secret delivery for proprietary work. Counterparty risk stays bounded by VEID verification and on-chain reputation.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Does this fit training runs, inference, or both?",
+        answer:
+          "Both. Interactive and inference workloads ride standard leases; large training runs fit the HPC path — on-chain jobs with walltime and partition requirements on SLURM-class clusters through native adapters.",
+        links: [{ label: "HPC on VirtEngine", href: "/learn/hpc-on-virtengine" }],
+      },
+      {
+        question: "How do we verify the GPUs behind a bid?",
+        answer:
+          "Through published benchmark records (x/benchmark): measured performance data attached to the provider's on-chain identity, so you accept bids on evidence rather than SKU names.",
+      },
+      {
+        question: "How are models and training data protected?",
+        answer:
+          "Require attested enclave execution (x/enclave) and encrypted secret delivery (x/encryption), transact only with VEID-verified providers carrying audited attributes, and lean on lease-bound reviews for ongoing assurance.",
+      },
+      {
+        question: "How is spend controlled?",
+        answer:
+          "You fund escrow; providers draw against it only as metered usage settles — hourly records, 24-hour dispute window, anomaly detection before submission. Unspent budget returns to you. Cost control is structural, not a billing alert.",
+        links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
+      },
+    ],
+    diagram: "lifecycle",
+    diagramCaption: "From workload spec to settled GPU-hours.",
   },
   {
     slug: "cost-optimized-cloud",
@@ -581,6 +1265,78 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "x/market module", href: "/modules/market" },
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
     ],
+    media: "closing-hands",
+    mediaCaption: "Auction-set pricing instead of list pricing.",
+    highlights: [
+      {
+        kicker: "Pricing",
+        title: "Per-order price competition",
+        body: "Each deployment group becomes an order providers bid against. Price discovery happens at the granularity of your actual workload, continuously.",
+      },
+      {
+        kicker: "Audit",
+        title: "Spending auditable to the hour",
+        body: "Hourly usage records, a 24-hour dispute window, anomaly detection before submission — every line item traces to a signed record against a lease.",
+      },
+      {
+        kicker: "Quality",
+        title: "Price against verified quality",
+        body: "Benchmarks, auditor-signed attributes, and lease-bound reviews let you trade price against measured quality deliberately.",
+      },
+    ],
+    flow: [
+      {
+        label: "Port",
+        title: "Start with a portable workload",
+        body: "Containerized services with declarative specs port cleanly into deployment groups — the unit the market bids on.",
+      },
+      {
+        label: "Compare",
+        title: "Post an order and compare bids",
+        body: "Filter on attributes and benchmarks; accept on price-per-verified-quality rather than brand or habit.",
+      },
+      {
+        label: "Fund",
+        title: "Fund escrow incrementally",
+        body: "Deposit for the horizon you can forecast and top up as usage settles. Unspent budget returns when the deployment closes.",
+      },
+      {
+        label: "Verify",
+        title: "Audit as you spend",
+        body: "Every settled hour traces to a signed usage record. Dispute anything anomalous inside the 24-hour window.",
+      },
+      {
+        label: "Rebid",
+        title: "Rebid periodically",
+        body: "Re-run price discovery as the provider side of the market deepens. Switching providers is a redeployment, not a migration project.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Where do the savings actually come from?",
+        answer:
+          "Three structural sources: continuous per-order competition instead of list prices, 0% protocol commission at settlement, and no egress-fee ambush or commitment tiers. FinOps tooling optimizes within the menu; this changes the menu.",
+      },
+      {
+        question: "How is cloud spend controlled here?",
+        answer:
+          "Escrow you fund, hourly metered records, a 24-hour dispute window with anomaly detection, and unspent budget returned on close. The agreed bid price is released only for verified usage.",
+        links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
+      },
+      {
+        question: "How do we compare bids fairly?",
+        answer:
+          "On price-per-verified-quality: published benchmarks for measured performance, auditor-signed attributes for claimed certifications, and lease-bound reviews for lived experience. Cheap capacity from an unknown operator is only a bargain if you can verify it.",
+      },
+      {
+        question: "What does switching providers cost?",
+        answer:
+          "A redeployment, not a migration. Workload descriptions are portable chain state, so moving between providers means posting a new order — no egress ransom, no re-platforming.",
+        links: [{ label: "How the marketplace works", href: "/learn/how-the-marketplace-works" }],
+      },
+    ],
+    diagram: "settlement",
+    diagramCaption: "Every line item traces to a signed record against a lease.",
   },
 ];
 

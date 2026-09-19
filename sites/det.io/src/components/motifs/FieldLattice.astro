@@ -1,0 +1,51 @@
+---
+/**
+ * FieldLattice — a small decorative node-field tile: peripheral nodes
+ * converging on a center seal point. For section dividers and empty states.
+ */
+interface Props {
+  width?: number;
+}
+
+const { width = 280 } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 280 120"
+  width={width}
+  height={width * (120 / 280)}
+  fill="none"
+  aria-hidden="true"
+  class="field-lattice"
+>
+  <g stroke="var(--color-hairline-strong)" stroke-width="1" opacity="0.8">
+    <path d="M10 20 L70 10 L140 24 L210 10 L270 22"></path>
+    <path d="M10 100 L70 110 L140 96 L210 110 L270 98"></path>
+    <path d="M70 10 L70 110 M210 10 L210 110"></path>
+  </g>
+  <g stroke="var(--color-blue-mid)" stroke-width="1.4" class="flow-dash">
+    <path d="M10 20 Q70 50 128 62"></path>
+    <path d="M270 22 Q210 50 152 62"></path>
+    <path d="M10 100 Q70 80 128 72"></path>
+    <path d="M270 98 Q210 80 152 72"></path>
+  </g>
+  <g fill="var(--color-sky)">
+    <circle cx="10" cy="20" r="3.4" class="node-pulse"></circle>
+    <circle cx="270" cy="22" r="3.4" class="node-pulse" style="animation-delay: -0.9s"></circle>
+    <circle cx="10" cy="100" r="3.4" class="node-pulse" style="animation-delay: -1.8s"></circle>
+    <circle cx="270" cy="98" r="3.4" class="node-pulse" style="animation-delay: -2.7s"></circle>
+    <circle cx="70" cy="10" r="2.6"></circle>
+    <circle cx="210" cy="10" r="2.6"></circle>
+    <circle cx="70" cy="110" r="2.6"></circle>
+    <circle cx="210" cy="110" r="2.6"></circle>
+  </g>
+  <circle cx="140" cy="67" r="17" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="1.8"></circle>
+  <path d="M140 56 L149 61 L149 73 L140 78 L131 73 L131 61 Z" stroke="var(--color-blue-deep)" stroke-width="1.6" fill="none"></path>
+  <circle cx="140" cy="67" r="2" fill="var(--color-blue-deep)"></circle>
+</svg>
+
+<style>
+  .field-lattice {
+    flex-shrink: 0;
+  }
+</style>

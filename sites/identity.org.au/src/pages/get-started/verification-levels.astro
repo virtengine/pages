@@ -36,7 +36,7 @@ const crumbs = [
         <section class="border border-hairline rounded-tile bg-paper">
           <div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-alt px-6 py-4">
             <h2 class="m-0 text-[1.3rem]">
-              <span class="text-muted font-semibold mr-2" aria-hidden="true">{i}.</span>
+              <span class="text-muted font-semibold mr-2" aria-hidden="true">{tier.level}.</span>
               {tier.name}
             </h2>
             {tier.name === "Standard" && <StatusTag tone="info">Most services ask for this</StatusTag>}

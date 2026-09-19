@@ -312,3 +312,49 @@ No new webfonts (Space Grotesk / Inter / JetBrains Mono only). No invented
 claims, statistics, newsletters, or install commands. Contrast (verified):
 ink on paper ≈ 15.3:1; `blue-deep` on surface ≈ 5.4:1 (AA); steel
 `#4c7094` on paper ≈ 4.9:1 (AA). Sky `#5DBADB` never carries small text.
+
+### A.4 Second edition: restraint, Field Quiet, proof layer (2026-09)
+
+A review round concluded the first edition shouted everywhere: five competing
+numbering systems, uppercase at every level, shadows on static panels, and a
+ticket metaphor ("Admit one") with no meaning. Corrections, all normative:
+
+- **Numbering**: two systems only — `File 0n` section indices and `FIG 0n`
+  figure captions (plus bignums inside the File 01 columns, one level each).
+  Ghost numerals shrink to a colophon whisper; "Admit one" is removed.
+- **Case discipline**: uppercase is display voice (H1/H2/bands only).
+  Card and column titles are sentence-case bold.
+- **Shadow discipline** (the Gumroad rule): offset shadows appear ONLY on
+  interactive elements — buttons, link-cards, stickers. Static panels
+  (columns, certificate, closing) are flat with ink borders.
+- **Verbs**: every homepage CTA carries a distinct plain verb (Study / Read
+  / Inspect / Explore / Start / Browse) — repeated "Explore the program →"
+  is banned.
+- **Field Quiet** (`retro.css`, applied via shared components so all 38
+  interior pages inherit it): same paper/ink/type/kickers; hairlines, not
+  shadows. `Section` → `q-sec-head` (sentence-case H2); `PageHero` → `q-hero`
+  with chip kicker, ink title, and a decorative `FieldSeal` motif;
+  `DiagramFrame` → `frame-quiet`; `CTA` → `btn-hard--sm` / `f-link`;
+  `ProgramCard` → `card-quiet` (flat, lifts on hover);
+  `ClauseRef` → ink-bordered chip; `Breadcrumbs` → uppercase letterspaced
+  mono; `foundation-button` / `path-tabs` / `editorial-status` restyled in
+  `editorial.css` to match.
+- **Proof layer**: the charter band renders the four real clause-6.1 purposes
+  from `site.ts PURPOSES` (no invented statistics anywhere); participation
+  stubs carry path contents (ethereum model); program cards use a zero-JS
+  `:has()` figure-zoom on hover/focus (virtengine.com interaction language).
+- **Motifs** (`components/motifs/`): `FieldSeal`, `FieldLock`, `FieldLattice`
+  — the reusable pastel object library (ethereum.org model) for interior
+  heroes and dividers. New diagrams should compose motifs before inventing
+  geometry.
+
+### A.5 Site relationship: det.io vs virtengine.com
+
+det.io is the **foundation** (archival paper, Field/Quiet, evidence
+register, constitution citations). virtengine.com is the **protocol product**
+(engineering paper, instrument plates, green accent, `:has()` previews).
+Shared: Space Grotesk / Inter / JetBrains Mono stack, zero-JS motion
+discipline, `prefers-reduced-motion` guards, ACN/patent evidence chips.
+Distinct: paper tint, accent hue, shadow language, hero architecture. Neither
+site may borrow the other's accent or plate system; cross-links live in the
+det.io footer Ecosystem nav and the virtengine.org stewardship references.

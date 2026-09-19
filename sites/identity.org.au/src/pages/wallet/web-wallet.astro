@@ -1,6 +1,7 @@
 ---
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import StatusTag from "@components/StatusTag.astro";
 import Steps from "@components/Steps.astro";
 import WebPortalFrame from "@components/phone/WebPortalFrame.astro";
@@ -52,7 +53,7 @@ const signInSteps = [
   </div>
 
   <div class="mt-8 flex flex-wrap gap-4">
-    <a href={SITE.walletPortal} rel="noopener" class="btn-primary">
+    <a href={SITE.walletPortal} class="btn-primary">
       Join the launch list
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -61,7 +62,14 @@ const signInSteps = [
   </div>
 
   <div class="mt-10">
-    <WebPortalFrame />
+    <ServiceFigure
+      rail="Browser portal"
+      railRight="Illustrated"
+      scroll
+      caption="The portal shows results and receipts — your level, proofs, consent history and sessions — not document images or biometric templates."
+    >
+      <WebPortalFrame />
+    </ServiceFigure>
   </div>
 
   <div class="prose-service mt-10">

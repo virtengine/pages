@@ -1,0 +1,16 @@
+---
+/**
+ * Keyboard-accessible horizontal scroll region for wide service tables. Use
+ * only when a table cannot be simplified without losing meaning.
+ */
+interface Props {
+  label: string;
+  class?: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<div class:list={["table-scroll", className]} role="region" aria-label={label} tabindex="0">
+  <slot />
+</div>

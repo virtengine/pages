@@ -1,10 +1,13 @@
 ---
 import Base from "@layouts/Base.astro";
-import PageHeader from "@components/PageHeader.astro";
+import FactStrip from "@components/FactStrip.astro";
+import Section from "@components/Section.astro";
+import ServiceHero from "@components/ServiceHero.astro";
 import Steps from "@components/Steps.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
 import CardLink from "@components/CardLink.astro";
+import TableScroll from "@components/TableScroll.astro";
 import { SITE } from "@data/site";
 import { TIERS } from "@data/tiers";
 
@@ -42,17 +45,40 @@ const integrationSteps = [
   description="Integrate verification levels into your service: what verifiers receive (a level and a result — never documents), the integration steps, and the consent rules you must respect."
   breadcrumbs={crumbs}
 >
-  <PageHeader
+  <ServiceHero
     crumbs={crumbs}
     eyebrow="For services"
     title="Verify your users without holding their documents"
     lede="Every identity document you store is liability: breach risk, compliance burden, and user distrust. Verification through the wallet gives you the assurance without the archive."
+    statusTone="info"
+    statusLabel="Reference infrastructure"
+  >
+    <div slot="actions">
+      <a href="/for-services/become-a-verifier" class="btn-primary">Become a verifier</a>
+      <a href="/for-services/integration-overview" class="btn-secondary">Integration overview</a>
+    </div>
+    <p class="mt-6 mb-0 text-[0.95rem] text-muted measure-narrow">
+      Talk to the foundation before building production dependencies. Engineering detail is in the
+      <a href={SITE.docs} rel="noopener" class="link-plain">protocol documentation</a>.
+    </p>
+  </ServiceHero>
+
+  <FactStrip
+    label="Verifier facts"
+    facts={[
+      { label: "Receive", value: "Tier plus a pass/fail result" },
+      { label: "Never receive", value: "Documents or biometrics" },
+      { label: "Consent", value: "Scoped, expiring, revocable", href: "/help/revoking-consent" },
+    ]}
   />
 
-  <div class="container-site py-12">
-    <section>
-      <h2 class="mt-0 text-[1.6rem]">Start here</h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-2">
+  <div class="container-site">
+    <Section
+      index="01"
+      eyebrow="Start here"
+      title="Two paths into verification"
+    >
+      <div class="grid gap-4 md:grid-cols-2">
         <CardLink
           href="/for-services/become-a-verifier"
           tag="Step by step"
@@ -66,11 +92,14 @@ const integrationSteps = [
           description="Request and response concepts, zero-knowledge presentation verification, consent records — the architecture before the API reference."
         />
       </div>
-    </section>
+    </Section>
 
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">What verifiers receive</h2>
-      <div class="mt-6 overflow-x-auto">
+    <Section
+      index="02"
+      eyebrow="What verifiers receive"
+      title="Assurance without the archive"
+    >
+      <TableScroll label="What services receive and never receive" class="mt-6">
         <table class="table-gov">
           <caption class="sr-only">What services receive and never receive from a verification</caption>
           <thead>
@@ -98,7 +127,7 @@ const integrationSteps = [
             </tr>
           </tbody>
         </table>
-      </div>
+      </TableScroll>
       <Callout title="Why this is good for you, not just users" class="mt-6 max-w-[72ch]">
         <p>
           Holding no documents means there are no documents to breach, no honeypot to defend, and
@@ -106,10 +135,13 @@ const integrationSteps = [
           none of the archive risk.
         </p>
       </Callout>
-    </section>
+    </Section>
 
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">Integration, step by step</h2>
+    <Section
+      index="03"
+      eyebrow="Integration, step by step"
+      title="Five integration decisions"
+    >
       <Steps steps={integrationSteps} class="mt-6" />
       <p class="text-body">
         The operational detail for each step is in
@@ -117,15 +149,15 @@ const integrationSteps = [
         Engineering documentation — APIs, the consent framework specification and the x/veid
         module — is at <a href={SITE.docs} rel="noopener" class="link-plain">docs.virtengine.com</a>.
       </p>
-    </section>
+    </Section>
 
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">Choosing a required level</h2>
-      <p class="text-body measure">
-        Ask for the lowest level that manages your actual risk — over-asking erodes user trust and
-        adds nothing:
-      </p>
-      <div class="mt-5 overflow-x-auto">
+    <Section
+      index="04"
+      eyebrow="Choosing a required level"
+      title="Ask for the lowest level that manages your risk"
+      lede="Over-asking erodes user trust and adds nothing."
+    >
+      <TableScroll label="Verification levels and service use cases" class="mt-5">
         <table class="table-gov">
           <caption class="sr-only">Verification levels and appropriate use cases for services</caption>
           <thead>
@@ -147,11 +179,14 @@ const integrationSteps = [
             }
           </tbody>
         </table>
-      </div>
-    </section>
+      </TableScroll>
+    </Section>
 
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">The rules you agree to</h2>
+    <Section
+      index="05"
+      eyebrow="The rules you agree to"
+      title="Purpose-limited verification, enforced"
+    >
       <div class="prose-service">
         <ul>
           <li><strong>State your purpose honestly.</strong> Requests carry a purpose string shown to the user; misleading purposes are grounds for removal as a verifier.</li>
@@ -160,14 +195,14 @@ const integrationSteps = [
           <li><strong>No side-channel collection.</strong> Attempting to reconstruct or retain more than the user consented to violates the terms that govern verifiers.</li>
         </ul>
       </div>
-    </section>
 
-    <Alert tone="info" title="Status" class="mt-12 max-w-[72ch]">
-      <p>
-        The wallet and verification pipeline are open-source reference infrastructure of the
-        VirtEngine network. Talk to us before building production dependencies:
-        <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a>.
-      </p>
-    </Alert>
+      <Alert tone="info" title="Status" class="mt-10 max-w-[72ch]">
+        <p>
+          The wallet and verification pipeline are open-source reference infrastructure of the
+          VirtEngine network. Talk to us before building production dependencies:
+          <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a>.
+        </p>
+      </Alert>
+    </Section>
   </div>
 </Base>

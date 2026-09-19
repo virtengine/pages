@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
+import TableScroll from "@components/TableScroll.astro";
 import { SITE } from "@data/site";
 
 const crumbs = [
@@ -42,7 +43,7 @@ const crumbs = [
 
     <section class="mt-10">
       <h2 class="mt-0 text-[1.5rem]">Response targets by severity</h2>
-      <div class="mt-5 overflow-x-auto">
+      <TableScroll label="Severity levels, examples and response targets" class="mt-5">
         <table class="table-gov">
           <caption class="sr-only">Severity levels, examples and initial response targets</caption>
           <thead>
@@ -75,7 +76,7 @@ const crumbs = [
             </tr>
           </tbody>
         </table>
-      </div>
+      </TableScroll>
     </section>
 
     <section class="prose-service mt-12">

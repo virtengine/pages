@@ -1,0 +1,58 @@
+---
+import Breadcrumbs, { type Crumb } from "./Breadcrumbs.astro";
+import StatusTag from "./StatusTag.astro";
+
+/**
+ * Feature hero for service and journey pages: breadcrumbs, status, eyebrow,
+ * headline, standfirst, actions, supporting note, and optional media.
+ */
+interface Props {
+  crumbs?: Crumb[];
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  statusTone?: "neutral" | "info" | "success" | "warning";
+  statusLabel?: string;
+  class?: string;
+}
+
+const {
+  crumbs,
+  eyebrow,
+  title,
+  lede,
+  statusTone = "info",
+  statusLabel,
+  class: className,
+} = Astro.props;
+const hasMedia = Astro.slots.has("media");
+---
+
+<div class:list={["service-hero", hasMedia && "service-hero--media", className]}>
+  <div class="container-site service-hero-inner">
+    {crumbs && crumbs.length > 0 && <Breadcrumbs crumbs={crumbs} />}
+    <div class="service-hero-grid">
+      <div>
+        {statusLabel && (
+          <p class="service-hero-status">
+            <StatusTag tone={statusTone}>{statusLabel}</StatusTag>
+          </p>
+        )}
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        {lede && <p class="service-hero-lede">{lede}</p>}
+        {Astro.slots.has("actions") && (
+          <div class="service-hero-actions">
+            <slot name="actions" />
+          </div>
+        )}
+        <slot />
+      </div>
+      {hasMedia && (
+        <div class="service-hero-media">
+          <slot name="media" />
+        </div>
+      )}
+    </div>
+  </div>
+</div>

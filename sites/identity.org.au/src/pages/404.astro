@@ -9,6 +9,10 @@ import Mark from "@components/brand/Mark.astro";
   description="The page you were looking for doesn't exist. Find your way back to the Identity Wallet guides, help centre and policies."
   path="/404"
   noindex
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Page not found", href: "/404" },
+  ]}
 >
   <div class="container-site py-20 text-center">
     <Mark size={64} class="mx-auto" />

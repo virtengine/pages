@@ -1,0 +1,40 @@
+---
+/**
+ * Shared service section: ruled eyebrow/headline/standfirst rhythm used across
+ * marketing, guide, and policy journeys. Content sections opt in; the frame
+ * never changes the words inside the slot.
+ */
+interface Props {
+  eyebrow?: string;
+  /** Optional small section numeral, e.g. "01". Rendered before the eyebrow. */
+  index?: string;
+  title?: string;
+  lede?: string;
+  id?: string;
+  class?: string;
+}
+
+const { eyebrow, index, title, lede, id, class: className } = Astro.props;
+---
+
+<section class:list={["section-service", className]} id={id}>
+  {
+    (eyebrow || title || lede) && (
+      <div class="section-service-head">
+        {eyebrow && (
+          <p class="eyebrow">
+            {index && (
+              <span class="section-service-index" aria-hidden="true">
+                {index} ·
+              </span>
+            )}{" "}
+            {eyebrow}
+          </p>
+        )}
+        {title && <h2>{title}</h2>}
+        {lede && <p class="section-service-lede">{lede}</p>}
+      </div>
+    )
+  }
+  <slot />
+</section>

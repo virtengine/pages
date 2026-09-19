@@ -16,9 +16,10 @@ const tones = {
   success: { bg: "bg-success-bg", rule: "border-l-success-rule", icon: "var(--color-success-rule)" },
 } as const;
 const t = tones[tone];
+const role = tone === "warning" ? "alert" : "status";
 ---
 
-<div class:list={["border-l-4 rounded-r-tile px-5 py-4", t.bg, t.rule, className]} role={tone === "warning" ? "note" : undefined}>
+<div class:list={["border-l-4 rounded-r-tile px-5 py-4", t.bg, t.rule, className]} role={role}>
   <div class="flex gap-3">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="mt-0.5 flex-none">
       {

@@ -2,6 +2,7 @@
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { WALLET_NAV } from "@data/nav-sections";
 
@@ -61,7 +62,14 @@ const crumbs = [
     </p>
   </div>
 
-  <DataLifecycle class="mt-6" />
+  <ServiceFigure
+    rail="Data lifecycle"
+    railRight="Five stages"
+    caption="Captured on your phone, encrypted before it moves, processed in a sealed vault, destroyed after scoring — leaving only the result."
+    class="mt-6"
+  >
+    <DataLifecycle />
+  </ServiceFigure>
 
   <div class="prose-service mt-6">
     <p>

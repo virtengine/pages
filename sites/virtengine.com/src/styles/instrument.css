@@ -4199,3 +4199,77 @@ body.is-home { background-color: #0a100c; }
   .mk-read { display: none; }
 }
 
+/* ======================================================================
+   HOW IT WORKS STEPPER — zero-JS tabs for solution / module pages.
+   Light-surface component: white panels, ink text, deep-green active tab
+   (white on green-deep keeps contrast on the light page background).
+   Driven by input:checked + label + panel siblings, so any step count
+   works with no :has() and no per-page CSS.
+   ====================================================================== */
+.hiw-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.6rem;
+}
+.hiw-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.hiw-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.95rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  background: var(--color-panel);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+.hiw-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.55rem;
+  height: 1.55rem;
+  padding-inline: 0.3rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.66rem;
+}
+.hiw-tab:hover { border-color: var(--color-green-deep); color: var(--color-ink); }
+.hiw-input:checked + .hiw-tab {
+  border-color: var(--color-green-deep);
+  background: var(--color-green-deep);
+  color: #ffffff;
+}
+.hiw-input:focus-visible + .hiw-tab { outline: 2px solid var(--color-green); outline-offset: 2px; }
+.hiw-panel {
+  display: none;
+  grid-column: 1 / -1;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-panel);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+.hiw-input:checked + .hiw-tab + .hiw-panel { display: block; animation: hiw-in 220ms ease both; }
+@keyframes hiw-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hiw-input:checked + .hiw-tab + .hiw-panel { animation: none; }
+}
+

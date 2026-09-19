@@ -2,6 +2,7 @@
 import Guide from "@layouts/Guide.astro";
 import CardLink from "@components/CardLink.astro";
 import Alert from "@components/Alert.astro";
+import FactStrip from "@components/FactStrip.astro";
 import { GET_STARTED_NAV } from "@data/nav-sections";
 
 const crumbs = [
@@ -20,7 +21,16 @@ const crumbs = [
   sectionLabel="In this guide"
   sectionNav={GET_STARTED_NAV}
 >
-  <div class="prose-service">
+  <FactStrip
+    label="Setup facts"
+    facts={[
+      { label: "Time", value: "About ten minutes" },
+      { label: "Need", value: "Phone + one document", href: "/get-started/what-you-need" },
+      { label: "Levels", value: "Unverified to Trusted", href: "/get-started/verification-levels" },
+    ]}
+  />
+
+  <div class="prose-service mt-8">
     <p>
       Your Identity Wallet is an app on your phone that holds <strong>verified claims</strong>
       about you — facts like your name and age that have been checked against real evidence. Once

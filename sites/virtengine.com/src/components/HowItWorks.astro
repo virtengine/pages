@@ -1,0 +1,44 @@
+---
+/**
+ * HowItWorks — zero-JS tab stepper. Each step is an input + label + panel
+ * triplet in DOM order, so `input:checked + label + panel` sibling selectors
+ * drive the whole interaction with no :has() and no per-page CSS, for any
+ * number of steps. Inputs stay keyboard-focusable; the grid keeps tabs in
+ * row one and the visible panel full-width below them.
+ */
+export interface HowStep {
+  label: string;
+  title: string;
+  body: string;
+}
+
+interface Props {
+  /** unique prefix for the radio group on this page */
+  id: string;
+  steps: HowStep[];
+  class?: string;
+}
+
+const { id, steps, class: className } = Astro.props;
+---
+
+<div class:list={["hiw-steps reveal", className]}>
+  {
+    steps.map((s, i) => (
+      <>
+        <input class="hiw-input" type="radio" name={`hiw-${id}`} id={`hiw-${id}-${i}`} checked={i === 0} />
+        <label class="hiw-tab" for={`hiw-${id}-${i}`}>
+          <span class="hiw-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <span>{s.label}</span>
+        </label>
+        <section class="hiw-panel" aria-label={s.title}>
+          <p class="font-mono text-xs font-medium uppercase tracking-[0.14em] text-green-deep">
+            Step {i + 1} · {s.label}
+          </p>
+          <h3 class="mt-2 text-xl font-semibold text-ink">{s.title}</h3>
+          <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate">{s.body}</p>
+        </section>
+      </>
+    ))
+  }
+</div>

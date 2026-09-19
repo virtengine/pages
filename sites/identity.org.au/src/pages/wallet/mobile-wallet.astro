@@ -1,6 +1,7 @@
 ---
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import StatusTag from "@components/StatusTag.astro";
 import DocScanScreen from "@components/phone/DocScanScreen.astro";
 import LivenessScreen from "@components/phone/LivenessScreen.astro";
@@ -65,12 +66,24 @@ const crumbs = [
     </ul>
   </div>
 
-  <div class="mt-10 grid gap-8 sm:grid-cols-2">
-    <div class="mx-auto w-full max-w-[260px]">
-      <DocScanScreen />
+  <div class="mt-10 grid items-start gap-8 sm:grid-cols-2">
+    <div class="mx-auto w-full max-w-[280px]">
+      <ServiceFigure
+        rail="Document capture"
+        railRight="Guided"
+        caption="Document scan: corner brackets guide the framing; edge and glare checks run as you hold the document steady."
+      >
+        <DocScanScreen />
+      </ServiceFigure>
     </div>
-    <div class="mx-auto w-full max-w-[260px]">
-      <LivenessScreen />
+    <div class="mx-auto w-full max-w-[280px]">
+      <ServiceFigure
+        rail="Liveness check"
+        railRight="Active"
+        caption="Liveness check: short challenges — blink, head turn, smile — prove a live person is present."
+      >
+        <LivenessScreen />
+      </ServiceFigure>
     </div>
   </div>
 

@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { SOLUTIONS } from "@data/solutions";
 
 const crumbs = [
@@ -53,6 +54,8 @@ const groups = [
     title="One protocol, many ways in"
     lede="VirtEngine serves both sides of the compute market and everyone securing it. Find the path that matches what you run, hold, or build — each page covers the problem, the protocol's answer, the economics, and the first steps."
     crumbs={crumbs}
+    media="hero-infrastructure"
+    mediaCaption="One protocol, many ways in."
   />
 
   {
@@ -65,6 +68,12 @@ const groups = [
                 href={`/solutions/${sol.slug}`}
                 class="clip-corner group block h-full rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
               >
+                <MediaFigure
+                  slug={sol.media}
+                  ratio="16 / 9"
+                  sizes="(min-width: 1024px) 28vw, 100vw"
+                  class="mb-5"
+                />
                 <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">{sol.label}</h3>
                 <p class="mt-2 text-sm leading-relaxed text-slate">{sol.title}</p>
                 <p class="mt-3 font-mono text-xs text-muted">{sol.audience}</p>

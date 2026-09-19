@@ -1,5 +1,6 @@
 ---
 import Guide from "@layouts/Guide.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import Steps from "@components/Steps.astro";
 import Alert from "@components/Alert.astro";
 import DocScanScreen from "@components/phone/DocScanScreen.astro";
@@ -81,28 +82,32 @@ const steps = [
     </p>
   </Alert>
 
-  <Steps steps={steps} class="mt-10" />
+  <Steps steps={steps} headingLevel={2} class="mt-10" />
 
   <h2 class="mt-12 text-[1.5rem]">What the key steps look like</h2>
   <p class="text-body measure">
     These mockups show the reference wallet's capture flow — the same guidance you will see on
     your phone.
   </p>
-  <div class="mt-6 grid gap-8 sm:grid-cols-2">
-    <figure class="m-0 max-w-[280px]">
-      <DocScanScreen />
-      <figcaption class="mt-3 text-[0.9rem] text-muted">
-        Document scan: corner brackets guide the framing; edge and glare checks run as you hold the
-        document steady.
-      </figcaption>
-    </figure>
-    <figure class="m-0 max-w-[280px]">
-      <LivenessScreen />
-      <figcaption class="mt-3 text-[0.9rem] text-muted">
-        Liveness check: short challenges — blink, head turn, smile — prove a live person is
-        present.
-      </figcaption>
-    </figure>
+  <div class="mt-6 grid items-start gap-8 sm:grid-cols-2">
+    <div class="m-0 w-full max-w-[280px]">
+      <ServiceFigure
+        rail="Document capture"
+        railRight="Guided"
+        caption="Document scan: corner brackets guide the framing; edge and glare checks run as you hold the document steady."
+      >
+        <DocScanScreen />
+      </ServiceFigure>
+    </div>
+    <div class="m-0 w-full max-w-[280px]">
+      <ServiceFigure
+        rail="Liveness check"
+        railRight="Active"
+        caption="Liveness check: short challenges — blink, head turn, smile — prove a live person is present."
+      >
+        <LivenessScreen />
+      </ServiceFigure>
+    </div>
   </div>
 
   <h2 class="mt-12 text-[1.5rem]">After setup, once the service launches</h2>

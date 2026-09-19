@@ -6,24 +6,24 @@ import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
 import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
 import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
 import Ticker from "@components/Ticker.astro";
-import { SITE } from "@data/site";
+import { PURPOSES, SITE } from "@data/site";
 
 const programs = [
-  { name: "VirtEngine", area: "Open infrastructure", status: "In development", href: "/research/virtengine", body: "An open cloud marketplace protocol. Study how resource requests, provider bids, identity, and payments fit together.", art: ProgramVirtArt },
-  { name: "DSEMA", area: "Accountable AI", status: "Research architecture", href: "/research/dsema", body: "Research into multi-agent AI that can evolve under verifiable controls. Explore the design questions around oversight and safety.", art: ProgramDsemaArt },
-  { name: "Bosun", area: "Open-source engineering", status: "Experimental software", href: "/research/bosun", body: "An open-source orchestrator for AI coding agents. Examine how work is coordinated, reviewed, and recovered under human supervision.", art: ProgramBosunArt },
-  { name: "Identity & VEID", area: "Privacy & digital rights", status: "Protocol research", href: "/research/identity", body: "Verifiable identity with less disclosure. Explore encrypted verification, consent, and how services could use proofs of attributes.", art: ProgramIdentityArt },
+  { name: "VirtEngine", area: "Open infrastructure", status: "In development", href: "/research/virtengine", cta: "Study the protocol →", body: "An open cloud marketplace protocol. Study how resource requests, provider bids, identity, and payments fit together.", art: ProgramVirtArt },
+  { name: "DSEMA", area: "Accountable AI", status: "Research architecture", href: "/research/dsema", cta: "Read the open questions →", body: "Research into multi-agent AI that can evolve under verifiable controls. Explore the design questions around oversight and safety.", art: ProgramDsemaArt },
+  { name: "Bosun", area: "Open-source engineering", status: "Experimental software", href: "/research/bosun", cta: "Inspect the source →", body: "An open-source orchestrator for AI coding agents. Examine how work is coordinated, reviewed, and recovered under human supervision.", art: ProgramBosunArt },
+  { name: "Identity & VEID", area: "Privacy & digital rights", status: "Protocol research", href: "/research/identity", cta: "Explore encrypted identity →", body: "Verifiable identity with less disclosure. Explore encrypted verification, consent, and how services could use proofs of attributes.", art: ProgramIdentityArt },
 ];
 
 const waysIn = [
-  { tag: "For learners", title: "Understand an idea.", body: "Follow a guide, explore a research question, and inspect its evidence.", href: "/participate#learn" },
-  { tag: "For developers", title: "Make something better.", body: "Improve a guide, report a reproducible issue, or contribute code.", href: "/participate#contribute" },
-  { tag: "For collaborators", title: "Bring a useful question.", body: "Discuss research that connects technical work to a public need.", href: "/participate#collaborate" },
+  { tag: "For learners", title: "Understand an idea.", body: "Follow a guide, explore a research question, and inspect its evidence.", starts: "Guides · Research questions · Evidence trails", href: "/participate#learn" },
+  { tag: "For developers", title: "Make something better.", body: "Improve a guide, report a reproducible issue, or contribute code.", starts: "Source code · Documentation · Reproducible issues", href: "/participate#contribute" },
+  { tag: "For collaborators", title: "Bring a useful question.", body: "Discuss research that connects technical work to a public need.", starts: "A defined question · A public-benefit aim", href: "/participate#collaborate" },
 ];
 ---
 <Base title="DET.io Foundation — Open technology for public benefit" description="An Australian not-for-profit advancing education, privacy, secure digital infrastructure, and technology safety through open research and software." path="/">
   <section class="f-hero grain-host">
-    <p class="f-ghost" aria-hidden="true">№1</p>
+    <p class="f-ghost" aria-hidden="true">Field record · № 001</p>
     <div class="container-site f-hero-grid">
       <div>
         <p class="f-kicker"><i aria-hidden="true"></i> Australian not-for-profit · Open research</p>
@@ -31,7 +31,7 @@ const waysIn = [
         <p class="f-lede">Our mission is to advance education, protect digital rights, and improve access to secure, resilient digital infrastructure.</p>
         <p class="f-copy">DETIO FOUNDATION LTD develops open research, software, and learning resources in distributed computing, privacy, and accountable AI — for people who want to understand, question, and improve technology.</p>
         <div class="f-actions">
-          <a class="btn-hard" href="/activities">Explore our work <span aria-hidden="true">↗</span></a>
+          <a class="btn-hard" href="/activities">See the work <span aria-hidden="true">↗</span></a>
           <a class="f-link" href="/mission">Why we exist →</a>
           <span class="stamp">Public benefit · Locked</span>
         </div>
@@ -65,21 +65,21 @@ const waysIn = [
         <p class="f-index">Learn</p>
         <h3>Publish open knowledge</h3>
         <p>Guides, specifications, and technical explanations make infrastructure and AI research easier to understand and evaluate.</p>
-        <a href="/activities#education">Learning resources →</a>
+        <a href="/activities#education">Start learning →</a>
       </article>
       <article>
         <p class="bignum" aria-hidden="true">02</p>
         <p class="f-index">Build</p>
         <h3>Develop in the open</h3>
         <p>Open-source software makes the implementation available for review, reuse, and improvement by other developers.</p>
-        <a href="/activities#software">Development work →</a>
+        <a href="/activities#software">Browse the work →</a>
       </article>
       <article>
         <p class="bignum" aria-hidden="true">03</p>
         <p class="f-index">Question</p>
         <h3>Research trust &amp; safety</h3>
         <p>We examine privacy, verification, governance, and human oversight through published designs and experimental tools.</p>
-        <a href="/activities#safety">Research questions →</a>
+        <a href="/activities#safety">Read the questions →</a>
       </article>
     </div>
   </section>
@@ -105,13 +105,34 @@ const waysIn = [
               <p style="margin-top:0.7rem"><span class="f-tag">{p.area}</span><span class="f-status">{p.status}</span></p>
               <h3><a href={p.href}>{p.name}<span aria-hidden="true">↗</span></a></h3>
               <p>{p.body}</p>
-              <p style="margin-top:1rem"><a class="f-link" href={p.href}>Explore the program →</a></p>
+              <p style="margin-top:1rem"><a class="f-link" href={p.href}>{p.cta}</a></p>
             </div>
           </article>
         );
       })}
     </div>
     <p class="f-note">Open materials are available today. Research goals are not claims of deployed services or measured impact. <a href="/activities#progress">Read the current status of our work.</a></p>
+  </section>
+
+  <section class="charter-band" aria-labelledby="f-charter">
+    <div class="container-site charter-grid">
+      <div>
+        <p class="f-index">The charter behind the work</p>
+        <h2 id="f-charter">Four purposes, written into the constitution.</h2>
+        <p>Every program must advance at least one of these purposes <span class="clause-chip">cl 6.1</span>. The wording below is condensed from the signed instrument.</p>
+      </div>
+      <ol>
+        {PURPOSES.map((p) => (
+          <li>
+            <a href="/mission">
+              <span class="clause-chip">{p.clause}</span>
+              <strong>{p.name}</strong>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
   <section class="f-terminal-band" aria-labelledby="f-code">
@@ -165,8 +186,8 @@ const waysIn = [
     <div class="f-stubs">
       {waysIn.map((w) => (
         <a class="f-stub" href={w.href}>
-          <span class="f-stub-top"><span>{w.tag}</span><span>Admit one</span></span>
-          <span class="f-stub-body" style="display:block"><h3>{w.title}</h3><p>{w.body}</p></span>
+          <span class="f-stub-top"><span>{w.tag}</span></span>
+          <span class="f-stub-body" style="display:block"><h3>{w.title}</h3><p>{w.body}</p><p class="f-stub-starts">{w.starts}</p></span>
           <span class="f-stub-foot" aria-hidden="true">✦ →</span>
         </a>
       ))}

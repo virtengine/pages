@@ -3,6 +3,10 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import GlanceStrip from "@components/GlanceStrip.astro";
+import HowItWorks from "@components/HowItWorks.astro";
+import FaqList from "@components/FaqList.astro";
+import ProtocolDiagram from "@components/ProtocolDiagram.astro";
 import { SOLUTIONS } from "@data/solutions";
 import { SITE } from "@data/site";
 
@@ -27,17 +31,40 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
   path={`/solutions/${sol.slug}`}
   breadcrumbs={crumbs}
 >
-  <PageHero eyebrow={`Solutions · ${sol.label}`} title={sol.title} lede={sol.intro} crumbs={crumbs}>
+  <PageHero
+    eyebrow={`Solutions · ${sol.label}`}
+    title={sol.title}
+    lede={sol.intro}
+    crumbs={crumbs}
+    media={sol.media}
+    mediaCaption={sol.mediaCaption}
+  >
     <p class="mt-6 max-w-2xl border-l-2 border-green pl-4 text-sm text-muted">
       <strong class="font-semibold text-ink">Who this is for:</strong> {sol.audience}
     </p>
+    <div class="mt-6 flex flex-wrap gap-4">
+      <CTA href={SITE.docs}>Read the documentation</CTA>
+      <CTA href={SITE.github} variant="secondary">Browse the source</CTA>
+    </div>
   </PageHero>
 
+  <Section eyebrow="At a glance" title={`The short version for ${sol.label.toLowerCase()}`}>
+    <GlanceStrip items={sol.highlights} />
+  </Section>
+
   <Section eyebrow="The problem" title={sol.problem.heading}>
-    <div class="prose-body space-y-5 text-base">
+    <div class="prose-body max-w-3xl space-y-5 text-base">
       {sol.problem.paragraphs.map((p) => <p>{p}</p>)}
     </div>
   </Section>
+
+  {
+    sol.diagram && (
+      <Section eyebrow="The mechanism" title="How the protocol carries it">
+        <ProtocolDiagram diagram={sol.diagram} caption={sol.diagramCaption} class="reveal" />
+      </Section>
+    )
+  }
 
   <Section eyebrow="How VirtEngine addresses it" title="Grounded in what the protocol actually does">
     <div class="grid gap-6 lg:grid-cols-3">
@@ -58,6 +85,14 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
         ))
       }
     </div>
+  </Section>
+
+  <Section
+    eyebrow="How it works"
+    title="The path through the protocol, step by step"
+    lede="Select each step — the panel walks the sequence in order, from first action to settled outcome."
+  >
+    <HowItWorks id={sol.slug} steps={sol.flow} />
   </Section>
 
   <Section eyebrow="Economics" title={sol.economics.heading}>
@@ -82,6 +117,10 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
       <CTA href={SITE.docs}>Read the documentation</CTA>
       <CTA href={SITE.github} variant="secondary">Browse the source</CTA>
     </div>
+  </Section>
+
+  <Section eyebrow="Questions" title={`Asked about ${sol.label.toLowerCase()}`}>
+    <FaqList items={sol.faqs} />
   </Section>
 
   <Section eyebrow="Related" title="Continue from here">

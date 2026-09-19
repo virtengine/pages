@@ -1,7 +1,8 @@
 ---
 /**
  * Research-program card: crafted SVG artwork (slot="art"), program facts,
- * and a link to the program page.
+ * and a link to the program page. Field Quiet: flat pastel card that lifts
+ * on hover; hard-shadow buttons.
  */
 interface Props {
   program: string;
@@ -17,12 +18,12 @@ interface Props {
 const { program, title, href, projectHref, projectLabel, projectExternal = false, facts } = Astro.props;
 ---
 
-<article class="group grid overflow-hidden rounded-card border border-hairline bg-surface transition-colors hover:border-blue-deep">
-  <div class="border-b border-hairline bg-gradient-to-b from-surface to-vellum p-4 sm:p-6" aria-hidden="true">
+<article class="card-quiet group grid">
+  <div class="card-quiet-art p-4 sm:p-6" aria-hidden="true">
     <div class="program-art"><slot name="art" /></div>
   </div>
   <div class="grid gap-3 p-6">
-    <p class="eyebrow">{program}</p>
+    <p class="f-index">{program}</p>
     <h3 class="text-2xl font-bold">
       <a href={href} class="focus-visible:outline-none group-hover:text-blue-deep">
         {title}
@@ -42,11 +43,11 @@ const { program, title, href, projectHref, projectLabel, projectExternal = false
       }
     </dl>
     <div class="mt-1 flex flex-wrap gap-3">
-      <a href={href} class="inline-flex items-center gap-2 rounded-md border border-blue-deep px-3 py-2 font-display text-sm font-semibold text-blue-deep transition-colors hover:bg-blue-deep hover:text-white">
+      <a href={href} class="btn-hard btn-hard--sm btn-hard--paper">
         Program overview
         <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
       </a>
-      <a href={projectHref} rel={projectExternal ? "noopener" : undefined} target={projectExternal ? "_blank" : undefined} class="inline-flex items-center gap-2 rounded-md bg-blue-deep px-3 py-2 font-display text-sm font-semibold text-white transition-colors hover:bg-blue-mid">
+      <a href={projectHref} rel={projectExternal ? "noopener" : undefined} target={projectExternal ? "_blank" : undefined} class="btn-hard btn-hard--sm">
         {projectLabel}
         <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
       </a>

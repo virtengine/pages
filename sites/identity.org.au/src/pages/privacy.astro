@@ -3,6 +3,8 @@ import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
+import TableScroll from "@components/TableScroll.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { SITE } from "@data/site";
 
@@ -46,7 +48,14 @@ const crumbs = [
         Captured on your phone, encrypted before it moves, processed only inside hardware-sealed
         trusted processing units, destroyed when scoring ends — leaving only the result.
       </p>
-      <DataLifecycle class="mt-6" />
+      <ServiceFigure
+        rail="Data lifecycle"
+        railRight="Five stages"
+        caption="Captured on your phone, encrypted before it moves, processed only inside hardware-sealed trusted processing units, destroyed when scoring ends — leaving only the result."
+        class="mt-6"
+      >
+        <DataLifecycle />
+      </ServiceFigure>
       <a href="/privacy/trusted-processing" class="link-plain mt-5 inline-block font-semibold">
         Trusted processing — how the vault works, and why no one can open it
       </a>
@@ -54,7 +63,7 @@ const crumbs = [
 
     <section class="mt-12">
       <h2 class="mt-0 text-[1.6rem]">What exists, where it lives, who can read it</h2>
-      <div class="mt-6 overflow-x-auto">
+      <TableScroll label="Where identity data lives, who can read it, and retention" class="mt-6 table-scroll--wide">
         <table class="table-gov">
           <caption class="sr-only">Each category of identity data, its storage location, readability and retention</caption>
           <thead>
@@ -110,7 +119,7 @@ const crumbs = [
             </tr>
           </tbody>
         </table>
-      </div>
+      </TableScroll>
     </section>
 
     <section class="mt-12">
@@ -133,7 +142,7 @@ const crumbs = [
 
     <section class="mt-12">
       <h2 class="mt-0 text-[1.6rem]">Retention, in one table</h2>
-      <div class="mt-6 overflow-x-auto">
+      <TableScroll label="Retention periods and rationale" class="mt-6">
         <table class="table-gov">
           <caption class="sr-only">Retention periods per data type and their rationale</caption>
           <thead>
@@ -153,7 +162,7 @@ const crumbs = [
             <tr><th scope="row">Error logs</th><td>90 days</td><td>Debugging</td></tr>
           </tbody>
         </table>
-      </div>
+      </TableScroll>
       <Callout title="At the end of retention" class="mt-6 max-w-[72ch]">
         <p>
           Destruction is automatic: deletion from active systems, removal from backups within the

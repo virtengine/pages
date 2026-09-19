@@ -57,9 +57,10 @@ The workspace system npm is broken — use pnpm via full path (PowerShell):
 ## Design
 
 See [DESIGN.md](DESIGN.md) — the Ridgemark logo construction, colour tokens
-with contrast table, Public Sans type system, service-design component
-inventory (banners, steps, cards, tables, tags, side-nav), phone mockup
-system, content/voice rules and honesty locks.
+with contrast table, Public Sans type system, the shared section/hero/figure
+system, service-design component inventory (banners, steps, cards, tables,
+tags, side-nav), interactive sharing demonstration, phone mockup system,
+content/voice rules and honesty locks.
 
 ## SEO and structured data
 

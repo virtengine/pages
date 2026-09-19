@@ -1,0 +1,42 @@
+---
+/**
+ * Machine-readable fact strip: a compact row of checkable status facts. Each
+ * fact is linkable when a destination exists, preserving list semantics.
+ */
+interface Fact {
+  label: string;
+  value: string;
+  href?: string;
+}
+
+interface Props {
+  label: string;
+  facts: Fact[];
+  class?: string;
+}
+
+const { label, facts, class: className } = Astro.props;
+---
+
+<nav class:list={["fact-strip", className]} aria-label={label}>
+  <ul>
+    {
+      facts.map((fact) => (
+        <li>
+          <span class="fact-strip-label">{fact.label}</span>
+          {fact.href ? (
+            <a
+              class="fact-strip-value"
+              href={fact.href}
+              rel={fact.href.startsWith("http") ? "noopener" : undefined}
+            >
+              {fact.value}
+            </a>
+          ) : (
+            <strong class="fact-strip-value">{fact.value}</strong>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</nav>
