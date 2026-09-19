@@ -5,6 +5,7 @@ import "../styles/navigation.css";
 const current=Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const active=(href:string)=>href.split('#')[0]===current;
 ---
+<div class="trust-strip"><div class="container-site"><span>Australian not-for-profit <span class="t-dot">●</span> ACN 699 651 771</span><span class="t-hide">Open research <span class="t-dot">●</span> Open software <span class="t-dot">●</span> Public benefit</span><a href="/transparency">Public record →</a></div></div>
 <header class="site-header mega-header" id="site-navigation">
 <div class="container-site header-row">
 <a class="nav-brand" href="/" aria-label="DET.io Foundation home"><Lockup size={32} foundation /></a>

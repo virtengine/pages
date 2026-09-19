@@ -1,36 +1,46 @@
 @import "tailwindcss";
 
 /*
-  det.io design tokens — see DESIGN.md (normative brand guide).
+  det.io design tokens — see DESIGN.md (normative brand guide + Amendment A,
+  the "Field Edition" retro layer).
   The identity is built from the real DET.io logo: sky-blue cloud mark
   #5DBADB with a dark navy under-shadow #233040 and a steel #4C7094
-  supporting tone. Light-first institutional surfaces; deep navy night
+  supporting tone. Archival-paper light surfaces; deep navy night
   band; Space Grotesk / Inter / JetBrains Mono editorial stack shared
   with virtengine.com, docs.virtengine.com and identity.org.au.
 */
 @theme {
-  /* light institutional surfaces (cool paper, tinted from the brand blue) */
-  --color-paper: #f6f9fb;
-  --color-surface: #ffffff;
-  --color-vellum: #ebf2f7;
-  --color-sage: #ddeaf2;
-  --color-hairline: #d9e2e9;
-  --color-hairline-strong: #b4c6d2;
+  /* archival paper surfaces (warm, printed; Amendment A) */
+  --color-paper: #f5f0e2;
+  --color-surface: #fdfbf3;
+  --color-vellum: #ece4cf;
+  --color-sage: #e0d6bc;
+  --color-hairline: #d8cdb2;
+  --color-hairline-strong: #a89a76;
 
-  /* text on light (navy-ink family, derived from the cloud shadow) */
-  --color-ink: #17222b;
-  --color-text-muted: #3e5261;
-  --color-text-soft: #5b7080;
+  /* text on light (warm ink family, derived from the cloud shadow) */
+  --color-ink: #1d1a13;
+  --color-text-muted: #43505a;
+  --color-text-soft: #6b6a5e;
 
   /* brand blue scale — from the flat logo (#5DBADB sky, #4C7094 steel, #233040 navy) */
   --color-sky: #5dbadb; /* the brand sky blue: mark, glyphs, graphic fills */
   --color-sky-bright: #8fd6ee; /* accent text + hover on night surfaces */
-  --color-sky-wash: #e3f3fa; /* tinted panels, quiet emphasis */
+  --color-sky-wash: #e3f3fa; /* tinted callout panels ("why this matters") */
   --color-blue-deep: #1a6f97; /* interactive blue on light surfaces — AA on white */
   --color-blue-mid: #2586b1; /* hover state of blue-deep */
   --color-steel: #4c7094; /* secondary accent, sampled from the 3D logo shade */
   --color-navy: #233040; /* the cloud under-shadow */
   --color-amber-deep: #8a5c12;
+
+  /* field-edition accents (Amendment A) — stamps, tickets, signal type.
+     Federal blue is display/large-scale only; body links stay blue-deep. */
+  --color-federal: #2235c4;
+  --color-federal-deep: #17238c;
+  --color-signal: #d9481f;
+  --color-signal-deep: #a32e10;
+  --color-gold: #b98a1d;
+  --color-stamp: #c63f1a;
 
   /* night band (footer, closing sections) — deep navy, from the shadow tone */
   --color-night: #16202b;
@@ -349,5 +359,41 @@ h1, h2, h3, h4 {
   .stage-live .io-stage,
   .io-halo {
     transition-duration: 0.01ms;
+  }
+}
+
+/* ---------- field-edition texture primitives (Amendment A) ---------- */
+
+/* film grain, laid over hero/plate surfaces via a pseudo-element host */
+.grain-host {
+  position: relative;
+  isolation: isolate;
+}
+.grain-host::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+/* halftone dot screen for tinted panels */
+.halftone {
+  background-image: radial-gradient(currentColor 1px, transparent 1.4px);
+  background-size: 10px 10px;
+}
+
+/* marquee ticker */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none !important;
   }
 }

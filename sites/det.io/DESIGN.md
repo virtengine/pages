@@ -246,3 +246,59 @@ number, or a repository path. State intent as intent (ACNC registration),
 research as research (DSEMA), and never invent numbers, staff, partners, or
 status. Sentence-case headings; no exclamation marks; "the foundation", not
 "we're on a mission".
+
+## Amendment A — Field Edition (retro institutional layer)
+
+Adopted to give det.io a memorable, artistic register without breaking the
+normative identity above: the logo construction (§2), the brand blue scale
+(§3.1–3.2), the evidence register (§6), and the voice rules (§10) are
+unchanged. What changes is *surface and rhythm*, fusing two references:
+
+- **Hermes-agent (Nous Research)**: full-field colour, oversized condensed
+  display type, grain/halftone texture, terminal install block, giant
+  numerals (`#1 Connect…`), playful-but-plain tier verbs, sticker-like
+  cards, footer illustration.
+- **Mozilla.org**: mission-first hero, plain-language product blurbs with
+  bold lead-ins, eyebrow-kicker card grid (Product / Impact / Program /
+  Event), trust strip, newsletter-to-contact rhythm, mega footer.
+
+### A.1 New tokens (`global.css` `@theme`)
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| `--color-federal` | `#2235c4` | Signal display blue (headings accents, tags, buttons). Display/large-scale; body links stay `blue-deep`. |
+| `--color-signal` | `#d9481f` | Rubber-stamp red (stamps, underlines, ticker variant). |
+| `--color-gold` | `#b98a1d` | Tertiary terminal-dot accent. |
+| `--color-stamp` | `#c63f1a` | Stamp ink (AA-large only on paper). |
+
+Paper tokens warmed to archival stock: `paper #f5f0e2`, `surface #fdfbf3`,
+`vellum #ece4cf`, `sage #e0d6bc`, hairlines `#d8cdb2 / #a89a76`, ink
+`#1d1a13`. Sky `#5DBADB` remains graphic-only on light.
+
+### A.2 New patterns (`styles/retro.css`, `components/Ticker.astro`)
+
+- **Trust strip**: thin ink micro-bar above the sticky header (ACN, open
+  research/software, public-record link) — Mozilla trust-strip nod.
+- **Hero**: uppercase Space Grotesk 700 with an outlined ghost word, federal
+  kicker chip with hard shadow, rubber-stamp badge, ticket-stub plate
+  (perforation + foot link), ghost numeral backdrop, film grain.
+- **Ticker ribbon**: federal/signal marquee (`ticker-scroll` 28s, pause on
+  hover, `prefers-reduced-motion` collapses, screen-reader text preserved).
+- **Field numerals**: Hermes-style giant outlined `01/02/03` column heads.
+- **Program files**: Mozilla-style kicker-tag cards (area tag + status mono
+  + plain-language body + arrow link) with hard-shadow lift on hover.
+- **Terminal band**: night strip with `git clone` commands for the two real
+  repositories only — no invented install commands or statistics.
+- **Stub tickets**: participation cards as perforated tickets with
+  colour-coded headers.
+- **Footer colophon**: giant outlined `DET·IO` wordmark + record line.
+- Hard-shadow buttons (`.btn-hard`) with press-down active state; all motion
+  guarded by `prefers-reduced-motion`.
+
+### A.3 Constraints carried forward
+
+No new webfonts (Space Grotesk / Inter / JetBrains Mono only). No invented
+claims, statistics, newsletters, or install commands. Contrast (verified):
+federal `#2235c4` on paper ≈ 7.8:1 (AAA); ink on paper ≈ 15.3:1;
+`blue-deep` on surface ≈ 5.4:1 (AA). Signal red (≈ 3.8:1) never carries
+small body text — stamps, numerals, and display accents only.

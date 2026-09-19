@@ -5,23 +5,190 @@ import ProgramVirtArt from "@components/diagrams/ProgramVirtArt.astro";
 import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
 import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
 import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
+import Ticker from "@components/Ticker.astro";
 import { SITE } from "@data/site";
+
 const programs = [
- {name:"VirtEngine",area:"OPEN INFRASTRUCTURE",status:"In development",href:"/research/virtengine",body:"An open cloud marketplace protocol. Study how resource requests, provider bids, identity, and payments fit together.",art:ProgramVirtArt},
- {name:"DSEMA",area:"ACCOUNTABLE AI",status:"Research architecture",href:"/research/dsema",body:"Research into multi-agent AI that can evolve under verifiable controls. Explore the design questions around oversight and safety.",art:ProgramDsemaArt},
- {name:"Bosun",area:"OPEN-SOURCE ENGINEERING",status:"Experimental software",href:"/research/bosun",body:"An open-source orchestrator for AI coding agents. Examine how work is coordinated, reviewed, and recovered under human supervision.",art:ProgramBosunArt},
- {name:"Identity & VEID",area:"PRIVACY & DIGITAL RIGHTS",status:"Protocol research",href:"/research/identity",body:"Verifiable identity with less disclosure. Explore encrypted verification, consent, and how services could use proofs of attributes.",art:ProgramIdentityArt},
+  { name: "VirtEngine", area: "Open infrastructure", status: "In development", href: "/research/virtengine", body: "An open cloud marketplace protocol. Study how resource requests, provider bids, identity, and payments fit together.", art: ProgramVirtArt },
+  { name: "DSEMA", area: "Accountable AI", status: "Research architecture", href: "/research/dsema", body: "Research into multi-agent AI that can evolve under verifiable controls. Explore the design questions around oversight and safety.", art: ProgramDsemaArt },
+  { name: "Bosun", area: "Open-source engineering", status: "Experimental software", href: "/research/bosun", body: "An open-source orchestrator for AI coding agents. Examine how work is coordinated, reviewed, and recovered under human supervision.", art: ProgramBosunArt },
+  { name: "Identity & VEID", area: "Privacy & digital rights", status: "Protocol research", href: "/research/identity", body: "Verifiable identity with less disclosure. Explore encrypted verification, consent, and how services could use proofs of attributes.", art: ProgramIdentityArt },
+];
+
+const waysIn = [
+  { tag: "For learners", title: "Understand an idea.", body: "Follow a guide, explore a research question, and inspect its evidence.", href: "/participate#learn" },
+  { tag: "For developers", title: "Make something better.", body: "Improve a guide, report a reproducible issue, or contribute code.", href: "/participate#contribute" },
+  { tag: "For collaborators", title: "Bring a useful question.", body: "Discuss research that connects technical work to a public need.", href: "/participate#collaborate" },
 ];
 ---
 <Base title="DET.io Foundation — Open technology for public benefit" description="An Australian not-for-profit advancing education, privacy, secure digital infrastructure, and technology safety through open research and software." path="/">
-<section class="foundation-hero container-site">
-<div><p class="folio">AUSTRALIAN NOT-FOR-PROFIT / OPEN RESEARCH</p><h1>Technology for<br/>a more <em>open future.</em></h1><p class="foundation-lede">Our mission is to advance education, protect digital rights, and improve access to secure, resilient digital infrastructure.</p><p class="foundation-copy">DETIO FOUNDATION LTD develops open research, software, and learning resources in distributed computing, privacy, and accountable AI — for people who want to understand, question, and improve technology.</p><div class="foundation-actions"><a class="foundation-button" href="/activities">Explore our work <span aria-hidden="true">↗</span></a><a class="foundation-link" href="/mission">Why we exist →</a></div><p class="registration">Public company limited by guarantee · ACN {SITE.acn}</p></div>
-<figure class="foundation-plate"><div class="plate-label"><span>ONE PUBLIC PURPOSE</span><span>FOUR CONNECTED PROGRAMS</span></div><div class="plate-art" aria-hidden="true"><HeroLattice /></div><figcaption><span>Open knowledge.</span><span>Accountable systems.</span><span>Public benefit.</span></figcaption><a href="/research">Discover the research portfolio <span aria-hidden="true">→</span></a></figure>
-</section>
-<div class="purpose-ribbon"><div class="container-site"><strong>Research made accessible.</strong><span>Education</span><span>Privacy &amp; digital rights</span><span>Infrastructure resilience</span><span>Technology safety</span></div></div>
-<section class="foundation-section container-site"><div class="section-heading"><div><p class="folio">01 / WHAT WE DO</p><h2>Ideas become useful<br/>when people can examine them.</h2></div><p>We connect technical research with public resources. Learners can study the ideas, developers can inspect the software, and researchers can challenge the design.</p></div><div class="activity-columns"><article><span class="folio">LEARN</span><h3>Publish open knowledge</h3><p>Guides, specifications, and technical explanations make infrastructure and AI research easier to understand and evaluate.</p><a href="/activities#education">Explore learning resources →</a></article><article><span class="folio">BUILD</span><h3>Develop in the open</h3><p>Open-source software makes the implementation available for review, reuse, and improvement by other developers.</p><a href="/activities#software">See the development work →</a></article><article><span class="folio">QUESTION</span><h3>Research trust &amp; safety</h3><p>We examine privacy, verification, governance, and human oversight through published designs and experimental tools.</p><a href="/activities#safety">Read the research questions →</a></article></div></section>
-<section class="foundation-section container-site"><div class="section-heading"><div><p class="folio">02 / OUR PROGRAMS</p><h2>Four ways to work<br/>towards that purpose.</h2></div><a class="foundation-link" href="/research">Explore all research topics ↗</a></div><div class="foundation-programs">{programs.map((p,i)=><article><div class="program-visual" aria-hidden="true"><p class="folio">0{i+1} / {p.area}</p><p.art /></div><div class="program-content"><span class="program-status">{p.status}</span><h3><a href={p.href}>{p.name}<span aria-hidden="true">↗</span></a></h3><p>{p.body}</p><a class="foundation-link" href={p.href}>Explore the program →</a></div></article>)}</div><p class="foundation-note">Open materials are available today. Research goals are not claims of deployed services or measured impact. <a href="/activities#progress">Read the current status of our work.</a></p></section>
-<section class="foundation-section container-site"><div class="governance-band"><div><p class="folio">03 / THE FOUNDATION</p><h2>A public purpose.<br/>A framework for accountability.</h2><p>Our constitution defines how the Foundation can use its resources, make decisions, and protect its public-benefit purposes. Explore those rules and the evidence available today.</p><a class="foundation-button" href="/foundation/who-we-are">Meet the Foundation ↗</a></div><div class="governance-paths"><a href="/governance"><span>01</span><div><h3>How decisions are made</h3><p>Board responsibilities, membership, and consent requirements.</p></div><b aria-hidden="true">↗</b></a><a href="/constitution"><span>02</span><div><h3>Read the constitution</h3><p>Ten plain-language topics with references to the underlying clauses.</p></div><b aria-hidden="true">↗</b></a><a href="/transparency"><span>03</span><div><h3>Check our public record</h3><p>Published resources, funding disclosures, and reporting status.</p></div><b aria-hidden="true">↗</b></a></div></div></section>
-<section class="foundation-section container-site"><div class="section-heading"><div><p class="folio">04 / FIND YOUR WAY IN</p><h2>Start with what<br/>you want to do.</h2></div><p>You can read our resources and contribute to open-source work without becoming a member of the Foundation.</p></div><div class="participation-cards"><a href="/participate#learn"><span class="folio">FOR LEARNERS</span><h3>Understand an idea.</h3><p>Follow a guide, explore a research question, and inspect its evidence.</p><span aria-hidden="true">↗</span></a><a href="/participate#contribute"><span class="folio">FOR DEVELOPERS</span><h3>Make something better.</h3><p>Improve a guide, report a reproducible issue, or contribute code.</p><span aria-hidden="true">↗</span></a><a href="/participate#collaborate"><span class="folio">FOR COLLABORATORS</span><h3>Bring a useful question.</h3><p>Discuss research that connects technical work to a public need.</p><span aria-hidden="true">↗</span></a></div></section>
-<section class="container-site foundation-closing"><div><p class="folio">LET’S MAKE THE WORK USEFUL</p><h2>Good research starts<br/>with a clear question.</h2><p>Tell us what you are investigating and who it could help.</p></div><a class="foundation-button" href="/contact">Contact the Foundation ↗</a></section>
+  <section class="f-hero grain-host">
+    <p class="f-ghost" aria-hidden="true">№1</p>
+    <div class="container-site f-hero-grid">
+      <div>
+        <p class="f-kicker"><i aria-hidden="true"></i> Australian not-for-profit · Open research</p>
+        <h1>Technology for a more <em>open</em> <span class="outline">future.</span></h1>
+        <p class="f-lede">Our mission is to advance education, protect digital rights, and improve access to secure, resilient digital infrastructure.</p>
+        <p class="f-copy">DETIO FOUNDATION LTD develops open research, software, and learning resources in distributed computing, privacy, and accountable AI — for people who want to understand, question, and improve technology.</p>
+        <div class="f-actions">
+          <a class="btn-hard" href="/activities">Explore our work <span aria-hidden="true">↗</span></a>
+          <a class="f-link" href="/mission">Why we exist →</a>
+          <span class="stamp">Public benefit · Locked</span>
+        </div>
+        <p class="f-reg">Public company limited by guarantee · ACN {SITE.acn}</p>
+      </div>
+      <figure class="f-plate">
+        <div class="f-plate-head"><span>Field plate 01</span><span>Four connected programs</span></div>
+        <div class="f-plate-art" aria-hidden="true"><HeroLattice /></div>
+        <div class="f-perforation" aria-hidden="true"></div>
+        <figcaption class="f-plate-foot"><span>Open knowledge · Accountable systems</span><a href="/research">Research portfolio →</a></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <Ticker
+    items={["Open research", "Open software", "Public benefit", "Education", "Privacy & digital rights", "Infrastructure resilience", "Technology safety"]}
+    label="What the Foundation works on"
+  />
+
+  <section class="container-site f-section" aria-labelledby="f-what">
+    <div class="f-sec-head">
+      <div>
+        <p class="f-index">File 01 / What we do</p>
+        <h2 id="f-what">Ideas become useful when people can examine them.</h2>
+      </div>
+      <p>We connect technical research with public resources. Learners can study the ideas, developers can inspect the software, and researchers can challenge the design.</p>
+    </div>
+    <div class="f-columns">
+      <article>
+        <p class="bignum" aria-hidden="true">01</p>
+        <p class="f-index">Learn</p>
+        <h3>Publish open knowledge</h3>
+        <p>Guides, specifications, and technical explanations make infrastructure and AI research easier to understand and evaluate.</p>
+        <a href="/activities#education">Learning resources →</a>
+      </article>
+      <article>
+        <p class="bignum" aria-hidden="true">02</p>
+        <p class="f-index">Build</p>
+        <h3>Develop in the open</h3>
+        <p>Open-source software makes the implementation available for review, reuse, and improvement by other developers.</p>
+        <a href="/activities#software">Development work →</a>
+      </article>
+      <article>
+        <p class="bignum" aria-hidden="true">03</p>
+        <p class="f-index">Question</p>
+        <h3>Research trust &amp; safety</h3>
+        <p>We examine privacy, verification, governance, and human oversight through published designs and experimental tools.</p>
+        <a href="/activities#safety">Research questions →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="container-site f-section" aria-labelledby="f-programs">
+    <div class="f-sec-head">
+      <div>
+        <p class="f-index">File 02 / Our programs</p>
+        <h2 id="f-programs">Four ways to work towards that purpose.</h2>
+      </div>
+      <p><a class="f-link" href="/research">Explore all research topics ↗</a></p>
+    </div>
+    <div class="f-files">
+      {programs.map((p, i) => {
+        const Art = p.art;
+        return (
+          <article class="f-file">
+            <div class="f-file-visual" aria-hidden="true">
+              <p class="f-index">0{i + 1} / Program file</p>
+              <Art />
+            </div>
+            <div class="f-file-body">
+              <span class="f-tag">{p.area}</span><span class="f-status">{p.status}</span>
+              <h3><a href={p.href}>{p.name}<span aria-hidden="true">↗</span></a></h3>
+              <p>{p.body}</p>
+              <p style="margin-top:1rem"><a class="f-link" href={p.href}>Explore the program →</a></p>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+    <p class="f-note">Open materials are available today. Research goals are not claims of deployed services or measured impact. <a href="/activities#progress">Read the current status of our work.</a></p>
+  </section>
+
+  <section class="f-terminal-band" aria-labelledby="f-code">
+    <div class="halftone" aria-hidden="true"></div>
+    <div class="container-site f-terminal-grid">
+      <div>
+        <p class="f-index">Field kit / Take the work with you</p>
+        <h2 id="f-code">Clone it. Read it. Challenge it.</h2>
+        <p>Everything we publish is inspectable. Start from the repositories — the protocol, the agent orchestrator, and the documentation are all public.</p>
+        <div class="term-links">
+          <a href={SITE.github}>VirtEngine source ↗</a>
+          <a href={SITE.bosunGithub}>Bosun source ↗</a>
+          <a href="https://docs.virtengine.com">Technical docs ↗</a>
+        </div>
+      </div>
+      <div class="term" role="region" aria-label="Repository clone commands">
+        <div class="term-bar" aria-hidden="true"><i></i><i></i><i></i><span style="margin-left:.4rem">detio — field terminal</span></div>
+        <pre><code><span class="c"># the open infrastructure protocol</span>
+<span class="p">$</span> git clone {SITE.github}.git
+
+<span class="c"># the open-source agent orchestrator</span>
+<span class="p">$</span> git clone {SITE.bosunGithub}.git</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-site f-section" aria-labelledby="f-foundation">
+    <div class="f-gov grain-host">
+      <div style="position:relative;z-index:2">
+        <p class="f-index">File 03 / The Foundation</p>
+        <h2 id="f-foundation">A public purpose. A framework for accountability.</h2>
+        <p>Our constitution defines how the Foundation can use its resources, make decisions, and protect its public-benefit purposes. Explore those rules and the evidence available today.</p>
+        <a class="btn-hard" href="/foundation/who-we-are">Meet the Foundation ↗</a>
+      </div>
+      <div class="f-paths" style="position:relative;z-index:2">
+        <a href="/governance"><span>01</span><div><h3>How decisions are made</h3><p>Board responsibilities, membership, and consent requirements.</p></div><b aria-hidden="true">↗</b></a>
+        <a href="/constitution"><span>02</span><div><h3>Read the constitution</h3><p>Ten plain-language topics with references to the underlying clauses.</p></div><b aria-hidden="true">↗</b></a>
+        <a href="/transparency"><span>03</span><div><h3>Check our public record</h3><p>Published resources, funding disclosures, and reporting status.</p></div><b aria-hidden="true">↗</b></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-site f-section" aria-labelledby="f-way">
+    <div class="f-sec-head">
+      <div>
+        <p class="f-index">File 04 / Find your way in</p>
+        <h2 id="f-way">Start with what you want to do.</h2>
+      </div>
+      <p>You can read our resources and contribute to open-source work without becoming a member of the Foundation.</p>
+    </div>
+    <div class="f-stubs">
+      {waysIn.map((w) => (
+        <a class="f-stub" href={w.href}>
+          <span class="f-stub-top"><span>{w.tag}</span><span>Admit one</span></span>
+          <span class="f-stub-body" style="display:block"><h3>{w.title}</h3><p>{w.body}</p></span>
+          <span class="f-stub-foot" aria-hidden="true">✦ →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-site" aria-labelledby="f-close">
+    <div class="f-closing grain-host">
+      <div style="position:relative;z-index:2">
+        <p class="f-index">Let’s make the work useful</p>
+        <h2 id="f-close">Good research starts with a clear question.</h2>
+        <p>Tell us what you are investigating and who it could help.</p>
+      </div>
+      <a class="btn-hard btn-hard--ink" href="/contact" style="position:relative;z-index:2">Contact the Foundation ↗</a>
+    </div>
+  </section>
+
+  <div style="margin-top:clamp(3rem,6vw,4.5rem)">
+    <Ticker
+      variant="signal"
+      items={["DETIO Foundation Ltd", "ACN 699 651 771", "Not-for-profit", "Technology for public benefit"]}
+      label="Foundation identity"
+    />
+  </div>
 </Base>

@@ -1,0 +1,37 @@
+---
+/**
+ * Ticker — a retro marquee ribbon (Hermes-style motion, Mozilla-style
+ * plain-language claims). Pure CSS animation; pauses on hover and
+ * collapses under prefers-reduced-motion. Content duplicated for a
+ * seamless loop; the repeat is aria-hidden.
+ */
+interface Props {
+  items: string[];
+  variant?: "federal" | "signal";
+  label?: string;
+}
+
+const { items, variant = "federal", label = "Foundation record" } = Astro.props;
+const loop = [...items, ...items];
+---
+<div
+  class:list={["ticker", variant === "signal" && "ticker--signal"]}
+  role="marquee"
+  aria-label={label}
+>
+  <div class="ticker-track" aria-hidden="true">
+    {loop.map((item) => <span>{item} <b>✦</b></span>)}
+  </div>
+  <span class="sr-only">{items.join(" · ")}</span>
+</div>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
