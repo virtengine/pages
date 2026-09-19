@@ -100,7 +100,7 @@ export const SUPPORT: SupportOrg[] = [
     logoAlt: "Connecting Up, powered by Infoxchange",
     href: "https://www.connectingup.org/",
     role: "Member",
-    body: "The project is a Connecting Up member. Connecting Up, powered by Infoxchange, helps Australian not-for-profits get affordable technology, software, and IT support.",
+    body: "The foundation is a Connecting Up member. Connecting Up, powered by Infoxchange, helps Australian not-for-profits get affordable technology, software, and IT support.",
     facts: ["Member organisation"],
     ctaLabel: "Connecting Up",
   },

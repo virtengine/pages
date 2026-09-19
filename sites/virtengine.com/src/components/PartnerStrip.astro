@@ -33,7 +33,7 @@ const { class: className } = Astro.props;
             <article class={`support-panel support-panel--${org.id}`} data-for={org.id}>
               <div class="support-copy">
                 <p class="support-chip">
-                  <img src={org.logo} alt="" width="120" height="32" />
+                  <img src={org.logo} alt="" width="120" height="32" loading="lazy" decoding="async" />
                 </p>
                 <p class="support-role">{org.role}</p>
                 <p class="support-body">{org.body}</p>
@@ -56,7 +56,7 @@ const { class: className } = Astro.props;
         {
           SUPPORT.map((org) => (
             <label class="support-tab" for={`support-${org.id}`} title={org.name}>
-              <img src={org.logo} alt={org.logoAlt} width="140" height="36" />
+              <img src={org.logo} alt={org.logoAlt} width="140" height="36" loading="lazy" decoding="async" />
             </label>
           ))
         }

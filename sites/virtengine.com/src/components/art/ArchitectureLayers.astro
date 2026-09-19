@@ -1,56 +1,32 @@
 ---
-/**
- * ArchitectureLayers — four horizontal layers. Hover/focus illuminates
- * the related paths (CSS :has). Zero JS.
- */
+/** Interactive protocol map. Hover previews; native disclosure pins a layer open. */
 const layers = [
-  {
-    id: "users",
-    href: "/protocol",
-    name: "Users & applications",
-    note: "CLI · approved clients · VEID wallet",
-    chips: ["virtengine", "veid app", "gRPC/REST"],
-  },
-  {
-    id: "market",
-    href: "/learn/how-the-marketplace-works",
-    name: "Marketplace / identity / economics",
-    note: "Orders, evidence, escrow — protocol state, not a private catalogue",
-    chips: ["x/market", "x/veid", "x/escrow"],
-  },
-  {
-    id: "chain",
-    href: "/modules",
-    name: "VirtEngine chain",
-    note: "One Go binary · Cosmos SDK · CometBFT consensus",
-    chips: ["27 modules", "single binary", "validators"],
-  },
-  {
-    id: "infra",
-    href: "/providers",
-    name: "Providers / validators / HPC",
-    note: "Daemons instantiate, meter, and attest on real machines",
-    chips: ["providerd", "Kubernetes", "SLURM"],
-  },
+  { id: "users", href: "/protocol", index: "01", name: "Users & applications", eyebrow: "The intent layer", note: "Where a workload, a policy, and a proof first enter the system.", chips: ["virtengine", "VEID wallet", "gRPC / REST"], input: "Workload intent and consented proof requests", output: "Signed instructions the protocol can independently verify", detail: "Tenants and approved clients describe the work to be done. VEID wallets can answer an identity request with a proof, rather than exposing a raw identity record.", path: "intent → signed request" },
+  { id: "market", href: "/learn/how-the-marketplace-works", index: "02", name: "Market, identity & economics", eyebrow: "The coordination layer", note: "Orders, bids, evidence, and escrow become shared protocol state.", chips: ["x/market", "x/veid", "x/escrow"], input: "A signed request, provider capacity, and eligibility evidence", output: "A selected lease with funds and terms held in escrow", detail: "Independent providers compete for an order. Identity evidence, accepted terms, and the resulting lease are visible as protocol state — not hidden inside a marketplace account.", path: "request → bid → lease" },
+  { id: "chain", href: "/modules", index: "03", name: "VirtEngine chain", eyebrow: "The verification layer", note: "One deterministic state machine, agreed by the validator set.", chips: ["27 modules", "single binary", "validators"], input: "Transactions, evidence, and signed usage records", output: "Ordered, auditable state with a verifiable history", detail: "The chain is the shared source of truth. Its modules enforce the marketplace lifecycle and preserve the evidence needed to inspect how an order became a lease and, later, a settlement.", path: "verify → agree → record" },
+  { id: "infra", href: "/providers", index: "04", name: "Independent infrastructure", eyebrow: "The execution layer", note: "Real machines run the work; provider daemons meter and attest to it.", chips: ["providerd", "Kubernetes", "SLURM"], input: "A funded lease and deployment instructions", output: "Metered usage records for the settlement process", detail: "GPU clusters, HPC schedulers, and general cloud remain independently operated. The provider daemon translates a lease into real work, then signs the usage data used for settlement.", path: "lease → run → meter" },
 ];
 ---
 
-<div class="arch-map">
-  {
-    layers.map((layer, i) => (
-      <a class="arch-layer" href={layer.href} data-layer={layer.id} style={`--i:${i}`}>
-        <span class="arch-idx">0{i + 1}</span>
-        <span class="arch-copy">
-          <strong>{layer.name}</strong>
-          <small>{layer.note}</small>
-        </span>
-        <span class="arch-chips">
-          {layer.chips.map((c) => (
-            <code>{c}</code>
-          ))}
-        </span>
-      </a>
-    ))
-  }
-  <p class="arch-hint">Hover a layer to read its role. All 27 modules sit on the chain.</p>
+<div class="arch-map" aria-label="Four-layer VirtEngine protocol architecture">
+  <div class="arch-map-rail" aria-hidden="true"><span>Protocol surface</span><span>Hover to preview · click to hold open</span></div>
+  <div class="arch-stack">
+    {layers.map((layer, i) => (
+      <details class="arch-layer" data-layer={layer.id} style={`--i:${i}`}>
+        <summary>
+          <span class="arch-index">{layer.index}</span>
+          <span class="arch-signal" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="arch-copy"><span class="arch-eyebrow">{layer.eyebrow}</span><strong>{layer.name}</strong><small>{layer.note}</small></span>
+          <span class="arch-chips" aria-label={`Examples: ${layer.chips.join(", ")}`}>{layer.chips.map((chip) => <code>{chip}</code>)}</span>
+          <span class="arch-toggle" aria-hidden="true"><i></i><span>Inspect</span></span>
+        </summary>
+        <div class="arch-detail">
+          <div class="arch-detail-copy"><p>{layer.detail}</p><a href={layer.href}>Explore this layer <span aria-hidden="true">→</span></a></div>
+          <dl class="arch-flow-data"><div><dt>Receives</dt><dd>{layer.input}</dd></div><div><dt>Produces</dt><dd>{layer.output}</dd></div></dl>
+          <p class="arch-path"><span aria-hidden="true"></span>{layer.path}</p>
+        </div>
+      </details>
+    ))}
+  </div>
+  <p class="arch-hint"><span aria-hidden="true">↓</span> Work and evidence move down through the stack; signed usage returns to the chain for settlement.</p>
 </div>

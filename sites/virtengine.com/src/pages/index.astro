@@ -12,9 +12,12 @@ import MediaFigure from "@components/media/MediaFigure.astro";
 import PartnerStrip from "@components/PartnerStrip.astro";
 import { CURRENT_POSTS } from "@data/blog";
 import { SITE } from "@data/site";
+import { hits, idleCopy, stageCopy } from "@data/network";
 
 const journalLead = CURRENT_POSTS[0];
 const journalSide = CURRENT_POSTS.slice(1, 3);
+
+const variants = hits.map((h) => ({ id: h.id, href: h.href, ...stageCopy[h.id] }));
 
 const kinds = [
   { slug: "provider-datacenter" as const, label: "GPU compute", note: "Dense accelerators offered into the market." },
@@ -98,12 +101,20 @@ const surfaces = [
           <i class="rail-lamp" aria-hidden="true"></i>
           Protocol in development · Public TestNet planned
         </p>
-        <h1>The open infrastructure network.</h1>
-        <p class="home-hero-kicker">Compute. Identity. Settlement. One verifiable protocol.</p>
-        <p class="home-hero-lede">
-          VirtEngine is an open-source protocol for discovering, verifying and using
-          computing infrastructure across independent providers.
-        </p>
+        <div class="hero-swap">
+          <div class="hero-variant hero-variant--idle">
+            <h1>{idleCopy.title}</h1>
+            <p class="home-hero-kicker">{idleCopy.tag}</p>
+            <p class="home-hero-lede">{idleCopy.lede}</p>
+          </div>
+          {variants.map((v) => (
+            <div class={`hero-variant hero-variant--${v.id}`}>
+              <h1>{v.title}</h1>
+              <p class="home-hero-kicker">{v.tag}</p>
+              <p class="home-hero-lede">{v.lede}</p>
+            </div>
+          ))}
+        </div>
         <div class="action-row">
           <a class="btn-solid" href="/protocol">
             Explore the protocol
@@ -115,6 +126,20 @@ const surfaces = [
             View source <span aria-hidden="true">↗</span>
           </a>
         </div>
+        <ol class="hero-stages" aria-label="Protocol stages">
+          <li class="hero-stages-note">
+            <span>Protocol stages</span>
+            <span>Hover to preview · any opens</span>
+          </li>
+          {hits.map((h, i) => (
+            <li class="hero-stage">
+              <a class="hs-chip" data-for={h.id} href={h.href}>
+                <span class="hs-num">{String(i + 1).padStart(2, "0")}</span>
+                <span class="hs-label">{stageCopy[h.id].chip}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
         <p class="home-hero-steward">
           Stewarded in the public benefit by DETIO FOUNDATION LTD.
         </p>
@@ -279,8 +304,8 @@ const surfaces = [
           <h2>A protocol, not a portal.</h2>
         </div>
         <p>
-          Four layers, one engineered system. Hover a band to see how it connects.
-          The module reference documents all 27 custom modules in the single binary.
+          Four layers, one engineered system. Hover a band for a live preview, or
+          open it to inspect what it receives, produces, and guarantees.
         </p>
       </div>
       <ArchitectureLayers />
@@ -380,12 +405,12 @@ const surfaces = [
   <section class="home-journal">
     <SurfaceWash />
     <div class="container-site">
-      <div class="folio-head folio-head--split">
-        <div>
-          <div class="folio-coord"><span>Journal</span><span>Field notes</span></div>
-          <h2>The thinking behind the protocol.</h2>
+      <div class="folio-head folio-head--journal">
+        <div class="folio-coord">
+          <span>Journal — field notes</span>
+          <a class="journal-readall" href="/blog">Read all notes <span aria-hidden="true">→</span></a>
         </div>
-        <a class="btn-quiet self-end" href="/blog">Read all notes <span aria-hidden="true">→</span></a>
+        <h2>The thinking behind the protocol.</h2>
       </div>
       <div class="journal-editorial">
         {

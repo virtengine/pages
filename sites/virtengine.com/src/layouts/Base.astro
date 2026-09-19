@@ -109,7 +109,7 @@ const graph = schemaGraph([
           href={new URL("/blog/rss.xml", SITE.url).href}
         />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#f7f8f7" />
+    <meta name="theme-color" content={isHome ? "#0a100c" : "#f7f8f7"} />
     <meta name="author" content={SITE.name} />
     <meta
       name="robots"

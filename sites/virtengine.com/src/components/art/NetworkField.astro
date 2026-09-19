@@ -1,117 +1,167 @@
 ---
 /**
- * NetworkField — homepage hero, stacked vertically so labels stay readable.
- * 12s CSS loop: workload enters, verification, bids, lease, usage.
+ * NetworkField — motion graphic of a lease forming.
+ * Hover/focus lights a stage (CSS :has). Click opens the matching page.
+ * Zero JS.
  */
 import VImage from "@components/brand/VImage.astro";
-
-const providers = [
-  { name: "syd-01", region: "ap-southeast-2", bid: "0.42", status: "attested" },
-  { name: "mel-gpu", region: "ap-southeast-2", bid: "0.39", status: "selected" },
-  { name: "act-hpc", region: "ap-southeast-1", bid: "0.51", status: "attested" },
-];
+import { hits, overlays, readouts } from "@data/network";
 ---
 
-<svg
-  class="network-field"
-  viewBox="0 0 560 980"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
-  preserveAspectRatio="xMidYMid meet"
->
-  <defs>
-    <radialGradient id="nf-core" cx="0.48" cy="0.42" r="0.55">
-      <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.28"></stop>
-      <stop offset="48%" stop-color="#60cc5d" stop-opacity="0.08"></stop>
-      <stop offset="100%" stop-color="#60cc5d" stop-opacity="0"></stop>
-    </radialGradient>
-    <pattern id="nf-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0 H0 V40" stroke="#253027" stroke-width="0.7"></path>
-    </pattern>
-    <filter id="nf-glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="6" result="b"></feGaussianBlur>
-      <feMerge>
-        <feMergeNode in="b"></feMergeNode>
-        <feMergeNode in="SourceGraphic"></feMergeNode>
-      </feMerge>
-    </filter>
-  </defs>
+<div class="nf-stage">
+  <div class="nf-canvas">
+    <svg
+      class="network-field"
+      viewBox="0 0 640 700"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <radialGradient id="nf-glow-core" cx="0.5" cy="0.45" r="0.55">
+          <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.32"></stop>
+          <stop offset="55%" stop-color="#60cc5d" stop-opacity="0.08"></stop>
+          <stop offset="100%" stop-color="#60cc5d" stop-opacity="0"></stop>
+        </radialGradient>
+        <pattern id="nf-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+          <path d="M32 0 H0 V32" stroke="#253027" stroke-width="0.7"></path>
+        </pattern>
+        <filter id="nf-soft" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" result="b"></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="b"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
+        <clipPath id="nf-well-clip">
+          <rect x="232" y="548" width="176" height="96" rx="10"></rect>
+        </clipPath>
+      </defs>
 
-  <rect width="560" height="980" fill="url(#nf-grid)" opacity="0.4"></rect>
-  <rect width="560" height="980" fill="url(#nf-core)"></rect>
+      <rect width="640" height="700" fill="url(#nf-grid)" opacity="0.35"></rect>
+      <rect width="640" height="700" fill="url(#nf-glow-core)"></rect>
 
-  <!-- workload -->
-  <g class="nf-workload" transform="translate(48,48)">
-    <rect width="464" height="118" rx="12" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
-    <text x="28" y="36" font-family="var(--font-mono)" font-size="14" letter-spacing="0.12em" fill="#a3b2a4">WORKLOAD</text>
-    <text x="28" y="72" font-family="var(--font-sans)" font-size="28" font-weight="600" fill="#e9f0ea">8× GPU · 240 GB VRAM</text>
-    <text x="28" y="98" font-family="var(--font-mono)" font-size="15" fill="#60cc5d">ap-southeast-2</text>
-  </g>
+      <path class="nf-spine" d="M320 118 V 548" stroke="#3a4a3c" stroke-width="1.4"></path>
 
-  <path
-    class="nf-path-in dash-march"
-    d="M280 166 V 250"
-    stroke="#60cc5d"
-    stroke-width="2.2"
-    stroke-linecap="round"
-  ></path>
-  <circle class="nf-packet" r="6" fill="#7ddd7a" filter="url(#nf-glow)"></circle>
-
-  <!-- protocol core -->
-  <g transform="translate(280,360)">
-    <circle r="118" stroke="#3a4a3c" stroke-dasharray="3 10" opacity="0.75" class="spin-slow"></circle>
-    <circle r="82" stroke="#60cc5d" stroke-opacity="0.4" stroke-width="1.6"></circle>
-    <circle r="52" fill="#182219" stroke="#60cc5d" stroke-width="2"></circle>
-    <g transform="translate(-22,-22)">
-      <VImage x={0} y={0} h={44} />
-    </g>
-    <text y="152" text-anchor="middle" font-family="var(--font-mono)" font-size="15" letter-spacing="0.16em" fill="#e9f0ea">PROTOCOL LAYER</text>
-  </g>
-
-  <!-- verification -->
-  <g class="nf-verify">
-    <g transform="translate(36,248)">
-      <rect width="210" height="44" rx="22" fill="#182219" stroke="#60cc5d" stroke-width="1.4"></rect>
-      <circle cx="22" cy="22" r="6" fill="#60cc5d"></circle>
-      <text x="38" y="28" font-family="var(--font-sans)" font-size="15" fill="#e9f0ea">Identity verified</text>
-    </g>
-    <g transform="translate(314,248)">
-      <rect width="210" height="44" rx="22" fill="#182219" stroke="#60cc5d" stroke-width="1.4"></rect>
-      <circle cx="22" cy="22" r="6" fill="#60cc5d"></circle>
-      <text x="38" y="28" font-family="var(--font-sans)" font-size="15" fill="#e9f0ea">Capacity attested</text>
-    </g>
-    <g transform="translate(175,548)">
-      <rect width="210" height="44" rx="22" fill="#182219" stroke="#60cc5d" stroke-width="1.4"></rect>
-      <circle cx="22" cy="22" r="6" fill="#60cc5d"></circle>
-      <text x="38" y="28" font-family="var(--font-sans)" font-size="15" fill="#e9f0ea">Escrow active</text>
-    </g>
-  </g>
-
-  <!-- bids stacked -->
-  {
-    providers.map((p, i) => (
-      <g class={`nf-bid ${i === 1 ? "nf-bid--win" : ""}`} transform={`translate(48, ${620 + i * 92})`}>
-        <rect width="464" height="80" rx="10" fill="#1e2a20" stroke={i === 1 ? "#60cc5d" : "#3a4a3c"} stroke-width="1.6" />
-        <text x="24" y="32" font-family="var(--font-mono)" font-size="16" fill="#7ddd7a">{p.name}</text>
-        <text x="24" y="58" font-family="var(--font-sans)" font-size="15" fill="#a3b2a4">{p.region}</text>
-        <text x="300" y="36" font-family="var(--font-sans)" font-size="22" font-weight="600" fill="#e9f0ea">${p.bid}/hr</text>
-        <text x="300" y="60" font-family="var(--font-mono)" font-size="13" letter-spacing="0.12em" fill={i === 1 ? "#60cc5d" : "#7d8d7e"}>{p.status.toUpperCase()}</text>
+      <g class="nf-g nf-g-order">
+        <rect x="232" y="28" width="176" height="86" rx="12" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
+        {
+          Array.from({ length: 8 }).map((_, i) => (
+            <rect
+              class="nf-gpu"
+              style={`--i:${i}`}
+              x={248 + i * 20}
+              y="48"
+              width="14"
+              height="46"
+              rx="3"
+              fill="#182219"
+              stroke="#60cc5d"
+              stroke-width="1.2"
+            />
+          ))
+        }
+        <text x="40" y="78" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">ORDER</text>
       </g>
-    ))
-  }
 
-  <path
-    class="nf-lease"
-    d="M280 478 V 612"
-    stroke="#7ddd7a"
-    stroke-width="2.4"
-    stroke-linecap="round"
-  ></path>
+      <circle class="nf-packet" r="7" fill="#7ddd7a" filter="url(#nf-soft)"></circle>
 
-  <g class="nf-usage" transform="translate(48, 900)">
-    <text font-family="var(--font-mono)" font-size="13" letter-spacing="0.14em" fill="#a3b2a4">USAGE</text>
-    <text x="120" font-family="var(--font-mono)" font-size="22" fill="#79d6a3">00:14:22</text>
-    <text x="280" font-family="var(--font-sans)" font-size="15" fill="#60cc5d">lease selected · metering</text>
-  </g>
-</svg>
+      <g class="nf-g nf-g-veid" transform="translate(78,168)">
+        <circle class="nf-stamp" cx="48" cy="48" r="46" stroke="#60cc5d" stroke-width="1.6" fill="#182219"></circle>
+        <circle cx="48" cy="48" r="32" stroke="#60cc5d" stroke-opacity="0.35" stroke-dasharray="3 6"></circle>
+        <path d="M34 28 L62 28 L48 58 Z" fill="#60cc5d" opacity="0.9"></path>
+        <text x="48" y="112" text-anchor="middle" font-family="var(--font-mono)" font-size="12" letter-spacing="0.14em" fill="#a3b2a4">VEID</text>
+      </g>
+
+      <g class="nf-g nf-g-attest" transform="translate(430,176)">
+        <rect x="0" y="8" width="112" height="80" rx="10" fill="#182219" stroke="#60cc5d" stroke-width="1.6"></rect>
+        <rect class="nf-slot" x="14" y="22" width="84" height="12" rx="2" fill="#60cc5d"></rect>
+        <rect class="nf-slot" x="14" y="42" width="84" height="12" rx="2" fill="#3a4a3c"></rect>
+        <rect class="nf-slot" x="14" y="62" width="84" height="12" rx="2" fill="#60cc5d"></rect>
+        <text x="56" y="112" text-anchor="middle" font-family="var(--font-mono)" font-size="12" letter-spacing="0.14em" fill="#a3b2a4">ATTEST</text>
+      </g>
+
+      <g class="nf-g nf-core" transform="translate(320,340)">
+        <circle r="92" stroke="#3a4a3c" stroke-dasharray="3 10" class="spin-slow"></circle>
+        <circle r="64" stroke="#60cc5d" stroke-opacity="0.45" stroke-width="1.5"></circle>
+        <circle r="42" fill="#182219" stroke="#60cc5d" stroke-width="2"></circle>
+        <g transform="translate(-20,-20)">
+          <VImage x={0} y={0} h={40} />
+        </g>
+      </g>
+
+      <g class="nf-g nf-g-bids">
+        <path class="nf-fan" d="M320 432 L140 478 M320 432 L320 478 M320 432 L500 478" stroke="#3a4a3c" stroke-width="1.2"></path>
+        <g class="nf-node nf-bid-a" transform="translate(92,478)">
+          <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
+          <path d="M34 14 L62 14 L48 36 Z" fill="#7d8d7e"></path>
+          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.42</text>
+        </g>
+        <g class="nf-node nf-bid-win nf-node--win" transform="translate(272,478)">
+          <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#60cc5d" stroke-width="2"></rect>
+          <path d="M34 14 L62 14 L48 36 Z" fill="#60cc5d"></path>
+          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#7ddd7a">0.39</text>
+        </g>
+        <g class="nf-node nf-bid-c" transform="translate(452,478)">
+          <rect width="96" height="52" rx="8" fill="#1e2a20" stroke="#3a4a3c" stroke-width="1.4"></rect>
+          <path d="M34 14 L62 14 L48 36 Z" fill="#7d8d7e"></path>
+          <text x="48" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.51</text>
+        </g>
+        <text x="40" y="508" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">BID</text>
+      </g>
+
+      <g class="nf-g nf-g-escrow">
+        <rect x="232" y="548" width="176" height="96" rx="10" fill="#121a14" stroke="#3a4a3c" stroke-width="1.5"></rect>
+        <g clip-path="url(#nf-well-clip)">
+          <rect class="nf-fill" x="232" y="548" width="176" height="96" fill="#60cc5d" opacity="0.3"></rect>
+        </g>
+        <text x="248" y="568" font-family="var(--font-mono)" font-size="12.5" letter-spacing="0.16em" fill="#a3b2a4">ESCROW</text>
+        <text x="392" y="568" text-anchor="end" font-family="var(--font-mono)" font-size="11" letter-spacing="0.12em" fill="#7d8d7e">TAKE</text>
+        <line x1="248" y1="582" x2="392" y2="582" stroke="#253027" stroke-width="1"></line>
+        <text x="320" y="620" text-anchor="middle" font-family="var(--font-sans)" font-size="44" font-weight="700" fill="#7ddd7a">0%</text>
+        <text x="320" y="639" text-anchor="middle" font-family="var(--font-mono)" font-size="10" letter-spacing="0.1em" fill="#a3b2a4">no commission charged</text>
+      </g>
+
+      <g class="nf-g nf-g-settle">
+        <rect x="236" y="656" width="168" height="10" rx="5" fill="#1e2a20"></rect>
+        <rect class="nf-usage" x="236" y="656" width="40" height="10" rx="5" fill="#60cc5d"></rect>
+        <circle class="nf-tick" r="4" fill="#7ddd7a"></circle>
+        <circle class="nf-tick nf-tick-b" r="4" fill="#7ddd7a"></circle>
+        <text x="40" y="666" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">SETTLE</text>
+      </g>
+
+      <g class="nf-overlays">
+        {overlays.map((o) =>
+          o.kind === "circle" ? (
+            <circle class="nf-ol" data-ol={o.id} cx={o.x} cy={o.y} r={o.r} />
+          ) : (
+            <rect class="nf-ol" data-ol={o.id} x={o.x} y={o.y} width={o.w} height={o.h} rx={o.rx ?? 0} />
+          )
+        )}
+      </g>
+    </svg>
+
+    <nav class="nf-hits" aria-label="Protocol stages">
+      {
+        hits.map((h) => (
+          <a
+            class={`nf-hit nf-hit-${h.id}`}
+            href={h.href}
+            style={`left:${h.x}%;top:${h.y}%;width:${h.w}%;height:${h.h}%`}
+          >
+            {h.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <p class="nf-readout" aria-live="polite">
+    <span class="nf-r nf-r-idle">{readouts.idle}</span>
+    <span class="nf-r nf-r-touch">Tap a stage to open it.</span>
+    {hits.map((h) => (
+      <span class={`nf-r nf-r-${h.id}`}>{readouts[h.id]}</span>
+    ))}
+  </p>
+</div>

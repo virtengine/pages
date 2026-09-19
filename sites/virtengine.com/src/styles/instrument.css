@@ -2114,7 +2114,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .home-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: center;
   min-height: 100svh;
@@ -2127,9 +2127,9 @@ body.is-home .mega-header:has(.mega-group[open]) {
   bottom: auto;
   left: auto;
   width: 100%;
-  height: min(48rem, 82svh);
+  height: auto;
   z-index: 0;
-  pointer-events: none;
+  pointer-events: auto;
   mask-image: none;
 }
 .home-hero-visual .network-field {
@@ -2165,7 +2165,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .home-hero .action-row { margin-top: 2rem; }
 .home-hero-steward {
-  margin-top: 2.4rem;
+  margin-top: 1.75rem;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -2190,31 +2190,354 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .btn-quiet--night { color: var(--color-green); }
 .btn-quiet--night:hover { color: var(--color-green-bright); }
 
-.nf-path-in { stroke-dasharray: 6 10; opacity: 0.7; }
+/* Hero instrument: the left copy swaps to a per-stage summary on hover of the
+   diagram or the stage rail. Zero JS — all state is :has-driven cross-fades. */
+.hero-swap {
+  display: grid;
+}
+.hero-variant {
+  grid-area: 1 / 1;
+  min-width: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    visibility 0s linear 0.28s;
+}
+.hero-variant--idle {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.home-hero-grid:has(.nf-hit:is(:hover, :focus-visible)) .hero-variant--idle,
+.home-hero-grid:has(.hs-chip:hover) .hero-variant--idle {
+  opacity: 0;
+  visibility: hidden;
+}
+.home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hero-variant--order,
+.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .hero-variant--order,
+.home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hero-variant--veid,
+.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .hero-variant--veid,
+.home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hero-variant--attest,
+.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .hero-variant--attest,
+.home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hero-variant--core,
+.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .hero-variant--core,
+.home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hero-variant--bid-a,
+.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .hero-variant--bid-a,
+.home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hero-variant--bid-win,
+.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .hero-variant--bid-win,
+.home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hero-variant--bid-c,
+.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .hero-variant--bid-c,
+.home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hero-variant--escrow,
+.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .hero-variant--escrow,
+.home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hero-variant--settle,
+.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .hero-variant--settle {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.hero-stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-night-line);
+  border-radius: var(--radius-card);
+  background: rgba(10, 16, 12, 0.66);
+  list-style: none;
+}
+.hero-stages-note {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.15rem 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-night-faint);
+}
+.hero-stage {
+  min-width: 0;
+  margin: 0;
+  list-style: none;
+}
+.hs-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-night-line);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--color-night-muted);
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background-color 0.16s ease;
+}
+.hs-num {
+  flex: none;
+  font-size: 0.6rem;
+  color: var(--color-night-faint);
+}
+.hs-chip:hover {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  background: rgba(96, 204, 93, 0.08);
+}
+.hs-chip:hover .hs-num { color: var(--color-green); }
+.home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hs-chip[data-for="order"],
+.home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hs-chip[data-for="veid"],
+.home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hs-chip[data-for="attest"],
+.home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hs-chip[data-for="core"],
+.home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hs-chip[data-for="bid-a"],
+.home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hs-chip[data-for="bid-win"],
+.home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hs-chip[data-for="bid-c"],
+.home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hs-chip[data-for="escrow"],
+.home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hs-chip[data-for="settle"] {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  background: rgba(96, 204, 93, 0.08);
+}
+
+.nf-stage { width: 100%; }
+.nf-canvas {
+  position: relative;
+  width: 100%;
+  max-width: calc(min(42rem, 74svh) * 640 / 700);
+  margin-inline: auto;
+  aspect-ratio: 640 / 700;
+}
+.network-field {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.nf-hits { position: absolute; inset: 0; }
+.nf-hit {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 12px;
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+}
+.nf-hit-veid,
+.nf-hit-core { border-radius: 50%; }
+.nf-hit:hover,
+.nf-hit:focus-visible {
+  outline: none;
+}
+
+/* Crisp, art-aligned hover rings drawn inside the SVG. The HTML hit boxes stay
+   invisible so the highlight always matches the drawn geometry. */
+.nf-ol {
+  fill: none;
+  stroke: var(--color-green);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-ol[data-ol="order"],
+.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-ol[data-ol="order"],
+.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-ol[data-ol="veid"],
+.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-ol[data-ol="veid"],
+.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-ol[data-ol="attest"],
+.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-ol[data-ol="attest"],
+.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-ol[data-ol="core"],
+.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-ol[data-ol="core"],
+.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-a"],
+.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-ol[data-ol="bid-a"],
+.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-win"],
+.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-ol[data-ol="bid-win"],
+.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-c"],
+.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-ol[data-ol="bid-c"],
+.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-ol[data-ol="escrow"],
+.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-ol[data-ol="escrow"],
+.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-ol[data-ol="settle"],
+.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-ol[data-ol="settle"] {
+  opacity: 1;
+}
+.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-g-order,
+.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-g-veid,
+.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-g-attest,
+.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-core,
+.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-g-escrow,
+.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-g-settle,
+.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-g-bids,
+.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-g-bids,
+.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-g-bids {
+  opacity: 1;
+  animation-play-state: paused;
+}
+
+.nf-readout {
+  display: grid;
+  min-height: 2.2rem;
+  width: 100%;
+  max-width: calc(min(42rem, 74svh) * 640 / 700);
+  margin: 0.65rem auto 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--color-night-muted);
+}
+.nf-r {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.22s ease,
+    visibility 0s linear 0.22s;
+}
+.nf-r-idle {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-idle { opacity: 0; visibility: hidden; }
+.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-r-order,
+.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-r-veid,
+.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-r-attest,
+.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-r-core,
+.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-r-bid-a,
+.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-r-bid-win,
+.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-r-bid-c,
+.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-r-escrow,
+.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-r-settle {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.nf-spine { opacity: 0.7; }
+.nf-g { opacity: 0.42; animation: nf-lit 16s linear infinite; }
+.nf-g-order { animation-delay: 0s; }
+.nf-g-veid, .nf-g-attest { animation-delay: 3.1s; }
+.nf-g-bids { animation-delay: 6.2s; }
+.nf-g-escrow { animation-delay: 9.4s; }
+.nf-g-settle { animation-delay: 12.6s; }
+@keyframes nf-lit {
+  0%, 16% { opacity: 1; }
+  22%, 100% { opacity: 0.42; }
+}
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-packet,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-gpu,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-stamp,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-slot,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-fill,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-usage,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-tick,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-node--win,
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .spin-slow {
+  animation-play-state: paused;
+}
+.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g { opacity: 0.2; }
+.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-g-order,
+.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-g-veid,
+.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-g-attest,
+.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-core,
+.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-g-escrow,
+.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-g-settle,
+.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-g-bids,
+.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-g-bids,
+.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-g-bids {
+  opacity: 1;
+}
+.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-win,
+.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-c,
+.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-a,
+.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-c,
+.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-a,
+.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-win {
+  opacity: 0.28;
+}
+.nf-gpu {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: nf-gpu 16s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+@keyframes nf-gpu {
+  0%, 6% { transform: scaleY(0.22); fill: #182219; }
+  10%, 28% { transform: scaleY(1); fill: #60cc5d; }
+  40%, 100% { transform: scaleY(1); fill: #182219; }
+}
+.nf-stamp {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nf-stamp 16s ease-in-out infinite;
+  animation-delay: 3.1s;
+}
+@keyframes nf-stamp {
+  0%, 8% { transform: scale(0.86); }
+  14%, 28% { transform: scale(1); }
+  40%, 100% { transform: scale(0.94); }
+}
+.nf-slot:nth-child(2) { animation: nf-slot 16s linear infinite; animation-delay: 3.3s; }
+.nf-slot:nth-child(3) { animation: nf-slot 16s linear infinite; animation-delay: 3.6s; }
+.nf-slot:nth-child(4) { animation: nf-slot 16s linear infinite; animation-delay: 3.9s; }
+@keyframes nf-slot {
+  0%, 10% { fill: #3a4a3c; }
+  16%, 36% { fill: #60cc5d; }
+  48%, 100% { fill: #3a4a3c; }
+}
 .nf-packet {
-  offset-path: path("M280 166 V 250");
-  animation: inst-travel 12s ease-in-out infinite;
+  offset-path: path("M320 114 V 590");
+  offset-rotate: 0deg;
+  animation: inst-travel 16s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
-.nf-workload { animation: nf-fade 12s ease-in-out infinite; }
-.nf-verify { animation: nf-fade 12s ease-in-out infinite; animation-delay: 2.4s; opacity: 0; }
-.nf-bid { animation: nf-fade 12s ease-in-out infinite; animation-delay: 4.2s; opacity: 0.35; }
-.nf-bid--win { animation-delay: 5.4s; }
-.nf-lease {
-  stroke-dasharray: 280;
-  stroke-dashoffset: 280;
-  animation: nf-lease 12s ease-in-out infinite;
+.nf-node--win {
+  animation: nf-win 16s ease-in-out infinite;
 }
-.nf-usage { animation: nf-fade 12s ease-in-out infinite; animation-delay: 7.2s; opacity: 0; }
-@keyframes nf-fade {
-  0%, 8% { opacity: 0; }
-  18%, 82% { opacity: 1; }
-  92%, 100% { opacity: 0; }
+@keyframes nf-win {
+  0%, 36% { filter: none; }
+  42%, 70% { filter: drop-shadow(0 0 10px rgba(96, 204, 93, 0.55)); }
+  82%, 100% { filter: none; }
 }
-@keyframes nf-lease {
-  0%, 48% { opacity: 0; stroke-dashoffset: 280; }
-  58%, 82% { opacity: 1; stroke-dashoffset: 0; }
-  92%, 100% { opacity: 0; }
+.nf-fill {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: nf-well 16s ease-in-out infinite;
 }
+@keyframes nf-well {
+  0%, 54% { transform: scaleY(0.06); }
+  62%, 86% { transform: scaleY(1); }
+  96%, 100% { transform: scaleY(0.06); }
+}
+.nf-usage {
+  animation: nf-use 16s linear infinite;
+}
+@keyframes nf-use {
+  0%, 72% { width: 18px; }
+  78%, 94% { width: 148px; }
+  100% { width: 18px; }
+}
+.nf-tick {
+  offset-path: path("M404 661 C 460 661, 500 620, 320 530");
+  offset-rotate: 0deg;
+  animation: inst-travel 16s ease-in-out infinite;
+  animation-delay: 12.6s;
+}
+.nf-tick-b { animation-delay: 13.2s; }
 
 .cred-rail {
   background: var(--color-night);
@@ -2311,7 +2634,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .home-facts li { margin: 0.45rem 0; font-size: 0.95rem; }
 .home-facts code {
   margin-right: 0.45rem;
-  font-size: 0.82rem;
+  font-size: 1em;
   color: var(--color-green-deep);
 }
 .home-flag--night .home-facts code { color: var(--color-green); }
@@ -2352,7 +2675,8 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .mk-order strong { display: block; margin-top: 0.3rem; font-size: 1.15rem; }
 .mk-order span { display: block; margin-top: 0.25rem; color: var(--color-night-muted); font-size: 0.85rem; }
-.mk-bids { margin: 0; padding: 0 0.7rem 0.7rem; }
+.mk-bids { margin: 0; padding: 0 0.7rem 0.7rem; list-style: none; }
+.mk-bids li { margin-top: 0.45rem; }
 .mk-bid {
   display: grid;
   grid-template-columns: 1fr 1.1fr auto auto;
@@ -2361,10 +2685,9 @@ body.is-home .mega-header:has(.mega-group[open]) {
   padding: 0.7rem 0.75rem;
   border: 1px solid var(--color-night-line);
   border-radius: 8px;
-  margin-top: 0.45rem;
   font-size: 0.85rem;
-  animation: nf-fade 12s ease-in-out infinite;
-  animation-delay: calc(var(--i) * 0.35s + 4s);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 .mk-bid--win {
   border-color: var(--color-green);
@@ -2410,58 +2733,21 @@ body.is-home .mega-header:has(.mega-group[open]) {
   background: var(--color-paper);
 }
 .arch-map {
-  display: grid;
-  gap: 0.55rem;
-  margin-top: 2rem;
+  position: relative; margin-top: 2.35rem; padding: 0.85rem; overflow: hidden;
+  border: 1px solid var(--color-line); border-radius: var(--radius-frame);
+  background: linear-gradient(135deg, var(--color-panel), #f5f8f5); box-shadow: 0 1rem 3rem rgba(21,56,32,.06);
 }
-.arch-layer {
-  display: grid;
-  grid-template-columns: 3.2rem minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
-  padding: 1.15rem 1.25rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-card);
-  background: var(--color-panel);
-  color: inherit;
-  opacity: 0.72;
-  transition: opacity 180ms ease, border-color 180ms ease;
-}
-.arch-layer:hover,
-.arch-layer:focus-visible,
-.arch-map:has(.arch-layer:hover) .arch-layer:hover,
-.arch-map:has(.arch-layer:focus-visible) .arch-layer:focus-visible {
-  opacity: 1;
-  border-color: var(--color-green-soft);
-}
-.arch-map:has(.arch-layer:hover) .arch-layer:not(:hover),
-.arch-map:has(.arch-layer:focus-visible) .arch-layer:not(:focus-visible) {
-  opacity: 0.4;
-}
-.arch-idx {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  color: var(--color-green-deep);
-}
-.arch-copy { display: flex; flex-direction: column; gap: 0.2rem; }
-.arch-copy strong { font-size: 1.05rem; color: var(--color-ink); }
-.arch-copy small { color: var(--color-muted); }
-.arch-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.arch-chips code {
-  padding: 0.2rem 0.45rem;
-  border: 1px solid var(--color-line);
-  border-radius: 4px;
-  font-size: 0.72rem;
-  color: var(--color-slate);
-}
-.arch-hint {
-  margin-top: 0.85rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--color-muted);
-}
+.arch-map::before { content:""; position:absolute; inset:auto -12% -65% 38%; height:28rem; border-radius:50%; background:radial-gradient(circle,rgba(96,204,93,.13),transparent 64%); pointer-events:none; }
+.arch-map-rail { position:relative; z-index:1; display:flex; justify-content:space-between; gap:1rem; padding:.55rem .65rem 1rem; border-bottom:1px solid var(--color-line); color:var(--color-muted); font:500 .67rem/1.35 var(--font-mono); letter-spacing:.1em; text-transform:uppercase; }.arch-map-rail span:last-child{color:var(--color-green-deep)}
+.arch-stack { position:relative; z-index:1; display:grid; gap:.48rem; padding-top:.5rem; }
+.arch-layer { position:relative; overflow:hidden; border:1px solid var(--color-line); border-radius:calc(var(--radius-card) + 2px); background:color-mix(in srgb,var(--color-panel) 92%,var(--color-green-wash)); color:inherit; transition:border-color .28s ease,box-shadow .28s ease,background .28s ease; }
+.arch-layer::before { content:""; position:absolute; z-index:2; top:0; bottom:0; left:0; width:3px; background:var(--color-green); transform:scaleY(.2); transform-origin:center; transition:transform .28s ease; }
+.arch-layer summary { position:relative; z-index:1; display:grid; grid-template-columns:2.2rem 2.4rem minmax(0,1fr) auto auto; gap:.95rem; align-items:center; min-height:6.1rem; padding:1rem 1.1rem 1rem 1.25rem; cursor:pointer; list-style:none; }.arch-layer summary::-webkit-details-marker{display:none}
+.arch-index,.arch-eyebrow,.arch-flow-data dt,.arch-path,.arch-toggle span { font-family:var(--font-mono); letter-spacing:.1em; text-transform:uppercase; }.arch-index{color:var(--color-green-deep);font-size:.7rem}.arch-signal{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:1.65rem;height:1.5rem;align-items:end}.arch-signal i{display:block;border-radius:1px;background:var(--color-green-deep);opacity:.32;transition:height .36s ease,opacity .28s ease,background .28s ease}.arch-signal i:nth-child(1){height:35%}.arch-signal i:nth-child(2){height:70%}.arch-signal i:nth-child(3){height:100%}
+.arch-copy{display:flex;min-width:0;flex-direction:column;gap:.16rem}.arch-eyebrow{font-size:.61rem;color:var(--color-green-deep)}.arch-copy strong{color:var(--color-ink);font-size:1.08rem;line-height:1.2}.arch-copy small{max-width:46rem;color:var(--color-muted);font-size:.84rem;line-height:1.45}.arch-chips{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.35rem;max-width:16rem}.arch-chips code{padding:.27rem .42rem;border:1px solid var(--color-line);border-radius:3px;background:rgba(255,255,255,.65);color:var(--color-slate);font-size:.67rem;white-space:nowrap}.arch-toggle{display:flex;align-items:center;gap:.5rem;padding-left:.3rem;color:var(--color-green-deep)}.arch-toggle i{width:.52rem;height:.52rem;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .22s ease}.arch-toggle span{font-size:.61rem}
+.arch-detail{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(15rem,.95fr) auto;gap:1.8rem;align-items:end;max-height:0;padding:0 1.1rem 0 6.55rem;overflow:hidden;opacity:0;transform:translateY(-.35rem);transition:max-height .43s cubic-bezier(.2,.8,.2,1),padding .43s cubic-bezier(.2,.8,.2,1),opacity .22s ease,transform .43s ease}.arch-detail-copy{display:grid;gap:.75rem}.arch-detail-copy p{margin:0;max-width:45rem;color:var(--color-slate);font-size:.9rem;line-height:1.6}.arch-detail-copy a{width:fit-content;color:var(--color-green-deep);font-size:.84rem;font-weight:600}.arch-detail-copy a:hover{text-decoration:underline;text-underline-offset:4px}.arch-flow-data{display:grid;gap:.7rem;margin:0}.arch-flow-data div{padding-left:.8rem;border-left:1px solid var(--color-green-soft)}.arch-flow-data dt{margin-bottom:.2rem;color:var(--color-green-deep);font-size:.6rem}.arch-flow-data dd{margin:0;color:var(--color-muted);font-size:.75rem;line-height:1.45}.arch-path{display:flex;align-items:center;gap:.5rem;margin:0;padding-bottom:.15rem;color:var(--color-green-deep);font-size:.62rem;white-space:nowrap}.arch-path span{position:relative;width:1.5rem;height:1px;background:currentColor}.arch-path span::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}
+.arch-layer:hover,.arch-layer:focus-within,.arch-layer[open]{border-color:var(--color-green-soft);background:linear-gradient(105deg,var(--color-panel),#eef8ef);box-shadow:0 .8rem 1.75rem rgba(27,99,47,.09)}.arch-layer:hover::before,.arch-layer:focus-within::before,.arch-layer[open]::before{transform:scaleY(1)}.arch-layer:hover .arch-signal i,.arch-layer:focus-within .arch-signal i,.arch-layer[open] .arch-signal i{opacity:1;background:var(--color-green);animation:arch-signal 1.1s ease-in-out infinite alternate}.arch-layer:hover .arch-signal i:nth-child(2),.arch-layer:focus-within .arch-signal i:nth-child(2),.arch-layer[open] .arch-signal i:nth-child(2){animation-delay:.14s}.arch-layer:hover .arch-signal i:nth-child(3),.arch-layer:focus-within .arch-signal i:nth-child(3),.arch-layer[open] .arch-signal i:nth-child(3){animation-delay:.28s}.arch-layer:hover .arch-detail,.arch-layer:focus-within .arch-detail,.arch-layer[open] .arch-detail{max-height:13rem;padding-top:.25rem;padding-bottom:1.15rem;opacity:1;transform:translateY(0)}.arch-layer[open] .arch-toggle i{transform:rotate(225deg) translateY(-2px)}.arch-map:has(.arch-layer:hover) .arch-layer:not(:hover):not([open]),.arch-map:has(.arch-layer:focus-within) .arch-layer:not(:focus-within):not([open]){opacity:.58}
+.arch-hint{position:relative;z-index:1;margin:.95rem 0 0;padding:0 .65rem .05rem;color:var(--color-muted);font:.69rem/1.5 var(--font-mono);letter-spacing:.035em}.arch-hint span{color:var(--color-green-deep);font-size:.92rem}@keyframes arch-signal{from{transform:scaleY(.6);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
 .home-flag, .home-arch, .home-dev, .home-launch, .home-kinds, .home-journal, .home-steward, .home-philosophy, .home-close {
   scroll-margin-top: 5.5rem;
 }
@@ -2510,6 +2796,22 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .term-p { color: var(--color-green); }
 .term-cmt, .term-ok { color: var(--color-night-faint); }
+
+/* blinking block cursor — the terminal is a live instrument */
+.term-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.78rem;
+  margin-left: 0.4rem;
+  vertical-align: text-bottom;
+  background: var(--color-green);
+  animation: inst-caret 1.1s steps(1) infinite;
+}
+@keyframes inst-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.source-term:hover .term-cursor { animation-play-state: paused; }
 
 .home-launch {
   padding-block: clamp(4.5rem, 8vw, 7rem);
@@ -2619,7 +2921,23 @@ body.is-home .mega-header:has(.mega-group[open]) {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: clamp(1.5rem, 4vw, 3rem);
   margin-top: 2rem;
-  align-items: stretch;
+  align-items: start;
+}
+.folio-head--journal .folio-coord {
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+}
+.folio-head--journal .journal-readall {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-green-deep);
+}
+.journal-readall:hover {
+  color: var(--color-green-dark);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .journal-lead {
   display: flex;
@@ -2635,6 +2953,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
   background: transparent;
 }
 .journal-lead .media-figure-frame {
+  width: 100%;
   max-height: 16.5rem;
 }
 .journal-lead h3, .journal-side h3 {
@@ -2650,7 +2969,6 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .journal-side {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 0;
   padding: 0;
   border-left: 1px solid var(--color-line);
@@ -2663,7 +2981,9 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .journal-side article:last-child { border-bottom: 0; padding-bottom: 0; }
 .journal-more {
   display: inline-flex;
-  margin-top: 1.4rem;
+  margin-top: 1.35rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--color-line);
   font-weight: 600;
   color: var(--color-green-deep);
 }
@@ -2736,8 +3056,9 @@ body.is-home .mega-header:has(.mega-group[open]) {
   }
   .home-hero-visual {
     display: block;
-    height: 22rem;
-    opacity: 0.7;
+    height: auto;
+    min-height: 28rem;
+    opacity: 1;
   }
   .cred-rail .container-site { grid-template-columns: 1fr 1fr; }
   .cred-rail a { border-bottom: 1px solid var(--color-night-line); }
@@ -2746,11 +3067,10 @@ body.is-home .mega-header:has(.mega-group[open]) {
   }
   .home-flag-grid--flip > div:first-child { order: 0; }
   .infra-kinds { grid-template-columns: 1fr 1fr; }
-  .arch-layer { grid-template-columns: 2.4rem 1fr; }
   .arch-chips { display: none; }
   .launch-track::before { display: none; }
-  .mk-bid { grid-template-columns: 1fr 1fr; }
   .journal-lead-copy { margin-top: 1rem; margin-right: 0; padding-left: 0; }
+  .journal-lead .media-figure-frame { max-height: 24rem; }
   .journal-side {
     border-left: 0;
     padding-left: 0;
@@ -2761,13 +3081,35 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 @media (max-width: 640px) {
   .infra-kinds, .cred-rail .container-site { grid-template-columns: 1fr; }
+  .mk-bid { grid-template-columns: 1fr 1fr; }
+  .arch-map { margin-top: 1.65rem; padding: 0.55rem; }
+  .arch-map-rail { align-items: start; padding: 0.5rem 0.4rem 0.8rem; font-size: 0.58rem; }
+  .arch-map-rail span:last-child { max-width: 13rem; text-align: right; }
+  .arch-layer summary { grid-template-columns: 1.7rem 1.7rem minmax(0, 1fr) auto; gap: 0.65rem; min-height: 5.5rem; padding: 0.85rem 0.7rem 0.85rem 1rem; }
+  .arch-copy strong { font-size: 0.98rem; }
+  .arch-copy small { font-size: 0.76rem; }
+  .arch-eyebrow { font-size: 0.55rem; }
+  .arch-toggle span { display: none; }
+  .arch-detail { grid-template-columns: 1fr; gap: 0.9rem; padding-inline: 1rem; }
+  .arch-layer:hover .arch-detail, .arch-layer:focus-within .arch-detail, .arch-layer[open] .arch-detail { max-height: 28rem; padding-top: 0.15rem; padding-bottom: 1rem; }
+  .arch-detail-copy p { font-size: 0.84rem; }
+  .arch-flow-data { gap: 0.55rem; }
+  .arch-path { padding-top: 0.2rem; }
+  .arch-hint { padding-inline: 0.4rem; font-size: 0.62rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nf-packet, .nf-workload, .nf-verify, .nf-bid, .nf-lease, .nf-usage, .mk-bid {
+  .nf-g, .nf-gpu, .nf-stamp, .nf-slot, .nf-packet, .nf-node--win, .nf-fill, .nf-usage, .nf-tick, .mk-bid, .arch-signal i {
     animation: none !important;
     opacity: 1 !important;
-    stroke-dashoffset: 0 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+  .hero-variant,
+  .nf-r,
+  .nf-ol {
+    transition: none !important;
+    transform: none !important;
   }
 }
 
@@ -2875,6 +3217,16 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .cap-infra-grid .media-figure { margin: 0; }
 .cap-escape { margin-top: 1.1rem; }
+/* Stack the panel on small screens. This must live after the base
+   `.cap-panel` rule above so it is not overridden by source order. */
+@media (max-width: 960px) {
+  .cap-panel {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1.75rem;
+  }
+  .cap-art { min-width: 0; }
+}
 @supports not (selector(:has(*))) {
   .cap-panel { display: grid; border-top: 1px solid var(--color-line); }
   .cap-tabs { display: none; }
@@ -3018,4 +3370,226 @@ body.is-home { background-color: #0a100c; }
   .support-tabs { display: none; }
 }
 
+/* ======================================= 14. MOBILE POLISH =============== */
+
+/* Touch devices cannot hover: swap the hero instrument's hint copy and give
+   the quiet inline link rows a comfortable thumb target. */
+@media (hover: none), (pointer: coarse) {
+  .nf-r-idle { opacity: 0; visibility: hidden; }
+  .nf-r-touch {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-touch { opacity: 0; visibility: hidden; }
+  .hero-stages-note span:last-child { display: none; }
+
+  .home-close-links a,
+  .home-trust a,
+  .home-arch-link .btn-quiet,
+  .journal-more {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .home-close-links,
+  .home-trust { gap: 0.4rem 1.8rem; }
+
+  .site-footer nav li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+  }
+  .site-footer nav li + li { margin-top: 0; }
+  /* inline links in footer copy: grow the hit area without moving the line */
+  .site-footer p a { padding-block: 0.6rem; }
+
+  /* The lowest hotspots in the hero diagram are the hardest to hit. */
+  .nf-hit-bid-a,
+  .nf-hit-bid-win,
+  .nf-hit-bid-c,
+  .nf-hit-settle { min-height: 2.25rem; }
+}
+
+@media (max-width: 1099px) {
+  /* Micro mono labels were rendering below 11px on smaller screens. */
+  .cred-rail span,
+  .status-pill,
+  .mk-rail,
+  .mk-lease,
+  .mk-order small,
+  .mk-status,
+  .launch-step small,
+  .source-term-bar { font-size: 0.7rem; }
+
+  .status-pill,
+  .source-term-bar { font-size: 0.72rem; }
+}
+
+@media (max-width: 640px) {
+  /* The hero diagram needs no floor height on a phone. */
+  .home-hero-visual { min-height: 0; }
+}
+
+/* ======================================================================
+   FIGURE INTERACTIVITY — home cap panels (see the market work)
+   Every content figure answers to hover or selection like the hero does.
+   ====================================================================== */
+
+/* ---------- VeidScopes (VEID cap panel) ---------- */
+.vs-plot { position: relative; }
+.vs-read {
+  display: grid;
+  margin-top: 0.7rem;
+  min-height: 1.7rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--color-night-line);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-night-muted);
+}
+.vs-read > .vs-r { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.18s ease; }
+.vs-read > .vs-r--idle { opacity: 1; visibility: visible; }
+.vs-card { cursor: pointer; }
+.vs-card .vs-frame,
+.vs-card .vs-bar { transition: stroke 150ms ease, fill 150ms ease; }
+.vs-card--hot .vs-frame { stroke: var(--color-green); stroke-opacity: 0.55; }
+.vs-card--hot .vs-bar { fill: var(--color-green); }
+@media (hover: hover) and (pointer: fine) {
+  .vs-card:hover .vs-frame { stroke: var(--color-green); stroke-opacity: 1; fill: rgba(96, 204, 93, 0.08); }
+  .vs-card:hover .vs-bar { fill: var(--color-green); }
+  .vs-card:hover .vs-lead { stroke: var(--color-green); stroke-opacity: 0.7; }
+  .vs-plot:has(.vs-card[data-vs="scope"]:hover) .vs-r--scope,
+  .vs-plot:has(.vs-card[data-vs="evidence"]:hover) .vs-r--evidence,
+  .vs-plot:has(.vs-card[data-vs="consensus"]:hover) .vs-r--consensus,
+  .vs-plot:has(.vs-card[data-vs="proof"]:hover) .vs-r--proof { opacity: 1; visibility: visible; }
+  .vs-plot:has(.vs-card:hover) .vs-r--idle { opacity: 0; visibility: hidden; }
+  .vs-lead { transition: stroke 150ms ease; }
+}
+@supports not (selector(:has(*))) {
+  .vs-read { display: none; }
+}
+
+/* ---------- SettlementLedger cap panel ---------- */
+.lg-plot { position: relative; }
+.lg-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+.lg-step {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--color-night-line);
+  border-radius: 999px;
+  background: var(--color-night-panel);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-night-faint);
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+.lg-step input { position: absolute; opacity: 0; pointer-events: none; }
+.lg-step:hover { border-color: var(--color-green-deep); color: var(--color-night-text); }
+.lg-step:has(input:focus-visible) { outline: 2px solid var(--color-green); outline-offset: 2px; }
+.lg-step:has(input:checked) { border-color: var(--color-green); color: var(--color-green); background: rgba(96, 204, 93, 0.08); }
+.lg-read {
+  display: grid;
+  margin-top: 0.7rem;
+  min-height: 1.7rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--color-night-line);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-night-muted);
+}
+.lg-read > .lg-ri { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.18s ease; }
+.lg-read > .lg-ri--idle { opacity: 1; visibility: visible; }
+.lg-stage { cursor: pointer; }
+.lg-stage rect { transition: stroke 150ms ease, fill 150ms ease; }
+.lg-plot:has(.lg-stage:hover, .lg-step input:checked) .rail-cursor { animation-play-state: paused; }
+.lg-plot:has(#lg-order:checked) .lg-stage[data-ls="order"] rect,
+.lg-plot:has(#lg-bid:checked) .lg-stage[data-ls="bid"] rect,
+.lg-plot:has(#lg-lease:checked) .lg-stage[data-ls="lease"] rect,
+.lg-plot:has(#lg-usage:checked) .lg-stage[data-ls="usage"] rect,
+.lg-plot:has(#lg-settle:checked) .lg-stage[data-ls="settle"] rect,
+.lg-plot:has(.lg-stage[data-ls="order"]:hover) .lg-stage[data-ls="order"] rect,
+.lg-plot:has(.lg-stage[data-ls="bid"]:hover) .lg-stage[data-ls="bid"] rect,
+.lg-plot:has(.lg-stage[data-ls="lease"]:hover) .lg-stage[data-ls="lease"] rect,
+.lg-plot:has(.lg-stage[data-ls="usage"]:hover) .lg-stage[data-ls="usage"] rect,
+.lg-plot:has(.lg-stage[data-ls="settle"]:hover) .lg-stage[data-ls="settle"] rect {
+  stroke: var(--color-green);
+  fill: #182219;
+}
+.lg-plot:has(.lg-step input:checked) .lg-stage { opacity: 0.45; }
+.lg-plot:has(#lg-order:checked) .lg-stage[data-ls="order"],
+.lg-plot:has(#lg-bid:checked) .lg-stage[data-ls="bid"],
+.lg-plot:has(#lg-lease:checked) .lg-stage[data-ls="lease"],
+.lg-plot:has(#lg-usage:checked) .lg-stage[data-ls="usage"],
+.lg-plot:has(#lg-settle:checked) .lg-stage[data-ls="settle"] { opacity: 1; }
+.lg-stage { transition: opacity 150ms ease; }
+.lg-plot:has(#lg-order:checked, .lg-stage[data-ls="order"]:hover) .lg-ri--order,
+.lg-plot:has(#lg-bid:checked, .lg-stage[data-ls="bid"]:hover) .lg-ri--bid,
+.lg-plot:has(#lg-lease:checked, .lg-stage[data-ls="lease"]:hover) .lg-ri--lease,
+.lg-plot:has(#lg-usage:checked, .lg-stage[data-ls="usage"]:hover) .lg-ri--usage,
+.lg-plot:has(#lg-settle:checked, .lg-stage[data-ls="settle"]:hover) .lg-ri--settle {
+  opacity: 1;
+  visibility: visible;
+}
+.lg-plot:has(.lg-stage:hover, .lg-step input:checked) .lg-ri--idle { opacity: 0; visibility: hidden; }
+@supports not (selector(:has(*))) {
+  .lg-read, .lg-stepper { display: none; }
+  .lg-stage rect { fill: #182219; }
+}
+
+/* ---------- MarketplaceBids cap panel ---------- */
+.mk-bids input { position: absolute; opacity: 0; pointer-events: none; }
+.mk-bid:hover { border-color: var(--color-green); }
+.mk-bids li:has(input:focus-visible) .mk-bid { outline: 2px solid var(--color-green); outline-offset: 1px; }
+.mk-read {
+  display: grid;
+  margin: 0.85rem 1.4rem 0;
+  padding: 0.6rem 0 0.75rem;
+  border-top: 1px solid var(--color-night-line);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-night-muted);
+}
+.mk-read > .mk-ri { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.18s ease; }
+.mk-read > .mk-ri--idle { opacity: 1; visibility: visible; }
+.mk-dot {
+  display: inline-block;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: var(--color-night-line-strong);
+}
+.mk-bid--win .mk-dot { background: var(--color-green); }
+.mk-board:has(.mk-bids input:checked) .mk-bid { opacity: 0.55; }
+.mk-board:has(#mk-syd-01:checked) .mk-bid[data-mk="syd-01"],
+.mk-board:has(#mk-mel-gpu:checked) .mk-bid[data-mk="mel-gpu"],
+.mk-board:has(#mk-act-hpc:checked) .mk-bid[data-mk="act-hpc"] { opacity: 1; }
+.mk-bid { transition: border-color 150ms ease, opacity 150ms ease; }
+.mk-board:has(.mk-bid[data-mk="syd-01"]:hover, #mk-syd-01:checked) .mk-ri--syd-01,
+.mk-board:has(.mk-bid[data-mk="mel-gpu"]:hover, #mk-mel-gpu:checked) .mk-ri--mel-gpu,
+.mk-board:has(.mk-bid[data-mk="act-hpc"]:hover, #mk-act-hpc:checked) .mk-ri--act-hpc {
+  opacity: 1;
+  visibility: visible;
+}
+.mk-board:has(.mk-bid:hover, .mk-bids input:checked) .mk-ri--idle { opacity: 0; visibility: hidden; }
+@supports not (selector(:has(*))) {
+  .mk-read { display: none; }
+}
 
