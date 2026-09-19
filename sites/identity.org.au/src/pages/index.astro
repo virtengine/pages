@@ -4,6 +4,7 @@ import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
 import ClosingBand from "@components/ClosingBand.astro";
 import FactStrip from "@components/FactStrip.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 import Section from "@components/Section.astro";
 import ServiceFigure from "@components/ServiceFigure.astro";
 import ServiceHero from "@components/ServiceHero.astro";
@@ -143,6 +144,17 @@ const setupSteps = [
       </div>
     </Section>
   </div>
+
+  <MediaBand
+    slug="identity-liveness"
+    layout="reverse"
+    eyebrow="In everyday use"
+    title="Prove the thing. Keep the document."
+    lede="A selfie with a live challenge is how the wallet knows a real person is present. The photograph is evidence for one verification — never a profile picture, never shared with the services you use."
+    caption="A live check in ordinary light: what the wallet needs is a moment of presence, not your archive."
+  >
+    <a href="/how-it-works" class="btn-secondary">See the full pipeline</a>
+  </MediaBand>
 
   <div class="bg-alt border-y border-hairline">
     <div class="container-site">

@@ -2,6 +2,7 @@
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { GET_STARTED_NAV } from "@data/nav-sections";
 
 const crumbs = [
@@ -34,7 +35,16 @@ const crumbs = [
       you, because you photograph the real document during setup. Photocopies, screenshots and
       photos of photos are rejected by the capture checks.
     </p>
+  </div>
 
+  <MediaFigure
+    slug="document-desk"
+    ratio="16 / 9"
+    caption="A current passport or licence, photographed once on the handset — not emailed, not uploaded anywhere else."
+    class="mt-8"
+  />
+
+  <div class="prose-service mt-8">
     <h2>A smartphone</h2>
     <p>The wallet runs on Android and iOS phones. For the core setup you need:</p>
     <ul>

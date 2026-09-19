@@ -9,6 +9,7 @@ import Steps from "@components/Steps.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
 import TableScroll from "@components/TableScroll.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 import LockAndKey from "@components/diagrams/LockAndKey.astro";
 
 const crumbs = [
@@ -92,10 +93,18 @@ const onNetwork = [
     </Section>
   </div>
 
-    <Section
-      index="02"
-      eyebrow="Trusted processing"
-      title="Inside the trusted processing unit"
+  <MediaBand
+    slug="document-desk"
+    eyebrow="The evidence"
+    title="One document, read once."
+    lede="A passport or licence is captured, checked and encrypted on the phone in one sitting. What moves afterwards is a sealed scope and a result — the paper on the desk stays a photograph on your device."
+    caption="Identity papers, captured and encrypted on the spot — the desk does not keep a copy."
+  />
+
+  <Section
+    index="02"
+    eyebrow="Trusted processing"
+    title="Inside the trusted processing unit"
       lede="Your encrypted evidence is opened only inside a hardware-sealed vault whose key is forged in the hardware and never exists outside it — and the chain checks the vault's exact fingerprint before any data enters."
     >
       <ServiceFigure

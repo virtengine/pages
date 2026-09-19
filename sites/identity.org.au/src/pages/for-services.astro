@@ -8,6 +8,7 @@ import Steps from "@components/Steps.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
 import CardLink from "@components/CardLink.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 import TableScroll from "@components/TableScroll.astro";
 import { SITE } from "@data/site";
 import { TIERS } from "@data/tiers";
@@ -137,6 +138,15 @@ const integrationSteps = [
         </p>
       </Callout>
     </Section>
+
+    <MediaBand
+      slug="operations-room"
+      layout="reverse"
+      eyebrow="Where the checking happens"
+      title="The network verifies. Your systems receive a result."
+      lede="Proofs are checked against the identity network — not inside your product. You ask a structured question, the user consents, and a signed answer arrives. Documents never transit your stack, so there is no archive to protect."
+      caption="Infrastructure behind the answers: cooling plant on a data-centre roof, where the verification work runs."
+    />
 
     <Section
       index="03"

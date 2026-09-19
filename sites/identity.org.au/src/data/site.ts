@@ -97,6 +97,7 @@ export const FOOTER_COLUMNS: { heading: string; links: NavItem[] }[] = [
       { label: "Terms of use", href: "/terms-of-use" },
       { label: "Accessibility", href: "/accessibility" },
       { label: "Security", href: "/security" },
+      { label: "Media credits", href: "/media-credits" },
     ],
   },
 ];

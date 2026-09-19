@@ -11,10 +11,10 @@ not-for-profit DETIO FOUNDATION LTD (ACN 699 651 771).
 Astro 5 + Tailwind CSS v4, static output, ~zero client JS (mobile nav toggle
 only; FAQ uses native `<details>`).
 
-## Routes (61)
+## Routes (62)
 
-- `/` — service homepage (wallet CTA + phone-mockup hero, two-surface service
-  band, service cards, levels, insights strip, trust strip)
+- `/` — service homepage (wallet CTA + phone-mockup hero, fact strip, two-surface
+  service band, media band, service cards, levels, insights, trust, support)
 - `/how-it-works`, `/for-individuals`, `/faq` (FAQPage JSON-LD), `404`
 - `/wallet/` — the service section: overview + `web-wallet` (my.identity.org.au),
   `mobile-wallet`, `verify-on-virtengine` (flow diagram), `credentials`,
@@ -28,7 +28,8 @@ only; FAQ uses native `<details>`).
 - `/help/` — help centre index + 16 data-driven articles (`src/data/help.ts`)
 - `/about/` — side-nav section: `what-is-identity-org-au`, `the-technology`,
   `who-runs-it`, `open-source`, `patents`
-- Policies: `/privacy`, `/terms-of-use`, `/accessibility`, `/security`
+- Policies: `/privacy`, `/terms-of-use`, `/accessibility`, `/security`,
+  `/media-credits`
 - `/governance` → redirects to `/about/who-runs-it`
 
 ## Build
@@ -60,7 +61,22 @@ See [DESIGN.md](DESIGN.md) — the Ridgemark logo construction, colour tokens
 with contrast table, Public Sans type system, the shared section/hero/figure
 system, service-design component inventory (banners, steps, cards, tables,
 tags, side-nav), interactive sharing demonstration, phone mockup system,
-content/voice rules and honesty locks.
+the media system (CC0 photography + navy duotone), content/voice rules and
+honesty locks.
+
+## Media
+
+Photography is sourced and treated by scripts, not by hand:
+
+```powershell
+python scripts/media-harvest.py        # download + treat + manifest (idempotent)
+python scripts/build-media-data.py     # manifest → src/data/media.ts
+```
+
+Every image is CC0 / public domain (Openverse, Wikimedia Commons fallback),
+cropped to its placement aspect, duotoned in the brand palette, optionally
+halftone-screened, and exported as WebP variants. Provenance is listed on
+`/media-credits`; never edit `src/data/media.ts` by hand.
 
 ## SEO and structured data
 

@@ -21,10 +21,11 @@ deep trust-blue as its single action colour.
 4. [Spacing, grid, measure](#spacing-grid-measure)
 5. [Layout and editorial system](#layout-and-editorial-system)
 6. [Component inventory](#component-inventory)
-6. [Phone mockup system](#phone-mockup-system)
-7. [Content and voice rules](#content-and-voice-rules)
-8. [Motion](#motion)
-9. [Honesty locks](#honesty-locks)
+7. [Phone mockup system](#phone-mockup-system)
+8. [Media system](#7b-media-system)
+9. [Content and voice rules](#content-and-voice-rules)
+10. [Motion](#motion)
+11. [Honesty locks](#honesty-locks)
 
 ## Logo — the Ridgemark
 
@@ -216,6 +217,59 @@ reference capture app (`mobile/veid-capture-app`):
 | `WebPortalFrame` | Browser portal: credential, proofs, consents, session security | wallet overview, web wallet |
 
 Every phone SVG has `role="img"` and a full-sentence `aria-label`.
+
+## 7b. Media system
+
+The site carries **real photography** as its "real world" layer — documents,
+devices, rooms and objects from open collections. There is no stock-photo look
+and no AI-generated imagery: every photograph is public-domain / CC0 source
+material rendered through one fixed brand treatment, so a hand holding a phone,
+a passport on a desk and a bank vault read as one system.
+
+### Sourcing rules
+
+- Source: Openverse (`api.openverse.org`), filtered to `license=cc0,pdm`, with
+  Wikimedia Commons searched directly as a fallback; only `image/jpeg`
+  photographs qualify and obvious artwork (paintings, drawings, engravings,
+  maps, posters) is rejected by title.
+- `scripts/media-harvest.py` downloads, crops, treats and writes both the WebP
+  variants and `public/media/manifest.json` (title, creator, licence, source,
+  provider, treatment). `scripts/build-media-data.py` generates
+  `src/data/media.ts` from the manifest — components import from there, never by
+  raw path.
+- `/media-credits` lists the whole library with its provenance; the footer links
+  to it.
+- Banned, permanently: AI-generated images, watermarked stock, imagery of
+  identifiable people presented as customers or users, and anything implying the
+  network is live.
+
+### Treatment (the pipeline)
+
+1. crop to the placement aspect (bias above centre for portraits);
+2. greyscale → **duotone gradient map** in the brand palette
+   (`paper`: navy `#142433` → steel `#5b83a8` → paper `#f7fafc`;
+   `night`: `#0b141d` → `#3f6b95` → `#cfe3f2`);
+3. optional **halftone dot screen** (15°, cell ≈ width/120) for object studies
+   with strong silhouettes — never on faces or scenes where legibility matters;
+4. export WebP at 720/1100/1200/1440 as placed, quality 78.
+
+Images are never placed raw: the duotone treatment *is* the brand layer.
+
+### Placement
+
+| Component | Use |
+| --- | --- |
+| `media/MediaFigure.astro` | Any framed image: figures, credits grid. Takes `slug`, `ratio`, `caption`, `credit`, `priority`, `sizes`. |
+| `media/MediaBand.astro` | Full-width photographic band with copy beside (`split` / `reverse`) or over the image (`full`, copy on a paper card). |
+
+Rules:
+
+- Images sit in a hairline frame with the tile radius — the same geometry as
+  every other surface; captions are body small, credits are letterspaced
+  uppercase, and provenance lives on `/media-credits`.
+- Text never sits directly on a photograph without a card (the `full` band uses
+  a paper card).
+- Alt text is short and factual, and never describes a person as a customer.
 
 ## 8. Content and voice rules
 

@@ -9,6 +9,7 @@ import ServiceFigure from "@components/ServiceFigure.astro";
 import ServiceHero from "@components/ServiceHero.astro";
 import Steps from "@components/Steps.astro";
 import CredentialScreen from "@components/phone/CredentialScreen.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 import WebPortalFrame from "@components/phone/WebPortalFrame.astro";
 import { SITE } from "@data/site";
 
@@ -108,6 +109,16 @@ const portalSteps = [
       </div>
     </Section>
   </div>
+
+  <MediaBand
+    slug="wallet-in-hand"
+    eyebrow="In your hand"
+    title="The wallet lives on the phone you already carry."
+    lede="Capture, consent and proofs happen on the device — no extra hardware, no password to remember. The web portal mirrors the result when you need a bigger screen."
+    caption="A wallet in ordinary use: the credential stays on the handset, and every share is something you approve."
+  >
+    <a href="/wallet/mobile-wallet" class="btn-secondary">About the mobile wallet</a>
+  </MediaBand>
 
   <div class="bg-alt border-y border-hairline">
     <div class="container-site">

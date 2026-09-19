@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import CardLink from "@components/CardLink.astro";
 import Alert from "@components/Alert.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import TableScroll from "@components/TableScroll.astro";
 
 const crumbs = [
@@ -61,12 +62,22 @@ const crumbs = [
       </TableScroll>
     </section>
 
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">The rights behind the promises</h2>
-      <p class="text-body measure">
-        These are not features that can be quietly removed — they are commitments in the published
-        documents that govern the system:
-      </p>
+    <div class="mt-14 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div>
+        <h2 class="mt-0 text-[1.6rem]">The rights behind the promises</h2>
+        <p class="text-body measure">
+          These are not features that can be quietly removed — they are commitments in the published
+          documents that govern the system:
+        </p>
+      </div>
+      <MediaFigure
+        slug="identity-portrait"
+        ratio="4 / 5"
+        caption="A verified face is evidence, handled once. It is never a profile, a database entry or something a service keeps."
+      />
+    </div>
+
+    <section class="mt-10">
       <ul class="mt-5 grid list-none gap-4 p-0 md:grid-cols-2">
         <li class="border border-hairline rounded-tile px-5 py-4">
           <h3 class="m-0 text-[1.05rem]">Consent, always and granularly</h3>
