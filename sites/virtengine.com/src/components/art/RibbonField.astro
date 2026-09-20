@@ -1,0 +1,305 @@
+---
+/**
+ * RibbonField — Cerebrium-inspired cinematic backdrop for the home hero.
+ *
+ * Lightweight Canvas2D alternative to a WebGL drape scene: a set of tall,
+ * translucent green ribbons that drift slowly, bend toward the pointer, and
+ * dolly with scroll — plus a sparse dust field for depth. Deliberately subtle
+ * (low alpha, brand greens only) so the protocol instrument stays legible.
+ *
+ * Zero dependencies. Pauses offscreen / when hidden. Renders one static
+ * frame under `prefers-reduced-motion`. Also publishes pointer tilt as CSS
+ * vars (--veil-*) on the enclosing `.home-hero` for the 3D tilt polish.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={["ribbon-veil", className]} aria-hidden="true">
+  <canvas class="ribbon-veil-canvas"></canvas>
+  <span class="ribbon-veil-grain"></span>
+  <span class="ribbon-veil-fade"></span>
+</div>
+
+<style>
+  .ribbon-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* keep the left copy column readable; ribbons bloom on the right */
+    mask-image: linear-gradient(90deg, #000 0%, #000 30%, rgba(0, 0, 0, 0.98) 62%, rgba(0, 0, 0, 0.9) 100%);
+  }
+  .ribbon-veil-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+  }
+  /* film grain — static SVG noise, cheap depth like Cerebrium's grain pass */
+  .ribbon-veil-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+  }
+  /* bottom fade into the next band + top legibility vignette */
+  .ribbon-veil-fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(10, 16, 12, 0.55) 0%, transparent 22%, transparent 62%, rgba(10, 16, 12, 0.72) 100%),
+      radial-gradient(90% 70% at 18% 30%, rgba(10, 16, 12, 0.5) 0%, transparent 55%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon-veil-canvas { opacity: 0.75; }
+  }
+</style>
+
+<script>
+  function initVeil(root) {
+    const canvas = root.querySelector("canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    const hero = root.closest(".home-hero") || root.parentElement;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let raf = 0;
+    let running = false;
+    let inView = true;
+    let t = Math.random() * 100;
+
+    // lerped pointer in [-1, 1]
+    const ptr = { x: 0, y: 0, tx: 0, ty: 0, active: false };
+    // lerped scroll dolly 0..1
+    let scrollP = 0;
+    let scrollT = 0;
+
+    // Five drapes, weighted to the right 2/3 like the reference.
+    // depth 0..1 drives parallax + alpha so nearer bands move more.
+    const ribbons = [
+      { fx: 0.36, wd: 150, lean: 0.1, amp: 26, freq: 1.6, phase: 0.4, speed: 0.16, depth: 0.3, alpha: 0.1 },
+      { fx: 0.5, wd: 118, lean: 0.12, amp: 34, freq: 1.3, phase: 1.7, speed: 0.2, depth: 0.45, alpha: 0.13 },
+      { fx: 0.63, wd: 96, lean: 0.14, amp: 42, freq: 1.1, phase: 2.9, speed: 0.24, depth: 0.62, alpha: 0.16 },
+      { fx: 0.75, wd: 74, lean: 0.16, amp: 50, freq: 0.9, phase: 4.2, speed: 0.28, depth: 0.8, alpha: 0.19 },
+      { fx: 0.87, wd: 56, lean: 0.18, amp: 58, freq: 0.8, phase: 5.5, speed: 0.32, depth: 1.0, alpha: 0.22 },
+    ];
+
+    const dust = Array.from({ length: 64 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      z: 0.25 + Math.random() * 0.75,
+      r: 0.5 + Math.random() * 1.4,
+      tw: Math.random() * Math.PI * 2,
+    }));
+
+    function resize() {
+      const rect = root.getBoundingClientRect();
+      w = Math.max(1, rect.width);
+      h = Math.max(1, rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (reduce.matches) draw(0);
+    }
+
+    function centerX(r, y, time) {
+      const base = r.fx * w;
+      const leanShift = (y / h - 0.5) * r.lean * w;
+      const sway = Math.sin(y / h * Math.PI * r.freq + r.phase + time * r.speed) * r.amp;
+      const breathe = Math.sin(time * 0.24 + r.phase) * 8 * r.depth;
+      const bend = ptr.x * 30 * r.depth + ptr.y * 10 * r.depth * (y / h - 0.5);
+      const dolly = scrollP * -46 * r.depth;
+      return base + leanShift + sway + breathe + bend + dolly * 0.4;
+    }
+
+    function ribbonWidth(r, y) {
+      const persp = 0.82 + 0.42 * (y / h); // widen toward viewer, like the stills
+      const scale = Math.min(1.15, Math.max(0.6, w / 1100));
+      return r.wd * persp * scale;
+    }
+
+    function drawRibbon(r, time) {
+      const steps = 42;
+      const left = [];
+      const right = [];
+      for (let i = 0; i <= steps; i++) {
+        const y = (i / steps) * (h + 80) - 40 + scrollP * 30 * r.depth;
+        const cx = centerX(r, y, time);
+        const hw = ribbonWidth(r, y) / 2;
+        left.push([cx - hw, y]);
+        right.push([cx + hw, y]);
+      }
+      // body
+      ctx.beginPath();
+      ctx.moveTo(left[0][0], left[0][1]);
+      for (const p of left) ctx.lineTo(p[0], p[1]);
+      for (let i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
+      ctx.closePath();
+      const midX = centerX(r, h * 0.5, time);
+      const hwMid = ribbonWidth(r, h * 0.5) / 2;
+      const g = ctx.createLinearGradient(midX - hwMid, 0, midX + hwMid, 0);
+      const a = r.alpha;
+      g.addColorStop(0, `rgba(6, 12, 8, ${a})`);
+      g.addColorStop(0.28, `rgba(35, 104, 63, ${a + 0.06})`);
+      g.addColorStop(0.52, `rgba(96, 204, 93, ${(a * 0.55).toFixed(3)})`);
+      g.addColorStop(0.74, `rgba(35, 104, 63, ${a + 0.04})`);
+      g.addColorStop(1, `rgba(6, 12, 8, ${a})`);
+      ctx.fillStyle = g;
+      ctx.fill();
+      // lit edge (left) + dark edge (right) => folded-cloth read
+      ctx.beginPath();
+      ctx.moveTo(left[0][0], left[0][1]);
+      for (const p of left) ctx.lineTo(p[0], p[1]);
+      ctx.strokeStyle = `rgba(125, 221, 122, ${(0.1 + r.depth * 0.12).toFixed(3)})`;
+      ctx.lineWidth = 1.1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(right[0][0], right[0][1]);
+      for (const p of right) ctx.lineTo(p[0], p[1]);
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+    }
+
+    function drawPulse(r, time) {
+      // travelling light streak down the spine of near ribbons
+      const span = 1.5;
+      const p = ((time * 0.07 * r.speed * 4 + r.phase * 0.13) % span) - 0.25;
+      if (p < 0 || p > 1) return;
+      const y = p * h;
+      const x = centerX(r, y, time);
+      const len = h * 0.16;
+      const g = ctx.createLinearGradient(0, y - len, 0, y + len * 0.25);
+      g.addColorStop(0, "rgba(233, 240, 234, 0)");
+      g.addColorStop(0.72, "rgba(233, 240, 234, 0.75)");
+      g.addColorStop(1, "rgba(255, 255, 255, 0.95)");
+      ctx.save();
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 3.2;
+      ctx.lineCap = "round";
+      ctx.shadowColor = "rgba(125, 221, 122, 0.9)";
+      ctx.shadowBlur = 16;
+      ctx.beginPath();
+      const y0 = Math.max(0, y - len);
+      ctx.moveTo(centerX(r, y0, time), y0);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw(time) {
+      ctx.clearRect(0, 0, w, h);
+      // soft emerald wash behind the drapes
+      const wash = ctx.createRadialGradient(w * 0.68, h * 0.42, 0, w * 0.68, h * 0.42, Math.max(w, h) * 0.55);
+      wash.addColorStop(0, "rgba(96, 204, 93, 0.10)");
+      wash.addColorStop(1, "rgba(96, 204, 93, 0)");
+      ctx.fillStyle = wash;
+      ctx.fillRect(0, 0, w, h);
+
+      for (const r of ribbons) drawRibbon(r, time);
+      // pulses on the two nearest bands only — one hero streak at a time
+      drawPulse(ribbons[3], time);
+      drawPulse(ribbons[4], time + 9);
+
+      // dust
+      for (const d of dust) {
+        const x = d.x * w + ptr.x * 22 * d.z;
+        const y = ((d.y * h + scrollP * -60 * d.z) % (h + 20) + h + 20) % (h + 20) - 10;
+        const tw = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(time * 1.4 + d.tw));
+        ctx.fillStyle = `rgba(190, 240, 188, ${(0.1 + d.z * 0.3 * tw).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, d.r * d.z + 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function frame() {
+      if (!running) return;
+      t += 0.016;
+      ptr.x += (ptr.tx - ptr.x) * 0.055;
+      ptr.y += (ptr.ty - ptr.y) * 0.055;
+      scrollP += (scrollT - scrollP) * 0.08;
+      // publish tilt for the CSS 3D polish (subtle: ±4° / ±6°)
+      if (hero instanceof HTMLElement) {
+        hero.style.setProperty("--veil-tiltx", `${(-ptr.y * 3.2).toFixed(2)}deg`);
+        hero.style.setProperty("--veil-tilty", `${(ptr.x * 4.6).toFixed(2)}deg`);
+        hero.style.setProperty("--veil-px", `${(ptr.x * 10).toFixed(1)}px`);
+        hero.style.setProperty("--veil-py", `${(ptr.y * 8).toFixed(1)}px`);
+      }
+      draw(t);
+      raf = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running || !inView || document.hidden || reduce.matches) return;
+      running = true;
+      raf = requestAnimationFrame(frame);
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    function onPointer(e) {
+      if (!(hero instanceof HTMLElement)) return;
+      const rect = hero.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
+      ptr.tx = Math.max(-1, Math.min(1, nx));
+      ptr.ty = Math.max(-1, Math.min(1, ny));
+      ptr.active = true;
+    }
+
+    function onScroll() {
+      if (!(hero instanceof HTMLElement)) return;
+      const rect = hero.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // 0 when hero top hits viewport top grows as you scroll through it
+      const p = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height * 0.9)));
+      // also ease back when hero is above the fold
+      const gone = rect.bottom < 0 ? 1 : 0;
+      scrollT = Math.max(p, gone);
+    }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("scroll", () => { onScroll(); }, { passive: true });
+    onScroll();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+    if ("IntersectionObserver" in window && hero instanceof Element) {
+      new IntersectionObserver(
+        (entries) => {
+          inView = entries[0]?.isIntersecting ?? true;
+          if (inView) start();
+          else stop();
+        },
+        { rootMargin: "160px" }
+      ).observe(hero);
+    }
+    reduce.addEventListener?.("change", (e) => {
+      if (e.matches) { stop(); draw(t); }
+      else start();
+    });
+
+    if (reduce.matches) draw(t);
+    else start();
+  }
+
+  document.querySelectorAll(".ribbon-veil").forEach(initVeil);
+</script>

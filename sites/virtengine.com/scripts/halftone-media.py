@@ -36,6 +36,17 @@ ANGLE = 15.0                # degrees (DESIGN.md §12)
 CELL_DIVISOR = 120.0        # 10 px cells at 1200 px wide
 CELL_MIN, CELL_MAX = 8.0, 13.0
 SOFTEN = 0.85               # anti-aliasing blur on the dot mask
+# finer ruling for the infrastructure plates, which are shown small (the
+# "kinds" band): smaller dots preserve the picture while staying retro
+FINE_SLUGS = {
+    "hero-infrastructure",
+    "hpc-supercomputer",
+    "marketplace-hardware",
+    "provider-datacenter",
+}
+FINE_DIVISOR = 185.0
+FINE_MIN = 4.5
+FINE_SOFTEN = 0.55
 QUALITY = 70
 EXCLUDE = {"network-earth"}  # the closing band / footer image stays untouched
 
@@ -49,13 +60,18 @@ def _box9(a: np.ndarray) -> np.ndarray:
     ) / 9.0
 
 
-def halftone(src_path: pathlib.Path) -> None:
+def halftone(
+    src_path: pathlib.Path,
+    cell_divisor: float = CELL_DIVISOR,
+    cell_min: float = CELL_MIN,
+    soften: float = SOFTEN,
+) -> None:
     im = Image.open(src_path).convert("RGB")
     width, height = im.size
     src = np.asarray(im).astype(np.float32)
     lum = (0.299 * src[:, :, 0] + 0.587 * src[:, :, 1] + 0.114 * src[:, :, 2]) / 255.0
 
-    cell = min(CELL_MAX, max(CELL_MIN, width / CELL_DIVISOR))
+    cell = min(CELL_MAX, max(cell_min, width / cell_divisor))
     theta = math.radians(ANGLE)
     ct, st = math.cos(theta), math.sin(theta)
 
@@ -81,7 +97,7 @@ def halftone(src_path: pathlib.Path) -> None:
 
     mask = (coverage > threshold).astype(np.uint8) * 255
     # soften the dot edges so the screen prints smoothly and compresses well
-    mask = np.asarray(Image.fromarray(mask).filter(ImageFilter.GaussianBlur(SOFTEN)))
+    mask = np.asarray(Image.fromarray(mask).filter(ImageFilter.GaussianBlur(soften)))
     alpha = (mask.astype(np.float32) / 255.0)[..., None]
     ink = np.array(INK, np.float32)[None, None, :]
     paper = np.array(PAPER, np.float32)[None, None, :]
@@ -111,7 +127,10 @@ def main() -> None:
             if not path.exists():
                 print(f"  ! missing {path.name}")
                 continue
-            halftone(path)
+            if slug in FINE_SLUGS:
+                halftone(path, FINE_DIVISOR, FINE_MIN, FINE_SOFTEN)
+            else:
+                halftone(path)
         entry["halftone"] = True
         changed.append(slug)
         print(f"  screened {slug}")

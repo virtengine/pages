@@ -2777,9 +2777,15 @@ body.is-home .mega-header:has(.mega-group[open]) {
   left: auto;
   width: 100%;
   height: auto;
+  min-width: 0;
   z-index: 0;
   pointer-events: auto;
   mask-image: none;
+  /* never let painted figure spill past its column on small engines */
+  overflow: clip;
+}
+.home-hero-copy {
+  min-width: 0;
 }
 .home-hero-visual .network-field {
   width: 100%;
@@ -2968,15 +2974,36 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .nf-canvas {
   position: relative;
   width: 100%;
+  max-width: 30rem;
   max-width: calc(min(42rem, 74svh) * 640 / 748);
   margin-inline: auto;
   aspect-ratio: 640 / 748;
+  overflow: clip;
+}
+/* engines without aspect-ratio: let the svg size itself instead of
+   collapsing or stretching the box */
+@supports not (aspect-ratio: 1 / 1) {
+  .nf-canvas {
+    aspect-ratio: auto;
+  }
+  .nf-canvas .network-field {
+    height: auto;
+  }
 }
 .network-field {
   width: 100%;
   height: 100%;
   display: block;
-  overflow: visible;
+  /* the figure must never paint outside its box (mobile engines vary) */
+  overflow: hidden;
+}
+/* offset-path travellers have no static position: hide them where the
+   feature is missing instead of piling dots at the svg origin */
+@supports not (offset-path: path("M0 0H10")) {
+  .nf-packet,
+  .nf-tick {
+    display: none;
+  }
 }
 .nf-hits { position: absolute; inset: 0; }
 .nf-hit {
@@ -4359,5 +4386,58 @@ body.is-home { background-color: #0a100c; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hiw-input:checked + .hiw-tab + .hiw-panel { animation: none; }
+}
+
+/* ======================================================================
+   HOME HERO VEIL — Cerebrium-inspired cinematic depth, kept subtle.
+   Layer order in .home-hero: RibbonField (drapes, z 0) → FieldBackdrop
+   (constellation dust, z 1) → copy/visual grid (z 2). Pointer tilt is
+   published as --veil-* vars by RibbonField; scroll dolly lives inside
+   the canvas so content never jumps.
+   ====================================================================== */
+.home-hero .ribbon-veil { z-index: 0; }
+.home-hero .field-backdrop {
+  z-index: 1;
+  opacity: 0.55;
+}
+.home-hero-grid {
+  perspective: 1300px;
+}
+.home-hero-copy,
+.home-hero-visual {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* gentle counter-drift on the copy so the scene reads as depth, not motion */
+.home-hero-copy {
+  transform:
+    translate3d(calc(var(--veil-px, 0px) * -0.45), calc(var(--veil-py, 0px) * -0.4), 0);
+}
+/* the instrument floats in front of the drapes and tips toward the cursor */
+.home-hero-visual {
+  transform:
+    rotateX(var(--veil-tiltx, 0deg))
+    rotateY(var(--veil-tilty, 0deg))
+    translate3d(var(--veil-px, 0px), var(--veil-py, 0px), 0);
+}
+.home-hero-visual .nf-canvas {
+  filter: drop-shadow(0 30px 60px rgba(4, 10, 6, 0.5));
+}
+/* hovering the instrument deepens its glow — the "things move" moment */
+.home-hero-visual .nf-canvas .network-field {
+  transition: filter 260ms ease;
+}
+.home-hero-visual:hover .nf-canvas .network-field,
+.home-hero-visual:focus-within .nf-canvas .network-field {
+  filter: drop-shadow(0 0 22px rgba(96, 204, 93, 0.28));
+}
+@media (max-width: 960px) {
+  /* on small screens keep the drapes behind the stacked copy */
+  .home-hero .field-backdrop { opacity: 0.4; }
+  .home-hero-copy, .home-hero-visual { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-copy, .home-hero-visual { transform: none; }
+  .home-hero-visual .nf-canvas { filter: none; }
 }
 

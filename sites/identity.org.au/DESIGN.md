@@ -138,21 +138,22 @@ eyebrows.
 ## 5. Layout and editorial system
 
 The rehaul keeps government-service restraint while giving journeys an editorial
-register: a navy masthead, stronger section rhythm, captioned light figures,
-machine-readable status facts, statement bands, and one accessible demonstration
-pattern.
+register: stronger section rhythm, captioned light figures, machine-readable
+status facts, statement bands, and one accessible demonstration pattern.
 
-- **Masthead strip** (`Header.astro` `.gov-strip`): a navy bar under the header
-  on every page carrying the honesty lock ("not an Australian Government
-  service") and the service status. This is also the site's top visual anchor.
 - **Ridge motif**: a repeating radial-arc texture derived from the Ridgemark's
   fingerprint ridges, drawn at ~5% ink on heroes and ~5% white on navy bands.
   It is the only decorative pattern; there is no grain, lattice or noise.
 - **Primary actions are navy** (`--color-navy`), secondary actions are navy
   outlines; the action blue is reserved for links and focus-affordance text.
 - **Statement bands**: `ClosingBand.astro` closes marketing and service journeys
-  in navy with a strong line and action buttons; the navy top strip and closing
-  band frame the light middle of the site.
+  in navy with a strong line and action buttons; the navy closing band and the
+  navy footer frame the light middle of the site.
+- `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
+  standfirst) with a 3px navy rule and predictable vertical rhythm. Sections do
+  **not** carry the page container; each Section is wrapped in
+  `.container-site` by the page so full-bleed bands (media, closing) can sit
+  between them.
 - `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
   standfirst) with a 3px navy rule and predictable vertical rhythm.
 - `ServiceHero.astro`: unified service hero with breadcrumbs, status tag,
@@ -175,7 +176,7 @@ pattern.
 
 | Component | File | Pattern |
 | --- | --- | --- |
-| Provenance banner | `Footer.astro` (pre-footer strip) | Site-wide "not a government service" notice, steel shield icon, tint surface |
+| Provenance statement | `Footer.astro` | Site-wide "not a government service" statement in the navy footer, with the accreditation posture and acknowledgement |
 | Service section | `Section.astro` | Ruled editorial section header and vertical rhythm; optional `index · eyebrow`, headline, standfirst |
 | Feature hero | `ServiceHero.astro` | Breadcrumbs, status tag, eyebrow, headline, standfirst, actions, supporting note, optional framed media |
 | Closing band | `ClosingBand.astro` | Navy statement band with action slots, used above the footer on key journeys |
@@ -322,11 +323,10 @@ to 0.01ms globally and disables looping demonstration/diagram motion.
 
 Enforced in components so they cannot drift page-by-page:
 
-1. Provenance banner under the header on **every page** (Header.astro).
-2. Footer statement: not a government service; not AGDIS/myID/myGov.
-3. First FAQ question answers it explicitly (FAQPage JSON-LD included).
-4. No accreditation claims anywhere — "aligns with the principles of" is the
+1. Footer statement: not a government service; not AGDIS/myID/myGov.
+2. First FAQ question answers it explicitly (FAQPage JSON-LD included).
+3. No accreditation claims anywhere — "aligns with the principles of" is the
    ceiling. No app-store links, no user counts, no invented partners.
-5. Illustrated interactions are labelled as demonstrations, and sharing controls
+4. Illustrated interactions are labelled as demonstrations, and sharing controls
    never imply that data is transmitted by the marketing site.
 5. Schema.org uses `Organization` + `Service` — never `GovernmentService`.

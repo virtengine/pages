@@ -96,6 +96,15 @@ body {
   background-color: var(--color-paper);
   line-height: 1.65;
   text-rendering: optimizeLegibility;
+  /* abspos escapes must never widen the layout viewport on mobile */
+  overflow-x: clip;
+}
+/* Pre-clip engines: viewport-root guard (sticky-safe: html stays the
+   scroller). No effect where `clip` is supported. */
+@supports not (overflow: clip) {
+  html {
+    overflow-x: hidden;
+  }
 }
 html:has(body.is-home) {
   background-color: #070b08;

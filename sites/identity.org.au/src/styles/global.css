@@ -66,6 +66,16 @@
     font-size: 1.0625rem; /* 17px */
     color: var(--color-body);
     text-rendering: optimizeLegibility;
+    /* abspos escapes must never widen the layout viewport on mobile */
+    overflow-x: clip;
+  }
+
+  /* Pre-clip engines: viewport-root guard (sticky-safe: html stays the
+     scroller). No effect where `clip` is supported. */
+  @supports not (overflow: clip) {
+    html {
+      overflow-x: hidden;
+    }
   }
 
   ::selection {
@@ -252,49 +262,6 @@
 .btn-inverse-ghost:hover {
   border-color: #ffffff;
   background: rgb(255 255 255 / 0.08);
-}
-
-/* ---------- service masthead strip (honesty + status) ---------- */
-
-.gov-strip {
-  background: var(--color-navy);
-  color: var(--color-navy-muted);
-  font-size: 0.86rem;
-}
-.gov-strip .container-site {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.4rem 1.5rem;
-  padding-block: 0.5rem;
-}
-.gov-strip p {
-  margin: 0;
-}
-.gov-strip strong {
-  color: #ffffff;
-}
-.gov-strip a {
-  color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgb(255 255 255 / 0.4);
-}
-.gov-strip a:hover {
-  text-decoration-color: #ffffff;
-}
-.gov-strip-status {
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-@media (max-width: 40rem) {
-  .gov-strip-status {
-    display: none;
-  }
 }
 
 /* ---------- gov table ---------- */

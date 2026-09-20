@@ -2,6 +2,7 @@
 import Base from "@layouts/Base.astro";
 import NetworkField from "@components/art/NetworkField.astro";
 import FieldBackdrop from "@components/art/FieldBackdrop.astro";
+import RibbonField from "@components/art/RibbonField.astro";
 import MarketplaceBids from "@components/art/MarketplaceBids.astro";
 import VeidScopes from "@components/art/VeidScopes.astro";
 import SettlementLedger from "@components/art/SettlementLedger.astro";
@@ -96,6 +97,7 @@ const surfaces = [
   description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
 >
   <section class="home-hero">
+    <RibbonField />
     <FieldBackdrop />
     <div class="container-site home-hero-grid">
       <div class="home-hero-copy">
@@ -474,8 +476,8 @@ const surfaces = [
   <section class="home-close">
     <img
       class="home-close-bg"
-      src="/media/network-earth-1920.webp"
-      srcset="/media/network-earth-960.webp 960w, /media/network-earth-1440.webp 1440w, /media/network-earth-1920.webp 1920w"
+      src="/media/hero-infrastructure-1920.webp"
+      srcset="/media/hero-infrastructure-960.webp 960w, /media/hero-infrastructure-1440.webp 1440w, /media/hero-infrastructure-1920.webp 1920w"
       sizes="100vw"
       alt=""
       aria-hidden="true"

@@ -14,6 +14,14 @@
 body {
   overflow-x: clip;
 }
+/* Pre-clip engines (old mobile WebViews): fall back to a viewport-root
+   guard so abspos escapes can't widen the layout viewport. Scoped to
+   @supports-not so modern browsers keep `clip` + working sticky. */
+@supports not (overflow: clip) {
+  html {
+    overflow-x: hidden;
+  }
+}
 .f-hero-grid > *,
 .f-files > *,
 .f-columns > *,
@@ -321,6 +329,7 @@ body {
 
 /* ---------- ticker ribbons (pastel: sand + sky) ---------- */
 .ticker {
+  position: relative;
   background: var(--color-sage);
   color: var(--color-ink);
   border-block: 2px solid var(--color-ink);
