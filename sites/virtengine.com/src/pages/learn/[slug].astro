@@ -43,12 +43,12 @@ const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
   lifecycle: {
     component: LifecycleFlow,
     label:
-      "Marketplace lifecycle flow diagram in five stages: order (a tenant posts a deployment), bid (providers compete), lease (escrow is funded and the workload starts), usage (signed usage records are submitted), and settlement (escrow is released after the dispute window).",
+      "Marketplace lifecycle flow diagram in five stages: order (a tenant posts a deployment), match (a direct purchase at a listed price, an accepted bid, or an attribute match), lease (escrow is funded and the workload starts), usage (signed usage records are submitted), and settlement (escrow is released after the dispute window).",
   },
   settlement: {
     component: SettlementFlow,
     label:
-      "Settlement flow diagram: on the provider side, a usage meter, scheduled hourly collector, settlement pipeline with anomaly detection, and chain submitter; on-chain, the settlement module, 24-hour dispute window, escrow, and payout of the agreed amount with no marketplace commission deducted.",
+      "Settlement flow diagram: on the provider side, a usage meter, scheduled hourly collector, settlement pipeline with anomaly detection, and chain submitter; on-chain, the settlement module, 24-hour dispute window, escrow, and payout of the agreed amount under the governed fee policy.",
   },
   veid: {
     component: VeidPipeline,

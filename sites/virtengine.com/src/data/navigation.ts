@@ -9,7 +9,7 @@ export type NavCategory = { id: string; label: string; description: string; link
 export type NavGroup = { id: string; label: string; overview: NavLink; categories: NavCategory[] };
 const link = (label: string, href: string, description: string): NavLink => ({ label, href, description });
 const network = link("Check network status", "/network", "The network is in development. Read the planned launch stages and approval criteria before preparing to participate.");
-const intro = link("How the marketplace works", "/learn/how-the-marketplace-works", "Follow an agreement from request and bid through to recorded usage and settlement.");
+const intro = link("How the marketplace works", "/learn/how-the-marketplace-works", "Follow an agreement from request and match through to recorded usage and settlement.");
 const contribute = link("Find your contribution", "/participate", "Learn, review the code, improve a guide, or discuss a public-benefit collaboration.");
 const moduleLinks = (domain: string) => MODULES.filter(m => m.domain === domain).map(m => link(m.name, `/modules/${m.slug}`, m.summary));
 const solutionLinks = (slugs: string[]) => SOLUTIONS.filter(s => slugs.includes(s.slug)).map(s => link(s.label, `/solutions/${s.slug}`, s.audience));

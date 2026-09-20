@@ -10,17 +10,17 @@ const bids = [
 ];
 
 const readouts = {
-  idle: "Hover or select a bid — lowest honest price on attested capacity wins.",
-  "syd-01": "0.42 / hr — attested, above the flat.",
-  "mel-gpu": "0.39 / hr — lowest honest bid. The lease forms here.",
-  "act-hpc": "0.51 / hr — attested, placed beyond the lease.",
+  idle: "An open order in its bidding window — direct orders match at list price instead.",
+  "syd-01": "0.42 / hr — attested. Above the accepted offer.",
+  "mel-gpu": "0.39 / hr — accepted. The lease forms here.",
+  "act-hpc": "0.51 / hr — attested, beyond the match.",
 };
 ---
 
 <div class="mk-board">
   <div class="mk-rail">
     <span>x/market</span>
-    <span>order → bid → lease</span>
+    <span>order → match → lease</span>
   </div>
   <div class="mk-order">
     <small>open order</small>
@@ -54,6 +54,6 @@ const readouts = {
   </p>
   <div class="mk-lease">
     <i class="lamp"></i>
-    <span>lease formed · escrow funded · 0% marketplace commission</span>
+    <span>lease formed · escrow funded · governed settlement fees</span>
   </div>
 </div>

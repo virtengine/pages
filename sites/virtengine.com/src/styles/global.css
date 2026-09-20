@@ -363,6 +363,263 @@ h3, h4 {
 .waldur-source-link strong { color: var(--color-ink); }
 .waldur-source-link span { margin-top: 0.3rem; color: var(--color-muted); font-size: 0.78rem; }
 
+/* ---- Waldur acquisition-path instrument ("Buy it your way") ----
+   Zero-JS radio tabs (same pattern as the homepage capability panels):
+   hidden radios + labels drive panels through :has(), with a stacked
+   fallback for engines without it. */
+.buy-ex { margin-top: 2rem; }
+.buy-ex > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.buy-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--color-line);
+  overflow: hidden;
+}
+.buy-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.95rem 1.05rem 1rem;
+  background: var(--color-panel);
+  cursor: pointer;
+  color: var(--color-ink);
+}
+.buy-tab small {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.buy-tab span { font-size: 0.95rem; font-weight: 600; }
+.buy-tab:hover { background: var(--color-green-wash); }
+.buy-ex:has(#buy-direct:checked) .buy-tab[for="buy-direct"],
+.buy-ex:has(#buy-bid:checked) .buy-tab[for="buy-bid"],
+.buy-ex:has(#buy-selector:checked) .buy-tab[for="buy-selector"] {
+  background: var(--color-green-wash);
+  box-shadow: inset 0 -2px 0 var(--color-green-deep);
+}
+.buy-ex:has(#buy-direct:focus-visible) .buy-tab[for="buy-direct"],
+.buy-ex:has(#buy-bid:focus-visible) .buy-tab[for="buy-bid"],
+.buy-ex:has(#buy-selector:focus-visible) .buy-tab[for="buy-selector"] {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: -3px;
+}
+.buy-stage {
+  border: 1px solid var(--color-line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  background: #fff;
+}
+.buy-panel {
+  display: none;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: center;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+}
+.buy-ex:has(#buy-direct:checked) .buy-panel--direct,
+.buy-ex:has(#buy-bid:checked) .buy-panel--bid,
+.buy-ex:has(#buy-selector:checked) .buy-panel--selector {
+  display: grid;
+}
+.buy-steps { display: grid; gap: 0.6rem; margin-top: 1.1rem; }
+.buy-steps li { display: flex; gap: 0.7rem; align-items: flex-start; }
+.buy-step-n {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-green-deep);
+  padding-top: 0.2rem;
+}
+.buy-steps strong { display: block; font-size: 0.85rem; color: var(--color-ink); }
+.buy-steps small { display: block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-muted); }
+.buy-when { margin-top: 1rem; font-size: 0.85rem; color: var(--color-slate); }
+.buy-when strong { color: var(--color-ink); }
+.buy-flow { display: flex; align-items: stretch; gap: 0.5rem; }
+.buy-chip {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-soft);
+}
+.buy-chip small {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.buy-chip strong { display: block; margin-top: 0.2rem; font-size: 0.85rem; color: var(--color-ink); }
+.buy-chip span { display: block; margin-top: 0.2rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-green-deep); }
+.buy-chip--win { border-color: var(--color-green-deep); background: var(--color-green-wash); }
+.buy-arrow { align-self: center; flex: none; font-style: normal; color: var(--color-green-deep); }
+.buy-bids ul { display: grid; gap: 0.45rem; margin: 0.7rem 0; }
+.buy-bids li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  font-size: 0.82rem;
+  color: var(--color-slate);
+}
+.buy-bids li b { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink); }
+.buy-bid--win { border-color: var(--color-green-deep); background: var(--color-green-wash); }
+.buy-attrs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+.buy-attrs span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px dashed var(--color-line-strong);
+  border-radius: 999px;
+  color: var(--color-slate);
+  background: #fff;
+}
+.buy-foot { margin-top: 1rem; font-size: 0.82rem; color: var(--color-muted); }
+@supports not (selector(:has(*))) {
+  .buy-panel { display: grid; border-top: 1px solid var(--color-line); }
+  .buy-tabs { display: none; }
+}
+@media (max-width: 860px) {
+  .buy-panel { grid-template-columns: 1fr; }
+  .buy-tabs { grid-template-columns: 1fr; }
+  .buy-flow { flex-direction: column; }
+  .buy-arrow { transform: rotate(90deg); align-self: flex-start; }
+}
+
+/* ---- Waldur catalogue mock (illustrative listings) ---- */
+.catalog-mock {
+  margin-top: 2rem;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-frame);
+  background: var(--color-paper-soft);
+}
+.catalog-mock-flag {
+  margin-bottom: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.catalog-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1.1rem 1.2rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+.catalog-cat {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-green-deep);
+}
+.catalog-card h3 { margin-top: 0.4rem; font-size: 1.02rem; font-weight: 600; color: var(--color-ink); }
+.catalog-provider { font-size: 0.8rem; color: var(--color-muted); }
+.catalog-price { margin-top: 0.55rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-ink); }
+.catalog-plan { font-size: 0.75rem; color: var(--color-faint); }
+.catalog-action {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--color-line);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-green-deep);
+}
+@media (max-width: 1100px) {
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .catalog-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Service categories (IaaS · PaaS · SaaS · custom listings) ---- */
+.svc-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.svc-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.3rem 1.2rem 1.35rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: #fff;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.svc-card:hover { border-color: var(--color-green-deep); transform: translateY(-2px); }
+.svc-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.svc-code {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--color-faint);
+}
+.svc-label {
+  padding: 0.22rem 0.55rem;
+  border: 1px solid var(--color-green-deep);
+  border-radius: 999px;
+  background: var(--color-green-wash);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-green-deep);
+}
+.svc-card h3 { margin-top: 0.9rem; font-size: 1.08rem; font-weight: 600; color: var(--color-ink); }
+.svc-body { margin-top: 0.55rem; font-size: 0.86rem; line-height: 1.6; color: var(--color-slate); }
+.svc-examples { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.9rem; }
+.svc-examples li {
+  padding: 0.28rem 0.55rem;
+  border: 1px dashed var(--color-line-strong);
+  border-radius: 999px;
+  background: var(--color-paper-soft);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-slate);
+}
+.svc-meta { margin-top: auto; padding-top: 1rem; display: grid; gap: 0.45rem; }
+.svc-meta div { border-top: 1px solid var(--color-line); padding-top: 0.45rem; }
+.svc-meta dt {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.svc-meta dd { margin-top: 0.15rem; font-size: 0.78rem; line-height: 1.5; color: var(--color-ink); }
+@media (max-width: 1100px) {
+  .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .svc-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 1199px) {
   .waldur-architecture { grid-template-columns: 1fr 2rem 1fr; }
   .waldur-arch-tenant { grid-column: 1; }

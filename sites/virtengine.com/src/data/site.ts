@@ -1,9 +1,9 @@
 export const SITE = {
   name: "VirtEngine",
   url: "https://virtengine.com",
-  title: "Decentralized Cloud Marketplace Protocol | VirtEngine",
+  title: "Open Cloud & Services Marketplace | VirtEngine",
   description:
-    "VirtEngine is an open-source DePIN protocol for GPU, HPC and cloud compute — marketplace, VEID identity and escrow settlement on Cosmos SDK.",
+    "VirtEngine is an open-source marketplace protocol for cloud infrastructure and services — direct orders, competitive bids and attribute matching, with identity, escrow and settlement on-chain.",
   email: "hello@virtengine.com",
   github: "https://github.com/virtengine/virtengine",
   docs: "https://docs.virtengine.com",
@@ -81,7 +81,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
     summary:
       "The exchange itself — orders, bids, leases, provider registration, and workload capability surfaces.",
     modules: [
-      { name: "market", role: "Order, bid, and lease state machine" },
+      { name: "market", role: "Order, match, and lease state machine" },
       { name: "marketplace", role: "Marketplace coordination and offering surfaces" },
       { name: "deployment", role: "Tenant deployment specifications and groups" },
       { name: "provider", role: "Provider registration and attributes" },
@@ -107,7 +107,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
   {
     domain: "Economics & settlement",
     summary:
-      "Escrow-backed payments, zero marketplace commission, validator transaction fees, staking, and VEID-led issuance economics.",
+      "Escrow-backed payments, governance-set settlement fees, validator transaction fees, staking, and VEID-led issuance economics.",
     modules: [
       { name: "escrow", role: "Funds held against active leases" },
       { name: "settlement", role: "Usage-record settlement into payments" },
@@ -140,29 +140,34 @@ export const LIFECYCLE = [
     name: "Order",
     detail:
       "A tenant posts a deployment order on-chain describing the resources they need — compute, memory, storage, region, and attributes.",
+    short: "Describe the workload, or name a listing.",
   },
   {
     step: "02",
     name: "Match",
     detail:
-      "Direct orders match a named offering at its listed price; open orders collect competing bids from provider daemons. Either path resolves deterministically on-chain.",
+      "Match resolves on-chain through one of three acquisition paths: direct orders bind a named offering at its listed price, open orders collect competing bids from provider daemons until one is accepted, and selector orders resolve to the best eligible listing within their caps. Every path resolves deterministically.",
+    short: "Direct price, competing bids, or attribute match.",
   },
   {
     step: "03",
     name: "Lease",
     detail:
       "The match becomes a lease. Escrow is funded, and the provider daemon instantiates the workload through its orchestration layer.",
+    short: "Escrow funded; the provider provisions.",
   },
   {
     step: "04",
     name: "Usage",
     detail:
       "The provider daemon meters running workloads and submits signed usage records to the chain on a scheduled cadence.",
+    short: "The daemon meters and signs usage.",
   },
   {
     step: "05",
     name: "Settlement",
     detail:
-      "After a 24-hour dispute window, the settlement module converts usage into billable line items and releases the agreed escrowed funds to the provider with no marketplace commission deducted.",
+      "After a 24-hour dispute window, the settlement module converts usage into billable line items and releases the agreed escrowed funds to the provider under the governed fee policy.",
+    short: "Funds release after the dispute window.",
   },
 ] as const;

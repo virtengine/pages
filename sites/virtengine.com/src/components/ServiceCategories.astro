@@ -1,0 +1,44 @@
+---
+/**
+ * ServiceCategories — the four service delivery models the Waldur catalogue
+ * publishes and the chain can settle: IaaS, PaaS, SaaS and custom listings.
+ * Shared by the homepage and the Waldur page; styling lives in global.css.
+ */
+import { SERVICE_CATEGORIES } from "@data/market";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["svc-grid", className]}>
+  {
+    SERVICE_CATEGORIES.map((c, i) => (
+      <article class={`svc-card svc-card--${c.id}`}>
+        <div class="svc-top">
+          <span class="svc-code">{String(i + 1).padStart(2, "0")}</span>
+          <span class="svc-label">{c.label}</span>
+        </div>
+        <h3>{c.name}</h3>
+        <p class="svc-body">{c.body}</p>
+        <ul class="svc-examples">
+          {c.examples.map((e) => (
+            <li>{e}</li>
+          ))}
+        </ul>
+        <dl class="svc-meta">
+          <div>
+            <dt>Billed as</dt>
+            <dd>{c.billing}</dd>
+          </div>
+          <div>
+            <dt>Delivered by</dt>
+            <dd>{c.delivery}</dd>
+          </div>
+        </dl>
+      </article>
+    ))
+  }
+</div>

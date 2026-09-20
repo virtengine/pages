@@ -2993,6 +2993,26 @@ body.is-home .mega-header:has(.mega-group[open]) {
   aspect-ratio: 640 / 748;
   overflow: clip;
 }
+/* figure caption: says what the instrument is before a visitor hovers */
+.nf-fighead {
+  width: 100%;
+  max-width: calc(min(42rem, 74svh) * 640 / 700);
+  margin: 0 auto 0.65rem;
+}
+.nf-fighead p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-green);
+}
+.nf-fighead span {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  color: var(--color-night-faint);
+}
 /* engines without aspect-ratio: let the svg size itself instead of
    collapsing or stretching the box */
 @supports not (aspect-ratio: 1 / 1) {
@@ -3301,6 +3321,33 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .home-stages strong { font-size: 1.15rem; color: var(--color-ink); }
 .home-stages small { color: var(--color-muted); font-size: 0.92rem; line-height: 1.5; }
+.home-stages--lifecycle { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1100px) {
+  .home-stages--lifecycle { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.home-stages-link { margin-top: 1.6rem; }
+
+/* the three acquisition paths */
+.home-buy {
+  position: relative;
+  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+  background: var(--color-paper);
+}
+/* the four service delivery models */
+.home-catalog {
+  position: relative;
+  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+  background: #f2f5f1;
+}
+.home-catalog-note {
+  margin-top: 1.6rem;
+  max-width: 52rem;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+.home-catalog-note a { color: var(--color-green-deep); font-weight: 600; }
+.home-catalog-note a:hover { color: var(--color-green-dark); text-decoration: underline; text-underline-offset: 4px; }
 
 .home-flag { padding-block: clamp(4.5rem, 8vw, 7.5rem); }
 .home-flag--night {
@@ -3444,7 +3491,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .arch-detail{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(15rem,.95fr) auto;gap:1.8rem;align-items:end;max-height:0;padding:0 1.1rem 0 6.55rem;overflow:hidden;opacity:0;transform:translateY(-.35rem);transition:max-height .43s cubic-bezier(.2,.8,.2,1),padding .43s cubic-bezier(.2,.8,.2,1),opacity .22s ease,transform .43s ease}.arch-detail-copy{display:grid;gap:.75rem}.arch-detail-copy p{margin:0;max-width:45rem;color:var(--color-slate);font-size:.9rem;line-height:1.6}.arch-detail-copy a{width:fit-content;color:var(--color-green-deep);font-size:.84rem;font-weight:600}.arch-detail-copy a:hover{text-decoration:underline;text-underline-offset:4px}.arch-flow-data{display:grid;gap:.7rem;margin:0}.arch-flow-data div{padding-left:.8rem;border-left:1px solid var(--color-green-soft)}.arch-flow-data dt{margin-bottom:.2rem;color:var(--color-green-deep);font-size:.6rem}.arch-flow-data dd{margin:0;color:var(--color-muted);font-size:.75rem;line-height:1.45}.arch-path{display:flex;align-items:center;gap:.5rem;margin:0;padding-bottom:.15rem;color:var(--color-green-deep);font-size:.62rem;white-space:nowrap}.arch-path span{position:relative;width:1.5rem;height:1px;background:currentColor}.arch-path span::after{content:"";position:absolute;right:0;top:-2px;width:5px;height:5px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}
 .arch-layer:hover,.arch-layer:focus-within,.arch-layer[open]{border-color:var(--color-green-soft);background:linear-gradient(105deg,var(--color-panel),#eef8ef);box-shadow:0 .8rem 1.75rem rgba(27,99,47,.09)}.arch-layer:hover::before,.arch-layer:focus-within::before,.arch-layer[open]::before{transform:scaleY(1)}.arch-layer:hover .arch-signal i,.arch-layer:focus-within .arch-signal i,.arch-layer[open] .arch-signal i{opacity:1;background:var(--color-green);animation:arch-signal 1.1s ease-in-out infinite alternate}.arch-layer:hover .arch-signal i:nth-child(2),.arch-layer:focus-within .arch-signal i:nth-child(2),.arch-layer[open] .arch-signal i:nth-child(2){animation-delay:.14s}.arch-layer:hover .arch-signal i:nth-child(3),.arch-layer:focus-within .arch-signal i:nth-child(3),.arch-layer[open] .arch-signal i:nth-child(3){animation-delay:.28s}.arch-layer:hover .arch-detail,.arch-layer:focus-within .arch-detail,.arch-layer[open] .arch-detail{max-height:13rem;padding-top:.25rem;padding-bottom:1.15rem;opacity:1;transform:translateY(0)}.arch-layer[open] .arch-toggle i{transform:rotate(225deg) translateY(-2px)}.arch-map:has(.arch-layer:hover) .arch-layer:not(:hover):not([open]),.arch-map:has(.arch-layer:focus-within) .arch-layer:not(:focus-within):not([open]){opacity:.58}
 .arch-hint{position:relative;z-index:1;margin:.95rem 0 0;padding:0 .65rem .05rem;color:var(--color-muted);font:.69rem/1.5 var(--font-mono);letter-spacing:.035em}.arch-hint span{color:var(--color-green-deep);font-size:.92rem}@keyframes arch-signal{from{transform:scaleY(.6);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
-.home-flag, .home-arch, .home-dev, .home-launch, .home-kinds, .home-journal, .home-steward, .home-philosophy, .home-close {
+.home-flag, .home-arch, .home-dev, .home-launch, .home-kinds, .home-journal, .home-steward, .home-philosophy, .home-buy, .home-catalog, .home-close {
   scroll-margin-top: 5.5rem;
 }
 .home-arch-link { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.5rem; }

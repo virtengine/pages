@@ -80,10 +80,10 @@ export const LEARN: LearnEntry[] = [
     title: "How the VirtEngine marketplace works",
     label: "How the marketplace works",
     metaDescription:
-      "How VirtEngine's Waldur-connected marketplace works: multi-service catalogue, custom offerings, orders, bids, leases, usage reporting and settlement.",
+      "How VirtEngine's Waldur-connected marketplace works: multi-service catalogue, three acquisition paths (direct, bid, selector), leases, usage reporting and settlement.",
     kicker: "Marketplace fundamentals",
     intro:
-      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, match, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees. Matching itself has two modes: buy a named offering outright at its listed price, or open the order to competitive bids.",
+      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, match, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees. Match runs three acquisition paths: buy a named offering outright at its listed price (direct), open the order to competitive bids, or describe requirements and get matched to the best eligible listing (selector).",
     diagram: "lifecycle",
     diagramCaption: "The five-stage marketplace lifecycle: order → match → lease → usage → settlement",
     sections: [
@@ -95,10 +95,11 @@ export const LEARN: LearnEntry[] = [
         ],
       },
       {
-        heading: "Stage 2 — Match: direct purchase or competitive bid",
+        heading: "Stage 2 — Match: three acquisition paths",
         paragraphs: [
           "Direct orders resolve immediately against the named offering — no waiting, no auction. This is the default path and how catalogue purchases work: choose the provider and plan, pay the listed price.",
           "Orders opened for bidding work differently. Provider daemons — the off-chain agents operators run inside their datacenters, clouds, and HPC facilities — watch the chain for open orders that match their registered capacity and attributes. When one appears, the daemon prices it against the operator's configured strategy and places a bid. Bids are on-chain objects too: priced offers that must satisfy the order's resource and attribute requirements to be valid. The tenant can accept a bid manually, or let the matching engine auto-resolve to the best-ranked offer when the bidding window closes.",
+          "Selector orders name no provider at all. The tenant describes category, region, minimum specifications and a maximum price, and the engine resolves eligible listings deterministically within that cap — request-for-quote semantics without the negotiation round-trip.",
         ],
       },
       {
@@ -119,7 +120,7 @@ export const LEARN: LearnEntry[] = [
         heading: "Stage 5 — Settlement: usage becomes payment",
         paragraphs: [
           "The settlement module (x/settlement) validates each usage record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window during which either party can raise corrections; after it closes, line items settle against the lease's escrow.",
-          "Funds transfer from escrow to the provider at the agreed lease price. There is no protocol commission or platform fee on marketplace settlement; low validator transaction fees apply only to the on-chain messages that create, operate and settle the lease. When the deployment closes, any unspent escrow returns to the tenant. No invoices were created, and no one had to trust the other side's accounting.",
+          "Funds transfer from escrow to the provider at the agreed lease price, under the governed settlement fee policy — protocol parameters set by governance, not a private platform margin. Low validator transaction fees apply only to the on-chain messages that create, operate and settle the lease. When the deployment closes, any unspent escrow returns to the tenant. No invoices were created, and no one had to trust the other side's accounting.",
         ],
       },
       {
@@ -139,22 +140,22 @@ export const LEARN: LearnEntry[] = [
     mediaCaption: "Demand meets capacity on one exchange.",
     takeaways: [
       "Five stages, one lifecycle: order → match → lease → usage → settlement.",
-      "Matching has two modes: buy a named offering outright, or open the order to competitive bids.",
+      "Match runs three ways: direct at a listed price, open to competing bids, or resolved by attributes.",
       "Every stage produces a verifiable artifact — orders backed by escrow, signed usage, rule-bound settlement.",
       "Both counterparties are VEID-verified before anything starts.",
-      "Settlement carries no protocol commission; unspent escrow returns to the tenant.",
+      "Settlement fees are governance-set protocol parameters; unspent escrow returns to the tenant.",
     ],
     faqs: [
       {
         question: "Where do I start — Waldur or the chain?",
         answer:
-          "Either. Tenants can begin from a Waldur offering and buy it outright at its listed price; the protocol client creates the verifiable market order and the lease is correlated with a Waldur order for fulfilment. Open bidding is available when you want price discovery instead. Match selection and escrow never leave the chain.",
+          "Either. Tenants can begin from a Waldur offering and buy it outright at its listed price; the protocol client creates the verifiable market order and the lease is correlated with a Waldur order for fulfilment. Open bidding is available when you want price discovery instead, and selector orders match eligible listings by attribute and price cap. Match selection and escrow never leave the chain.",
         links: [{ label: "Waldur + VirtEngine", href: "/learn/waldur-and-virtengine" }],
       },
       {
         question: "Who sets the price?",
         answer:
-          "The offering's published price for direct orders; competing providers for open bid orders. Bids must satisfy the order's resource and attribute requirements, and multiple bids against one order is the price-setting mechanism for that mode — competition per order, not per contract cycle.",
+          "The offering's published price for direct orders; competing providers for open bid orders; the best eligible listing within your cap for selector orders. Bids must satisfy the order's resource and attribute requirements, and multiple bids against one order is the price-setting mechanism for that mode — competition per order, not per contract cycle.",
       },
       {
         question: "What happens when usage numbers are disputed?",
@@ -197,7 +198,7 @@ export const LEARN: LearnEntry[] = [
       {
         label: "Settlement",
         title: "Records become payment",
-        body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout with no protocol commission — and unspent funds return.",
+        body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout under the governed fee policy — and unspent funds return.",
         href: "#stage-5-settlement-usage-becomes-payment",
       },
     ],
@@ -417,7 +418,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Settlement and payout",
         paragraphs: [
-          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount: VirtEngine applies no protocol take or marketplace commission. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
+          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount under the governed fee policy — protocol parameters set by governance, not a private platform take. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
         ],
       },
       {
@@ -439,7 +440,7 @@ export const LEARN: LearnEntry[] = [
       "Escrow is commitment without transfer — provably funded, movable only under settlement rules.",
       "Meters collect hourly; records are signed, anomaly-screened, and reconciled every six hours.",
       "Every record waits out a 24-hour dispute window before it can settle.",
-      "Payout carries no protocol commission; unspent escrow returns to the tenant.",
+      "Payout follows the governed settlement fee policy; unspent escrow returns to the tenant.",
     ],
     faqs: [
       {
@@ -462,7 +463,7 @@ export const LEARN: LearnEntry[] = [
       {
         question: "What does the provider actually receive?",
         answer:
-          "The agreed settlement amount from escrow — no protocol take or marketplace commission. Only chain-message transaction fees apply, proposed at approximately 90% below standard network transaction fees.",
+          "The agreed settlement amount from escrow under the governed fee policy — protocol parameters, not a private platform take. Only chain-message transaction fees otherwise apply, proposed at approximately 90% below standard network transaction fees.",
       },
     ],
     journey: [
@@ -487,7 +488,7 @@ export const LEARN: LearnEntry[] = [
       {
         label: "Settle",
         title: "Line items become payout",
-        body: "Validated records price into line items and draw down escrow — no protocol commission, full audit trail from meter to payment.",
+        body: "Validated records price into line items and draw down escrow under the governed fee policy — full audit trail from meter to payment.",
         href: "#settlement-and-payout",
       },
     ],
@@ -801,22 +802,22 @@ export const LEARN: LearnEntry[] = [
     title: "Provider Economics: Revenue & Pricing",
     label: "Provider economics",
     metaDescription:
-      "The revenue model for VirtEngine providers: bid pricing, escrow-backed leases, 0% commission, low fees, plus how benchmarks and audits lift prices.",
+      "The revenue model for VirtEngine providers: listing and bid pricing, escrow-backed leases, governed settlement fees, low chain fees, plus how benchmarks and audits lift prices.",
     kicker: "Economics",
     intro:
       "A provider's business on VirtEngine reduces to three questions: what does capacity earn, what does the protocol charge, and what raises realized prices over time? The answers are unusually legible, because every term is chain state.",
     sections: [
       {
-        heading: "Revenue: bids you price, escrow that pays",
+        heading: "Revenue: prices you set, escrow that pays",
         paragraphs: [
-          "You set bid pricing strategy in the provider daemon; the marketplace matches it against demand. Every lease you win is backed by escrow funded before the workload starts — verifiable on-chain — so revenue risk is settled before capacity is committed.",
+          "You publish list prices for direct orders, and configure bid strategy in the provider daemon for orders opened to competition; the marketplace matches both against demand. Every lease you win is backed by escrow funded before the workload starts — verifiable on-chain — so revenue risk is settled before capacity is committed.",
           "Usage is metered hourly and settles automatically after the 24-hour dispute window. There is no invoicing, no collections, and no accounts-receivable aging: settled usage is settled money.",
         ],
       },
       {
         heading: "Costs: validator fees and operations",
         paragraphs: [
-          "VirtEngine charges 0% marketplace commission: settlement releases the agreed lease amount from escrow without a platform deduction. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
+          "Settlement fees are protocol parameters set by governance — not a private platform deduction — and the agreed lease amount releases from escrow under that policy. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
         ],
       },
       {
@@ -840,7 +841,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "A worked lifecycle",
         paragraphs: [
-          "A tenant posts an order; your daemon bids your configured price; the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount, with no marketplace commission deducted. Your track record grows by one more served lease, and the next order prices a little better.",
+          "A tenant posts an order; a direct order matches your published price, or your daemon bids your configured price and the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount under the governed fee policy. Your track record grows by one more served lease, and the next order prices a little better.",
         ],
       },
     ],
@@ -854,7 +855,7 @@ export const LEARN: LearnEntry[] = [
     mediaCaption: "The economics of serving capacity.",
     takeaways: [
       "You price the bids; funded escrow pays them — revenue risk settles before capacity commits.",
-      "Marketplace commission is 0%; chain fees run ~90% below standard networks and batch well.",
+      "Settlement fees are governance-set; chain fees run ~90% below standard networks and batch well.",
       "Benchmarks, audits, reviews, and enclave capability move you from price competition to quality competition.",
       "Demand arrives verified and funded — containers to HPC batch — and every served lease raises the next price.",
     ],
@@ -862,7 +863,7 @@ export const LEARN: LearnEntry[] = [
       {
         question: "What does the protocol charge providers?",
         answer:
-          "Zero marketplace commission on settlement. Only chain-message transaction fees apply — proposed at approximately 90% below standard network transaction fees, manageable with batching. Your real cost base stays power, hardware, bandwidth, and people.",
+          "Settlement fees are governance-set protocol parameters, not a private platform margin. Only chain-message transaction fees otherwise apply — proposed at approximately 90% below standard network transaction fees, manageable with batching. Your real cost base stays power, hardware, bandwidth, and people.",
       },
       {
         question: "How do we escape pure price competition?",
@@ -1058,7 +1059,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Bonded stake governs",
         paragraphs: [
-          "Validators and delegators vote with bonded stake on parameter changes, software upgrades, and chain configuration. Economic parameters — staking targets, validator-fee parameters and issuance policy — are chain state, adjustable by proposal rather than by decree. Marketplace commission is set to zero. If you delegate, your stake carries governance weight; using it is part of the job.",
+          "Validators and delegators vote with bonded stake on parameter changes, software upgrades, and chain configuration. Economic parameters — staking targets, validator-fee parameters, marketplace settlement fees and issuance policy — are chain state, adjustable by proposal rather than by decree. If you delegate, your stake carries governance weight; using it is part of the job.",
         ],
       },
       {
@@ -1071,7 +1072,7 @@ export const LEARN: LearnEntry[] = [
         heading: "Governed economics",
         paragraphs: [],
         bullets: [
-          "Marketplace commission — 0% of settled marketplace payments",
+          "Marketplace settlement fees — governed parameters applied to settled payments",
           "Validator transaction-fee parameters — proposed at approximately 90% below standard networks",
           "Issuance policy — VEID-led 15-token batches: 14 to eligible humans and 1 to the Foundation genesis account",
           "Chain configuration — operational parameters queryable as state",
@@ -1102,7 +1103,7 @@ export const LEARN: LearnEntry[] = [
     takeaways: [
       "Bonded stake votes on parameters, upgrades, and configuration — delegating carries governance weight.",
       "The approved-client list is the most consequential governed object: capture-software integrity by stakeholder vote.",
-      "Commission is 0%, fees ~90% below standard, issuance VEID-led — all chain state, all amendable.",
+      "Settlement fees are governed parameters, chain fees ~90% below standard, issuance VEID-led — all chain state, all amendable.",
       "The Foundation's constitution locks the project to public benefit: no private operation, no dividends, no capture.",
     ],
     faqs: [
@@ -1126,7 +1127,7 @@ export const LEARN: LearnEntry[] = [
       {
         question: "What is the marketplace commission?",
         answer:
-          "0% of settled marketplace payments — itself a governed parameter, changeable only the same way as everything else: by vote.",
+          "Settlement fees are governed protocol parameters, set and changed only by stakeholder vote — not a private platform margin.",
       },
     ],
   },

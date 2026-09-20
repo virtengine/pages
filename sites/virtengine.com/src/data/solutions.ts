@@ -103,7 +103,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Payment releases from lease escrow after each usage record clears its 24-hour dispute window — no invoicing, no accounts receivable and no marketplace commission deducted at payout. You set your own bid pricing; validator transaction fees apply only to on-chain actions and are proposed at approximately 90% below standard network transaction fees.",
+        "Payment releases from lease escrow after each usage record clears its 24-hour dispute window — no invoicing, no accounts receivable, and settlement fees are governed protocol parameters, not a private platform deduction. You set your own list prices and bid strategy; validator transaction fees apply only to on-chain actions and are proposed at approximately 90% below standard network transaction fees.",
       ],
     },
     gettingStarted: [
@@ -111,7 +111,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       { step: "Register on-chain with GPU attributes", detail: "Create your provider record with accelerator classes, region, and certifications." },
       { step: "Publish benchmarks", detail: "Measured GPU performance data makes your offers stand out to tenants filtering on capability." },
       { step: "Deploy the provider daemon", detail: "Point it at your Kubernetes cluster, connect your chain key, and set pricing rules." },
-      { step: "Bid, serve, settle", detail: "The daemon bids on matching orders; usage settles hourly from escrow." },
+      { step: "List, bid, serve, settle", detail: "Direct orders match your published prices; the daemon bids on open orders. Usage settles hourly from escrow." },
     ],
     related: [
       { label: "Provider overview", href: "/providers" },
@@ -125,7 +125,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         kicker: "Payout",
         title: "Hourly settlement from escrow",
-        body: "Usage meters hourly and releases from funded escrow after the 24-hour dispute window — no invoicing, no receivables, 0% marketplace commission.",
+        body: "Usage meters hourly and releases from funded escrow after the 24-hour dispute window — no invoicing, no receivables, governed settlement fees.",
       },
       {
         kicker: "Discovery",
@@ -156,8 +156,8 @@ export const SOLUTIONS: SolutionEntry[] = [
       },
       {
         label: "Bid",
-        title: "Deploy the daemon and bid",
-        body: "Point the provider daemon at your Kubernetes cluster, connect your chain key, and set pricing rules. It watches open orders and bids per your strategy.",
+        title: "Deploy the daemon and price",
+        body: "Point the provider daemon at your Kubernetes cluster, connect your chain key, and set pricing rules. Direct orders match your list prices; the daemon bids on open orders per your strategy.",
       },
       {
         label: "Settle",
@@ -174,7 +174,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "Who sets the price for my capacity?",
         answer:
-          "You do. The daemon bids per your configured pricing strategy against open tenant orders, and benchmark data supports premium pricing for premium hardware. The protocol takes 0% marketplace commission at payout.",
+          "You do. You publish list prices for direct orders and the daemon bids per your configured strategy against open tenant orders — benchmark data supports premium pricing for premium hardware. Settlement fees are governed parameters, not a platform deduction.",
         links: [{ label: "Provider economics explained", href: "/learn/provider-economics" }],
       },
       {
@@ -232,7 +232,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Every lease is backed by escrow funded before the workload starts, so payment risk is settled before you commit capacity. Usage settles on an hourly cadence with a 24-hour dispute window; the marketplace commission is 0%. Validator transaction fees apply to the chain actions, not to the settled lease payment.",
+        "Every lease is backed by escrow funded before the workload starts, so payment risk is settled before you commit capacity. Usage settles on an hourly cadence with a 24-hour dispute window; settlement fees are governed protocol parameters. Validator transaction fees apply to the chain actions, not to the settled lease payment.",
       ],
     },
     gettingStarted: [
@@ -264,7 +264,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         kicker: "Payout",
         title: "Escrow before capacity",
-        body: "Every lease is backed by escrow funded before the workload starts. Usage settles hourly with a 24-hour dispute window; marketplace commission is 0%.",
+        body: "Every lease is backed by escrow funded before the workload starts. Usage settles hourly with a 24-hour dispute window; settlement fees are governance-set.",
       },
     ],
     flow: [
@@ -366,7 +366,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Jobs are paid from tenant escrow like any lease, with no protocol commission deducted at settlement. Facilities set their own pricing per partition and job class — spare-cycle monetization at prices you control, without disturbing allocation commitments to primary users. Validator transaction fees apply only to chain operations.",
+        "Jobs are paid from tenant escrow like any lease, under the governed settlement fee policy. Facilities set their own pricing per partition and job class — spare-cycle monetization at prices you control, without disturbing allocation commitments to primary users. Validator transaction fees apply only to chain operations.",
       ],
     },
     gettingStarted: [
@@ -438,7 +438,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "How are HPC jobs priced?",
         answer:
-          "Facilities set their own pricing per partition and job class, offered through the same exchange economics as the rest of the marketplace. Jobs are paid from tenant escrow like any lease, with no protocol commission deducted at settlement.",
+          "Facilities set their own pricing per partition and job class, offered through the same exchange economics as the rest of the marketplace. Jobs are paid from tenant escrow like any lease, under the governed settlement fee policy.",
       },
       {
         question: "Will marketplace jobs disturb our primary allocations?",
@@ -1091,10 +1091,10 @@ export const SOLUTIONS: SolutionEntry[] = [
     label: "AI/ML workloads",
     title: "Source Training and Inference Capacity On-Chain",
     metaDescription:
-      "Run AI training and inference on VirtEngine: GPU capacity via open bidding, benchmark-verified hardware, HPC access and confidential options.",
+      "Run AI training and inference on VirtEngine: GPU capacity via direct orders or open bidding, benchmark-verified hardware, HPC access and confidential options.",
     audience: "ML teams that need training or inference capacity without hyperscaler lock-in.",
     intro:
-      "AI teams are capacity-constrained and price-taking. VirtEngine inverts the relationship: describe what you need, let providers bid, verify hardware through published benchmarks, and pay only for metered usage from escrow you control.",
+      "AI teams are capacity-constrained and price-taking. VirtEngine inverts the relationship: buy a listed plan outright, or describe what you need and let providers bid — capping the price with attribute matching if you prefer. Verify hardware through published benchmarks and pay only for metered usage from escrow you control.",
     problem: {
       heading: "The problem: allocation queues and opaque pricing",
       paragraphs: [
@@ -1105,7 +1105,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         heading: "Demand-side market power",
         paragraphs: [
-          "Post an order specifying accelerators, memory, region, and required attributes; provider daemons bid against it. Competition happens per order, continuously — not per contract cycle. Benchmark records (x/benchmark) let you verify measured performance before accepting a bid.",
+          "Post an order specifying accelerators, memory, region, and required attributes; provider daemons bid against it. Competition happens per order, continuously — not per contract cycle. Benchmark records (x/benchmark) let you verify measured performance before accepting a bid or taking a listed plan.",
         ],
       },
       {
@@ -1215,12 +1215,12 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "cost-optimized-cloud",
     label: "Cost-optimized cloud",
-    title: "Cut Cloud Costs with Open Bidding",
+    title: "Cut Cloud Costs on an Open Market",
     metaDescription:
-      "Cut compute costs on VirtEngine: competitive per-order bidding, escrow-metered spend, no egress lock-in and portability across providers.",
+      "Cut cloud costs on VirtEngine: direct prices from providers you choose, competitive per-order bidding or capped attribute matching, escrow-metered spend and portability across providers.",
     audience: "Teams whose cloud bills grew faster than their workloads.",
     intro:
-      "Cloud pricing is a menu written by the seller. VirtEngine replaces the menu with an auction: every order is bid on by competing providers, every hour of usage is metered and disputable, and unspent budget comes back. Cost optimization stops being a dashboard discipline and becomes market structure.",
+      "Cloud pricing is a menu written by the seller. VirtEngine makes it a market: buy direct at a published price, cap what you will pay and let the engine match, or open the order to competing bids. Every hour is metered and disputable, and unspent budget comes back. Cost optimization stops being a dashboard discipline and becomes market structure.",
     problem: {
       heading: "The problem: list prices and lock-in",
       paragraphs: [
@@ -1229,9 +1229,9 @@ export const SOLUTIONS: SolutionEntry[] = [
     },
     approach: [
       {
-        heading: "Per-order price competition",
+        heading: "Three ways to price an order",
         paragraphs: [
-          "Each deployment group becomes an order that providers bid against. Price discovery happens at the granularity of your actual workload, continuously — and switching providers is a redeployment, not a migration project, because the workload description is portable chain state.",
+          "Take a provider's published price directly — comparison shopping without a negotiation. Cap the price and let a selector order match the best eligible listing. Or open the order to a bidding window and accept the best offer. Price discovery happens at the granularity of your actual workload — and switching providers is a redeployment, not a migration project, because the workload description is portable chain state.",
         ],
       },
       {
@@ -1250,12 +1250,12 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Marketplace settlement has a 0% protocol commission. No egress-fee ambush, no commitment tiers — the agreed bid price is released from escrow for verified usage. Low validator transaction fees apply only to the relevant on-chain messages.",
+        "Settlement fees are governed protocol parameters — no private platform margin. No egress-fee ambush, no commitment tiers — the agreed price is released from escrow for verified usage. Low validator transaction fees apply only to the relevant on-chain messages.",
       ],
     },
     gettingStarted: [
       { step: "Start with a portable workload", detail: "Containerized services with declarative specs port cleanly to deployment groups." },
-      { step: "Post an order and compare bids", detail: "Filter on attributes and benchmarks; accept on price-per-verified-quality." },
+      { step: "Match the way that fits", detail: "Take a listed price, cap it with a selector order, or post an open order and accept on price-per-verified-quality." },
       { step: "Fund escrow incrementally", detail: "Deposit for the horizon you can forecast; top up as usage settles." },
       { step: "Rebid periodically", detail: "Re-run price discovery as the provider side of the market deepens." },
     ],
@@ -1266,12 +1266,12 @@ export const SOLUTIONS: SolutionEntry[] = [
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
     ],
     media: "closing-hands",
-    mediaCaption: "Auction-set pricing instead of list pricing.",
+    mediaCaption: "Listed prices, capped matches, competing bids.",
     highlights: [
       {
         kicker: "Pricing",
-        title: "Per-order price competition",
-        body: "Each deployment group becomes an order providers bid against. Price discovery happens at the granularity of your actual workload, continuously.",
+        title: "Three ways to price an order",
+        body: "Direct at a published price, selector-matched within your cap, or open to competing bids. Price discovery happens at the granularity of your actual workload.",
       },
       {
         kicker: "Audit",
@@ -1291,9 +1291,9 @@ export const SOLUTIONS: SolutionEntry[] = [
         body: "Containerized services with declarative specs port cleanly into deployment groups — the unit the market bids on.",
       },
       {
-        label: "Compare",
-        title: "Post an order and compare bids",
-        body: "Filter on attributes and benchmarks; accept on price-per-verified-quality rather than brand or habit.",
+        label: "Match",
+        title: "Price it your way",
+        body: "Buy a listed plan, cap the price with a selector order, or compare bids — filter on attributes and benchmarks, and accept on price-per-verified-quality rather than brand.",
       },
       {
         label: "Fund",
@@ -1315,12 +1315,12 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "Where do the savings actually come from?",
         answer:
-          "Three structural sources: continuous per-order competition instead of list prices, 0% protocol commission at settlement, and no egress-fee ambush or commitment tiers. FinOps tooling optimizes within the menu; this changes the menu.",
+          "Three structural sources: a real market instead of one seller's menu — direct prices you can compare, capped matching, or open competition — governed settlement fees rather than a private platform margin, and no egress-fee ambush or commitment tiers. FinOps tooling optimizes within the menu; this changes the menu.",
       },
       {
         question: "How is cloud spend controlled here?",
         answer:
-          "Escrow you fund, hourly metered records, a 24-hour dispute window with anomaly detection, and unspent budget returned on close. The agreed bid price is released only for verified usage.",
+          "Escrow you fund, hourly metered records, a 24-hour dispute window with anomaly detection, and unspent budget returned on close. The agreed price is released only for verified usage.",
         links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
       },
       {

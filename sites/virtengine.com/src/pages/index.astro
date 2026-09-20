@@ -12,8 +12,10 @@ import LatticeMark from "@components/art/LatticeMark.astro";
 import SurfaceWash from "@components/art/SurfaceWash.astro";
 import MediaFigure from "@components/media/MediaFigure.astro";
 import PartnerStrip from "@components/PartnerStrip.astro";
+import BuyPaths from "@components/BuyPaths.astro";
+import ServiceCategories from "@components/ServiceCategories.astro";
 import { CURRENT_POSTS } from "@data/blog";
-import { SITE } from "@data/site";
+import { LIFECYCLE, SITE } from "@data/site";
 import { hits, idleCopy, stageCopy } from "@data/network";
 
 const journalLead = CURRENT_POSTS[0];
@@ -34,11 +36,11 @@ const surfaces = [
     n: "01",
     label: "Marketplace",
     title: "Capacity, discovered in the open.",
-    body: "Orders meet offerings on chain — buy a named listing outright, or open it to bids. The match becomes a lease under escrow. Every step is protocol state, not a private arrangement — and the marketplace takes no commission.",
+    body: "Orders meet offerings on chain — buy a named listing at its published price, open demand to competing bids, or describe requirements and get matched. The match becomes a lease under escrow. Every step is protocol state, not a private arrangement.",
     facts: [
       ["x/market", "order → match → lease state machine"],
       ["x/escrow", "funds held against active leases"],
-      ["x/take", "zero-rate marketplace settlement policy"],
+      ["x/take", "settlement policy set by governance"],
     ],
     href: "/learn/how-the-marketplace-works",
     cta: "How the marketplace works",
@@ -67,7 +69,7 @@ const surfaces = [
     body: "The provider daemon meters workloads, batches signed usage records, and the settlement module converts them into billable line items after a 24-hour dispute window.",
     facts: [
       ["usage", "Signed records, submitted on a scheduled cadence"],
-      ["escrow", "Funds release to the provider — no marketplace commission"],
+      ["escrow", "Funds release to the provider under the governed fee policy"],
       ["x/settlement", "usage → line items → payout"],
     ],
     href: "/learn/escrow-and-settlement-explained",
@@ -77,13 +79,13 @@ const surfaces = [
   {
     id: "cap-infra",
     n: "04",
-    label: "Infrastructure",
-    title: "Independent machines. One market.",
-    body: "GPU clusters, HPC schedulers, general cloud, and confidential interconnects all speak the same lease. VirtEngine does not pretend to be the physical cloud.",
+    label: "Providers",
+    title: "Independent operators. One market.",
+    body: "VirtEngine is not the cloud. It is the market independent operators join — GPU fleets, HPC centres, regional datacentres and confidential enclaves serve tenants through one lease, at prices they set themselves.",
     facts: [
-      ["GPU", "Dense accelerators offered into the market"],
-      ["HPC", "Scheduler-backed clusters, same lease"],
-      ["Cloud", "CPU, storage, and regional capacity"],
+      ["providerd", "registers, prices, provisions, meters"],
+      ["x/provider", "on-chain attributes, audits and benchmarks"],
+      ["Onboarding", "VEID identity, MFA and domain verification"],
     ],
     href: "/providers",
     cta: "Provider path",
@@ -93,8 +95,8 @@ const surfaces = [
 ---
 
 <Base
-  title="Decentralized Cloud Marketplace Protocol | VirtEngine"
-  description="VirtEngine is an open-source DePIN protocol for GPU, HPC and cloud compute — marketplace, VEID identity and escrow settlement on Cosmos SDK."
+  title="Open Cloud & Services Marketplace | VirtEngine"
+  description="Order cloud infrastructure and services from providers you choose — direct at published prices, open to bids, or matched by specification. Identity, escrow and settlement on-chain."
   image="/og.png"
 >
   <!-- one continuous ribbon field behind the page: dark sections reveal it,
@@ -123,20 +125,23 @@ const surfaces = [
           ))}
         </div>
         <div class="action-row">
-          <a class="btn-solid" href="/protocol">
-            Explore the protocol
+          <a class="btn-solid" href="#buy">
+            See how buying works
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path>
             </svg>
+          </a>
+          <a class="btn-quiet btn-quiet--night" href="/protocol">
+            Explore the protocol
           </a>
           <a class="btn-quiet btn-quiet--night" href={SITE.github}>
             View source <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <ol class="hero-stages" aria-label="Protocol stages">
+        <ol class="hero-stages" aria-label="Stages shown in the diagram">
           <li class="hero-stages-note">
-            <span>Protocol stages</span>
-            <span>Hover to preview · any opens</span>
+            <span>The figure, stage by stage</span>
+            <span>Hover to preview · click opens its guide</span>
           </li>
           {hits.map((h, i) => (
             <li class="hero-stage">
@@ -175,28 +180,67 @@ const surfaces = [
       <p>
         Computing capacity already exists in independent facilities — GPU clusters,
         HPC centres, regional datacentres, confidential enclaves. Today those machines
-        sit behind closed catalogues. VirtEngine is a protocol that lets a tenant
-        describe a workload, lets independent providers bid to run it, and records
-        identity, capacity, and settlement as verifiable state. VirtEngine is not the
-        cloud. It is the market independent infrastructure can join.
+        sit behind closed catalogues. VirtEngine turns them into one market: orders
+        resolve on-chain, identity and capacity become verifiable state, and money
+        moves only against signed usage. VirtEngine is not the cloud. It is the
+        market independent infrastructure can join.
       </p>
-      <ol class="home-stages">
-        <li>
-          <span>01</span>
-          <strong>Request</strong>
-          <small>A tenant posts the workload on chain.</small>
-        </li>
-        <li>
-          <span>02</span>
-          <strong>Verify &amp; coordinate</strong>
-          <small>Identity, capacity, and escrow become protocol state.</small>
-        </li>
-        <li>
-          <span>03</span>
-          <strong>Run</strong>
-          <small>The selected provider instantiates and meters the work.</small>
-        </li>
+      <ol class="home-stages home-stages--lifecycle" aria-label="Marketplace lifecycle">
+        {LIFECYCLE.map((s) => (
+          <li>
+            <span>{s.step}</span>
+            <strong>{s.name}</strong>
+            <small>{s.short}</small>
+          </li>
+        ))}
       </ol>
+      <p class="home-stages-link">
+        <a class="btn-quiet" href="/learn/how-the-marketplace-works">
+          Walk through the lifecycle <span aria-hidden="true">→</span>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="home-buy" id="buy">
+    <SurfaceWash />
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Buying</span><span>Three paths · one rail</span></div>
+          <h2>Three ways to buy. One settlement rail.</h2>
+        </div>
+        <p>
+          Direct ordering is the default: pick a listing and pay its published price.
+          Open bidding and attribute matching are there when price discovery or fit
+          matters more than the vendor name. Whichever path you take, the match is
+          on-chain and the money settles from escrow.
+        </p>
+      </div>
+      <BuyPaths foot="Illustrated with example figures. Every path resolves to protocol state — no private order book, no off-platform deal." />
+    </div>
+  </section>
+
+  <section class="home-catalog" id="catalog">
+    <SurfaceWash />
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Catalogue</span><span>What you can order</span></div>
+          <h2>IaaS, PaaS, SaaS — and custom listings.</h2>
+        </div>
+        <p>
+          The market sells service models, not just servers. Infrastructure, managed
+          platforms, software plans and provider-defined offerings list in one
+          catalogue and settle through the same escrow.
+        </p>
+      </div>
+      <ServiceCategories />
+      <p class="home-catalog-note">
+        Infrastructure depth stays first-class: GPU fleets, HPC schedulers and
+        confidential enclaves list as IaaS alongside general cloud.{" "}
+        <a href="/waldur">See the catalogue in Waldur →</a>
+      </p>
     </div>
   </section>
 

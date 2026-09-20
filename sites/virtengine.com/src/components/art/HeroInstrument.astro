@@ -51,7 +51,7 @@ const flowPath = (f: { x: number; y: number }, t: { x: number; y: number }) =>
 
 /* consensus cycle rail */
 const railY = 562;
-const railNodes = ["order", "bid", "lease", "usage", "settlement"].map((name, i) => ({
+const railNodes = ["order", "match", "lease", "usage", "settlement"].map((name, i) => ({
   name,
   x: 132 + i * 114,
 }));
@@ -162,7 +162,7 @@ const railNodes = ["order", "bid", "lease", "usage", "settlement"].map((name, i)
     ))
   }
 
-  <!-- order / bid flows with travelling packets -->
+  <!-- order / match flows with travelling packets -->
   {
     flows.map((f) => {
       const lp = flowPath(f.l, f.tl);

@@ -11,7 +11,7 @@ import { SITE } from "@data/site";
 const whyProvide = [
   {
     title: "Monetize idle capacity",
-    body: "Turn unused racks, cloud headroom, or HPC cycles into revenue. The marketplace matches your capacity with tenant demand — you set your own bid pricing strategy.",
+    body: "Turn unused racks, cloud headroom, or HPC cycles into revenue. The marketplace matches your capacity with tenant demand — publish list prices for direct orders, and set your own bid strategy for open ones.",
   },
   {
     title: "Settlement without invoicing",
@@ -28,7 +28,7 @@ const whyProvide = [
 ];
 
 const daemonDuties = [
-  { name: "Bid engine", detail: "Watches open orders on-chain and places bids per your configured pricing and capacity rules." },
+  { name: "Pricing & bid engine", detail: "Publishes your list prices, watches open orders on-chain, and places bids per your configured pricing and capacity rules." },
   { name: "Workload orchestration", detail: "Instantiates leased workloads through Kubernetes, or through SLURM / MOAB / Open OnDemand for HPC jobs." },
   { name: "Usage metering", detail: "Collects per-workload resource metrics on an hourly cadence and batches them into signed usage records." },
   { name: "Chain submission", detail: "Submits MsgRecordUsage batches with retry and backoff; reconciles against platform metrics and flags anomalies." },
@@ -48,7 +48,7 @@ const onboarding = [
   {
     step: "03",
     title: "Deploy the provider daemon",
-    body: "Install and configure the daemon against your Kubernetes cluster or HPC scheduler; connect your chain key and set bid pricing.",
+    body: "Install and configure the daemon against your Kubernetes cluster or HPC scheduler; connect your chain key, and set list prices and bid strategy.",
   },
   {
     step: "04",
@@ -58,14 +58,14 @@ const onboarding = [
   {
     step: "05",
     title: "Bid, serve, settle",
-    body: "The daemon bids on matching orders. Won leases run on your infrastructure, usage settles hourly, and escrow pays out after the 24-hour dispute window.",
+    body: "Direct orders match your list prices; the daemon bids on open ones. Won leases run on your infrastructure, usage settles hourly, and escrow pays out after the 24-hour dispute window.",
   },
 ];
 ---
 
 <Base
   title="Sell GPU & Cloud Capacity: Provider Guide | VirtEngine"
-  description="Lease GPU, datacenter or HPC capacity into VirtEngine's DePIN marketplace. Escrow-backed pay, 0% commission, daemon setup and onboarding steps."
+  description="Lease GPU, datacenter or HPC capacity into VirtEngine's DePIN marketplace. Escrow-backed pay under governed settlement fees, daemon setup and onboarding steps."
   path="/providers"
   image="/media/provider-datacenter-1200.webp"
   breadcrumbs={[
@@ -102,7 +102,7 @@ const onboarding = [
     lede="The settlement pipeline connects your running workloads to escrowed tenant funds. Every hop is signed, windowed for disputes, and reconciled."
   >
     <DiagramFrame
-      label="Settlement flow diagram in two halves. Left, the provider daemon: a usage meter collects per-workload resource metrics; a scheduled collector produces hourly usage records; the settlement pipeline batches records and runs anomaly detection; a chain submitter sends signed MsgRecordUsage batches. Right, on-chain: the settlement module converts usage into billable line items; a 24-hour dispute window allows corrections; the escrow module holds funds against the lease; then payout — the provider receives the agreed settlement amount with no marketplace commission deducted."
+      label="Settlement flow diagram in two halves. Left, the provider daemon: a usage meter collects per-workload resource metrics; a scheduled collector produces hourly usage records; the settlement pipeline batches records and runs anomaly detection; a chain submitter sends signed MsgRecordUsage batches. Right, on-chain: the settlement module converts usage into billable line items; a 24-hour dispute window allows corrections; the escrow module holds funds against the lease; then payout — the provider receives the agreed settlement amount under the governed fee policy."
       caption="fig 01 — usage reporting and settlement pipeline (docs/usage-reporting-settlement.md)"
       class="reveal"
     >
@@ -114,9 +114,9 @@ const onboarding = [
         <strong>24-hour dispute window</strong> during which either party can raise
         corrections; anomaly detection flags outliers automatically before they ever
         reach the chain. After the window closes, line items settle against lease escrow
-        and the agreed funds transfer to your provider account with no marketplace
-        commission deducted. Low validator transaction fees apply only to the on-chain
-        actions involved.
+        and the agreed funds transfer to your provider account under the governed
+        settlement fee policy — protocol parameters, not a private platform deduction.
+        Low validator transaction fees apply only to the on-chain actions involved.
       </p>
     </div>
   </Section>

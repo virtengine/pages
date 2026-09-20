@@ -9,6 +9,10 @@ import { hits, overlays, readouts } from "@data/network";
 ---
 
 <div class="nf-stage">
+  <div class="nf-fighead">
+    <p>Live instrument — a lease forming</p>
+    <span>Order → match → escrow → settle · hover any stage</span>
+  </div>
   <div class="nf-canvas">
     <svg
       class="network-field"
@@ -109,7 +113,7 @@ import { hits, overlays, readouts } from "@data/network";
           <path d="M34 14 L62 14 L48 36 Z" fill="#7d8d7e"></path>
           <text x="48" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="13" fill="#a3b2a4">0.51</text>
         </g>
-        <text x="48" y="502" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">BID</text>
+        <text x="44" y="502" font-family="var(--font-mono)" font-size="13" letter-spacing="0.16em" fill="#7d8d7e">MATCH</text>
       </g>
 
       <g class="nf-g nf-g-escrow">
@@ -118,10 +122,10 @@ import { hits, overlays, readouts } from "@data/network";
           <rect class="nf-fill" x="220" y="588" width="200" height="104" fill="#60cc5d" opacity="0.3"></rect>
         </g>
         <text x="236" y="613" font-family="var(--font-mono)" font-size="12.5" letter-spacing="0.16em" fill="#a3b2a4">ESCROW</text>
-        <text x="404" y="613" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" letter-spacing="0.12em" fill="#7d8d7e">TAKE</text>
+        <text x="404" y="613" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" letter-spacing="0.12em" fill="#7d8d7e">FEES</text>
         <line x1="236" y1="629" x2="404" y2="629" stroke="#253027" stroke-width="1"></line>
-        <text x="320" y="667" text-anchor="middle" font-family="var(--font-sans)" font-size="32" font-weight="700" fill="#7ddd7a">0%</text>
-        <text x="320" y="684" text-anchor="middle" font-family="var(--font-mono)" font-size="11" letter-spacing="0.06em" fill="#a3b2a4">no commission charged</text>
+        <text x="320" y="667" text-anchor="middle" font-family="var(--font-sans)" font-size="28" font-weight="700" fill="#7ddd7a">governed</text>
+        <text x="320" y="684" text-anchor="middle" font-family="var(--font-mono)" font-size="11" letter-spacing="0.06em" fill="#a3b2a4">protocol parameters</text>
       </g>
 
       <g class="nf-g nf-g-settle">

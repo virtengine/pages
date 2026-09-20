@@ -11,10 +11,22 @@ import MediaBand from "@components/media/MediaBand.astro";
   image="/media/hero-infrastructure-1440.webp"
   breadcrumbs={[{ name: "Home", href: "/" }, { name: "Launch updates", href: "/launch" }]}
 >
+  <div class="container-site">
+    <div class="content-hero">
+      <p class="kicker">LAUNCH UPDATES</p>
+      <h1>Follow the VirtEngine launch</h1>
+      <p class="intro">
+        TestNet is planned for January 2027, followed by MainNet in March 2027 after
+        validation and a separate production approval. Join the list for confirmed
+        dates, releases and network updates.
+      </p>
+    </div>
+  </div>
+
   <Section
-    eyebrow="Launch updates"
-    title="Follow the VirtEngine launch"
-    lede="TestNet is planned for January 2027, followed by MainNet in March 2027 after validation and a separate production approval. Join the list for confirmed dates and network updates."
+    eyebrow="Launch list"
+    title="Join the launch list"
+    lede="We will only send updates relevant to the protocol launch, releases and network availability."
   >
     <div class="mb-8 grid max-w-2xl gap-4 sm:grid-cols-2">
       <div class="rounded-card border border-line bg-panel p-5">
@@ -29,9 +41,7 @@ import MediaBand from "@components/media/MediaBand.astro";
       </div>
     </div>
     <div class="clip-corner max-w-2xl border border-line-strong bg-panel p-6 md:p-8">
-      <h2 class="font-display text-2xl text-ink">Join the launch list</h2>
-      <p class="prose-body mt-3">We will only send updates relevant to the protocol launch, releases and network availability.</p>
-      <form id="launch-signup" class="mt-7" novalidate>
+      <form id="launch-signup" class="mt-1" novalidate>
         <label for="launch-email" class="font-semibold text-ink">Email address</label>
         <input id="launch-email" name="email" type="email" autocomplete="email" required class="mt-2 block w-full rounded-sm border border-line-strong bg-paper px-4 py-3 text-ink" />
         <label class="mt-4 flex gap-3 text-sm text-slate">

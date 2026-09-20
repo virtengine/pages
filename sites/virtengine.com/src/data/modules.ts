@@ -77,7 +77,7 @@ export const MODULE_DOMAINS: { domain: ModuleDomain; blurb: string }[] = [
   {
     domain: "Economics & settlement",
     blurb:
-      "Escrow-backed payments, zero marketplace commission, validator transaction fees, VEID-led issuance, staking, delegation, and oracles.",
+      "Escrow-backed payments, governed settlement fees, validator transaction fees, VEID-led issuance, staking, delegation, and oracles.",
   },
   {
     domain: "Quality & governance",
@@ -186,7 +186,7 @@ export const MODULES: ModuleEntry[] = [
     whyItExists:
       "Separating the matching engine from marketplace presentation is a deliberate design split: the core exchange must stay minimal and stable, while the marketplace surface can grow with the network. The two-module split keeps consensus-critical logic isolated from product-level iteration.",
     interactions: [
-      { slug: "market", label: "x/market", how: "Builds directly on the order, bid, and lease primitives." },
+      { slug: "market", label: "x/market", how: "Builds directly on the order, match, and lease primitives." },
       { slug: "provider", label: "x/provider", how: "Surfaces provider offerings and attributes to tenants." },
       { slug: "resources", label: "x/resources", how: "Uses shared resource definitions to describe offerings consistently." },
       { slug: "review", label: "x/review", how: "Reputation signals feed offer presentation and tenant choice." },
@@ -245,7 +245,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "What lives here versus x/market?",
         answer:
-          "Coordination surfaces — offerings, listing rules, cross-module orchestration — live here. Order–bid–lease state transitions live in x/market.",
+          "Coordination surfaces — offerings, listing rules, cross-module orchestration — live here. Order–match–lease state transitions live in x/market.",
         links: [{ label: "x/market module", href: "/modules/market" }],
       },
       {
@@ -577,7 +577,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "How is HPC usage priced?",
         answer:
-          "Through the same exchange economics as the rest of the marketplace. Facilities set pricing per partition and job class, and jobs are paid from tenant escrow with no protocol commission at settlement.",
+          "Through the same exchange economics as the rest of the marketplace. Facilities set pricing per partition and job class, and jobs are paid from tenant escrow under the governed settlement fee policy.",
       },
       {
         question: "What audit trail does a job leave?",
@@ -1263,7 +1263,7 @@ export const MODULES: ModuleEntry[] = [
     interactions: [
       { slug: "market", label: "x/market", how: "Every lease is backed by a funded escrow account from creation." },
       { slug: "settlement", label: "x/settlement", how: "Settled usage line items draw down escrow into provider payouts." },
-      { slug: "take", label: "x/take", how: "Settlement keeps marketplace commission at zero as escrow releases to providers." },
+      { slug: "take", label: "x/take", how: "Applies the governed settlement-fee policy as escrow releases to providers." },
       { slug: "deployment", label: "x/deployment", how: "Deployments fund and reclaim the escrow behind their leases." },
     ],
     concepts: [
@@ -1338,13 +1338,13 @@ export const MODULES: ModuleEntry[] = [
     summary: "Converts signed usage records into billable line items and provider payouts.",
     whatItDoes: [
       "The settlement module turns metered usage into money. Provider daemons collect per-workload resource metrics on an hourly cadence, batch them into signed usage records, and submit them on-chain (MsgRecordUsage). The module validates records against their leases and converts them into billable line items priced by the lease terms.",
-      "Every reported record sits in a 24-hour dispute window during which either party can raise corrections — anomaly detection on the provider side flags outliers before they ever reach the chain. After the window closes, line items settle against lease escrow and the agreed funds transfer to the provider with no marketplace commission. Reconciliation against platform metrics (default every 6 hours) cross-checks reported usage.",
+      "Every reported record sits in a 24-hour dispute window during which either party can raise corrections — anomaly detection on the provider side flags outliers before they ever reach the chain. After the window closes, line items settle against lease escrow and the agreed funds transfer to the provider under the governed fee policy. Reconciliation against platform metrics (default every 6 hours) cross-checks reported usage.",
     ],
     whyItExists:
       "Metering and billing are where cloud customers get hurt and providers get stiffed. Making settlement a consensus function — signed records, public dispute window, automatic escrow release — replaces invoice trust with protocol guarantees for both sides.",
     interactions: [
       { slug: "escrow", label: "x/escrow", how: "Settled line items draw provider payouts from lease escrow." },
-      { slug: "take", label: "x/take", how: "The zero marketplace-commission policy is applied at payout time." },
+      { slug: "take", label: "x/take", how: "The governed settlement-fee policy is applied at payout time." },
       { slug: "market", label: "x/market", how: "Usage records are validated against the lease they bill." },
       { slug: "fraud", label: "x/fraud", how: "Disputed or anomalous usage escalates before settlement completes." },
       { slug: "oracle", label: "x/oracle", how: "Price feeds inform fiat-referenced pricing where leases use it." },
@@ -1369,8 +1369,8 @@ export const MODULES: ModuleEntry[] = [
       },
       {
         kicker: "Pay",
-        title: "Escrow releases, 0% taken",
-        body: "Cleared line items settle from escrow with no marketplace commission — the agreed amount, in full.",
+        title: "Escrow releases under governed fees",
+        body: "Cleared line items settle from escrow under the governed fee policy — the agreed amount, minus protocol parameters set by governance.",
       },
     ],
     flow: [
@@ -1419,28 +1419,28 @@ export const MODULES: ModuleEntry[] = [
     path: "x/take",
     name: "Take",
     domain: "Economics & settlement",
-    summary: "The zero-rate marketplace settlement policy; validator transaction fees remain separate.",
+    summary: "Governed marketplace settlement policy; validator transaction fees remain separate.",
     whatItDoes: [
-      "The take module governs marketplace-settlement policy. Under the proposed economics, its marketplace commission is 0%, so escrow settles the agreed lease amount to the provider without a platform deduction.",
+      "The take module governs marketplace-settlement policy. The proposed policy sets the marketplace commission at 0%, so settlement would move the agreed lease amount to the provider without a platform deduction — but the rate is governed state, not a permanent guarantee.",
       "This does not remove transaction fees: low validator fees apply to on-chain messages and compensate the validating network. They are proposed at approximately 90% below standard network transaction fees.",
     ],
     whyItExists:
       "A protocol needs sustainable revenue tied to genuine usage. A transparent, governed take on settled payments is the cleanest such mechanism: visible to every participant, proportional to real economic activity, and changeable only by stakeholder vote.",
     interactions: [
-      { slug: "settlement", label: "x/settlement", how: "The zero marketplace-commission policy is honoured at payout." },
+      { slug: "settlement", label: "x/settlement", how: "The governed settlement policy is honoured at payout." },
       { slug: "escrow", label: "x/escrow", how: "The agreed lease amount is released at the escrow boundary." },
       { slug: "bme", label: "x/bme", how: "VEID-led issuance policy interacts with supply mechanics." },
     ],
     concepts: [
-      { term: "Marketplace commission", def: "The governed platform deduction from marketplace payments — proposed at 0%." },
+      { term: "Marketplace commission", def: "The governed platform deduction from marketplace payments — proposed at 0% in the current design." },
     ],
     media: "settlement-ledger",
-    mediaCaption: "The full amount moves. Nothing is skimmed.",
+    mediaCaption: "Settlement policy, governed by vote.",
     glance: [
       {
         kicker: "Rate",
-        title: "Marketplace commission: 0%",
-        body: "Escrow settles the agreed lease amount to the provider without a platform deduction.",
+        title: "Marketplace commission: 0% proposed",
+        body: "Under the proposed policy, escrow settles the agreed lease amount to the provider without a platform deduction — changeable only by vote.",
       },
       {
         kicker: "Fees",
@@ -1462,7 +1462,7 @@ export const MODULES: ModuleEntry[] = [
       {
         label: "Apply",
         title: "Policy applies at payout",
-        body: "The zero-commission policy is honored as funds release to the provider.",
+        body: "The governed settlement policy is honoured as funds release to the provider.",
       },
       {
         label: "Compensate",
@@ -1479,12 +1479,12 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "What is the marketplace commission?",
         answer:
-          "The governed platform deduction from marketplace payments — proposed at 0%, so settlement moves the agreed lease amount in full.",
+          "The governed platform deduction from marketplace payments — proposed at 0%, so under the current proposal settlement moves the agreed lease amount in full.",
       },
       {
-        question: "Does 0% mean running the chain is free?",
+        question: "Does the proposed 0% rate mean running the chain is free?",
         answer:
-          "No. Low validator transaction fees apply to on-chain messages and compensate the validating network. The 0% applies to the settled lease payment itself.",
+          "No. Low validator transaction fees apply to on-chain messages and compensate the validating network. The proposed 0% applies to the settled lease payment itself.",
       },
       {
         question: "Why have a take module at a 0% rate?",
@@ -1506,8 +1506,8 @@ export const MODULES: ModuleEntry[] = [
     whyItExists:
       "A pure fixed-supply token disconnects the asset from the service it prices; unconstrained inflation destroys holder trust. BME ties supply mechanics to real consumption of compute, aligning the token's monetary dynamics with the marketplace it exists to serve.",
     interactions: [
-      { slug: "take", label: "x/take", how: "Keeps marketplace settlement commission at zero." },
-      { slug: "settlement", label: "x/settlement", how: "Settles escrow without a platform deduction." },
+      { slug: "take", label: "x/take", how: "Applies the governed marketplace settlement policy." },
+      { slug: "settlement", label: "x/settlement", how: "Settles escrow under the governed policy." },
       { slug: "issuancepolicy", label: "x/issuancepolicy", how: "Mint schedules operate under governed issuance policy." },
       { slug: "staking", label: "x/staking", how: "Issuance funds staking rewards alongside the inflation mechanism." },
     ],

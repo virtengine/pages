@@ -34,7 +34,7 @@ export const hits: NetworkHit[] = [
   { id: "bid-a", href: "/learn/how-the-marketplace-works", label: "Bid syd-01 — 0.42 per hour", x: 14.4, y: 63, w: 15, h: 10 },
   { id: "bid-win", href: "/learn/how-the-marketplace-works", label: "Winning bid mel-gpu — 0.39 per hour", x: 42.5, y: 63, w: 15, h: 10 },
   { id: "bid-c", href: "/learn/how-the-marketplace-works", label: "Bid act-hpc — 0.51 per hour", x: 70.6, y: 63, w: 15, h: 10 },
-  { id: "escrow", href: "/learn/escrow-and-settlement-explained", label: "Escrow — 0% marketplace take", x: 34.4, y: 78.6, w: 31.25, h: 14.4 },
+  { id: "escrow", href: "/learn/escrow-and-settlement-explained", label: "Escrow — funds held for the lease", x: 34.4, y: 78.6, w: 31.25, h: 14.4 },
   { id: "settle", href: "/learn/escrow-and-settlement-explained", label: "Settle — signed usage, then payout", x: 36.1, y: 94, w: 27.8, h: 6 },
 ];
 
@@ -51,30 +51,30 @@ export const overlays: NetworkOverlay[] = [
 ];
 
 export const readouts: Record<string, string> = {
-  idle: "Hover a stage. Click to open it.",
-  order: "Job posted in the open. Not a private RFQ.",
+  idle: "A lease forming, live — order → match → escrow → settle. Hover a stage; click opens its guide.",
+  order: "Demand with budget behind it — a named offering, or open for bids.",
   veid: "Identity scored by the validator set.",
-  attest: "Capacity proven before a bid counts.",
-  core: "One protocol. Compute, identity, settlement.",
-  "bid-a": "Independent operator. 0.42 / hr.",
-  "bid-win": "Lowest honest bid. Lease forms here.",
-  "bid-c": "Independent operator. 0.51 / hr.",
-  escrow: "Funds lock. Marketplace take is 0%.",
+  attest: "Capacity proven on the machine before it can serve.",
+  core: "One protocol: market, identity, ledger.",
+  "bid-a": "Ask 0.42 / hr on attested capacity.",
+  "bid-win": "Matched at 0.39 / hr — lease forms here.",
+  "bid-c": "Ask 0.51 / hr — recorded either way.",
+  escrow: "Funds lock against signed usage. Fees are protocol parameters.",
   settle: "Signed usage. Payout after the window.",
 };
 
 export const idleCopy = {
-  tag: "Compute. Identity. Settlement. One verifiable protocol.",
-  title: "The open infrastructure network.",
-  lede: "VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers.",
+  tag: "Buy from providers you choose, or open your demand to bids — settled on-chain.",
+  title: "The open marketplace for infrastructure and services.",
+  lede: "Independent providers list compute, platforms, software and custom services. Buyers order directly at published prices, let providers compete for the work, or describe what they need and get matched. Identity, escrow and metered settlement are protocol state — not platform promises.",
 };
 
 export const stageCopy: Record<NetworkHit["id"], NetworkStageCopy> = {
   order: {
     chip: "Order",
-    tag: "Order — jobs in the open",
-    title: "A market, not a private RFQ.",
-    lede: "Jobs are posted in the open. Every order is protocol state, biddable by any operator running an attested machine — so capacity is discovered, not brokered.",
+    tag: "Order — name it or open it",
+    title: "Demand, with budget behind it.",
+    lede: "Post a named offering to buy it outright, or open demand providers can bid on. Either way the order is escrow-backed protocol state — never a private RFQ.",
   },
   veid: {
     chip: "VEID",
@@ -86,37 +86,37 @@ export const stageCopy: Record<NetworkHit["id"], NetworkStageCopy> = {
     chip: "Attest",
     tag: "Attest — proof on the machine",
     title: "Capacity, proven where it runs.",
-    lede: "Providers sign attestations from each machine before a bid counts. Broken or borrowed capacity never reaches the market.",
+    lede: "Providers sign attestations from each machine before they can serve. Broken or borrowed capacity never reaches the market.",
   },
   core: {
-    chip: "Core",
-    tag: "Core — one verifiable protocol",
-    title: "Compute. Identity. Settlement.",
-    lede: "Three surfaces, one chain. From order to payout the state is verifiable — the protocol is the market, the identity system, and the ledger.",
+    chip: "Protocol",
+    tag: "Protocol — one verifiable chain",
+    title: "One chain, three guarantees.",
+    lede: "The protocol is the market, the identity system, and the ledger — from order to payout, the state is verifiable.",
   },
   "bid-a": {
-    chip: "Bid syd",
-    tag: "Bid syd-01 · 0.42 / hr",
-    title: "Bids land in the open.",
-    lede: "Independent operators price the job. Lowest honest bid on an attested machine takes it — and every offer, win or lose, is chain state.",
+    chip: "Bid 0.42",
+    tag: "Ask 0.42 / hr — Provider A",
+    title: "One provider's ask.",
+    lede: "An independent operator prices the job at 0.42 / hr on attested capacity. Asks compete only on orders opened for bidding.",
   },
   "bid-win": {
-    chip: "Win mel",
-    tag: "Win mel-gpu · 0.39 / hr",
+    chip: "Match 0.39",
+    tag: "Matched — 0.39 / hr",
     title: "The lease forms here.",
-    lede: "The winning offer binds into a lease under escrow. Cheapest quoting an attested machine takes the job — 0.39 / hr beats the field.",
+    lede: "A direct purchase or the accepted bid binds into a lease under escrow. This one matched Provider B at 0.39 / hr.",
   },
   "bid-c": {
-    chip: "Bid act",
-    tag: "Bid act-hpc · 0.51 / hr",
+    chip: "Bid 0.51",
+    tag: "Ask 0.51 / hr — Provider C",
     title: "Every offer is recorded.",
-    lede: "act-hpc quotes 0.51 / hr. Placed beneath the lease and stored on chain, unreserved until usage is signed and settlement runs.",
+    lede: "Provider C asks 0.51 / hr. Win or lose, every offer is chain state — unreserved until usage is signed and settlement runs.",
   },
   escrow: {
     chip: "Escrow",
-    tag: "Escrow — zero take",
-    title: "Funds lock. Take is 0%.",
-    lede: "Lease funds sit in escrow against signed usage. The marketplace takes no commission — 0% is the policy, not a discount.",
+    tag: "Escrow — funds held for the lease",
+    title: "Funds lock against signed usage.",
+    lede: "Lease funds sit in escrow against signed usage records. Marketplace fees are protocol parameters set by governance — not a private operator's margin.",
   },
   settle: {
     chip: "Settle",
