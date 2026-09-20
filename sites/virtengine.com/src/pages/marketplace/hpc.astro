@@ -1,0 +1,131 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "HPC & Batch Compute on VirtEngine";
+const description =
+  "Buy HPC and batch compute through VirtEngine: queues, node and GPU counts, job durations and scheduler-backed fulfilment on SLURM, MOAB or Open OnDemand, settled from signed usage.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "HPC & batch", href: "/marketplace/hpc" },
+];
+
+const listings = [
+  { title: "GPU Batch Queue", specs: ["4 GPUs", "32 CPU cores", "6-hour maximum job"], components: ["GPU-hour", "core-hour"], price: "Allocation-based" },
+  { title: "CPU Cluster Allocation", specs: ["256 core-hours", "Shared queue", "Priority: standard"], components: ["core-hour"], price: "Allocation-based" },
+  { title: "MPI Job Template", specs: ["Interconnect-aware", "Template defined", "Node count configurable"], components: ["node-hour"], price: "Per-job pricing" },
+  { title: "Interactive Session", specs: ["On-demand node", "Jupyter-ready", "2-hour default"], components: ["node-hour"], price: "Metered hourly" },
+];
+
+const productFields = [
+  "queues and partitions",
+  "node counts",
+  "GPU counts",
+  "job duration limits",
+  "job templates",
+  "scheduler-backed fulfilment",
+  "signed usage records",
+  "allocation or per-job pricing",
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/hpc"
+  image="/media/hpc-supercomputer-1440.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · HPC & batch"
+    title="HPC & Batch Compute on VirtEngine"
+    lede="Scheduler-backed capacity, bought from the catalogue. The listing describes the queue, the nodes, the GPUs and the job limits; the provider's scheduler runs the work."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn/hpc-on-virtengine">Read the HPC guide</CTA>
+    <CTA href="/solutions/hpc-clusters" variant="secondary">For HPC facilities</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <FulfilmentFlow
+        nodes={["Queue listing", "Order / bid", "Lease", "Scheduler adapter", "SLURM · MOAB · Open OnDemand", "Job · allocation", "Signed usage", "Settlement"]}
+        kinds={{ "Order / bid": "protocol", Lease: "protocol", "Signed usage": "protocol", Settlement: "protocol", "Scheduler adapter": "provider" }}
+        caption="The scheduler runs the job. The chain records the lease and settles signed usage."
+      />
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Buyer model" title="What an HPC listing describes">
+    <ul class="mk-chip-row">
+      {productFields.map((field) => <li>{field}</li>)}
+    </ul>
+    <p class="mk-rb-note">
+      HPC offerings are catalogue products, not raw scheduler access. The provider decides what to publish —
+      queue, node class, GPU class, duration limits — and the listing makes those constraints visible before
+      ordering.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Catalogue"
+    title="Example HPC listings"
+    lede="Illustrative products only — example providers, example figures."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-4">
+      {
+        listings.map((listing) => (
+          <MarketplaceListingCard
+            serviceType="HPC"
+            title={listing.title}
+            region="Example facility"
+            specs={listing.specs}
+            components={listing.components}
+            priceLabel={listing.price}
+            compact
+          />
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section eyebrow="Process" title="How an HPC job is bought and settled">
+    <FulfilmentFlow
+      nodes={["Browse queues", "Order or bid", "Lease", "Provider daemon", "Scheduler", "Job runs", "Metered usage", "Settlement"]}
+      kinds={{ "Order or bid": "protocol", Lease: "protocol", "Metered usage": "protocol", Settlement: "protocol", "Provider daemon": "provider", Scheduler: "provider" }}
+      caption="Allocations and jobs are metered like any other service: signed records against the lease, settled from escrow."
+    />
+    <div class="mk-tech-note">
+      <p>
+        <strong>Go deeper:</strong> the <a href="/learn/hpc-on-virtengine">HPC on VirtEngine guide</a> covers
+        schedulers, workload patterns and cluster operations; <a href="/solutions/hpc-clusters">HPC cluster
+        operators</a> covers the provider side; the <a href="/modules/hpc">x/hpc module</a> documents the job
+        marketplace surface.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "HPC on VirtEngine guide", href: "/learn/hpc-on-virtengine" },
+        { label: "HPC cluster operators", href: "/solutions/hpc-clusters" },
+        { label: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
+        { label: "Marketplace overview", href: "/marketplace" },
+      ]}
+    />
+  </Section>
+</Base>

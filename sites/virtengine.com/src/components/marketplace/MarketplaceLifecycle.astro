@@ -1,0 +1,83 @@
+---
+/**
+ * MarketplaceLifecycle — the five-stage order → match → lease → usage →
+ * settlement rail.
+ *
+ * Desktop: horizontal rail; mobile: vertical stack. Selecting a stage (click,
+ * tap or arrow keys on the radio group) opens a panel that separates what the
+ * tenant does, what the provider does, what becomes protocol state, and what
+ * stays off-chain. Zero client JavaScript: input:checked + label + panel.
+ */
+import { MARKETPLACE_STAGES } from "@data/market";
+
+interface Props {
+  /** Unique radio-group id when the component appears twice on a page. */
+  id?: string;
+  class?: string;
+}
+
+const { id = "lifecycle", class: className } = Astro.props;
+
+const icons: Record<string, string> = {
+  request:
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h7l3 3v12H5z"/><path d="M12 2.5v3h3M7.5 9h5M7.5 12h5M7.5 15h3"/></svg>',
+  branch:
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="5" r="1.8"/><circle cx="15" cy="5" r="1.8"/><circle cx="10" cy="15" r="1.8"/><path d="M5 6.8v2.4a1.8 1.8 0 0 0 1.8 1.8h6.4a1.8 1.8 0 0 0 1.8-1.8V6.8M10 11v2.2"/></svg>',
+  link:
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="6" cy="10" r="3"/><circle cx="14" cy="10" r="3"/><path d="M9 10h2"/></svg>',
+  meter:
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 14a7 7 0 1 1 14 0"/><path d="M10 14l3.5-4.5"/><path d="M3 14h14"/></svg>',
+  transfer:
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h11l-2.5-2.5M17 13H6l2.5 2.5"/></svg>',
+};
+---
+
+<div class:list={["mk-life-wrap", className]}>
+  <div class="mk-life" role="group" aria-label="Marketplace lifecycle stages">
+    {
+      MARKETPLACE_STAGES.map((stage, index) => (
+        <>
+          <input
+            class="mk-radio mk-life-radio"
+            type="radio"
+            name={`mk-life-${id}`}
+            id={`mk-life-${id}-${stage.id}`}
+            checked={index === 0}
+          />
+          <label class="mk-life-tab" for={`mk-life-${id}-${stage.id}`}>
+            <span class="mk-life-n">
+              <span aria-hidden="true">{stage.n}</span>
+              <span class="mk-life-icon" set:html={icons[stage.icon]} />
+            </span>
+            <span class="mk-life-verb">{stage.verb}</span>
+            <span class="mk-life-object">{stage.object}</span>
+          </label>
+          <section class="mk-life-panel" aria-label={`${stage.verb}: what happens`}>
+            <div class="mk-life-grid">
+              <div class="mk-life-cell">
+                <p class="mk-life-cell-title">What the tenant does</p>
+                <p>{stage.tenant}</p>
+              </div>
+              <div class="mk-life-cell">
+                <p class="mk-life-cell-title">What the provider does</p>
+                <p>{stage.provider}</p>
+              </div>
+              <div class="mk-life-cell">
+                <p class="mk-life-cell-title">Becomes protocol state</p>
+                <p set:html={stage.protocol} />
+              </div>
+              <div class="mk-life-cell">
+                <p class="mk-life-cell-title">Stays off-chain</p>
+                <p>{stage.offchain}</p>
+              </div>
+            </div>
+            <p class="mk-life-next">
+              <span><strong>Next — </strong>{stage.next}</span>
+              <a href={stage.href}>{stage.hrefLabel} <span aria-hidden="true">→</span></a>
+            </p>
+          </section>
+        </>
+      ))
+    }
+  </div>
+</div>

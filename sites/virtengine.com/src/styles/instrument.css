@@ -4272,7 +4272,8 @@ body.is-home { background-color: #0a100c; }
 .hiw-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 0.6rem;
+  column-gap: 0.6rem;
+  row-gap: 0;
 }
 .hiw-input {
   position: absolute;
@@ -4322,6 +4323,8 @@ body.is-home { background-color: #0a100c; }
 .hiw-panel {
   display: none;
   grid-column: 1 / -1;
+  grid-row: 99;
+  margin-top: 0.6rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   background: var(--color-panel);

@@ -1,0 +1,40 @@
+---
+/**
+ * RelatedMarketplacePages — the consistent "continue from here" card row
+ * every marketplace/service page ends with.
+ */
+interface Props {
+  links: { label: string; href: string }[];
+  title?: string;
+  eyebrow?: string;
+}
+
+const { links, title = "Related pages", eyebrow = "Continue" } = Astro.props;
+---
+
+<div class="mk-related-block">
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 class="mk-related-title">{title}</h2>
+  <ul class="mk-related">
+    {
+      links.map((link) => (
+        <li>
+          <a href={link.href}>
+            <span>{link.label}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .mk-related-title {
+    margin-top: 0.75rem;
+    margin-bottom: 1.1rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-ink);
+  }
+</style>

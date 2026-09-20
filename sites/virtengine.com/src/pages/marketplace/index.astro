@@ -1,0 +1,138 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceCatalogueHero from "@components/marketplace/MarketplaceCatalogueHero.astro";
+import AcquisitionPathSwitcher from "@components/marketplace/AcquisitionPathSwitcher.astro";
+import MarketplaceLifecycle from "@components/marketplace/MarketplaceLifecycle.astro";
+import OrderAnatomy from "@components/marketplace/OrderAnatomy.astro";
+import SettlementRail from "@components/marketplace/SettlementRail.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { SERVICE_MODELS } from "@data/market";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "Marketplace: Infrastructure & Services | VirtEngine";
+const description =
+  "What VirtEngine can sell: IaaS, PaaS, SaaS, HPC, GPU compute, storage, managed and custom listings — one catalogue, three acquisition paths, one settlement rail.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace"
+  image="/media/marketplace-hardware-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace"
+    title="Infrastructure and services, through one verifiable market."
+    lede="VirtEngine is designed to connect independent providers and tenants through a common catalogue, order, lease, usage and settlement protocol. Infrastructure, managed platforms, software plans and provider-defined services can share the same market rail while keeping fulfilment with the provider that actually operates the service."
+    crumbs={crumbs}
+  >
+    <CTA href="#service-types">Explore service types</CTA>
+    <CTA href="/learn/how-the-marketplace-works" variant="secondary">How orders become leases</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings throughout this section are illustrative</span>
+    </div>
+    <div slot="art">
+      <MarketplaceCatalogueHero />
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="What you can buy"
+    title="One catalogue. Different things being delivered."
+    lede="The catalogue is organised by what a tenant receives, not by technology. Eight service categories share the same order, lease, usage and settlement machinery."
+    id="service-types"
+  >
+    <div class="mk-cards-4">
+      {
+        SERVICE_MODELS.map((model) => (
+          <a class="mk-category-card" href={model.route}>
+            <span class="mk-tag">{model.label}</span>
+            <h3>{model.title}</h3>
+            <p class="mk-category-sub">{model.subtitle}</p>
+            <ul class="mk-atlas-chips">
+              {model.examples.slice(0, 5).map((example) => <li>{example}</li>)}
+            </ul>
+            <span class="mk-category-cta">{model.cta} <span aria-hidden="true">→</span></span>
+          </a>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="How buying works"
+    title="Three ways to source a service. One market rail."
+    lede="Choose a listed product, let providers compete, or describe what qualifies. Every path resolves on-chain and ends in the same escrow-backed lease."
+    class="border-y border-line bg-paper-soft"
+    id="buying"
+  >
+    <AcquisitionPathSwitcher id="hub" />
+  </Section>
+
+  <Section
+    eyebrow="Lifecycle"
+    title="Order → match → lease → usage → settlement."
+    lede="Select a stage to see what the tenant does, what the provider does, what becomes protocol state, and what stays off-chain."
+    id="lifecycle"
+  >
+    <MarketplaceLifecycle id="hub" />
+  </Section>
+
+  <Section
+    eyebrow="Anatomy"
+    title="An order is more than a shopping cart."
+    lede="It carries requirements, constraints, a price expectation and funded escrow — then resolves into an enforceable lease."
+    class="border-y border-line bg-paper-soft"
+  >
+    <OrderAnatomy />
+    <div class="mt-10">
+      <h3 class="mb-4 font-display text-2xl text-ink">One settlement rail under every service type</h3>
+      <SettlementRail />
+    </div>
+  </Section>
+
+  <Section eyebrow="Technical detail" title="Where to verify the implementation">
+    <div class="prose-body space-y-4 text-base">
+      <p>
+        This page explains what the market sells and how buying works. The protocol implementation — order,
+        match and lease state machines, escrow, settlement and identity — is documented separately.
+      </p>
+    </div>
+    <div class="mk-tech-note">
+      <p>
+        <strong>Under the hood:</strong> read the{" "}
+        <a href="/modules/market">x/market module reference</a> for order, match and lease state, the{" "}
+        <a href="/modules/escrow">x/escrow</a> and <a href="/modules/settlement">x/settlement</a> modules for the
+        money path, <a href="/waldur">Waldur integration</a> for the control-plane bridge, and{" "}
+        <a href="https://docs.virtengine.com" rel="noopener">docs.virtengine.com</a> for message-level detail.
+        Source is public on <a href="https://github.com/virtengine/virtengine" rel="noopener">GitHub</a>.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Go deeper"
+      links={[
+        { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "PaaS", href: "/marketplace/paas" },
+        { label: "SaaS", href: "/marketplace/saas" },
+        { label: "Custom listings", href: "/marketplace/custom-listings" },
+        { label: "Use infrastructure through VirtEngine", href: "/tenants" },
+        { label: "Waldur integration", href: "/waldur" },
+        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
+      ]}
+    />
+  </Section>
+</Base>

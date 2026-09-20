@@ -14,9 +14,16 @@ import MediaFigure from "@components/media/MediaFigure.astro";
 import PartnerStrip from "@components/PartnerStrip.astro";
 import BuyPaths from "@components/BuyPaths.astro";
 import ServiceCategories from "@components/ServiceCategories.astro";
+import InfrastructureMarket from "@components/marketplace/InfrastructureMarket.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
 import { CURRENT_POSTS } from "@data/blog";
-import { LIFECYCLE, SITE } from "@data/site";
+import { SITE } from "@data/site";
+import { SERVICE_MODELS } from "@data/market";
 import { idleCopy } from "@data/network";
+
+const breadthModels = SERVICE_MODELS.filter((model) =>
+  ["iaas", "paas", "saas", "hpc", "storage", "custom"].includes(model.id),
+);
 
 const journalLead = CURRENT_POSTS[0];
 const journalSide = CURRENT_POSTS.slice(1, 3);
@@ -150,26 +157,20 @@ const surfaces = [
     <div class="container-site">
       <p class="tag">Why it exists</p>
       <h2>Infrastructure should be an open market.</h2>
-      <p>
+      <p class="home-philosophy-lede">
         Computing capacity already exists in independent facilities — GPU clusters,
         HPC centres, regional datacentres, confidential enclaves. Today those machines
-        sit behind closed catalogues. VirtEngine turns them into one market: orders
-        resolve on-chain, identity and capacity become verifiable state, and money
-        moves only against signed usage. VirtEngine is not the cloud. It is the
-        market independent infrastructure can join.
+        sit behind closed catalogues.
       </p>
-      <ol class="home-stages home-stages--lifecycle" aria-label="Marketplace lifecycle">
-        {LIFECYCLE.map((s) => (
-          <li>
-            <span>{s.step}</span>
-            <strong>{s.name}</strong>
-            <small>{s.short}</small>
-          </li>
-        ))}
-      </ol>
+      <div class="home-market-visual">
+        <InfrastructureMarket />
+      </div>
       <p class="home-stages-link">
         <a class="btn-quiet" href="/learn/how-the-marketplace-works">
           Walk through the lifecycle <span aria-hidden="true">→</span>
+        </a>
+        <a class="btn-quiet" href="/marketplace">
+          Explore the marketplace <span aria-hidden="true">→</span>
         </a>
       </p>
     </div>
@@ -213,6 +214,45 @@ const surfaces = [
         Infrastructure depth stays first-class: GPU fleets, HPC schedulers and
         confidential enclaves list as IaaS alongside general cloud.{" "}
         <a href="/waldur">See the catalogue in Waldur →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="home-breadth" id="breadth">
+    <SurfaceWash />
+    <div class="container-site">
+      <div class="folio-head folio-head--split">
+        <div>
+          <div class="folio-coord"><span>Breadth</span><span>One listing model</span></div>
+          <h2>More than compute instances. One catalogue model.</h2>
+        </div>
+        <p>
+          A machine, a managed platform, a software plan, a scheduler allocation,
+          storage capacity and provider-defined work all list the same way — and
+          settle through the same rail.
+        </p>
+      </div>
+      <div class="mk-cards-3">
+        {
+          breadthModels.map((model) => (
+            <MarketplaceListingCard
+              serviceType={model.label}
+              title={model.listing.title}
+              region={model.listing.region}
+              specs={model.listing.specs}
+              components={model.listing.components}
+              priceLabel={model.listing.priceLabel}
+              href={model.route}
+              cta={model.cta}
+              compact
+            />
+          ))
+        }
+      </div>
+      <p class="home-breadth-cta">
+        <a class="btn-line" href="/marketplace">
+          Explore the marketplace <span aria-hidden="true">→</span>
+        </a>
       </p>
     </div>
   </section>

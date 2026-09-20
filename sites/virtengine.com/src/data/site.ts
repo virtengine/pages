@@ -39,6 +39,18 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
     ],
   },
   {
+    heading: "Marketplace",
+    items: [
+      { label: "Marketplace overview", href: "/marketplace" },
+      { label: "IaaS", href: "/marketplace/iaas" },
+      { label: "PaaS", href: "/marketplace/paas" },
+      { label: "SaaS", href: "/marketplace/saas" },
+      { label: "HPC & batch", href: "/marketplace/hpc" },
+      { label: "Custom listings", href: "/marketplace/custom-listings" },
+      { label: "For tenants & buyers", href: "/tenants" },
+    ],
+  },
+  {
     heading: "Participate",
     items: [
       { label: "Prepare to provide", href: "/providers" },

@@ -1,0 +1,192 @@
+---
+/**
+ * AcquisitionPathSwitcher — direct order vs open bid vs selector.
+ *
+ * A segmented control drives one animated marketplace figure per path, with
+ * a comparison table underneath. Copy comes from ACQUISITION_PATHS; the
+ * figures are illustrative and labelled as such. Zero client JavaScript.
+ */
+import { ACQUISITION_PATHS } from "@data/market";
+
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id = "acq", class: className } = Astro.props;
+
+const bestFor: Record<string, string[]> = {
+  direct: [
+    "published plans",
+    "known provider",
+    "predictable price",
+    "SaaS seats",
+    "managed services",
+    "fixed catalogue products",
+  ],
+  bid: [
+    "price discovery",
+    "flexible provider choice",
+    "custom compute requirements",
+    "larger workloads",
+  ],
+  selector: [
+    "policy-driven sourcing",
+    "region constraints",
+    "hardware requirements",
+    "compliance and attestation filters",
+  ],
+};
+
+const compareRows: [string, string, string, string][] = [
+  ["Provider chosen by", "Tenant", "Market / tenant", "Requirements"],
+  ["Price", "Listed", "Competitive", "Eligible listing"],
+  ["Wait for bids", "No", "Yes", "No"],
+  ["Best use", "Known product", "Price discovery", "Fit / attributes"],
+];
+---
+
+<div class:list={["mk-acq", className]}>
+  {
+    ACQUISITION_PATHS.map((path, index) => (
+      <>
+        <input
+          class="mk-radio mk-acq-radio"
+          type="radio"
+          name={`mk-acq-${id}`}
+          id={`mk-acq-${id}-${path.id}`}
+          checked={index === 0}
+        />
+        <label class="mk-acq-tab" for={`mk-acq-${id}-${path.id}`}>
+          <small>{path.n} · {path.tag}</small>
+          <span>{path.tab}</span>
+        </label>
+        <section class="mk-acq-panel" aria-label={`${path.tab}: how it works`}>
+          <div>
+            <p class="eyebrow">{path.tag}</p>
+            <h3 class="mt-4 text-xl font-semibold text-ink">{path.title}</h3>
+            <p class="mk-acq-lede">{path.body}</p>
+            <div class="mk-acq-best">
+              <p class="mk-listing-meta-label">Best for</p>
+              <ul>
+                {bestFor[path.id].map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+            <a class="mk-acq-link" href={path.href}>
+              Read the full explanation <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <figure class="mk-fig" aria-label={`Illustrative ${path.tab.toLowerCase()} flow`}>
+            {path.id === "direct" && (
+              <>
+                <div class="mk-fig-card">
+                  <small>Catalogue · example listing</small>
+                  <strong>Harbour GPU</strong>
+                  <span>A100 GPU · published price</span>
+                </div>
+                <i class="mk-fig-arrow" aria-hidden="true">↓</i>
+                <div class="mk-fig-card">
+                  <small>Direct order</small>
+                  <strong>Names that listing</strong>
+                  <span>escrow funded · no bidding window</span>
+                </div>
+                <i class="mk-fig-arrow" aria-hidden="true">↓</i>
+                <div class="mk-fig-card mk-fig-card--win">
+                  <small>Lease</small>
+                  <strong>Matched at the listed price</strong>
+                  <span>0 competing bids</span>
+                </div>
+                <figcaption class="mk-fig-caption">
+                  Choose the provider and plan yourself. Illustrative figures only.
+                </figcaption>
+              </>
+            )}
+
+            {path.id === "bid" && (
+              <>
+                <div class="mk-fig-card">
+                  <small>Tenant requirement</small>
+                  <strong>8 GPUs · ≥ 320 GB VRAM</strong>
+                  <span>region: AU · max price set</span>
+                </div>
+                <i class="mk-fig-arrow" aria-hidden="true">↓</i>
+                <div class="mk-fig-card">
+                  <small>Open order</small>
+                  <strong>Bidding window opens</strong>
+                  <span>eligible providers notified by their daemons</span>
+                </div>
+                <ul class="mk-fig-bids">
+                  <li class="mk-fig-bid"><span>Provider A</span><b>$0.42 / GPU-hr</b></li>
+                  <li class="mk-fig-bid mk-fig-bid--win"><span>Provider B</span><b>$0.39 / GPU-hr · selected</b></li>
+                  <li class="mk-fig-bid"><span>Provider C</span><b>$0.51 / GPU-hr</b></li>
+                </ul>
+                <div class="mk-fig-card mk-fig-card--win">
+                  <small>Lease</small>
+                  <strong>Selected bid becomes the agreement</strong>
+                  <span>escrow funded</span>
+                </div>
+                <figcaption class="mk-fig-caption">
+                  Let eligible providers compete for your workload. Illustrative figures only.
+                </figcaption>
+              </>
+            )}
+
+            {path.id === "selector" && (
+              <>
+                <ul class="mk-fig-attrs">
+                  <li>Region = AU</li>
+                  <li>GPU ≥ A100</li>
+                  <li>Confidential = required</li>
+                  <li>Price ≤ cap</li>
+                </ul>
+                <i class="mk-fig-arrow" aria-hidden="true">↓</i>
+                <div class="mk-fig-card">
+                  <small>Attribute engine</small>
+                  <strong>Filters eligible listings</strong>
+                  <span>deterministic within the cap</span>
+                </div>
+                <i class="mk-fig-arrow" aria-hidden="true">↓</i>
+                <div class="mk-fig-card mk-fig-card--win">
+                  <small>Deterministic match</small>
+                  <strong>Best eligible listing</strong>
+                  <span>no provider named in the order</span>
+                </div>
+                <figcaption class="mk-fig-caption">
+                  Describe the service you need rather than naming the provider. Illustrative example.
+                </figcaption>
+              </>
+            )}
+          </figure>
+        </section>
+      </>
+    ))
+  }
+
+  <div class="mk-compare">
+    <table>
+      <caption class="sr-only">Comparison of direct order, open bid and selector acquisition paths</caption>
+      <thead>
+        <tr>
+          <th scope="col">Path</th>
+          <th scope="col">Direct</th>
+          <th scope="col">Open bid</th>
+          <th scope="col">Selector</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          compareRows.map(([label, direct, bid, selector]) => (
+            <tr>
+              <th scope="row">{label}</th>
+              <td>{direct}</td>
+              <td>{bid}</td>
+              <td>{selector}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="mk-compare-scroll">Table scrolls horizontally on narrow screens.</p>
+</div>

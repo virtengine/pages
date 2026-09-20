@@ -1,0 +1,168 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import HowItWorks from "@components/HowItWorks.astro";
+import MarketplaceLifecycle from "@components/marketplace/MarketplaceLifecycle.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "Use Infrastructure Through VirtEngine: Tenant Guide";
+const description =
+  "The tenant journey on VirtEngine: verify identity, find services, choose direct order, bid or selector, fund escrow, run, observe and settle — with entry paths by workload.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "For tenants & buyers", href: "/tenants" },
+];
+
+const journey = [
+  {
+    label: "Verify",
+    title: "Complete the applicable identity requirements",
+    body: "Marketplace access is identity-gated in both directions. Tenants complete the identity requirements a provider or listing may ask for before matching.",
+    href: "/learn/what-is-veid",
+    hrefLabel: "What is VEID?",
+  },
+  {
+    label: "Find",
+    title: "Browse the catalogue or describe requirements",
+    body: "Start from a published offering, or describe category, region, specifications and a price cap when you want the engine to find eligible listings.",
+    href: "/marketplace",
+    hrefLabel: "Browse service types",
+  },
+  {
+    label: "Choose",
+    title: "Direct order, bid or selector",
+    body: "Take a listed price, open the order to competing providers, or match by attributes. All three paths resolve on-chain.",
+    href: "/learn/three-ways-to-buy",
+    hrefLabel: "Three ways to buy",
+  },
+  {
+    label: "Fund",
+    title: "Escrow backs the order and lease",
+    body: "Escrow is committed against the agreement — provably funded, and released only under settlement rules. Unspent balance returns to you.",
+    href: "/learn/escrow-and-settlement-explained",
+    hrefLabel: "Escrow & settlement",
+  },
+  {
+    label: "Run",
+    title: "The provider provisions the service",
+    body: "The provider daemon routes the matched request into the provider's control plane and backend. The chain records the outcome; it does not create the resource.",
+    href: "/learn/from-listing-to-running-resource",
+    hrefLabel: "From listing to resource",
+  },
+  {
+    label: "Observe",
+    title: "Resource status and usage become visible",
+    body: "The provider's console shows resource state, quotas and actions; metered components appear as the service runs.",
+    href: "/waldur",
+    hrefLabel: "Waldur integration",
+  },
+  {
+    label: "Settle",
+    title: "Validated usage releases funds",
+    body: "Signed records pass through the dispute window, then settle from escrow to the provider under the governed fee policy.",
+    href: "/learn/escrow-and-settlement-explained",
+    hrefLabel: "Escrow & settlement",
+  },
+];
+
+const entryPaths = [
+  { label: "I need GPUs", href: "/marketplace/gpu-compute", note: "GPU machines, nodes, training allocations and inference endpoints." },
+  { label: "I need a VM or private cloud", href: "/marketplace/iaas", note: "Infrastructure you control, from VMs to bare metal." },
+  { label: "I need HPC", href: "/marketplace/hpc", note: "Scheduler-backed queues, allocations and job templates." },
+  { label: "I need a managed platform", href: "/marketplace/paas", note: "Kubernetes, databases, runtimes and batch platforms." },
+  { label: "I need software", href: "/marketplace/saas", note: "Seats, licences, subscriptions and support plans." },
+  { label: "I need confidential compute", href: "/solutions/enterprises-confidential-compute", note: "Attested paths and enclave-backed workloads." },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/tenants"
+  image="/media/marketplace-hardware-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="For tenants & buyers"
+    title="Use infrastructure through VirtEngine"
+    lede="Find a service, form a lease, run it through the provider's control plane, and settle from verified usage. This is the buyer's path through the market."
+    crumbs={crumbs}
+  >
+    <CTA href="/marketplace">Explore the marketplace</CTA>
+    <CTA href="/learn/how-the-marketplace-works" variant="secondary">How orders become leases</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Illustrative examples throughout</span>
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Tenant journey" title="Seven steps from requirement to settlement">
+    <HowItWorks id="tenant-journey" steps={journey} />
+  </Section>
+
+  <Section
+    eyebrow="Lifecycle"
+    title="What the protocol does at each stage"
+    lede="The same five-stage lifecycle every buyer passes through, with the responsibility split made explicit."
+    class="border-y border-line bg-paper-soft"
+  >
+    <MarketplaceLifecycle id="tenants" />
+  </Section>
+
+  <Section eyebrow="Entry paths" title="Start from the workload">
+    <div class="mk-cards-3">
+      {
+        entryPaths.map((path) => (
+          <a class="mk-category-card" href={path.href}>
+            <h3>{path.label}</h3>
+            <p class="mk-category-sub">{path.note}</p>
+            <span class="mk-category-cta">Explore <span aria-hidden="true">→</span></span>
+          </a>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section eyebrow="Before you start" title="What a tenant needs">
+    <div class="mk-cards-3">
+      <article class="mk-order-col">
+        <h3>Identity</h3>
+        <p>The applicable identity requirements, so providers can verify who is on the other side of the lease.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Budget</h3>
+        <p>Escrow funding for the order or lease. Funds are committed, not spent, until usage settles.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Requirements</h3>
+        <p>Region, specifications, compliance or attestation needs — the inputs that make selector matching work.</p>
+      </article>
+    </div>
+    <div class="mk-tech-note">
+      <p>
+        <strong>Under the hood:</strong> <a href="/veid">VEID identity</a>,{" "}
+        <a href="/modules/escrow">x/escrow</a> for funds held against leases,{" "}
+        <a href="/modules/settlement">x/settlement</a> for usage-to-payment, and{" "}
+        <a href="/learn/marketplace-glossary">the marketplace glossary</a> for every term on this page.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "Marketplace overview", href: "/marketplace" },
+        { label: "Three ways to buy", href: "/learn/three-ways-to-buy" },
+        { label: "Anatomy of a listing", href: "/learn/anatomy-of-a-marketplace-listing" },
+        { label: "Escrow & settlement", href: "/learn/escrow-and-settlement-explained" },
+        { label: "Waldur integration", href: "/waldur" },
+        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
+      ]}
+    />
+  </Section>
+</Base>

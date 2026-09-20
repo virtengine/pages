@@ -1,0 +1,33 @@
+---
+/**
+ * MeterAnimation — component meters growing on first paint.
+ *
+ * Purely decorative support for the usage stage: bars animate once, values
+ * are static text, and everything is disabled under reduced motion. Meters
+ * are illustrative and labelled as such.
+ */
+interface Props {
+  meters: { label: string; value: string; percent: number }[];
+  note?: string;
+  class?: string;
+}
+
+const { meters, note = "Illustrative meter readings — not production data.", class: className } = Astro.props;
+---
+
+<div class:list={["mk-meters", className]}>
+  {
+    meters.map((meter) => (
+      <div>
+        <p class="mk-meter-head">
+          <span>{meter.label}</span>
+          <b>{meter.value}</b>
+        </p>
+        <div class="mk-meter-bar">
+          <span class="mk-meter-fill" style={`--mk-meter:${meter.percent}%`} aria-hidden="true" />
+        </div>
+      </div>
+    ))
+  }
+  <p class="mk-meters-note">{note}</p>
+</div>

@@ -1,0 +1,139 @@
+---
+/**
+ * WaldurInterfaceShowcase — what users actually see in HomePort.
+ *
+ * Four tabs: catalogue, project workspace, resource lifecycle, usage and
+ * reporting. Each pairs an official Waldur screenshot (attributed, linked to
+ * source) with what Waldur owns and what VirtEngine adds. Screenshots are
+ * reproduced from Waldur's published material; appearance varies by release
+ * and deployment branding.
+ */
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id = "wis", class: className } = Astro.props;
+
+const tabs = [
+  {
+    id: "catalogue",
+    label: "Catalogue",
+    kicker: "Discover",
+    shot: "/media/waldur/marketplace.webp",
+    width: 1440,
+    height: 960,
+    alt: "Waldur HomePort marketplace showing service categories, providers, orders, search and offering cards",
+    sourceHref: "https://waldur.com/#screenshots",
+    title: "A searchable service catalogue",
+    body:
+      "Categories, offerings and plans turn provider capacity into products. Users search, compare and order inside the same interface they use for everything else.",
+    owns: ["categories", "offerings", "plans", "components", "ordering UI"],
+    adds: ["provider identity", "on-chain offering reference", "market matching", "escrow-backed lease"],
+  },
+  {
+    id: "workspace",
+    label: "Project workspace",
+    kicker: "Organise",
+    shot: "/media/waldur/project-workspace.webp",
+    width: 1440,
+    height: 960,
+    alt: "Waldur HomePort project dashboard showing costs, team size, usage and aggregated limits",
+    sourceHref: "https://waldur.com/#screenshots",
+    title: "Projects group people, resources and cost",
+    body:
+      "Organisations and projects carry membership, limits and cost views. Leased resources appear in the same workspace as the rest of a team's infrastructure.",
+    owns: ["organisations", "projects", "membership", "quotas", "cost views"],
+    adds: ["lease correlation", "counterparty identity", "provider allocation visibility"],
+  },
+  {
+    id: "lifecycle",
+    label: "Resource lifecycle",
+    kicker: "Operate",
+    shot: "/media/waldur/resource-details.png",
+    width: 3406,
+    height: 1758,
+    alt: "Waldur HomePort private cloud resource detail showing status, quotas, compute, network and storage usage",
+    sourceHref: "https://docs.waldur.com/latest/developer-guide/homeport/",
+    title: "The provider-side operational console",
+    body:
+      "Resource state, quotas and supported actions live in Waldur. Signed callbacks return lifecycle outcomes to the bridge, where they are validated and correlated.",
+    owns: ["provision", "resize", "suspend", "resume", "terminate", "resource state"],
+    adds: ["lease correlation", "signed callback verification", "protocol-state reconciliation"],
+  },
+  {
+    id: "reporting",
+    label: "Usage & reporting",
+    kicker: "Account",
+    shot: "/media/waldur/reporting.webp",
+    width: 1440,
+    height: 960,
+    alt: "Waldur HomePort reporting screen showing providers, offerings, plans and active resource counts",
+    sourceHref: "https://waldur.com/#screenshots",
+    title: "Operational and accounting views",
+    body:
+      "Waldur exposes usage, estimates and accounting reports. VirtEngine separately turns signed usage records into protocol settlement against escrow.",
+    owns: ["usage views", "accounting reports", "provider reports", "quota consumption"],
+    adds: ["signed usage records", "dispute window", "escrow settlement"],
+  },
+];
+---
+
+<div class:list={["mk-wis", className]}>
+  <div class="mk-wis-tabs" role="group" aria-label="Waldur HomePort interface areas">
+    {
+      tabs.map((tab, index) => (
+        <>
+          <input
+            class="mk-radio mk-wis-radio"
+            type="radio"
+            name={`mk-wis-${id}`}
+            id={`mk-wis-${id}-${tab.id}`}
+            checked={index === 0}
+          />
+          <label class="mk-wis-tab" for={`mk-wis-${id}-${tab.id}`}>
+            <small>{tab.kicker}</small>
+            {tab.label}
+          </label>
+          <section class="mk-wis-panel" aria-label={`${tab.label}: Waldur and VirtEngine responsibilities`}>
+            <div class="mk-wis-grid">
+              <figure class="mk-wis-shot">
+                <img
+                  src={tab.shot}
+                  alt={tab.alt}
+                  width={tab.width}
+                  height={tab.height}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <figcaption>Official Waldur screenshot · interface varies by release and deployment.</figcaption>
+              </figure>
+              <div class="mk-wis-copy">
+                <h3>{tab.title}</h3>
+                <p>{tab.body}</p>
+                <div class="mk-wis-lists">
+                  <div class="mk-wis-list">
+                    <h4>What Waldur owns</h4>
+                    <ul>
+                      {tab.owns.map((item) => <li>{item}</li>)}
+                    </ul>
+                  </div>
+                  <div class="mk-wis-list mk-wis-list--adds">
+                    <h4>What VirtEngine adds</h4>
+                    <ul>
+                      {tab.adds.map((item) => <li>{item}</li>)}
+                    </ul>
+                  </div>
+                </div>
+                <p class="mk-wis-attrib">
+                  Screenshot reproduced from Waldur's published material to explain the integration.{" "}
+                  <a href={tab.sourceHref} rel="noopener">View the official source ↗</a>
+                </p>
+              </div>
+            </div>
+          </section>
+        </>
+      ))
+    }
+  </div>
+</div>

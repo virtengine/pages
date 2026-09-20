@@ -1,0 +1,145 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "GPU & AI Compute on VirtEngine";
+const description =
+  "Buy GPU and AI compute through VirtEngine: GPU virtual machines, dedicated and multi-GPU nodes, training allocations and inference endpoints — benchmarked, metered and settled on-chain.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+];
+
+const products = [
+  { title: "GPU Virtual Machine", specs: ["1 × GPU", "16 vCPU", "64 GB RAM"], components: ["GPU-hour"], price: "$0.39 / GPU-hour" },
+  { title: "Dedicated GPU Node", specs: ["2 × GPU", "48 vCPU", "256 GB RAM"], components: ["GPU-hour", "node-month"], price: "Metered or reserved" },
+  { title: "Multi-GPU Node", specs: ["4 × GPU", "96 vCPU", "768 GB RAM", "NVMe scratch"], components: ["GPU-hour", "storage GB-month"], price: "$0.39 / GPU-hour" },
+  { title: "Training Allocation", specs: ["Cluster slice", "Interconnect-aware", "Reserved term"], components: ["GPU-hour", "reserved capacity"], price: "Reserved plan" },
+  { title: "Inference Endpoint", specs: ["Managed runtime", "Autoscaling", "Model versioning"], components: ["request", "GPU-hour"], price: "Usage-priced" },
+  { title: "HPC GPU Queue", specs: ["Scheduler-backed", "Job duration limits", "Queue priority"], components: ["GPU-hour", "core-hour"], price: "Allocation-based" },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/gpu-compute"
+  image="/media/provider-datacenter-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · GPU & AI"
+    title="GPU & AI Compute on VirtEngine"
+    lede="Accelerator capacity as a catalogue product: GPU machines, dedicated nodes, training allocations and inference endpoints — with benchmarks, attestation and metered settlement."
+    crumbs={crumbs}
+  >
+    <CTA href="/marketplace/hpc">HPC & batch</CTA>
+    <CTA href="/solutions/ai-ml-workloads" variant="secondary">For AI/ML workloads</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <FulfilmentFlow
+        nodes={["GPU listing", "Order / bid", "Lease", "Provider daemon", "GPU backend", "Node · endpoint", "Metered usage", "Settlement"]}
+        kinds={{ "Order / bid": "protocol", Lease: "protocol", "Metered usage": "protocol", Settlement: "protocol", "Provider daemon": "provider", "GPU backend": "provider" }}
+        caption="Benchmarks describe the hardware. The provider's backend provides it; the chain records and settles the lease."
+      />
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Product types" title="How GPU capacity is listed">
+    <div class="mk-cards-3">
+      {
+        products.map((product) => (
+          <MarketplaceListingCard
+            serviceType="GPU & AI"
+            title={product.title}
+            region="Example region"
+            specs={product.specs}
+            components={product.components}
+            priceLabel={product.price}
+            compact
+          />
+        ))
+      }
+    </div>
+    <p class="mk-rb-note">
+      The same accelerator capacity can be sold as a machine, a node, a reservation, a queue allocation or a
+      managed endpoint. What changes is who operates the software layer above it.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Trust"
+    title="Benchmarks, attestation and metering"
+    lede="Accelerator listings are where evidence matters most: two nodes with the same GPU model can perform very differently."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-2">
+      <article class="mk-order-col">
+        <h3>Evidence on the listing</h3>
+        <ul>
+          <li>published hardware benchmarks</li>
+          <li>auditor-signed provider attributes</li>
+          <li>attestation where confidential compute is required</li>
+          <li>region and interconnect notes</li>
+        </ul>
+      </article>
+      <MeterAnimation
+        meters={[
+          { label: "GPU hours", value: "86.2 h", percent: 72 },
+          { label: "Storage GB-months", value: "1.4 GB-mo", percent: 38 },
+        ]}
+        note="Illustrative GPU-hour and storage meters."
+      />
+    </div>
+  </Section>
+
+  <Section eyebrow="Related guides" title="Where the depth lives">
+    <div class="mk-cards-3">
+      <a class="mk-order-col" href="/solutions/gpu-compute-providers">
+        <h3>GPU compute providers</h3>
+        <p>How GPU operators list, bid, benchmark and get paid — the provider side of accelerator capacity.</p>
+      </a>
+      <a class="mk-order-col" href="/solutions/ai-ml-workloads">
+        <h3>AI & ML workloads</h3>
+        <p>Training, fine-tuning and inference patterns, and how they map onto marketplace leases.</p>
+      </a>
+      <a class="mk-order-col" href="/marketplace/hpc">
+        <h3>HPC & batch</h3>
+        <p>Scheduler-backed GPU queues, allocations and job templates.</p>
+      </a>
+    </div>
+    <div class="mk-tech-note">
+      <p>
+        <strong>Under the hood:</strong> <a href="/modules/benchmark">x/benchmark</a> for published hardware
+        performance, <a href="/modules/audit">x/audit</a> for auditor-signed attributes,{" "}
+        <a href="/modules/enclave">x/enclave</a> for confidential compute attestation.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "HPC & batch", href: "/marketplace/hpc" },
+        { label: "GPU compute providers", href: "/solutions/gpu-compute-providers" },
+        { label: "AI & ML workloads", href: "/solutions/ai-ml-workloads" },
+        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
+        { label: "Marketplace overview", href: "/marketplace" },
+      ]}
+    />
+  </Section>
+</Base>

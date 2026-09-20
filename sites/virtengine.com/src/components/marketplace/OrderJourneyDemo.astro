@@ -1,0 +1,204 @@
+---
+/**
+ * OrderJourneyDemo — follow one order through Waldur and the protocol.
+ *
+ * A fictional "Managed GPU Workspace" from eight angles: publish, discover,
+ * order, lease, provision, operate, usage, settle. Each step pairs a short
+ * explanation with the interface or state it produces. Illustrative example
+ * throughout — no step implies live production availability.
+ */
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id = "order", class: className } = Astro.props;
+
+const steps = [
+  {
+    id: "publish",
+    label: "Publish",
+    title: "The provider publishes the offering",
+    body:
+      "A provider registers the offering on-chain and maps it into Waldur. The catalogue card and the protocol object stay connected by a persisted identifier.",
+    bullets: [
+      "Offering: Managed GPU Workspace",
+      "Backend: Rancher / Kubernetes",
+      "Region: ap-southeast",
+      "Components: GPU hours · CPU · RAM · storage",
+    ],
+  },
+  {
+    id: "discover",
+    label: "Discover",
+    title: "It appears in the catalogue",
+    body:
+      "The synced offering shows up as a catalogue card with its category, plan, region, components and provider details.",
+    bullets: ["Category and plan are Waldur concepts", "Provider identity and attributes come from the chain"],
+  },
+  {
+    id: "order",
+    label: "Order",
+    title: "The tenant orders it",
+    body:
+      "A direct order names the listing and matches at its published price. Escrow is funded before anything is provisioned.",
+    bullets: ["Order summary is generated from the plan", "No bidding window on a direct order"],
+  },
+  {
+    id: "lease",
+    label: "Lease",
+    title: "The match becomes a lease",
+    body:
+      "One tenant, one provider, one escrow account. The lease is the agreement every later step references.",
+    bullets: ["Match selection happens on-chain", "Escrow is locked against the lease"],
+  },
+  {
+    id: "provision",
+    label: "Provision",
+    title: "The provider fulfils the lease",
+    body:
+      "The provider daemon routes the matched request into Waldur, which invokes the configured backend. The chain records the outcome; it does not create the resource.",
+    bullets: ["Waldur order is correlated with the lease", "Backend plugin creates the workspace"],
+  },
+  {
+    id: "operate",
+    label: "Operate",
+    title: "The resource becomes ready",
+    body:
+      "Resource state moves through the provider's control plane and returns as an authenticated lifecycle callback.",
+    bullets: ["Provisioning → Ready", "Signed callbacks keep lease and resource correlated"],
+  },
+  {
+    id: "usage",
+    label: "Usage",
+    title: "Components are metered",
+    body:
+      "The provider daemon meters consumption per workload on a scheduled cadence and submits signed records against the lease.",
+    bullets: ["GPU hours, CPU, RAM and storage are separate components", "Anomaly screening runs before submission"],
+  },
+  {
+    id: "settle",
+    label: "Settle",
+    title: "Validated usage releases escrow",
+    body:
+      "After the dispute window, validated records price into line items and the agreed amount releases from escrow to the provider.",
+    bullets: ["Unspent escrow returns to the tenant", "Waldur reporting remains an operational view"],
+  },
+];
+---
+
+<div class:list={["mk-demo", className]}>
+  {
+    steps.map((step, index) => (
+      <>
+        <input
+          class="mk-radio mk-demo-radio"
+          type="radio"
+          name={`mk-demo-${id}`}
+          id={`mk-demo-${id}-${step.id}`}
+          checked={index === 0}
+        />
+        <label class="mk-demo-tab" for={`mk-demo-${id}-${step.id}`}>
+          <small>{String(index + 1).padStart(2, "0")}</small>
+          <span>{step.label}</span>
+        </label>
+        <section class="mk-demo-panel" aria-label={`Step ${index + 1}: ${step.title}`}>
+          <div class="mk-demo-split">
+            <div class="mk-demo-copy">
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+              <ul>
+                {step.bullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+              <p class="mk-demo-note">Illustrative example — Managed GPU Workspace.</p>
+            </div>
+            <div class="mk-demo-visual">
+              {step.id === "publish" && (
+                <>
+                  <MarketplaceListingCard
+                    serviceType="PaaS"
+                    title="Managed GPU Workspace"
+                    provider="Example Provider"
+                    region="ap-southeast"
+                    specs={["1 × GPU", "16 vCPU", "64 GB RAM", "1 TB storage"]}
+                    components={["GPU-hour", "vCPU-hour", "RAM GB-hour", "storage GB-month"]}
+                    priceLabel="Component-priced plan"
+                    compact
+                  />
+                  <ul class="mk-demo-id">
+                    <li><code>VirtEngine offering_id</code> <i aria-hidden="true">→</i> <span>chain object</span></li>
+                    <li><code>Provider daemon mapping</code> <i aria-hidden="true">→</i> <span>persisted cross-reference</span></li>
+                    <li><code>Waldur offering_uuid</code> <i aria-hidden="true">→</i> <span>catalogue item</span></li>
+                  </ul>
+                </>
+              )}
+              {step.id === "discover" && (
+                <MarketplaceListingCard
+                  serviceType="PaaS"
+                  title="Managed GPU Workspace"
+                  provider="Example Provider"
+                  region="ap-southeast"
+                  specs={["Plan: component-priced", "Category: managed platforms", "Provider verified"]}
+                  priceLabel="Component-priced plan"
+                  cta="Order"
+                  compact
+                />
+              )}
+              {step.id === "order" && (
+                <ul class="mk-demo-id">
+                  <li><code>Service</code> <span>Managed GPU Workspace</span></li>
+                  <li><code>Region</code> <span>ap-southeast</span></li>
+                  <li><code>Components</code> <span>GPU-hour · vCPU-hour · RAM · storage</span></li>
+                  <li><code>Escrow</code> <span>funded against the order</span></li>
+                </ul>
+              )}
+              {step.id === "lease" && (
+                <FulfilmentFlow
+                  nodes={["Order", "Match", "Lease", "Escrow locked"]}
+                  kinds={{ Order: "protocol", Match: "protocol", Lease: "protocol", "Escrow locked": "protocol" }}
+                  caption="The lease binds tenant, provider and escrow account."
+                />
+              )}
+              {step.id === "provision" && (
+                <FulfilmentFlow
+                  nodes={["Lease event", "Provider daemon", "Waldur order", "Backend plugin", "Resource"]}
+                  kinds={{ "Lease event": "protocol", "Provider daemon": "provider", "Waldur order": "provider", "Backend plugin": "provider" }}
+                  caption="Fulfilment runs through the provider's control plane — not through consensus."
+                />
+              )}
+              {step.id === "operate" && (
+                <div class="mk-demo-state">
+                  <span>Resource status</span>
+                  <b>Provisioning</b>
+                  <i aria-hidden="true">→</i>
+                  <b>Ready</b>
+                </div>
+              )}
+              {step.id === "usage" && (
+                <MeterAnimation
+                  meters={[
+                    { label: "GPU hours", value: "12.4 h", percent: 62 },
+                    { label: "vCPU hours", value: "198 h", percent: 74 },
+                    { label: "RAM GB-hours", value: "792 GB-h", percent: 58 },
+                    { label: "Storage GB-months", value: "0.41 GB-mo", percent: 41 },
+                  ]}
+                />
+              )}
+              {step.id === "settle" && (
+                <FulfilmentFlow
+                  nodes={["Signed usage", "Validation & dispute window", "Settlement", "Escrow release"]}
+                  kinds={{ "Signed usage": "protocol", Settlement: "protocol", "Escrow release": "protocol" }}
+                  caption="Waldur reporting stays operational; the protocol payout follows the lease."
+                />
+              )}
+            </div>
+          </div>
+        </section>
+      </>
+    ))
+  }
+</div>

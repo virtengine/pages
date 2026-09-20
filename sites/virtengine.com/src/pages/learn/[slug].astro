@@ -12,7 +12,9 @@ import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
 import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
 import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
 import WaldurBridge from "@components/diagrams/WaldurBridge.astro";
+import MarketplaceVisual from "@components/marketplace/MarketplaceVisual.astro";
 import { LEARN } from "@data/learn";
+import { GLOSSARY, GLOSSARY_TERMS } from "@data/glossary";
 import { media } from "@data/media";
 import { SITE } from "@data/site";
 import type { LearnDiagram } from "@data/learn";
@@ -98,6 +100,22 @@ const guideSchema = {
   proficiencyLevel: "Beginner",
   isAccessibleForFree: true,
 };
+
+const glossarySchema = guide.glossary
+  ? {
+      "@type": "DefinedTermSet",
+      "@id": `${canonical}#glossary`,
+      name: "VirtEngine marketplace glossary",
+      description: guide.metaDescription,
+      isPartOf: { "@id": `${canonical}#webpage` },
+      hasDefinedTerm: GLOSSARY_TERMS.map((term) => ({
+        "@type": "DefinedTerm",
+        name: term.term,
+        description: term.definition,
+        url: `${canonical}#${term.id}`,
+      })),
+    }
+  : null;
 ---
 
 <Base
@@ -107,7 +125,7 @@ const guideSchema = {
   image={media[guide.media].src}
   breadcrumbs={crumbs}
   ogType="article"
-  schema={[guideSchema]}
+  schema={[guideSchema, glossarySchema]}
 >
   <PageHero
     eyebrow={`Learn · ${guide.kicker}`}
@@ -149,6 +167,62 @@ const guideSchema = {
           <diagram.component />
         </DiagramFrame>
       </div>
+    )
+  }
+
+  {
+    guide.visuals && (
+      <div class="container-site pt-14 md:pt-20">
+        <div class="mk-visual-stack">
+          {guide.visuals.map((visual, index) => (
+            <MarketplaceVisual visual={visual} id={`${guide.slug}-${index}`} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    guide.glossary && (
+      <Section eyebrow="Definitions" title="Marketplace glossary">
+        <div class="mk-glossary">
+          {GLOSSARY.map((group) => (
+            <section class="mk-glossary-group" aria-labelledby={`glossary-${group.id}`}>
+              <h2 id={`glossary-${group.id}`}>{group.heading}</h2>
+              <p>{group.intro}</p>
+              <dl>
+                {group.terms.map((term) => (
+                  <div class="mk-glossary-term" id={term.id}>
+                    <dt>
+                      {term.term}
+                      <span class="mk-tag mk-tag--quiet">glossary</span>
+                    </dt>
+                    <dd>{term.definition}</dd>
+                    <div class="mk-glossary-links">
+                      {term.href && (
+                        <a href={term.href} rel={term.href.startsWith("http") ? "noopener" : undefined}>
+                          {term.hrefLabel ?? "Read more"} <span aria-hidden="true">→</span>
+                        </a>
+                      )}
+                      {term.see && term.see.length > 0 && (
+                        <span>
+                          See:{" "}
+                          {term.see.map((id, index) => (
+                            <>
+                              {index > 0 && ", "}
+                              <a href={`#${id}`}>{id.replace(/-/g, " ")}</a>
+                            </>
+                          ))}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ))}
+        </div>
+      </Section>
     )
   }
 

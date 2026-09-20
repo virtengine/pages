@@ -1,5 +1,6 @@
 ---
 import { ECOSYSTEM, FOOTER_COLUMNS, SITE } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
 import Lockup from "@components/brand/Lockup.astro";
 import LatticeMark from "@components/art/LatticeMark.astro";
 
@@ -14,11 +15,11 @@ const year = new Date().getFullYear();
 
   <div class="container-site footer-status">
     <span><i class="lamp" aria-hidden="true"></i><b>In development</b> — the network is not live</span>
-    <span>TestNet · planned Jan 2027</span>
-    <span>MainNet · planned Mar 2027, subject to approval</span>
+    <span>{NETWORK_STATUS.testnet.label} · {NETWORK_STATUS.testnet.timing.toLowerCase()}</span>
+    <span>{NETWORK_STATUS.mainnet.label} · {NETWORK_STATUS.mainnet.timing.toLowerCase()}</span>
   </div>
 
-  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]">
+  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_1fr]">
     <div class="max-w-sm md:col-span-2 lg:col-span-1">
       <a href="/" class="inline-flex" aria-label="VirtEngine by DET.io home">
         <Lockup size={64} byline onDark />

@@ -1,0 +1,122 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "Storage & Data Services on VirtEngine";
+const description =
+  "Storage on VirtEngine: block volumes, object storage, persistent volumes, managed databases and archive capacity — standalone or as components of another offering, settled from measured capacity.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "Storage & data", href: "/marketplace/storage" },
+];
+
+const listings = [
+  { title: "Object Storage Bucket", specs: ["S3-compatible", "Versioning", "Lifecycle rules"], components: ["storage GB-month", "egress GB"], price: "$0.02 / GB-month" },
+  { title: "Block Storage Volume", specs: ["SSD-backed", "Snapshots", "Attach to any VM"], components: ["storage GB-month", "IOPS tier"], price: "$0.08 / GB-month" },
+  { title: "Persistent Volume", specs: ["Cluster-attached", "Replicated", "Dynamic provisioning"], components: ["storage GB-month"], price: "$0.10 / GB-month" },
+  { title: "Archive Tier", specs: ["Cold storage", "Retrieval windows", "Retention policy"], components: ["storage GB-month", "retrieval GB"], price: "$0.01 / GB-month" },
+  { title: "Backup Repository", specs: ["Scheduled backups", "Restore points", "Encryption"], components: ["protected GB-month"], price: "$0.04 / GB-month" },
+  { title: "High-Throughput Storage", specs: ["Parallel filesystem", "HPC-optimised", "Shared across nodes"], components: ["storage GB-month", "throughput tier"], price: "Reserved plan" },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/storage"
+  image="/media/provider-datacenter-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · Storage"
+    title="Storage & Data Services on VirtEngine"
+    lede="Persistent capacity and managed data services, sold standalone or as components of a compute offering — metered by capacity and settled on the same rail."
+    crumbs={crumbs}
+  >
+    <CTA href="/marketplace/iaas">IaaS</CTA>
+    <CTA href="/marketplace" variant="secondary">Marketplace overview</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <FulfilmentFlow
+        nodes={["Storage listing", "Order", "Lease", "Provider backend", "Volume · bucket · archive", "Capacity & transfer usage", "Settlement"]}
+        kinds={{ Order: "protocol", Lease: "protocol", "Capacity & transfer usage": "protocol", Settlement: "protocol", "Provider backend": "provider" }}
+        caption="The provider's backend provisions the storage. The protocol records the lease and settles measured capacity."
+      />
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Catalogue" title="Example storage listings">
+    <div class="mk-cards-3">
+      {
+        listings.map((listing) => (
+          <MarketplaceListingCard
+            serviceType="Storage"
+            title={listing.title}
+            region="Example region"
+            specs={listing.specs}
+            components={listing.components}
+            priceLabel={listing.price}
+            compact
+          />
+        ))
+      }
+    </div>
+    <p class="mk-rb-note">
+      Which storage classes a provider offers depends on its backend and Waldur configuration. Backup, archive and
+      high-throughput tiers are provider-dependent — check the listing rather than assuming a category default.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Models"
+    title="Standalone, attached, or measured"
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-3">
+      <article class="mk-order-col">
+        <h3>Standalone storage offering</h3>
+        <p>A bucket, volume or repository ordered on its own, with its own plan and components.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Component of another offering</h3>
+        <p>Storage included in a VM, cluster or platform plan and metered alongside compute.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Managed data service</h3>
+        <p>A database or data service the provider operates, ordered per project like any managed platform.</p>
+      </article>
+    </div>
+    <div class="mk-tech-note">
+      <p>
+        <strong>Under the hood:</strong> storage settles through the same usage pipeline as compute —{" "}
+        <a href="/learn/escrow-and-settlement-explained">escrow & settlement explained</a> — with capacity and
+        transfer components defined by the plan.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "PaaS", href: "/marketplace/paas" },
+        { label: "Custom & managed listings", href: "/marketplace/custom-listings" },
+        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
+        { label: "Waldur integration", href: "/waldur" },
+        { label: "Marketplace overview", href: "/marketplace" },
+      ]}
+    />
+  </Section>
+</Base>

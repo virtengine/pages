@@ -5,9 +5,17 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import BuyPaths from "@components/BuyPaths.astro";
 import ServiceCategories from "@components/ServiceCategories.astro";
+import ResponsibilityBoundary from "@components/marketplace/ResponsibilityBoundary.astro";
+import WaldurInterfaceShowcase from "@components/marketplace/WaldurInterfaceShowcase.astro";
+import WaldurHeroVisual from "@components/marketplace/WaldurHeroVisual.astro";
+import OrderJourneyDemo from "@components/marketplace/OrderJourneyDemo.astro";
+import ImplementationChecklist from "@components/marketplace/ImplementationChecklist.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
 
-const title = "Waldur Catalogue: IaaS, PaaS, SaaS, Custom | VirtEngine";
-const description = "How Waldur's enterprise catalogue works with VirtEngine: publish IaaS, PaaS, SaaS and custom service listings, order directly from chosen providers, or open demand to bids — settled on-chain.";
+const title = "Waldur + VirtEngine: Catalogue & Control Plane";
+const description =
+  "How Waldur's enterprise catalogue works with VirtEngine: publish IaaS, PaaS, SaaS and custom listings, fulfil through provider backends, and settle verified usage on-chain.";
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "Waldur", href: "/waldur" },
@@ -48,19 +56,30 @@ const catalog = [
   },
 ];
 
-const integrationGroups = [
-  {
-    label: "Implemented in the VirtEngine bridge",
-    tone: "implemented",
-    items: [
-      ["Waldur marketplace", "Offerings, orders, resources, lifecycle operations and usage records through the official Go client."],
-      ["OpenStack", "Instance, tenant and volume operations exposed through the Waldur client package."],
-      ["Amazon Web Services", "Compute and storage resource operations represented in the current bridge."],
-      ["Microsoft Azure", "Virtual-machine, size and location operations represented in the current bridge."],
-      ["SLURM and HPC", "Allocations and job-state reporting connect scheduler-backed capacity to the marketplace."],
-      ["Object storage and support", "Encrypted object workflows and provider-local support desk operations have dedicated clients."],
-    ],
-  },
+const implemented = [
+  "Waldur API client",
+  "offering operations",
+  "offering synchronisation",
+  "order routing",
+  "resource lifecycle handling",
+  "callback verification",
+  "usage submission",
+  "provider-daemon integration",
+];
+
+const deployment = [
+  "Waldur installation",
+  "credentials and organisation IDs",
+  "organisations and projects",
+  "category mappings",
+  "backend plugin",
+  "TLS and callback configuration",
+  "durable chain submission",
+  "production certification",
+  "infrastructure-specific configuration",
+];
+
+const upstreamGroups = [
   {
     label: "Available in Waldur upstream",
     tone: "upstream",
@@ -98,106 +117,69 @@ const organizationLogos = [
 ];
 ---
 
-<Base title={title} description={description} path="/waldur" image="/media/network-earth-1440.webp" breadcrumbs={crumbs}>
+<Base title={title} description={description} path="/waldur" breadcrumbs={crumbs}>
   <PageHero
     eyebrow="Open-source cloud operations"
     title="Buy from providers you choose — settle on-chain"
-    lede="Waldur is the enterprise catalogue for the VirtEngine market: publish IaaS, PaaS, SaaS and custom listings, order directly from chosen providers, and gate everything with approvals and compliance. VirtEngine turns each permitted order into a verifiable lease — escrowed, metered and settled on-chain."
+    lede="Waldur is the enterprise catalogue and control plane for the VirtEngine market: publish IaaS, PaaS, SaaS and custom listings, order directly from chosen providers, and gate everything with approvals and compliance. VirtEngine turns each permitted order into a verifiable lease — escrowed, metered and settled on-chain."
     crumbs={crumbs}
-    media="network-earth"
-    mediaCaption="The operations room and the chain, kept in sync."
   >
     <div class="mt-8 flex flex-wrap gap-4">
       <CTA href="https://waldur.com/">Explore Waldur</CTA>
       <CTA href="https://docs.waldur.com/" variant="secondary">Read Waldur documentation</CTA>
       <CTA href="https://github.com/virtengine/virtengine/tree/main/pkg/waldur" variant="ghost">Inspect the bridge code</CTA>
     </div>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+    </div>
+    <div slot="art">
+      <WaldurHeroVisual />
+    </div>
   </PageHero>
 
   <Section
     eyebrow="Architecture"
-    title="Two systems with a defined boundary"
-    lede="VirtEngine treats the chain as marketplace source of truth. Waldur remains the provider-operated control plane for fulfilment and infrastructure operations."
+    title="One marketplace, three layers"
+    lede="VirtEngine treats the chain as the marketplace source of truth. Waldur remains the provider-operated control plane for fulfilment and infrastructure operations. The provider daemon keeps the two correlated."
   >
-    <div class="waldur-architecture reveal" role="img" aria-label="A tenant uses the VirtEngine marketplace. The provider daemon connects the VirtEngine chain to Waldur MasterMind and HomePort, which integrate with cloud, HPC and storage providers.">
-      <div class="waldur-arch-node waldur-arch-tenant">
-        <span>Tenant</span><small>selects capacity</small>
-      </div>
-      <div class="waldur-arch-arrow" aria-hidden="true">→</div>
-      <div class="waldur-arch-node waldur-arch-chain">
-        <span>VirtEngine chain</span><small>orders · bids · leases · escrow</small>
-      </div>
-      <div class="waldur-arch-bridge">
-        <strong>Provider daemon</strong><small>signed events and API calls</small>
-      </div>
-      <div class="waldur-arch-node waldur-arch-waldur">
-        <span>Waldur</span><small>MasterMind API · HomePort portal</small>
-      </div>
-      <div class="waldur-arch-arrow" aria-hidden="true">→</div>
-      <div class="waldur-arch-targets">
-        <span>Cloud</span><span>HPC</span><span>Storage</span><span>Custom</span>
-      </div>
-    </div>
-    <div class="mt-8 grid gap-5 md:grid-cols-2">
-      <article class="rounded-card border border-line bg-panel p-6">
-        <p class="eyebrow">Waldur contributes</p>
-        <h3 class="mt-4 text-xl font-semibold">Service management and delivery</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">HomePort gives users a self-service interface. MasterMind provides the API, catalogue, orders, resources, accounting and provider plugins used to fulfil services across hybrid infrastructure.</p>
-      </article>
-      <article class="rounded-card border border-green-deep/30 bg-green-wash p-6">
-        <p class="eyebrow">VirtEngine contributes</p>
-        <h3 class="mt-4 text-xl font-semibold">Exchange, identity and settlement</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">The chain coordinates provider discovery, direct purchase and optional competitive bids, leases, Verifiable Electronic Identity checks, escrow, metered usage and final settlement. Waldur does not replace that consensus layer.</p>
-      </article>
-    </div>
+    <ResponsibilityBoundary />
+    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
+      Waldur is developed independently by the Waldur community and OpenNode Cloud. VirtEngine consumes its
+      public platform and client interfaces; it does not own or replace Waldur, and Waldur is not “running on
+      the blockchain”.
+    </p>
   </Section>
 
   <Section
     eyebrow="How buying works"
     title="Buy it your way"
-    lede="Direct ordering is what Waldur's catalogue fulfils end to end — and the default on-chain. Open bids and selector matching are chain-side paths that can target Waldur-backed listings when the provider opts in. Every path ends the same way: the backend provisions, signed usage is metered, and escrow settles."
+    lede="Direct ordering is what Waldur's catalogue fulfils end to end — and the default on-chain. Open bids and selector matching are chain-side paths that can target Waldur-backed listings when the provider opts in."
     class="border-y border-line bg-paper-soft"
   >
     <BuyPaths foot="Illustrated with example figures. Whatever the path, match selection and escrow never leave the chain — HomePort presents, the protocol decides." />
   </Section>
 
   <Section
-    eyebrow="Enterprise control"
-    title="Choose exactly who can serve you"
-    lede="Enterprises don't buy from whoever happens to be cheapest that second. Waldur's catalogue controls decide which providers your teams can even see — the chain then records and settles whatever those controls permit."
+    eyebrow="What users actually see"
+    title="Waldur HomePort, area by area"
+    lede="Four interface areas, and the responsibility split inside each one. Screenshots are Waldur's own, reproduced with attribution."
+  >
+    <WaldurInterfaceShowcase />
+  </Section>
+
+  <Section
+    eyebrow="Walkthrough"
+    title="Follow one order"
+    lede="A fictional Managed GPU Workspace, from publication to settlement. Illustrative example — no step implies live production availability."
     class="border-y border-line bg-paper-soft"
   >
-    <div class="mt-8 grid gap-5 md:grid-cols-2">
-      <article class="rounded-card border border-line bg-panel p-6">
-        <p class="eyebrow">Catalogue scoping</p>
-        <h3 class="mt-4 text-xl font-semibold">Private offerings and limited plans</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">Providers can publish private offerings visible only to chosen customers, limit plans to specific organization groups, and restrict ordering to named project roles. What your teams can't see, they can't order — procurement by allow-list, not by open outcry.</p>
-      </article>
-      <article class="rounded-card border border-line bg-panel p-6">
-        <p class="eyebrow">Dual approval</p>
-        <h3 class="mt-4 text-xl font-semibold">Consumer and provider gates</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">Every order passes two independent approvals: your side (consumer review, cost limits, purchase-order attachments) and the provider's side. Either side can require manual sign-off; neither side can be bypassed by a lower bid.</p>
-      </article>
-      <article class="rounded-card border border-line bg-panel p-6">
-        <p class="eyebrow">Terms and compliance</p>
-        <h3 class="mt-4 text-xl font-semibold">Contracts accepted per order</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">Each offering carries its own terms of service, privacy policy and access policies, re-accepted whenever they change — an order cannot complete without consent. Providers attach compliance checklists your teams answer and auditors can inspect.</p>
-      </article>
-      <article class="rounded-card border border-line bg-panel p-6">
-        <p class="eyebrow">Verified counterparties</p>
-        <h3 class="mt-4 text-xl font-semibold">Identity gating before matching</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">Providers must clear VEID identity verification, minimum trust scores and compliance checks before they can publish; offerings can additionally demand score thresholds and multi-factor authentication from buyers. Unverified capacity never matches.</p>
-      </article>
-    </div>
-    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
-      A note on SLAs and liability, stated plainly: there is no on-chain SLA object, and the protocol cannot underwrite a provider's uptime. Commercial terms live where contracts live — in offering terms, descriptions and plans, accepted per order — while the chain independently verifies what money can verify: gated counterparties before matching, signed metering during service, escrowed funds, and rule-bound settlement after the dispute window. Legal liability stays with the provider organizations you chose; the protocol makes their performance auditable.
-    </p>
+    <OrderJourneyDemo id="waldur" />
   </Section>
 
   <Section
     eyebrow="What the catalogue sells"
-    title="IaaS, PaaS, SaaS — and custom listings."
-    lede="A Waldur offering is any service or product that can be ordered. VirtEngine settles whatever the catalogue is allowed to sell — infrastructure, managed platforms, software plans, and provider-defined services — through the same escrow rail."
+    title="One catalogue. Different things being delivered."
+    lede="A Waldur offering is any service or product that can be ordered. VirtEngine settles whatever the catalogue is allowed to sell — infrastructure, managed platforms, software plans and provider-defined services — through the same escrow rail."
   >
     <div class="catalog-mock" role="img" aria-label="Example marketplace catalogue showing IaaS, PaaS, SaaS and custom service listings side by side">
       <p class="catalog-mock-flag">Illustrative listings · in the style of Waldur's catalogue</p>
@@ -218,30 +200,75 @@ const organizationLogos = [
     </div>
     <ServiceCategories />
     <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
-      Every category settles the same way: the order becomes an on-chain lease against funded escrow, signed usage is metered, and settlement releases payment to the provider. Which backends can fulfil a listing today is tracked in the integration map below.
+      Every category settles the same way: the order becomes an on-chain lease against funded escrow, signed usage
+      is metered, and settlement releases payment to the provider.{" "}
+      <a class="font-semibold text-green-deep underline underline-offset-4" href="/marketplace">Explore each service type in the marketplace hub →</a>
     </p>
   </Section>
 
   <Section
-    eyebrow="Integration map"
-    title="Current code, upstream capability and roadmap"
-    lede="The labels below are deliberate. An upstream Waldur connector is not automatically a production-ready VirtEngine integration."
+    eyebrow="Enterprise control"
+    title="Choose exactly who can serve you"
+    lede="Waldur's catalogue controls decide which providers your teams can even see — the chain then records and settles whatever those controls permit."
+    class="border-y border-line bg-paper-soft"
   >
-    <div class="grid gap-6 lg:grid-cols-3">
-      {integrationGroups.map((group) => (
-        <article class:list={["waldur-integration-card reveal", `waldur-${group.tone}`]}>
-          <p class="waldur-status">{group.label}</p>
-          <ul>
-            {group.items.map(([name, detail]) => (
-              <li><strong>{name}</strong><span>{detail}</span></li>
-            ))}
-          </ul>
-        </article>
-      ))}
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Catalogue scoping</p>
+        <h3 class="mt-4 text-xl font-semibold">Private offerings and limited plans</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Providers can publish private offerings visible only to chosen customers, limit plans to specific organization groups, and restrict ordering to named project roles. What your teams can't see, they can't order.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Dual approval</p>
+        <h3 class="mt-4 text-xl font-semibold">Consumer and provider gates</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Every order passes two independent approvals: your side (consumer review, cost limits, purchase-order attachments) and the provider's side. Either side can require manual sign-off.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Terms and compliance</p>
+        <h3 class="mt-4 text-xl font-semibold">Contracts accepted per order</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Each offering carries its own terms of service, privacy policy and access policies, re-accepted whenever they change. Providers attach compliance checklists your teams answer and auditors can inspect.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Verified counterparties</p>
+        <h3 class="mt-4 text-xl font-semibold">Identity gating before matching</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Providers must clear VEID identity verification, minimum trust scores and compliance checks before they can publish; offerings can additionally demand score thresholds and multi-factor authentication from buyers.</p>
+      </article>
     </div>
     <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
-      This status reflects the current repository and published Waldur documentation. “Implemented” means a code path exists; production availability still depends on provider configuration, credentials, backend compatibility and deployment certification.
+      A note on SLAs and liability, stated plainly: there is no on-chain SLA object, and the protocol cannot
+      underwrite a provider's uptime. Commercial terms live where contracts live — in offering terms, descriptions
+      and plans, accepted per order — while the chain independently verifies what money can verify: gated
+      counterparties before matching, signed metering during service, escrowed funds, and rule-bound settlement.
+      Legal liability stays with the provider organisations you chose; the protocol makes their performance
+      auditable.
     </p>
+  </Section>
+
+  <Section
+    eyebrow="Integration status"
+    title="Implemented code, and what deployment still requires"
+    lede="An upstream Waldur connector is not automatically a production-ready VirtEngine integration."
+  >
+    <ImplementationChecklist implemented={implemented} deployment={deployment} />
+    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
+      “Implemented” means a code path exists in the repository; production availability still depends on provider
+      configuration, credentials, backend compatibility and deployment certification. This status reflects the
+      current repository and published Waldur documentation.
+    </p>
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      {
+        upstreamGroups.map((group) => (
+          <article class:list={["waldur-integration-card reveal", `waldur-${group.tone}`]}>
+            <p class="waldur-status">{group.label}</p>
+            <ul>
+              {group.items.map(([name, detail]) => (
+                <li><strong>{name}</strong><span>{detail}</span></li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
   </Section>
 
   <section class="night-scope border-y border-night-line">
@@ -300,5 +327,22 @@ const organizationLogos = [
       <a class="waldur-source-link" href="https://opennodecloud.com/products/waldur.html"><strong>OpenNode Cloud</strong><span>Development, deployment and support</span></a>
       <a class="waldur-source-link" href="https://github.com/virtengine/virtengine/tree/main/pkg/waldur"><strong>VirtEngine bridge</strong><span>Current integration source code</span></a>
     </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "Marketplace overview", href: "/marketplace" },
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "PaaS", href: "/marketplace/paas" },
+        { label: "SaaS", href: "/marketplace/saas" },
+        { label: "Provider onboarding", href: "/providers" },
+        { label: "Who controls what", href: "/learn/who-controls-what" },
+        { label: "From listing to running resource", href: "/learn/from-listing-to-running-resource" },
+        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
+      ]}
+    />
   </Section>
 </Base>

@@ -5,8 +5,37 @@
  * _docs/operations/mainnet-go-no-go-decision.md. No invented figures.
  */
 import type { MediaSlug } from "@data/media";
+import { MARKETPLACE_LEARN } from "./learn-marketplace";
 
 export type LearnDiagram = "lifecycle" | "settlement" | "veid" | "staking" | "architecture" | "waldur";
+
+/**
+ * A visual rendered in the article body, above the prose sections. These are
+ * the interactive figures the marketplace layer is built from; each one has a
+ * complete text alternative and renders semantic HTML underneath.
+ */
+export type LearnVisualKind =
+  | "lifecycle"
+  | "acquisition"
+  | "atlas"
+  | "listing-anatomy"
+  | "service-comparison"
+  | "settlement-rail"
+  | "order-anatomy"
+  | "responsibility"
+  | "fulfilment"
+  | "meters";
+
+export interface LearnVisual {
+  kind: LearnVisualKind;
+  /** Full text alternative for the figure (required). */
+  label: string;
+  caption?: string;
+  /** Fulfilment-flow nodes when kind is "fulfilment". */
+  nodes?: string[];
+  kinds?: Record<string, "protocol" | "provider">;
+  meters?: { label: string; value: string; percent: number }[];
+}
 
 export interface LearnScreenshot {
   src: string;
@@ -59,6 +88,10 @@ export interface LearnEntry {
   /** Optional site diagram rendered after the intro. */
   diagram?: LearnDiagram;
   diagramCaption?: string;
+  /** Interactive marketplace visuals rendered after the intro. */
+  visuals?: LearnVisual[];
+  /** Render the marketplace glossary (definition list) instead of prose. */
+  glossary?: boolean;
   screenshots?: LearnScreenshot[];
   sources?: LearnSource[];
   sections: LearnSection[];
@@ -86,47 +119,71 @@ export const LEARN: LearnEntry[] = [
       "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, match, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees. Match runs three acquisition paths: buy a named offering outright at its listed price (direct), open the order to competitive bids, or describe requirements and get matched to the best eligible listing (selector).",
     diagram: "lifecycle",
     diagramCaption: "The five-stage marketplace lifecycle: order → match → lease → usage → settlement",
+    visuals: [
+      {
+        kind: "lifecycle",
+        label:
+          "Interactive five-stage lifecycle rail. Order: the tenant describes demand and funds escrow. Match: direct purchase at a listed price, competing bids, or attribute matching. Lease: the match binds tenant, provider and escrow. Usage: the provider measures and signs consumption. Settlement: validated usage releases escrowed funds after the dispute window. Selecting a stage shows what the tenant does, what the provider does, what becomes protocol state, and what stays off-chain.",
+        caption: "The five stages, with the responsibility split at each one.",
+      },
+      {
+        kind: "acquisition",
+        label:
+          "Interactive comparison of the three acquisition paths — direct order, open bid and selector — with an illustrative figure per path and a comparison table covering who chooses the provider, how price is set, whether bids are awaited and the best use of each path.",
+        caption: "Match runs three ways. One market rail.",
+      },
+      {
+        kind: "settlement-rail",
+        label:
+          "One settlement rail diagram: GPU VMs, managed Kubernetes, databases, HPC jobs, software plans, support services and custom listings all feed a single path from usage or agreed component through validated signed records to settlement and escrow release.",
+        caption: "Many service types, one settlement rail.",
+      },
+    ],
     sections: [
       {
         heading: "Stage 1 — Order: describing what you need",
         paragraphs: [
-          "A tenant can begin from a Waldur marketplace offering: a private cloud, storage service, VM, accelerator-backed service, or a provider's fully custom listing. Where a workload deployment is needed, x/deployment carries its declarative description in groups with CPU, memory, storage, accelerator and placement requirements.",
-          "Creating the deployment emits orders into the market module (x/market). An order is the marketplace's demand signal: a structured, on-chain request that either names one specific offering at its listed price, or opens demand that qualifying providers can bid on. The tenant also funds an escrow account at this point, so the market can see the demand is backed by real budget.",
+          "A tenant can begin from a catalogue offering: a private cloud, storage service, VM, accelerator-backed service, or a provider's fully custom listing. Where a workload deployment is needed, x/deployment carries its declarative description in groups with CPU, memory, storage, accelerator and placement requirements.",
+          "The order is the demand signal: a structured, on-chain request that either names one offering at its listed price or opens demand providers can bid on. Escrow is funded at this point, so the market can see the demand is backed by real budget.",
         ],
       },
       {
         heading: "Stage 2 — Match: three acquisition paths",
         paragraphs: [
-          "Direct orders resolve immediately against the named offering — no waiting, no auction. This is the default path and how catalogue purchases work: choose the provider and plan, pay the listed price.",
-          "Orders opened for bidding work differently. Provider daemons — the off-chain agents operators run inside their datacenters, clouds, and HPC facilities — watch the chain for open orders that match their registered capacity and attributes. When one appears, the daemon prices it against the operator's configured strategy and places a bid. Bids are on-chain objects too: priced offers that must satisfy the order's resource and attribute requirements to be valid. The tenant can accept a bid manually, or let the matching engine auto-resolve to the best-ranked offer when the bidding window closes.",
-          "Selector orders name no provider at all. The tenant describes category, region, minimum specifications and a maximum price, and the engine resolves eligible listings deterministically within that cap — request-for-quote semantics without the negotiation round-trip.",
+          "Direct orders resolve immediately against the named offering — no waiting, no auction. Open orders collect bids from provider daemons, which price the work against their configured strategy; valid bids must satisfy the order's resource and attribute requirements.",
+          "The tenant can accept a bid, or let the matching engine auto-resolve to the best-ranked offer when the bidding window closes. Selector orders name no provider at all: category, region, minimum specifications and a maximum price are resolved deterministically within that cap.",
+        ],
+        bullets: [
+          "Direct — published price, immediate match, no bidding window.",
+          "Open bid — competing on-chain bids, accepted or auto-resolved.",
+          "Selector — request-for-quote semantics without the negotiation round-trip.",
         ],
       },
       {
         heading: "Stage 3 — Lease: the match becomes a contract",
         paragraphs: [
-          "The match — a direct purchase or an accepted bid — becomes a lease: the on-chain contract binding one tenant, one provider, and one escrow account. The VE–Waldur API passes the agreed service into the appropriate fulfilment path. That can be Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
+          "The match becomes a lease: the on-chain contract binding one tenant, one provider, and one escrow account. The Waldur integration passes the agreed service into the appropriate fulfilment path — Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
           "Off-chain communication between tenant and provider — delivering the workload manifest, fetching status — is mutually authenticated with TLS certificates anchored on-chain by x/cert.",
         ],
       },
       {
         heading: "Stage 4 — Usage: metering with signatures",
         paragraphs: [
-          "While the workload runs, the provider daemon meters per-workload resource consumption on an hourly cadence. Metrics are processed into usage records, screened by anomaly detection, and submitted to the chain in signed batches (MsgRecordUsage) with retry and backoff.",
-          "Reconciliation runs alongside — cross-checking reported usage against platform metrics on a six-hour default interval and flagging discrepancies above threshold.",
+          "The provider daemon meters per-workload consumption on an hourly cadence. Metrics become usage records, screened by anomaly detection and submitted in signed batches (MsgRecordUsage) with retry and backoff.",
+          "Reconciliation runs alongside — cross-checking reported usage against platform metrics on a six-hour default interval and flagging discrepancies above threshold. A record that never gets signed never becomes billable.",
         ],
       },
       {
         heading: "Stage 5 — Settlement: usage becomes payment",
         paragraphs: [
-          "The settlement module (x/settlement) validates each usage record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window during which either party can raise corrections; after it closes, line items settle against the lease's escrow.",
-          "Funds transfer from escrow to the provider at the agreed lease price, under the governed settlement fee policy — protocol parameters set by governance, not a private platform margin. Low validator transaction fees apply only to the on-chain messages that create, operate and settle the lease. When the deployment closes, any unspent escrow returns to the tenant. No invoices were created, and no one had to trust the other side's accounting.",
+          "The settlement module (x/settlement) validates each record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window where either party can raise corrections; after it closes, line items settle against the lease's escrow.",
+          "Funds transfer to the provider at the agreed lease price under the governed settlement fee policy — protocol parameters set by governance, not a private platform margin. When the deployment closes, unspent escrow returns to the tenant.",
         ],
       },
       {
         heading: "Why this design holds up",
         paragraphs: [
-          "Each stage hands off to the next with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts — the marketplace's guarantees are protocol properties, not platform policies.",
+          "Each stage hands off with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts.",
         ],
       },
     ],
@@ -181,7 +238,7 @@ export const LEARN: LearnEntry[] = [
         label: "Match",
         title: "Direct purchase or competitive bid",
         body: "Named offerings match immediately at the listed price; open orders collect bids and resolve to the best-ranked offer.",
-        href: "#stage-2-match-direct-purchase-or-competitive-bid",
+        href: "#stage-2-match-three-acquisition-paths",
       },
       {
         label: "Lease",
@@ -1218,10 +1275,11 @@ export const LEARN: LearnEntry[] = [
       {
         question: "Where do launch dates get published?",
         answer:
-          "Through the formal launch process. Neither network should be described as live before confirmation — exact dates arrive through official announcements, not this guide.",
+          "Through the formal launch process. Neither network should be described as live before confirmation - exact dates arrive through official announcements, not this guide.",
       },
     ],
   },
+  ...MARKETPLACE_LEARN,
 ];
 
 export function getLearn(slug: string): LearnEntry | undefined {

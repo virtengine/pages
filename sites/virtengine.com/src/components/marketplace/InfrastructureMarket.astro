@@ -1,0 +1,77 @@
+---
+/**
+ * InfrastructureMarket — "supply becomes market state".
+ *
+ * Left: physical infrastructure islands. Middle: the protocol exchange.
+ * Right: tenant demand. The figure carries the homepage statement:
+ * VirtEngine is not the cloud; it is the market independent infrastructure
+ * can join.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const providers = [
+  ["GPU cluster", "accelerator capacity"],
+  ["HPC facility", "scheduler-backed"],
+  ["Regional cloud", "general compute"],
+  ["Confidential node", "attested enclave"],
+];
+
+const tenants = [
+  ["AI training", "GPU-hours"],
+  ["Simulation", "job queue"],
+  ["Virtual machines", "regional"],
+  ["Private workload", "confidential"],
+];
+
+const marketState = ["Identity", "Capacity", "Order", "Lease", "Usage", "Settlement"];
+---
+
+<div class:list={["mk-market", className]}>
+  <div class="mk-market-col mk-market-col--providers">
+    <h3>Providers</h3>
+    <ul>
+      {
+        providers.map(([name, note]) => (
+          <li class="mk-market-node">
+            <span class="mk-market-dot" aria-hidden="true" />
+            {name}
+            <small>{note}</small>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="mk-market-core">
+    <h3>Market</h3>
+    <p>
+      Orders meet offerings on-chain. Every step becomes protocol state — not a private arrangement between
+      two companies that have never met.
+    </p>
+    <ul>
+      {marketState.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <div class="mk-market-col mk-market-col--tenants">
+    <h3>Tenants</h3>
+    <ul>
+      {
+        tenants.map(([name, note]) => (
+          <li class="mk-market-node">
+            <span class="mk-market-dot" aria-hidden="true" />
+            {name}
+            <small>{note}</small>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+<p class="mk-market-statement">
+  <strong>VirtEngine is not the cloud. It is the market independent infrastructure can join.</strong>
+</p>

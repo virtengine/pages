@@ -1,0 +1,76 @@
+---
+/**
+ * ServiceComparison — IaaS vs PaaS vs SaaS as a three-column comparison,
+ * with the shared VirtEngine rail underneath. Used by the comparison article
+ * and the PaaS/SaaS pages.
+ */
+import { SERVICE_MODEL_BY_ID } from "@data/market";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const rows: { id: "iaas" | "paas" | "saas"; delivered: string; managed: string; meter: string }[] = [
+  {
+    id: "iaas",
+    delivered: "Infrastructure resource",
+    managed: "Tenant manages the OS, runtime and application.",
+    meter: "CPU / RAM / GPU / storage",
+  },
+  {
+    id: "paas",
+    delivered: "Managed platform",
+    managed: "Provider manages the runtime, orchestration or database; tenant deploys onto it.",
+    meter: "Platform components — vCPU-hours, RAM GB-hours, storage",
+  },
+  {
+    id: "saas",
+    delivered: "Software entitlement",
+    managed: "Provider manages the complete software service.",
+    meter: "Seat / plan / subscription / provider-defined component",
+  },
+];
+
+const shared = [
+  "catalogue",
+  "order",
+  "counterparty identity",
+  "lease / agreement",
+  "usage where applicable",
+  "settlement",
+];
+---
+
+<div class:list={["mk-svc-cmp-wrap", className]}>
+  <div class="mk-svc-cmp">
+    {
+      rows.map((row) => (
+        <article class="mk-svc-col">
+          <h3>{SERVICE_MODEL_BY_ID[row.id].title}</h3>
+          <dl>
+            <div>
+              <dt>What is delivered</dt>
+              <dd>{row.delivered}</dd>
+            </div>
+            <div>
+              <dt>Who manages what</dt>
+              <dd>{row.managed}</dd>
+            </div>
+            <div>
+              <dt>Typical meter</dt>
+              <dd>{row.meter}</dd>
+            </div>
+          </dl>
+        </article>
+      ))
+    }
+  </div>
+  <div class="mk-svc-shared">
+    <h3>Shared on VirtEngine — in every case</h3>
+    <ul>
+      {shared.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</div>

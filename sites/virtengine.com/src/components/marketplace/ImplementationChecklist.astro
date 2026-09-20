@@ -1,0 +1,30 @@
+---
+/**
+ * ImplementationChecklist — "implemented in the integration code" vs
+ * "requires provider/operator deployment". Keeps the Waldur page honest:
+ * a code path existing is not the same as a certified production adapter.
+ */
+interface Props {
+  implemented: string[];
+  deployment: string[];
+  class?: string;
+}
+const { implemented, deployment, class: className } = Astro.props;
+---
+
+<div class:list={["mk-check", className]}>
+  <section class="mk-check-col mk-check-col--code">
+    <h3>Present in the VirtEngine integration code</h3>
+    <p class="mk-check-note">Real code paths in the repository — not a design-only diagram.</p>
+    <ul>
+      {implemented.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+  <section class="mk-check-col mk-check-col--deploy">
+    <h3>Requires provider / operator deployment</h3>
+    <p class="mk-check-note">Production availability depends on operator configuration and certification.</p>
+    <ul>
+      {deployment.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+</div>

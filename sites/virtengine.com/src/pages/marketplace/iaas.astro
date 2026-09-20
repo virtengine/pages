@@ -1,0 +1,291 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "IaaS on VirtEngine: Infrastructure as a Service";
+const description =
+  "Infrastructure as a Service on VirtEngine: order VMs, private cloud, bare metal, GPU nodes and storage, fulfilled by the provider's control plane and settled from verified usage.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "IaaS", href: "/marketplace/iaas" },
+];
+
+const listings = [
+  {
+    title: "General Purpose VM",
+    specs: ["4 vCPU", "16 GB RAM", "200 GB NVMe"],
+    components: ["vCPU-hour", "storage GB-month"],
+    price: "$0.06 / vCPU-hour",
+  },
+  {
+    title: "GPU Virtual Machine",
+    specs: ["8 vCPU", "64 GB RAM", "1 × GPU", "1 TB block storage"],
+    components: ["GPU-hour", "storage GB-month"],
+    price: "$0.39 / GPU-hour",
+  },
+  {
+    title: "Private Cloud Tenant",
+    specs: ["Dedicated quota", "Managed control plane", "Network isolation"],
+    components: ["reserved capacity", "storage GB-month"],
+    price: "Reserved plan",
+  },
+  {
+    title: "Bare Metal Node",
+    specs: ["64 cores", "512 GB RAM", "2 × 25 GbE"],
+    components: ["node-month", "network"],
+    price: "Monthly plan",
+  },
+  {
+    title: "Block Storage",
+    specs: ["SSD-backed", "Snapshots", "Attach to any VM"],
+    components: ["storage GB-month", "IOPS tier"],
+    price: "$0.08 / GB-month",
+  },
+  {
+    title: "Object Storage",
+    specs: ["S3-compatible", "Versioning", "Lifecycle rules"],
+    components: ["storage GB-month", "egress GB"],
+    price: "$0.02 / GB-month",
+  },
+];
+
+const variations = [
+  "region",
+  "CPU architecture",
+  "GPU model",
+  "RAM",
+  "storage class",
+  "network",
+  "attestation",
+  "audits",
+  "pricing",
+  "support",
+];
+
+const backends = [
+  {
+    title: "OpenStack",
+    body: "Tenants, instances, volumes and networks exposed through the Waldur client package in the current bridge.",
+  },
+  {
+    title: "VMware",
+    body: "Virtual-machine operations through Waldur's documented VMware provider module, subject to operator configuration.",
+  },
+  {
+    title: "Kubernetes / Rancher where applicable",
+    body: "Container and cluster workloads where the provider operates Kubernetes and exposes it as an infrastructure product.",
+  },
+  {
+    title: "Provider custom integration",
+    body: "A provider-defined processor for infrastructure that no standard plugin covers — scripted, site-agent or bespoke.",
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/iaas"
+  image="/media/provider-datacenter-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · IaaS"
+    title="Infrastructure as a Service on VirtEngine"
+    lede="Choose infrastructure. Form a lease. Operate it through the provider's control plane. Settle from verified usage."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn/how-the-marketplace-works">How orders become leases</CTA>
+    <CTA href="/providers" variant="secondary">Prepare to provide infrastructure</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <FulfilmentFlow
+        nodes={[
+          "Tenant",
+          "Marketplace listing",
+          "Lease",
+          "Provider daemon",
+          "Waldur",
+          "OpenStack · VMware · cloud",
+          "VM · network · storage",
+        ]}
+        kinds={{
+          Lease: "protocol",
+          "Marketplace listing": "protocol",
+          "Provider daemon": "provider",
+          Waldur: "provider",
+          "OpenStack · VMware · cloud": "provider",
+        }}
+        caption="The lease is protocol state. The machine is created by the provider's control plane and backend."
+      />
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Scope"
+    title="What IaaS means here"
+    lede="VirtEngine is not itself the hypervisor or the datacentre."
+  >
+    <div class="mk-cards-3">
+      <article class="mk-order-col">
+        <h3>Providers expose infrastructure products</h3>
+        <p>Capacity becomes catalogue offerings with plans, components, regions and attributes — not a raw API call.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Waldur and provider integrations fulfil them</h3>
+        <p>The provider's control plane creates and operates the resource; the provider daemon keeps it correlated with the lease.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>VirtEngine records the relationship</h3>
+        <p>Identity, the market agreement, escrow, signed usage and settlement are protocol state — the commercial and trust layer.</p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Catalogue"
+    title="Example IaaS catalogue"
+    lede="Six illustrative listings showing the range of infrastructure products a provider can publish. Example providers and prices only — not live availability."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-3">
+      {
+        listings.map((listing) => (
+          <MarketplaceListingCard
+            serviceType="IaaS"
+            title={listing.title}
+            region="Example region"
+            specs={listing.specs}
+            components={listing.components}
+            priceLabel={listing.price}
+            compact
+          />
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section eyebrow="Process" title="What happens when you order">
+    <FulfilmentFlow
+      nodes={["Browse", "Order", "Lease", "Provision", "Use", "Meter", "Settle"]}
+      kinds={{ Order: "protocol", Lease: "protocol", Provision: "provider", Meter: "provider", Settle: "protocol" }}
+      caption="Browse → order → lease → provision → use → meter → settle. Provisioning and metering happen on the provider side; the agreement and the money stay on-chain."
+    />
+  </Section>
+
+  <Section
+    eyebrow="Variation"
+    title="What can vary between providers"
+    lede="Two listings can look similar and differ on every dimension that matters to a workload."
+  >
+    <ul class="mk-chip-row">
+      {variations.map((item) => <li>{item}</li>)}
+    </ul>
+    <p class="mk-rb-note">
+      <strong>Check the listing, not the category.</strong> Region, hardware and support are attributes of the
+      specific offering. The card and the plan are where those differences are visible before you order.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Fulfilment"
+    title="Provider implementation paths"
+    lede="Which backends a provider can fulfil with depends on its Waldur configuration and integration work."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-2">
+      {
+        backends.map((backend) => (
+          <article class="mk-order-col">
+            <h3>{backend.title}</h3>
+            <p>{backend.body}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mk-rb-note">
+      Not every backend is certified for every deployment. An integration present in upstream Waldur is not
+      automatically a certified VirtEngine provider adapter — certification is deployment-specific.
+    </p>
+  </Section>
+
+  <Section eyebrow="Pricing" title="Pricing models">
+    <div class="mk-cards-3">
+      <article class="mk-order-col">
+        <h3>Published fixed plan</h3>
+        <p>A list price for a defined configuration — the direct-order default.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Component-based</h3>
+        <p>Metered or limited components such as vCPU-hours, GPU-hours and storage GB-months.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Reserved allocation</h3>
+        <p>Capacity held for a term, priced as a reservation rather than per hour.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Metered usage</h3>
+        <p>Pay for what is consumed; signed records settle against escrow.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Competitive bid</h3>
+        <p>For suitable workloads, providers can compete on price through an open order.</p>
+      </article>
+      <article class="mk-order-col">
+        <h3>Governed fees</h3>
+        <p>Settlement fees are protocol parameters set by governance, not a private platform margin.</p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Trust"
+    title="What the trust layer adds"
+    lede="Marketplace access is identity-gated in both directions, and evidence travels with the listing."
+    class="border-y border-line bg-paper-soft"
+  >
+    <ul class="mk-chip-row">
+      <li>VEID identity</li>
+      <li>provider attributes</li>
+      <li>auditor-signed audits</li>
+      <li>hardware benchmarks</li>
+      <li>certificates (x/cert)</li>
+      <li>escrow-backed orders</li>
+      <li>signed usage records</li>
+      <li>dispute window</li>
+    </ul>
+    <div class="mk-tech-note">
+      <p>
+        <strong>Under the hood:</strong> <a href="/modules/provider">x/provider</a> for registration and attributes,{" "}
+        <a href="/modules/audit">x/audit</a> and <a href="/modules/benchmark">x/benchmark</a> for evidence,{" "}
+        <a href="/modules/cert">x/cert</a> for mutual TLS, and <a href="/modules/escrow">x/escrow</a> for funds held
+        against leases.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+        { label: "HPC & batch", href: "/marketplace/hpc" },
+        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
+        { label: "Provider onboarding", href: "/providers" },
+        { label: "Waldur integration", href: "/waldur" },
+        { label: "Storage & data", href: "/marketplace/storage" },
+      ]}
+    />
+  </Section>
+</Base>
