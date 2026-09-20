@@ -4,8 +4,8 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 
-const title = "Open-source hybrid cloud platform — Waldur + VirtEngine";
-const description = "How VirtEngine connects its decentralized marketplace protocol to Waldur, the open-source cloud and HPC management platform developed and stewarded by OpenNode Cloud.";
+const title = "Waldur + VirtEngine: Enterprise Catalog, Direct Ordering & Settlement | VirtEngine";
+const description = "How Waldur's enterprise marketplace works with VirtEngine: direct catalog orders from chosen providers, custom SaaS and service offerings, approvals and compliance, with on-chain escrow and settlement.";
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "Waldur", href: "/waldur" },
@@ -13,7 +13,7 @@ const crumbs = [
 
 const workflow = [
   { step: "01", title: "Publish", body: "Providers register offerings on-chain, then the provider daemon synchronizes the catalogue and maps Waldur offering identifiers." },
-  { step: "02", title: "Order", body: "A tenant order and selected bid become protocol state. The bridge routes the matched service request into Waldur." },
+  { step: "02", title: "Order", body: "A tenant orders a specific offering at its listed price, or posts open demand for bids. Either way the order becomes protocol state, and the bridge routes the matched service request into Waldur." },
   { step: "03", title: "Provision", body: "Waldur coordinates fulfilment through the configured cloud, HPC or provider-specific integration and returns operational status." },
   { step: "04", title: "Operate", body: "Signed, replay-protected callbacks report lifecycle changes to VirtEngine. Provider-local infrastructure views remain in Waldur." },
   { step: "05", title: "Meter", body: "Usage records return to the chain, where the settlement module produces billable line items and releases escrowed funds." },
@@ -69,11 +69,11 @@ const organizationLogos = [
 ];
 ---
 
-<Base title={title} description={description} path="/waldur" breadcrumbs={crumbs}>
+<Base title={title} description={description} path="/waldur" image="/media/network-earth-1440.webp" breadcrumbs={crumbs}>
   <PageHero
     eyebrow="Open-source cloud operations"
     title="Waldur connects VirtEngine to hybrid cloud and HPC infrastructure"
-    lede="Waldur supplies the catalogue, self-service and operational control plane. VirtEngine supplies the decentralized exchange, identity, escrow and settlement protocol. The provider daemon keeps both sides synchronized."
+    lede="Waldur supplies the catalogue, self-service and operational control plane — including direct ordering from providers you choose and fully custom service listings. VirtEngine supplies the decentralized exchange, identity, escrow and settlement protocol. The provider daemon keeps both sides synchronized."
     crumbs={crumbs}
     media="network-earth"
     mediaCaption="The operations room and the chain, kept in sync."
@@ -118,7 +118,7 @@ const organizationLogos = [
       <article class="rounded-card border border-green-deep/30 bg-green-wash p-6">
         <p class="eyebrow">VirtEngine contributes</p>
         <h3 class="mt-4 text-xl font-semibold">Exchange, identity and settlement</h3>
-        <p class="mt-3 text-sm leading-relaxed text-slate">The chain coordinates provider discovery, competitive bids, leases, Verifiable Electronic Identity checks, escrow, metered usage and final settlement. Waldur does not replace that consensus layer.</p>
+        <p class="mt-3 text-sm leading-relaxed text-slate">The chain coordinates provider discovery, direct purchase and optional competitive bids, leases, Verifiable Electronic Identity checks, escrow, metered usage and final settlement. Waldur does not replace that consensus layer.</p>
       </article>
     </div>
   </Section>
@@ -137,6 +137,87 @@ const organizationLogos = [
         </li>
       ))}
     </ol>
+  </Section>
+
+  <Section
+    eyebrow="Acquisition paths"
+    title="Bidding is one way to buy — not the only way"
+    lede="On-chain, direct purchase at a listed price is the default acquisition mode; open bidding is opt-in price discovery. In Waldur there is no bidding at all: you order a specific offering from a specific provider, like any enterprise catalogue."
+  >
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Default · listed price</p>
+        <h3 class="mt-4 text-xl font-semibold">Direct catalog order</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Pick an offering, plan and project — a GPU cluster, a SaaS seat, a support package — and order it at the published price. The order names that exact offering, matches without waiting for bids, and becomes a lease. This is how most enterprise procurement works, and the protocol defaults to it when no acquisition mode is specified.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Opt-in · price discovery</p>
+        <h3 class="mt-4 text-xl font-semibold">Open bidding for fungible demand</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Post demand with a matching window and let providers compete on price. Accept a bid manually, or let the matching engine auto-resolve to the best-ranked offer when the window closes. Built for spot capacity where the lowest honest price wins — not for every purchase.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Attribute matching</p>
+        <h3 class="mt-4 text-xl font-semibold">Selector orders</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Describe category, region, minimum specifications and maximum price instead of naming an offering. The engine resolves eligible listings deterministically — request-for-quote semantics without a negotiation round-trip.</p>
+      </article>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Enterprise control"
+    title="Choose exactly who can serve you"
+    lede="Enterprises don't buy from whoever happens to be cheapest that second. Waldur's catalogue controls decide which providers your teams can even see — the chain then records and settles whatever those controls permit."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Catalogue scoping</p>
+        <h3 class="mt-4 text-xl font-semibold">Private offerings and limited plans</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Providers can publish private offerings visible only to chosen customers, limit plans to specific organization groups, and restrict ordering to named project roles. What your teams can't see, they can't order — procurement by allow-list, not by open outcry.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Dual approval</p>
+        <h3 class="mt-4 text-xl font-semibold">Consumer and provider gates</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Every order passes two independent approvals: your side (consumer review, cost limits, purchase-order attachments) and the provider's side. Either side can require manual sign-off; neither side can be bypassed by a lower bid.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Terms and compliance</p>
+        <h3 class="mt-4 text-xl font-semibold">Contracts accepted per order</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Each offering carries its own terms of service, privacy policy and access policies, re-accepted whenever they change — an order cannot complete without consent. Providers attach compliance checklists your teams answer and auditors can inspect.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Verified counterparties</p>
+        <h3 class="mt-4 text-xl font-semibold">Identity gating before matching</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Providers must clear VEID identity verification, minimum trust scores and compliance checks before they can publish; offerings can additionally demand score thresholds and multi-factor authentication from buyers. Unverified capacity never matches.</p>
+      </article>
+    </div>
+    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
+      A note on SLAs and liability, stated plainly: there is no on-chain SLA object, and the protocol cannot underwrite a provider's uptime. Commercial terms live where contracts live — in offering terms, descriptions and plans, accepted per order — while the chain independently verifies what money can verify: gated counterparties before matching, signed metering during service, escrowed funds, and rule-bound settlement after the dispute window. Legal liability stays with the provider organizations you chose; the protocol makes their performance auditable.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Beyond compute"
+    title="The catalogue sells services, not just servers"
+    lede="A Waldur offering is any service or product that can be ordered — which is why the demo catalogue lists a Lead Product Designer next to LEMP stacks. virtEngine settles whatever the catalogue is allowed to sell."
+  >
+    <div class="mt-8 grid gap-5 md:grid-cols-3">
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">SaaS and subscriptions</p>
+        <h3 class="mt-4 text-xl font-semibold">Custom SaaS on fixed plans</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Providers publish software with fixed monthly pricing — seats, licenses, support hours, implementation packages — ordered like any other offering and settled against the same escrow.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Human services</p>
+        <h3 class="mt-4 text-xl font-semibold">Consultancy and support desks</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Custom billing components such as consultancy hours, plus ticket-backed offerings that turn an order into a tracked support issue, let providers sell expertise and response — not only machines.</p>
+      </article>
+      <article class="rounded-card border border-line bg-panel p-6">
+        <p class="eyebrow">Software and scripts</p>
+        <h3 class="mt-4 text-xl font-semibold">Catalogs and custom integrations</h3>
+        <p class="mt-3 text-sm leading-relaxed text-slate">Software catalogs attach versioned packages to HPC and AI offerings; custom scripts provision anything scriptable; remote offerings federate catalogues across Waldur instances. If it can be described, it can be listed.</p>
+      </article>
+    </div>
   </Section>
 
   <Section

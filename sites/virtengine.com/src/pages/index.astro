@@ -34,9 +34,9 @@ const surfaces = [
     n: "01",
     label: "Marketplace",
     title: "Capacity, discovered in the open.",
-    body: "Orders and bids meet on chain. The winning bid becomes a lease under escrow. Every step is protocol state, not a private arrangement — and the marketplace takes no commission.",
+    body: "Orders meet offerings on chain — buy a named listing outright, or open it to bids. The match becomes a lease under escrow. Every step is protocol state, not a private arrangement — and the marketplace takes no commission.",
     facts: [
-      ["x/market", "order → bid → lease state machine"],
+      ["x/market", "order → match → lease state machine"],
       ["x/escrow", "funds held against active leases"],
       ["x/take", "zero-rate marketplace settlement policy"],
     ],
@@ -93,8 +93,9 @@ const surfaces = [
 ---
 
 <Base
-  title="VirtEngine — The open infrastructure network"
-  description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
+  title="Decentralized Cloud Marketplace Protocol | VirtEngine"
+  description="VirtEngine is an open-source DePIN protocol for GPU, HPC and cloud compute — marketplace, VEID identity and escrow settlement on Cosmos SDK."
+  image="/og.png"
 >
   <!-- one continuous ribbon field behind the page: dark sections reveal it,
        opaque light sections cover it -->

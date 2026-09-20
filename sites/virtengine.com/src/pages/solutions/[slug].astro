@@ -8,6 +8,7 @@ import HowItWorks from "@components/HowItWorks.astro";
 import FaqList from "@components/FaqList.astro";
 import ProtocolDiagram from "@components/ProtocolDiagram.astro";
 import { SOLUTIONS } from "@data/solutions";
+import { media } from "@data/media";
 import { SITE } from "@data/site";
 
 export function getStaticPaths() {
@@ -29,6 +30,7 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
   title={`${sol.title} — VirtEngine`}
   description={sol.metaDescription}
   path={`/solutions/${sol.slug}`}
+  image={media[sol.media].src}
   breadcrumbs={crumbs}
 >
   <PageHero

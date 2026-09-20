@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# Content Signals (https://contentsignals.org): DETIO FOUNDATION LTD permits
+# all AI training, search, and input use of this site's public content.
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
 # Paginated views of the preserved 2015–2016 blog archive are noindexed;
 # the sitemap lists only canonical, indexable pages.
 

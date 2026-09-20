@@ -93,9 +93,9 @@ export const MODULES: ModuleEntry[] = [
     path: "x/market",
     name: "Market",
     domain: "Marketplace & workloads",
-    summary: "The order, bid, and lease state machine at the center of the marketplace.",
+    summary: "The order, match, and lease state machine at the center of the marketplace.",
     whatItDoes: [
-      "The market module implements the exchange itself. Tenants post orders describing the resources they need; provider daemons watching the chain place competing bids against open orders; and a matched bid becomes a lease — the on-chain contract under which a provider serves a workload and gets paid. All three objects are chain state, created and transitioned by transactions and validated by consensus.",
+      "The market module implements the exchange itself. Tenants post orders describing the resources they need; orders naming a specific offering match it outright at the listed price, while open orders collect competing bids from provider daemons watching the chain. A match becomes a lease — the on-chain contract under which a provider serves a workload and gets paid. All these objects are chain state, created and transitioned by transactions and validated by consensus.",
       "The module enforces the lifecycle rules: an order can only be matched while open, a bid must satisfy the order's resource and attribute requirements, and a lease binds exactly one tenant, one provider, and one escrow account. Lease closure — voluntary, for non-payment, or through enforcement — flows back through the same state machine so every marketplace event leaves an auditable record.",
     ],
     whyItExists:
@@ -108,8 +108,8 @@ export const MODULES: ModuleEntry[] = [
       { slug: "settlement", label: "x/settlement", how: "Usage recorded against a lease settles into payments from lease escrow." },
     ],
     concepts: [
-      { term: "Order", def: "A tenant's on-chain request for resources — compute, memory, storage, region, and required attributes." },
-      { term: "Bid", def: "A provider's priced offer against an open order, placed automatically by the provider daemon." },
+      { term: "Order", def: "A tenant's on-chain request — compute, memory, storage, region, and required attributes — naming a specific offering or open for bids." },
+      { term: "Bid", def: "A provider's priced offer against an open order, placed automatically by the provider daemon. Direct orders never need one." },
       { term: "Lease", def: "The matched contract between tenant and provider that authorizes a workload and its payment stream." },
     ],
     media: "marketplace-hardware",
@@ -138,13 +138,13 @@ export const MODULES: ModuleEntry[] = [
         body: "A structured, on-chain request for resources: compute, memory, storage, region, and required attributes.",
       },
       {
-        label: "Bid",
-        title: "Providers bid",
-        body: "Daemons watching the chain place competing priced offers that satisfy the order's resource and attribute requirements.",
+        label: "Match",
+        title: "Direct purchase or winning bid",
+        body: "A named offering matches immediately at its listed price; open orders resolve to the accepted or best-ranked bid.",
       },
       {
         label: "Match",
-        title: "A bid becomes a lease",
+        title: "A match becomes a lease",
         body: "The matched contract authorizes the workload and its payment stream, backed by escrow funded before serving starts.",
       },
       {
@@ -157,7 +157,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "Who can match an order?",
         answer:
-          "Any provider whose bid satisfies the order's resource and attribute requirements, while the order is open. Matching is consensus-validated, never discretionary.",
+          "A named offering matches its own direct orders outright. For open orders, any provider whose bid satisfies the resource and attribute requirements, while the order is open. Matching is consensus-validated, never discretionary.",
       },
       {
         question: "What exactly does a lease bind together?",
@@ -180,7 +180,7 @@ export const MODULES: ModuleEntry[] = [
     domain: "Marketplace & workloads",
     summary: "Marketplace coordination and offering surfaces layered over the core exchange.",
     whatItDoes: [
-      "Where x/market implements the raw order–bid–lease state machine, the marketplace module carries the coordination surfaces around it: how offerings are presented, how marketplace-level rules are applied, and how the exchange is exposed to client interfaces as a coherent product rather than a bag of primitives.",
+      "Where x/market implements the raw order–match–lease state machine, the marketplace module carries the coordination surfaces around it: how offerings are presented, how marketplace-level rules are applied, and how the exchange is exposed to client interfaces as a coherent product rather than a bag of primitives.",
       "It gives the protocol a place to evolve marketplace behavior — listing rules, offering metadata, cross-module orchestration — without overloading the core matching engine, keeping the state machine in x/market small and verifiable.",
     ],
     whyItExists:

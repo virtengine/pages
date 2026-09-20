@@ -67,9 +67,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "gpu-compute-providers",
     label: "GPU compute providers",
-    title: "Monetize GPU capacity on an open marketplace",
+    title: "Monetize GPU Capacity on an Open Marketplace",
     metaDescription:
-      "How GPU operators lease accelerator capacity into the VirtEngine marketplace: on-chain bidding, benchmark-backed offers, hourly usage settlement, and escrow-secured payment.",
+      "How GPU operators lease accelerator capacity into VirtEngine's DePIN market: on-chain bidding, benchmark-backed offers, hourly settlement, escrow-secured pay.",
     audience: "Operators with GPU fleets — from a few nodes to full accelerator clusters.",
     intro:
       "GPU capacity is scarce, expensive to own, and painful to sell in small increments. VirtEngine gives GPU operators a marketplace where accelerator capacity is leased on-chain, metered hourly, and paid from escrow — without building a billing department.",
@@ -196,9 +196,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "datacenter-operators",
     label: "Datacenter operators",
-    title: "Turn datacenter headroom into settled revenue",
+    title: "Turn Datacenter Headroom into Settled Revenue",
     metaDescription:
-      "How datacenter and cloud operators lease spare capacity into the VirtEngine marketplace: provider registration, auditor-signed attributes, automated settlement, and portable reputation.",
+      "How datacenter operators lease spare capacity into VirtEngine's DePIN market: registration, auditor-signed attributes, automated settlement, portable reputation.",
     audience: "Datacenter and cloud operators with underutilized compute, storage, or network capacity.",
     intro:
       "Datacenters run at partial utilization by design — headroom is the product. VirtEngine lets operators sell that headroom into an open marketplace with protocol-run metering, billing, and payment, while keeping full control of their infrastructure and pricing.",
@@ -324,9 +324,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "hpc-clusters",
     label: "HPC clusters",
-    title: "Put supercomputing capacity on the marketplace",
+    title: "Put Supercomputing Capacity on the Marketplace",
     metaDescription:
-      "How HPC facilities running SLURM, MOAB, or Open OnDemand lease batch capacity through VirtEngine's x/hpc job marketplace — without re-platforming the cluster.",
+      "How HPC facilities running SLURM, MOAB or Open OnDemand lease batch capacity via VirtEngine's x/hpc job market — no re-platforming of the cluster.",
     audience: "University, national-lab, and commercial HPC facilities running batch schedulers.",
     intro:
       "HPC clusters are among the most valuable compute assets in existence, and most run with idle cycles. VirtEngine's HPC module brings scheduler-backed batch capacity into the marketplace natively — your SLURM, MOAB, or Open OnDemand cluster stays exactly as it is.",
@@ -457,9 +457,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "validators",
     label: "Validators",
-    title: "Run a validator with a dual mandate",
+    title: "Run a Validator: Consensus, VEID & Rewards",
     metaDescription:
-      "Running a VirtEngine validator: CometBFT consensus duties plus the VEID Network, reward composition, slashing risk, and how to prepare for mainnet.",
+      "Run a VirtEngine validator: CometBFT consensus plus VEID identity scoring, reward composition, slashing risk and MainNet preparation. Start here.",
     audience: "Professional node operators and infrastructure teams considering the validator role.",
     intro:
       "VirtEngine validators do more than order blocks. The same bonded set that secures CometBFT consensus also operates the VEID Network — decrypting encrypted identity scopes, scoring them with shared ML models, and committing trust scores by consensus. Two duties, one stake, layered rewards.",
@@ -585,9 +585,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "staking-partners",
     label: "Staking partners",
-    title: "Build staking services on a first-class delegation layer",
+    title: "Build Staking Services on a First-Class Layer",
     metaDescription:
-      "For staking-as-a-service providers: how VirtEngine's x/delegation module supports client offerings, what reward streams exist, and how to represent slashing and unbonding risk.",
+      "For staking-as-a-service providers: VirtEngine's x/delegation lifecycle, reward streams, slashing and 21-day unbonding risk. Represent risk plainly.",
     audience: "Staking-as-a-service businesses, custodians, and exchanges offering staking products.",
     intro:
       "VirtEngine's delegation lifecycle is a module, not an afterthought: delegate, redelegate, unbond, and collect rewards entirely on-chain. Staking partners can operate validators, aggregate client delegations, or both — with reward streams that include the identity network's dedicated pool.",
@@ -711,9 +711,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "token-holders",
     label: "Token holders",
-    title: "What holding the token actually does",
+    title: "Token Guide: Utility, Staking & Governance",
     metaDescription:
-      "For VirtEngine token holders: how delegation secures the network, how burn-and-mint links supply to marketplace demand, governance rights, and the risks stated plainly.",
+      "For VirtEngine token holders: delegate to secure the network, burn-and-mint supply dynamics, governance rights and staking risks stated plainly.",
     audience: "Token holders deciding whether and how to participate beyond holding.",
     intro:
       "VirtEngine's token is a working asset: it prices compute, funds escrow, bonds validators, weights governance, and burns against marketplace demand. Holders who delegate contribute directly to network security — and share in the rewards that security earns.",
@@ -837,9 +837,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "web3-developers",
     label: "Web3 developers",
-    title: "Build on a chain that sells real compute",
+    title: "Build on VirtEngine: Cosmos SDK for Developers",
     metaDescription:
-      "For developers building on VirtEngine: the Cosmos SDK module surface, gRPC/REST access, deployment workflows, approved clients, and where to start in the open-source repo.",
+      "Build on VirtEngine: 27 Cosmos SDK modules, gRPC and REST access, deployment workflows, approved clients. Clone the repo and start today.",
     audience: "Developers building wallets, tooling, marketplaces, and applications on the protocol.",
     intro:
       "VirtEngine is a Cosmos SDK chain whose state machine runs a real economy: orders, leases, usage, settlement, identity. For developers, that means a rich, typed module surface to build against — and a marketplace whose transactions do something physical.",
@@ -965,7 +965,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     label: "Confidential compute",
     title: "Confidential computing with proof, not promises",
     metaDescription:
-      "How enterprises run sensitive workloads on VirtEngine: enclave attestation via x/enclave, end-to-end encryption via x/encryption, mTLS, and identity-verified counterparties.",
+      "How enterprises run sensitive AI workloads on VirtEngine: enclave attestation, end-to-end encryption, mTLS and verified counterparties.",
     audience: "Enterprises with regulated data, proprietary models, or confidentiality obligations.",
     intro:
       "Moving sensitive workloads to third-party infrastructure normally means trusting the operator. VirtEngine replaces that trust with verification: hardware enclave attestation recorded on-chain, payload encryption to attested targets, and identity-verified counterparties on both sides of every lease.",
@@ -998,7 +998,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Confidential capacity is priced by the same open bidding as everything else — attested enclave capability is a provider attribute, so its premium is set by supply and demand, not by a vendor's enterprise price list. Escrow-backed leases and hourly settlement give finance teams a clean, auditable cost trail.",
+        "Confidential capacity is priced like everything else — at the offering's listed price for direct orders, or by open bidding where you opt into price discovery. Attested enclave capability is a provider attribute, so its premium reflects supply and demand, not a vendor's enterprise price list. Escrow-backed leases and hourly settlement give finance teams a clean, auditable cost trail.",
       ],
     },
     gettingStarted: [
@@ -1080,7 +1080,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "Does confidential capacity cost a vendor-style premium?",
         answer:
-          "Its premium is set by open bidding, not an enterprise price list: attested enclave capability is a provider attribute, so supply and demand price it like everything else on the market.",
+          "Its premium reflects supply and demand rather than an enterprise price list: attested enclave capability is a provider attribute, priced at the listing or through open bidding like everything else on the market.",
       },
     ],
     diagram: "veid",
@@ -1089,9 +1089,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "ai-ml-workloads",
     label: "AI/ML workloads",
-    title: "Source training and inference capacity on-chain",
+    title: "Source Training and Inference Capacity On-Chain",
     metaDescription:
-      "Running AI/ML workloads on VirtEngine: GPU capacity sourced by open bidding, benchmark-verified hardware, HPC scheduler access for large jobs, and confidential options for proprietary models.",
+      "Run AI training and inference on VirtEngine: GPU capacity via open bidding, benchmark-verified hardware, HPC access and confidential options.",
     audience: "ML teams that need training or inference capacity without hyperscaler lock-in.",
     intro:
       "AI teams are capacity-constrained and price-taking. VirtEngine inverts the relationship: describe what you need, let providers bid, verify hardware through published benchmarks, and pay only for metered usage from escrow you control.",
@@ -1215,9 +1215,9 @@ export const SOLUTIONS: SolutionEntry[] = [
   {
     slug: "cost-optimized-cloud",
     label: "Cost-optimized cloud",
-    title: "Cloud economics set by open bidding",
+    title: "Cut Cloud Costs with Open Bidding",
     metaDescription:
-      "How tenants cut compute costs on VirtEngine: competitive per-order bidding, escrow-metered spending, no egress lock-in games, and workload portability across providers.",
+      "Cut compute costs on VirtEngine: competitive per-order bidding, escrow-metered spend, no egress lock-in and portability across providers.",
     audience: "Teams whose cloud bills grew faster than their workloads.",
     intro:
       "Cloud pricing is a menu written by the seller. VirtEngine replaces the menu with an auction: every order is bid on by competing providers, every hour of usage is metered and disputable, and unspent budget comes back. Cost optimization stops being a dashboard discipline and becomes market structure.",

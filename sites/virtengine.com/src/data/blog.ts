@@ -16,9 +16,9 @@ export interface BlogArticle {
 export const CURRENT_POSTS: BlogArticle[] = [
   {
     slug: "from-cloud-platform-to-decentralized-marketplace",
-    title: "From cloud platform to decentralized marketplace",
+    title: "From Cloud Platform to Decentralized Marketplace (2026)",
     description:
-      "How VirtEngine's early cloud-management work evolved into an open protocol for verifiable infrastructure markets.",
+      "How VirtEngine's early cloud-management work evolved into an open DePIN protocol for verifiable GPU and cloud infrastructure markets.",
     author: "VirtEngine Foundation",
     publishedAt: "2026-09-01T00:00:00.000Z",
     readingTime: "6 minutes",
@@ -41,9 +41,9 @@ export const CURRENT_POSTS: BlogArticle[] = [
   },
   {
     slug: "why-cloud-marketplace-settlement-belongs-on-chain",
-    title: "Why cloud marketplace settlement belongs on-chain",
+    title: "Why Cloud Settlement Belongs On-Chain: Escrow & Proof",
     description:
-      "A closer look at orders, bids, leases, metered usage, escrow, and transparent settlement in an open infrastructure market.",
+      "Orders, bids, leases, metered usage and escrow: why transparent on-chain settlement beats operator-run billing in open GPU and cloud markets.",
     author: "VirtEngine Foundation",
     publishedAt: "2026-08-28T00:00:00.000Z",
     readingTime: "7 minutes",
@@ -66,9 +66,9 @@ export const CURRENT_POSTS: BlogArticle[] = [
   },
   {
     slug: "verifiable-identity-for-decentralized-infrastructure",
-    title: "Verifiable identity for decentralized infrastructure",
+    title: "Verifiable Identity for Decentralized Cloud (VEID)",
     description:
-      "Why infrastructure markets need privacy-preserving identity evidence, active liveness, scoped verification, and auditable trust signals.",
+      "Why open GPU and cloud markets need privacy-preserving identity: active liveness, scoped verification, validator scoring and ZK proofs.",
     author: "VirtEngine Foundation",
     publishedAt: "2026-08-21T00:00:00.000Z",
     readingTime: "6 minutes",

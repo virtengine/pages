@@ -80,31 +80,31 @@ export const LEARN: LearnEntry[] = [
     title: "How the VirtEngine marketplace works",
     label: "How the marketplace works",
     metaDescription:
-      "A walkthrough of VirtEngine's Waldur-connected marketplace: a multi-service catalogue, custom offerings, orders, bids, leases, usage reporting, and settlement.",
+      "How VirtEngine's Waldur-connected marketplace works: multi-service catalogue, custom offerings, orders, bids, leases, usage reporting and settlement.",
     kicker: "Marketplace fundamentals",
     intro:
-      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, bid, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees.",
+      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, match, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees. Matching itself has two modes: buy a named offering outright at its listed price, or open the order to competitive bids.",
     diagram: "lifecycle",
-    diagramCaption: "The five-stage marketplace lifecycle: order → bid → lease → usage → settlement",
+    diagramCaption: "The five-stage marketplace lifecycle: order → match → lease → usage → settlement",
     sections: [
       {
         heading: "Stage 1 — Order: describing what you need",
         paragraphs: [
           "A tenant can begin from a Waldur marketplace offering: a private cloud, storage service, VM, accelerator-backed service, or a provider's fully custom listing. Where a workload deployment is needed, x/deployment carries its declarative description in groups with CPU, memory, storage, accelerator and placement requirements.",
-          "Creating the deployment emits orders into the market module (x/market). An order is the marketplace's demand signal: a structured, on-chain request that any qualifying provider can compete for. The tenant also funds an escrow account at this point, so the market can see the demand is backed by real budget.",
+          "Creating the deployment emits orders into the market module (x/market). An order is the marketplace's demand signal: a structured, on-chain request that either names one specific offering at its listed price, or opens demand that qualifying providers can bid on. The tenant also funds an escrow account at this point, so the market can see the demand is backed by real budget.",
         ],
       },
       {
-        heading: "Stage 2 — Bid: providers compete",
+        heading: "Stage 2 — Match: direct purchase or competitive bid",
         paragraphs: [
-          "Provider daemons — the off-chain agents operators run inside their datacenters, clouds, and HPC facilities — watch the chain for open orders that match their registered capacity and attributes. When one appears, the daemon prices it against the operator's configured strategy and places a bid.",
-          "Bids are on-chain objects too: priced offers that must satisfy the order's resource and attribute requirements to be valid. Multiple providers bidding against the same order is the mechanism that sets prices — competition per order, not per contract cycle.",
+          "Direct orders resolve immediately against the named offering — no waiting, no auction. This is the default path and how catalogue purchases work: choose the provider and plan, pay the listed price.",
+          "Orders opened for bidding work differently. Provider daemons — the off-chain agents operators run inside their datacenters, clouds, and HPC facilities — watch the chain for open orders that match their registered capacity and attributes. When one appears, the daemon prices it against the operator's configured strategy and places a bid. Bids are on-chain objects too: priced offers that must satisfy the order's resource and attribute requirements to be valid. The tenant can accept a bid manually, or let the matching engine auto-resolve to the best-ranked offer when the bidding window closes.",
         ],
       },
       {
         heading: "Stage 3 — Lease: the match becomes a contract",
         paragraphs: [
-          "The tenant accepts a winning bid and the match becomes a lease — the on-chain contract binding one tenant, one provider, and one escrow account. The VE–Waldur API passes the agreed service into the appropriate fulfilment path. That can be Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
+          "The match — a direct purchase or an accepted bid — becomes a lease: the on-chain contract binding one tenant, one provider, and one escrow account. The VE–Waldur API passes the agreed service into the appropriate fulfilment path. That can be Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
           "Off-chain communication between tenant and provider — delivering the workload manifest, fetching status — is mutually authenticated with TLS certificates anchored on-chain by x/cert.",
         ],
       },
@@ -125,7 +125,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Why this design holds up",
         paragraphs: [
-          "Each stage hands off to the next with a verifiable artifact: orders backed by escrow, bids validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts — the marketplace's guarantees are protocol properties, not platform policies.",
+          "Each stage hands off to the next with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts — the marketplace's guarantees are protocol properties, not platform policies.",
         ],
       },
     ],
@@ -138,7 +138,8 @@ export const LEARN: LearnEntry[] = [
     media: "marketplace-hardware",
     mediaCaption: "Demand meets capacity on one exchange.",
     takeaways: [
-      "Five stages, one lifecycle: order → bid → lease → usage → settlement.",
+      "Five stages, one lifecycle: order → match → lease → usage → settlement.",
+      "Matching has two modes: buy a named offering outright, or open the order to competitive bids.",
       "Every stage produces a verifiable artifact — orders backed by escrow, signed usage, rule-bound settlement.",
       "Both counterparties are VEID-verified before anything starts.",
       "Settlement carries no protocol commission; unspent escrow returns to the tenant.",
@@ -147,13 +148,13 @@ export const LEARN: LearnEntry[] = [
       {
         question: "Where do I start — Waldur or the chain?",
         answer:
-          "Either. Tenants can begin from a Waldur offering; the protocol client creates the verifiable market order, providers bid, and the lease is correlated with a Waldur order for fulfilment. Bid selection and escrow never leave the chain.",
+          "Either. Tenants can begin from a Waldur offering and buy it outright at its listed price; the protocol client creates the verifiable market order and the lease is correlated with a Waldur order for fulfilment. Open bidding is available when you want price discovery instead. Match selection and escrow never leave the chain.",
         links: [{ label: "Waldur + VirtEngine", href: "/learn/waldur-and-virtengine" }],
       },
       {
         question: "Who sets the price?",
         answer:
-          "Competing providers, per order. Bids must satisfy the order's resource and attribute requirements, and multiple bids against one order is the price-setting mechanism — competition per order, not per contract cycle.",
+          "The offering's published price for direct orders; competing providers for open bid orders. Bids must satisfy the order's resource and attribute requirements, and multiple bids against one order is the price-setting mechanism for that mode — competition per order, not per contract cycle.",
       },
       {
         question: "What happens when usage numbers are disputed?",
@@ -176,10 +177,10 @@ export const LEARN: LearnEntry[] = [
         href: "#stage-1-order-describing-what-you-need",
       },
       {
-        label: "Bid",
-        title: "Providers compete per order",
-        body: "Daemons price open orders against operator strategy; valid bids must satisfy the order's resource and attribute requirements.",
-        href: "#stage-2-bid-providers-compete",
+        label: "Match",
+        title: "Direct purchase or competitive bid",
+        body: "Named offerings match immediately at the listed price; open orders collect bids and resolve to the best-ranked offer.",
+        href: "#stage-2-match-direct-purchase-or-competitive-bid",
       },
       {
         label: "Lease",
@@ -206,10 +207,10 @@ export const LEARN: LearnEntry[] = [
     title: "How Waldur and VirtEngine work together",
     label: "Waldur + VirtEngine",
     metaDescription:
-      "A visual guide to the Waldur and VirtEngine integration: HomePort, MasterMind, offering synchronization, order routing, resource lifecycle, usage, and on-chain settlement.",
+      "Waldur and VirtEngine integration guide: HomePort, MasterMind, offering sync, order routing, resource lifecycle, usage and on-chain settlement.",
     kicker: "Control-plane integration",
     intro:
-      "Waldur gives cloud and HPC users a mature catalogue, project workspace, resource console and reporting interface. VirtEngine adds the decentralized market: provider registration, competitive bids, leases, identity, escrow and settlement. The provider daemon is the bridge that keeps chain state and the Waldur control plane correlated.",
+      "Waldur gives cloud and HPC users a mature catalogue, project workspace, resource console and reporting interface. VirtEngine adds the verifiable market: provider registration, direct purchase and optional competitive bidding, leases, identity, escrow and settlement. The provider daemon is the bridge that keeps chain state and the Waldur control plane correlated.",
     diagram: "waldur",
     diagramCaption:
       "The responsibility boundary: VirtEngine coordinates the verifiable market; the provider daemon translates and reconciles; Waldur presents and operates the service catalogue.",
@@ -266,7 +267,7 @@ export const LEARN: LearnEntry[] = [
         heading: "What a tenant experiences",
         paragraphs: [
           "A tenant can discover services through a branded HomePort catalogue and work inside familiar organization and project boundaries. Categories, plans, components, limits and custom order fields turn provider capacity into understandable products instead of raw infrastructure APIs.",
-          "The current VirtEngine code is strongest on chain-to-Waldur orchestration: the protocol client creates the verifiable market order, providers bid, and a selected lease is correlated with a Waldur order or resource for fulfilment. HomePort then becomes the day-to-day resource console for status, quotas, access details and supported actions. A deployment can expose more of the ordering path in HomePort, but that does not move bid selection or escrow out of the chain.",
+          "The current VirtEngine code is strongest on chain-to-Waldur orchestration: the protocol client creates the verifiable market order — a direct purchase of a named offering, or an open order providers can bid on — and the resulting lease is correlated with a Waldur order or resource for fulfilment. HomePort then becomes the day-to-day resource console for status, quotas, access details and supported actions. A deployment can expose more of the ordering path in HomePort, but that does not move match selection or escrow out of the chain.",
         ],
       },
       {
@@ -296,7 +297,7 @@ export const LEARN: LearnEntry[] = [
         bullets: [
           "Publish: a provider registers an offering on-chain; the sync worker creates or updates the corresponding Waldur offering and stores both identifiers.",
           "Discover: the service appears in HomePort with a category, plan, limits, measured components and provider details.",
-          "Match: a VirtEngine order receives competing bids; the tenant selects one and the lease binds provider, tenant and escrow.",
+          "Match: a direct order binds its named offering, or — for open orders — the tenant selects a bid and the lease binds provider, tenant and escrow.",
           "Provision: the provider daemon routes the matched request to Waldur, which invokes the configured cloud, HPC or custom processor.",
           "Operate: HomePort exposes resource state and actions; authenticated callbacks keep the bridge and chain allocation correlated.",
           "Measure: component usage is visible in Waldur and submitted into VirtEngine's signed usage and settlement pipeline.",
@@ -354,7 +355,7 @@ export const LEARN: LearnEntry[] = [
     takeaways: [
       "Waldur is the control plane — catalogue, projects, resource console. VirtEngine is the consensus and settlement layer.",
       "The bridge lives in the provider daemon: offering sync, event routing, and authenticated callbacks.",
-      "Bid selection and escrow never leave the chain — HomePort presents, the protocol decides.",
+      "Match selection and escrow never leave the chain — HomePort presents, the protocol decides.",
       "Waldur invoices are operational views; protocol payout follows the lease, escrow, and dispute rules.",
     ],
     faqs: [
@@ -383,10 +384,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "escrow-and-settlement-explained",
-    title: "Escrow and settlement, explained",
+    title: "Escrow & Settlement Explained: No Invoices",
     label: "Escrow & settlement",
     metaDescription:
-      "How VirtEngine replaces invoicing with protocol machinery: escrow accounts, hourly usage records, the 24-hour dispute window, anomaly detection, and automatic payout.",
+      "How VirtEngine replaces invoicing: escrow accounts, hourly usage records, 24-hour dispute window, anomaly detection and automatic payout.",
     kicker: "Payments architecture",
     intro:
       "The hardest problem in any compute marketplace is not matching — it's money. Who holds the funds? Who verifies the meter? What happens when the numbers are disputed? VirtEngine answers all three with protocol machinery: escrow, signed usage reporting, and windowed settlement.",
@@ -493,10 +494,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "tokenomics-explained",
-    title: "VirtEngine tokenomics, explained",
+    title: "VirtEngine Tokenomics: Supply & Rewards",
     label: "Tokenomics",
     metaDescription:
-      "The proposed VirtEngine economic model: identity-led issuance, conservative staking rewards, and governance-controlled parameters.",
+      "VirtEngine tokenomics 2026: identity-led issuance from zero supply, conservative staking rewards and governance-controlled parameters.",
     kicker: "Economics",
     intro:
       "VirtEngine's proposed economic model recognizes sustained, unique verified identity while retaining a conservative staking component for network security. Parameters are governance-controlled and may change before or after launch.",
@@ -599,7 +600,7 @@ export const LEARN: LearnEntry[] = [
     title: "What is VEID (Verifiable Electronic Identity)?",
     label: "What is VEID?",
     metaDescription:
-      "VEID is VirtEngine's privacy-preserving identity layer: on-device capture, active liveness, biometric hardware attestation, validator consensus scoring, and zero-knowledge proofs.",
+      "VEID explained: VirtEngine's privacy-preserving identity layer with on-device capture, liveness, hardware attestation, validator scoring and ZK proofs.",
     kicker: "Identity layer",
     intro:
       "VEID turns identity verification into a protocol function. Instead of outsourcing KYC to a company that warehouses your documents, VirtEngine's validator set scores encrypted identity evidence by consensus — and users prove facts about the result with zero-knowledge proofs, revealing nothing else.",
@@ -797,10 +798,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "provider-economics",
-    title: "Provider economics on VirtEngine",
+    title: "Provider Economics: Revenue & Pricing",
     label: "Provider economics",
     metaDescription:
-      "The revenue model for VirtEngine providers: bid pricing, escrow-backed leases, zero marketplace commission, low validator transaction fees, and how benchmarks, audits, and reviews raise realised prices.",
+      "The revenue model for VirtEngine providers: bid pricing, escrow-backed leases, 0% commission, low fees, plus how benchmarks and audits lift prices.",
     kicker: "Economics",
     intro:
       "A provider's business on VirtEngine reduces to three questions: what does capacity earn, what does the protocol charge, and what raises realized prices over time? The answers are unusually legible, because every term is chain state.",
@@ -884,10 +885,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "confidential-computing-on-virtengine",
-    title: "Confidential computing on VirtEngine",
+    title: "Confidential Computing: Enclaves & Proof",
     label: "Confidential computing",
     metaDescription:
-      "How VirtEngine makes confidential compute verifiable: enclave attestation on-chain via x/enclave, encrypted payload delivery via x/encryption, and attested placement constraints.",
+      "Confidential computing on VirtEngine: enclave attestation on-chain, encrypted payloads and attested placement. Run sensitive workloads verifiably.",
     kicker: "Security architecture",
     intro:
       "Confidential computing — running workloads inside hardware-isolated enclaves the host cannot inspect — solves a technical problem. VirtEngine solves the adjacent marketplace problem: proving to a paying counterparty that confidentiality actually holds, before secrets are delivered.",
@@ -965,10 +966,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "hpc-on-virtengine",
-    title: "HPC on VirtEngine",
+    title: "HPC on VirtEngine: SLURM Jobs On-Chain",
     label: "HPC on VirtEngine",
     metaDescription:
-      "How VirtEngine brings supercomputing into the marketplace: the x/hpc job model, SLURM/MOAB/Open OnDemand adapters, job lifecycle management, and settlement for batch work.",
+      "HPC on VirtEngine: the x/hpc job model, SLURM, MOAB and Open OnDemand adapters, job lifecycle and settlement for batch supercomputing work.",
     kicker: "Supercomputing",
     intro:
       "HPC is the marketplace's most distinctive capability: batch supercomputing capacity, offered and settled on-chain, executing through the schedulers clusters already run. No re-platforming, no container shim around a batch queue — a native job model.",
@@ -1046,10 +1047,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "governance-guide",
-    title: "Governance on VirtEngine",
+    title: "Governance: Voting, Upgrades & Control",
     label: "Governance guide",
     metaDescription:
-      "How VirtEngine is governed: bonded-stake voting, governed issuance and validator-fee parameters, roles and configuration, and Foundation stewardship.",
+      "VirtEngine governance guide: bonded-stake voting, issuance and fee parameters, roles and config, plus Foundation stewardship. Learn who controls what.",
     kicker: "Governance",
     intro:
       "VirtEngine's answer to \"who controls this?\" has two layers: on-chain governance by bonded stake for protocol decisions, and a not-for-profit foundation whose constitution forbids private capture of the project itself. This guide covers both.",
@@ -1131,10 +1132,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "mainnet-roadmap",
-    title: "The road to mainnet",
+    title: "Road to MainNet: TestNet 2027 to Launch",
     label: "Mainnet roadmap",
     metaDescription:
-      "VirtEngine's launch posture: TestNet planned for January 2027 and MainNet for March 2027, with a validation and promotion gate between them.",
+      "Road to VirtEngine MainNet: TestNet January 2027, MainNet March 2027, validation gates and promotion criteria. Track the launch posture.",
     kicker: "Network",
     intro:
       "VirtEngine's launch posture is unusual for the industry: it is a checked-in, versioned decision record, not a marketing countdown. This guide reports exactly what the repository records and shows you how to verify it yourself.",

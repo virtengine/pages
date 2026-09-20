@@ -12,9 +12,10 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
 ---
 
 <Base
-  title="Protocol — VirtEngine"
-  description="The VirtEngine Protocol architecture: a CometBFT/Cosmos SDK chain with 27 modules covering marketplace, identity, economics, and quality — plus lifecycle, tokenomics, and governance."
+  title="Protocol Architecture: Cosmos SDK Chain | VirtEngine"
+  description="VirtEngine protocol architecture: CometBFT + Cosmos SDK chain with 27 modules for marketplace, VEID identity, escrow settlement, HPC and governance."
   path="/protocol"
+  image="/media/hero-infrastructure-1440.webp"
   breadcrumbs={[
     { name: "Home", href: "/" },
     { name: "Protocol", href: "/protocol" },
@@ -85,8 +86,8 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
     lede="Every marketplace interaction follows the same five-stage state machine."
   >
     <DiagramFrame
-      label="Marketplace lifecycle flow diagram in five stages. Stage one, order: a tenant posts a deployment. Stage two, bid: providers compete. Stage three, lease: escrow is funded and the workload starts. Stage four, usage: signed usage records are submitted. Stage five, settlement: escrow is released after the dispute window, paying the agreed amount to the provider with no marketplace commission and returning any remaining escrow to the tenant."
-      caption="fig 02 — order → bid → lease → usage → settlement"
+      label="Marketplace lifecycle flow diagram in five stages. Stage one, order: a tenant posts a deployment. Stage two, match: a direct purchase at a listed price or competitive provider bids. Stage three, lease: escrow is funded and the workload starts. Stage four, usage: signed usage records are submitted. Stage five, settlement: escrow is released after the dispute window, paying the agreed amount to the provider with no marketplace commission and returning any remaining escrow to the tenant."
+      caption="fig 02 — order → match → lease → usage → settlement"
       class="reveal"
     >
       <LifecycleFlow />

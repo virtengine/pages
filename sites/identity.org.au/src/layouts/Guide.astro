@@ -15,13 +15,15 @@ interface Props {
   breadcrumbs: Breadcrumb[];
   sectionLabel: string;
   sectionNav: NavItem[];
+  /** Override the social/structured-data image with an absolute or site path. */
+  image?: string;
 }
-const { title, metaTitle, description, lede, eyebrow, breadcrumbs, sectionLabel, sectionNav } =
+const { title, metaTitle, description, lede, eyebrow, breadcrumbs, sectionLabel, sectionNav, image } =
   Astro.props;
 const current = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "");
 ---
 
-<Base title={metaTitle} description={description} breadcrumbs={breadcrumbs} ogType="article">
+<Base title={metaTitle} description={description} breadcrumbs={breadcrumbs} ogType="article" image={image}>
   <PageHeader crumbs={breadcrumbs} title={title} lede={lede} eyebrow={eyebrow} />
   <div class="container-site grid gap-10 py-10 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14 lg:py-14">
     <aside>

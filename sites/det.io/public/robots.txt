@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+# Content Signals (https://contentsignals.org): DETIO FOUNDATION LTD permits
+# all AI training, search, and input use of this site's public content.
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
 # det.io is the foundation site for the VirtEngine, DSEMA, Bosun and VEID
 # programs. Canonical pages only: the sitemap excludes error pages.
 

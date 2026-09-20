@@ -13,6 +13,7 @@ import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
 import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
 import WaldurBridge from "@components/diagrams/WaldurBridge.astro";
 import { LEARN } from "@data/learn";
+import { media } from "@data/media";
 import { SITE } from "@data/site";
 import type { LearnDiagram } from "@data/learn";
 
@@ -89,7 +90,7 @@ const guideSchema = {
   publisher: { "@id": `${SITE.url}/#organization` },
   image: {
     "@type": "ImageObject",
-    url: new URL("/og.png", SITE.url).href,
+    url: new URL(media[guide.media].src, SITE.url).href,
     width: 1200,
     height: 630,
   },
@@ -103,6 +104,7 @@ const guideSchema = {
   title={`${guide.title} — VirtEngine`}
   description={guide.metaDescription}
   path={`/learn/${guide.slug}`}
+  image={media[guide.media].src}
   breadcrumbs={crumbs}
   ogType="article"
   schema={[guideSchema]}

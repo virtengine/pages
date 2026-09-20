@@ -5,6 +5,7 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import BlogCard from "@components/BlogCard.astro";
 import MediaFigure from "@components/media/MediaFigure.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
+import { media } from "@data/media";
 import { SITE } from "@data/site";
 import { articleNode } from "@lib/schema";
 import type { MediaSlug } from "@data/media";
@@ -70,6 +71,7 @@ const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt
   title={`${article.title} | VirtEngine`}
   description={metaDescriptionSource}
   path={`/blog/${article.slug}`}
+  image={media[heroMedia].src}
   breadcrumbs={crumbs}
   ogType="article"
   schema={[articleSchema]}

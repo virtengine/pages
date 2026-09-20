@@ -1,9 +1,9 @@
 export const SITE = {
   name: "VirtEngine",
   url: "https://virtengine.com",
-  title: "VirtEngine — The open-source decentralized cloud marketplace protocol",
+  title: "Decentralized Cloud Marketplace Protocol | VirtEngine",
   description:
-    "VirtEngine is an open-source, patented decentralized cloud computing marketplace protocol connecting tenants with providers through an on-chain marketplace, built on CometBFT and the Cosmos SDK.",
+    "VirtEngine is an open-source DePIN protocol for GPU, HPC and cloud compute — marketplace, VEID identity and escrow settlement on Cosmos SDK.",
   email: "hello@virtengine.com",
   github: "https://github.com/virtengine/virtengine",
   docs: "https://docs.virtengine.com",
@@ -143,15 +143,15 @@ export const LIFECYCLE = [
   },
   {
     step: "02",
-    name: "Bid",
+    name: "Match",
     detail:
-      "Provider daemons watching the chain place competing bids against open orders on behalf of their configured providers.",
+      "Direct orders match a named offering at its listed price; open orders collect competing bids from provider daemons. Either path resolves deterministically on-chain.",
   },
   {
     step: "03",
     name: "Lease",
     detail:
-      "The tenant's winning bid becomes a lease. Escrow is funded, and the provider daemon instantiates the workload through its orchestration layer.",
+      "The match becomes a lease. Escrow is funded, and the provider daemon instantiates the workload through its orchestration layer.",
   },
   {
     step: "04",

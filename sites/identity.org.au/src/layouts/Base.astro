@@ -63,6 +63,7 @@ const {
 const pathname = (path ?? Astro.url.pathname).replace(/\.html$/, "");
 const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
 const ogImage = image ? new URL(image, SITE.url).href : DEFAULT_IMAGE;
+const ogImageType = ogImage.endsWith(".png") ? "image/png" : ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg") ? "image/jpeg" : "image/webp";
 /** Search-display shaping only: visible page copy keeps its authored text. */
 const documentTitle = fitTitle(title, { brand: "identity.org.au" });
 const searchDescription = metaDescription(description);
@@ -135,6 +136,8 @@ const graph = schemaGraph([
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content={ogImageType} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={title} />

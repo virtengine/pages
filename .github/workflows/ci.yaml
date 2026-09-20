@@ -107,6 +107,18 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^A11Y-OK' a11y.log
 
+      - name: Markdown negotiation check
+        run: |
+          set -o pipefail
+          # Sites without functions/_middleware.js (e.g. docs) skip gracefully.
+          if [ -f functions/_middleware.js ]; then
+            pnpm run check:markdown | tee markdown.log
+            # Guard against a checker that silently checks nothing.
+            grep -q '^MARKDOWN-OK' markdown.log
+          else
+            echo "no markdown middleware for this site - skipping"
+          fi
+
   selftest:
     name: checkers self-test
     runs-on: ubuntu-latest
