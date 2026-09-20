@@ -16,9 +16,13 @@ export interface AcquisitionPath {
   tab: string;
   tag: string;
   title: string;
+  /** One-sentence summary used by compact surfaces (hero figure). */
+  short: string;
   body: string;
   steps: [string, string][];
   when: string;
+  /** Where this path is explained in full. */
+  href: string;
 }
 
 export const ACQUISITION_PATHS: AcquisitionPath[] = [
@@ -28,6 +32,8 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tab: "Direct order",
     tag: "Default · listed price",
     title: "Name the listing. Buy at the published price.",
+    short: "Take a provider's published plan. The order names that listing and matches at its price.",
+    href: "/waldur",
     body: "Pick a provider's offering and plan from the catalogue and order it directly. The order names that exact listing, matches without a bidding window, and becomes a lease backed by escrow. This is the default path — and the right one for most purchases.",
     steps: [
       ["Pick", "offering + plan"],
@@ -43,6 +49,8 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tab: "Open bid",
     tag: "Opt-in · price discovery",
     title: "Post what you need. Providers compete on price.",
+    short: "Open the order to a bidding window. Providers compete; you accept one, or the engine resolves the best.",
+    href: "/solutions/cost-optimized-cloud",
     body: "Open your order to a bidding window and let eligible providers offer prices. Accept a bid yourself, or let the matching engine take the best-ranked offer when the window closes. Use it for fungible capacity where competition should set the price.",
     steps: [
       ["Post", "specs + max price + window"],
@@ -58,6 +66,8 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tab: "Selector",
     tag: "Attribute matching",
     title: "State the requirements. Get matched to eligible listings.",
+    short: "Describe category, region, specs and a price cap. The engine matches the best eligible listing.",
+    href: "/learn/how-the-marketplace-works",
     body: "Instead of naming a provider, describe the category, region, minimum specifications and maximum price. The engine filters to eligible listings and matches deterministically within your cap — request-for-quote semantics without the negotiation round-trip.",
     steps: [
       ["Describe", "category · region · specs · cap"],

@@ -2776,26 +2776,17 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .home-hero-visual {
   position: relative;
-  top: auto;
-  right: auto;
-  bottom: auto;
-  left: auto;
   width: 100%;
-  height: auto;
   min-width: 0;
   z-index: 0;
-  pointer-events: auto;
-  mask-image: none;
-  /* never let painted figure spill past its column on small engines */
-  overflow: clip;
 }
 .home-hero-copy {
   min-width: 0;
 }
-.home-hero-visual .network-field {
-  width: 100%;
-  height: 100%;
-  display: block;
+/* the figure is plain document flow; centre it in the column and cap it */
+.home-hero-visual .aqf {
+  max-width: 34rem;
+  margin-inline: auto;
 }
 .home-hero-copy {
   position: relative;
@@ -2850,82 +2841,65 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .btn-quiet--night { color: var(--color-green); }
 .btn-quiet--night:hover { color: var(--color-green-bright); }
 
-/* Hero instrument: the left copy swaps to a per-stage summary on hover of the
-   diagram or the stage rail. Zero JS — all state is :has-driven cross-fades. */
-.hero-swap {
+/* ======================================================================
+   ACQUISITION FLOW — the homepage hero figure.
+   Three ways to acquire, one settlement rail. Built from ordinary document
+   flow (grid/flex) only: no SVG coordinate system, no percentage-positioned
+   hotspot overlays, no viewport-unit geometry, no 3D/compositing layers —
+   so the figure cannot drift, clip or rasterise at the wrong scale on
+   mobile engines (the failure mode of the old SVG + overlay instrument).
+   ====================================================================== */
+.aqf {
   display: grid;
-}
-.hero-variant {
-  grid-area: 1 / 1;
+  width: 100%;
   min-width: 0;
+  color: var(--color-night-muted);
+}
+.aqf-caption {
+  display: grid;
+  gap: 0.2rem;
+  margin-bottom: 0.9rem;
+}
+.aqf-kicker {
   margin: 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(6px);
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s ease,
-    visibility 0s linear 0.28s;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-green);
 }
-.hero-variant--idle {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition-delay: 0s;
-}
-/* Hover-preview affordances are gated to hover-capable pointers. On touch,
-   a tap leaves :hover stuck on the invisible .nf-hit link forever, which
-   dimmed every other stage to 0.2 opacity and paused all animation — the
-   "broken figure" on phones. Touch devices navigate on tap instead. */
-@media (hover: hover) {
-  .home-hero-grid:has(.nf-hit:is(:hover, :focus-visible)) .hero-variant--idle,
-  .home-hero-grid:has(.hs-chip:hover) .hero-variant--idle {
-    opacity: 0;
-    visibility: hidden;
-  }
-  .home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hero-variant--order,
-  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .hero-variant--order,
-  .home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hero-variant--veid,
-  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .hero-variant--veid,
-  .home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hero-variant--attest,
-  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .hero-variant--attest,
-  .home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hero-variant--core,
-  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .hero-variant--core,
-  .home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hero-variant--bid-a,
-  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .hero-variant--bid-a,
-  .home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hero-variant--bid-win,
-  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .hero-variant--bid-win,
-  .home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hero-variant--bid-c,
-  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .hero-variant--bid-c,
-  .home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hero-variant--escrow,
-  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .hero-variant--escrow,
-  .home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hero-variant--settle,
-  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .hero-variant--settle {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition-delay: 0s;
-  }
+.aqf-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-night-faint);
 }
 
-.hero-stages {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-  padding: 0.8rem;
-  border: 1px solid var(--color-night-line);
-  border-radius: var(--radius-card);
-  background: rgba(10, 16, 12, 0.66);
-  list-style: none;
-}
-.hero-stages-note {
-  grid-column: 1 / -1;
+/* --- the order node: demand with budget behind it --- */
+.aqf-demand {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0 0.15rem 0.3rem;
+  gap: 0.7rem 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-night-line-strong);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, rgba(30, 42, 32, 0.85), rgba(16, 24, 19, 0.9));
+}
+.aqf-demand-node {
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--color-green);
+  box-shadow: 0 0 0 4px rgba(96, 204, 93, 0.16);
+}
+.aqf-demand-copy {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.aqf-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 500;
@@ -2933,326 +2907,252 @@ body.is-home .mega-header:has(.mega-group[open]) {
   text-transform: uppercase;
   color: var(--color-night-faint);
 }
-.hero-stage {
-  min-width: 0;
-  margin: 0;
-  list-style: none;
+.aqf-demand-copy strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-night-text);
 }
-.hs-chip {
+.aqf-demand-chips {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  min-height: 2.35rem;
-  padding: 0.45rem 0.6rem;
-  border: 1px solid var(--color-night-line);
-  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+.aqf-demand-chips li {
+  padding: 0.22rem 0.5rem;
+  border: 1px dashed var(--color-night-line-strong);
+  border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
   color: var(--color-night-muted);
-  transition:
-    color 0.16s ease,
-    border-color 0.16s ease,
-    background-color 0.16s ease;
-}
-.hs-num {
-  flex: none;
-  font-size: 0.6rem;
-  color: var(--color-night-faint);
-}
-@media (hover: hover) {
-  .hs-chip:hover {
-    border-color: var(--color-green);
-    color: var(--color-green);
-    background: rgba(96, 204, 93, 0.08);
-  }
-  .hs-chip:hover .hs-num { color: var(--color-green); }
-  .home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hs-chip[data-for="order"],
-  .home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hs-chip[data-for="veid"],
-  .home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hs-chip[data-for="attest"],
-  .home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hs-chip[data-for="core"],
-  .home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hs-chip[data-for="bid-a"],
-  .home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hs-chip[data-for="bid-win"],
-  .home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hs-chip[data-for="bid-c"],
-  .home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hs-chip[data-for="escrow"],
-  .home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hs-chip[data-for="settle"] {
-    border-color: var(--color-green);
-    color: var(--color-green);
-    background: rgba(96, 204, 93, 0.08);
-  }
 }
 
-.nf-stage { width: 100%; }
-.nf-canvas {
+/* --- dashed branch / convergence markers between the nodes --- */
+.aqf-branch,
+.aqf-converge {
   position: relative;
-  width: 100%;
-  max-width: 30rem;
-  max-width: calc(min(42rem, 74svh) * 640 / 748);
-  margin-inline: auto;
-  aspect-ratio: 640 / 748;
-  overflow: clip;
-}
-/* figure caption: says what the instrument is before a visitor hovers */
-.nf-fighead {
-  width: 100%;
-  max-width: calc(min(42rem, 74svh) * 640 / 700);
-  margin: 0 auto 0.65rem;
-}
-.nf-fighead p {
   margin: 0;
+  padding: 1.2rem 0 0.95rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-night-faint);
+}
+.aqf-branch::before,
+.aqf-converge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.2rem;
+  height: calc(50% - 0.5rem);
+  border-left: 1px dashed var(--color-night-line-strong);
+}
+.aqf-branch::after,
+.aqf-converge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: calc(50% - 0.5rem);
+  border-left: 1px dashed var(--color-night-line-strong);
+}
+
+/* --- the three acquisition paths: always visible, always tappable --- */
+.aqf-paths {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.aqf-paths > li { min-width: 0; }
+.aqf-path {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-night-line);
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, rgba(30, 42, 32, 0.6), rgba(16, 24, 19, 0.72));
+  color: inherit;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+.aqf-path:hover { border-color: rgba(96, 204, 93, 0.55); transform: translateY(-1px); }
+.aqf-path:active { transform: none; background: rgba(96, 204, 93, 0.07); }
+.aqf-path:focus-visible { outline: 2px solid var(--color-green-bright); outline-offset: 3px; }
+.aqf-num {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-night-line-strong);
+  border-radius: 8px;
+  background: rgba(10, 16, 12, 0.6);
   font-family: var(--font-mono);
   font-size: 0.68rem;
+  color: var(--color-green);
+}
+.aqf-path-body {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.aqf-path-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.6rem;
+}
+.aqf-path-head strong {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--color-night-text);
+}
+.aqf-path-head small {
+  padding: 0.14rem 0.44rem;
+  border: 1px solid rgba(96, 204, 93, 0.4);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-green);
+  white-space: nowrap;
+}
+.aqf-path-copy {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--color-night-muted);
+  overflow-wrap: anywhere;
+}
+.aqf-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+  color: var(--color-night-faint);
+}
+.aqf-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+/* the flow arrow is decorative CSS so the link's accessible name stays clean */
+.aqf-step + .aqf-step::before {
+  content: "→";
+  color: rgba(96, 204, 93, 0.55);
+}
+.aqf-go {
+  font-size: 1rem;
+  color: var(--color-green);
+  transition: transform 160ms ease;
+}
+.aqf-path:hover .aqf-go { transform: translateX(2px); }
+
+/* --- the shared settlement rail --- */
+.aqf-rail {
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 1.05rem 1.1rem;
+  border: 1px solid rgba(96, 204, 93, 0.32);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(96, 204, 93, 0.09), rgba(96, 204, 93, 0.02) 60%),
+    rgba(16, 24, 19, 0.92);
+}
+.aqf-rail::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%, rgba(125, 221, 122, 0.1) 50%, transparent 80%);
+  transform: translateX(-110%);
+  animation: aqf-sweep 9s ease-in-out infinite;
+}
+@keyframes aqf-sweep {
+  0% { transform: translateX(-110%); }
+  60%, 100% { transform: translateX(110%); }
+}
+.aqf-rail-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-green);
 }
-.nf-fighead span {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.82rem;
+.aqf-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.aqf-stage {
+  display: grid;
+  gap: 0.18rem;
+  align-content: start;
+  min-width: 0;
+  padding-left: 0.65rem;
+  border-left: 1px solid rgba(96, 204, 93, 0.28);
+}
+.aqf-stage-n {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
   color: var(--color-night-faint);
 }
-/* engines without aspect-ratio: let the svg size itself instead of
-   collapsing or stretching the box */
-@supports not (aspect-ratio: 1 / 1) {
-  .nf-canvas {
-    aspect-ratio: auto;
-  }
-  .nf-canvas .network-field {
-    height: auto;
-  }
+.aqf-stage strong {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-night-text);
 }
-.network-field {
-  width: 100%;
-  height: 100%;
-  display: block;
-  /* the figure must never paint outside its box (mobile engines vary) */
-  overflow: hidden;
-}
-/* offset-path travellers have no static position: hide them where the
-   feature is missing instead of piling dots at the svg origin */
-@supports not (offset-path: path("M0 0H10")) {
-  .nf-packet,
-  .nf-tick {
-    display: none;
-  }
-}
-.nf-hits { position: absolute; inset: 0; }
-.nf-hit {
-  position: absolute;
-  overflow: hidden;
-  border-radius: 12px;
-  color: transparent;
-  font-size: 0;
-  cursor: pointer;
-}
-.nf-hit-veid,
-.nf-hit-core { border-radius: 50%; }
-.nf-hit:hover,
-.nf-hit:focus-visible {
-  outline: none;
-}
-
-/* Crisp, art-aligned hover rings drawn inside the SVG. The HTML hit boxes stay
-   invisible so the highlight always matches the drawn geometry. */
-.nf-ol {
-  fill: none;
-  stroke: var(--color-green);
-  stroke-width: 1.5;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  pointer-events: none;
-}
-@media (hover: hover) {
-  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-ol[data-ol="order"],
-  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-ol[data-ol="order"],
-  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-ol[data-ol="veid"],
-  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-ol[data-ol="veid"],
-  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-ol[data-ol="attest"],
-  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-ol[data-ol="attest"],
-  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-ol[data-ol="core"],
-  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-ol[data-ol="core"],
-  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-a"],
-  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-ol[data-ol="bid-a"],
-  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-win"],
-  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-ol[data-ol="bid-win"],
-  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-c"],
-  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-ol[data-ol="bid-c"],
-  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-ol[data-ol="escrow"],
-  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-ol[data-ol="escrow"],
-  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-ol[data-ol="settle"],
-  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-ol[data-ol="settle"] {
-    opacity: 1;
-  }
-  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-g-order,
-  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-g-veid,
-  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-g-attest,
-  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-core,
-  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-g-escrow,
-  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-g-settle,
-  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-g-bids,
-  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-g-bids,
-  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-g-bids {
-    opacity: 1;
-    animation-play-state: paused;
-  }
-}
-
-.nf-readout {
-  display: grid;
-  min-height: 2.2rem;
-  width: 100%;
-  max-width: calc(min(42rem, 74svh) * 640 / 700);
-  margin: 0.65rem auto 0;
-  font-size: 0.92rem;
+.aqf-stage small {
+  font-size: 0.72rem;
   line-height: 1.4;
   color: var(--color-night-muted);
+  overflow-wrap: anywhere;
 }
-.nf-r {
-  grid-area: 1 / 1;
-  margin: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.22s ease,
-    visibility 0s linear 0.22s;
+.aqf-rail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.95rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-green);
 }
-.nf-r-idle {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
+.aqf-rail-link:hover {
+  color: var(--color-green-bright);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
-@media (hover: hover) {
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-idle { opacity: 0; visibility: hidden; }
-  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-r-order,
-  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-r-veid,
-  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-r-attest,
-  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-r-core,
-  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-r-bid-a,
-  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-r-bid-win,
-  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-r-bid-c,
-  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-r-escrow,
-  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-r-settle {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
-  }
+.aqf-rail-link:focus-visible {
+  outline: 2px solid var(--color-green-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-.nf-spine { opacity: 0.7; }
-.nf-g { opacity: 0.42; animation: nf-lit 16s linear infinite; }
-.nf-g-order { animation-delay: 0s; }
-.nf-g-veid, .nf-g-attest { animation-delay: 3.1s; }
-.nf-g-bids { animation-delay: 6.2s; }
-.nf-g-escrow { animation-delay: 9.4s; }
-.nf-g-settle { animation-delay: 12.6s; }
-@keyframes nf-lit {
-  0%, 16% { opacity: 1; }
-  22%, 100% { opacity: 0.42; }
+@media (max-width: 680px) {
+  .aqf-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aqf-path { grid-template-columns: auto minmax(0, 1fr); }
+  .aqf-go { display: none; }
+  .aqf-num { width: 1.8rem; height: 1.8rem; }
 }
-@media (hover: hover) {
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-packet,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-gpu,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-stamp,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-slot,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-fill,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-usage,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-tick,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-node--win,
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .spin-slow {
-    animation-play-state: paused;
-  }
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g { opacity: 0.2; }
-  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-g-order,
-  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-g-veid,
-  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-g-attest,
-  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-core,
-  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-g-escrow,
-  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-g-settle,
-  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-g-bids,
-  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-g-bids,
-  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-g-bids {
-    opacity: 1;
-  }
-  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-win,
-  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-c,
-  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-a,
-  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-c,
-  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-a,
-  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-win {
-    opacity: 0.28;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .aqf-rail::after { animation: none; opacity: 0; }
+  .aqf-path, .aqf-go { transition: none; }
 }
-.nf-gpu {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: nf-gpu 16s ease-in-out infinite;
-  animation-delay: calc(var(--i) * 0.08s);
-}
-@keyframes nf-gpu {
-  0%, 6% { transform: scaleY(0.22); fill: #182219; }
-  10%, 28% { transform: scaleY(1); fill: #60cc5d; }
-  40%, 100% { transform: scaleY(1); fill: #182219; }
-}
-.nf-stamp {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: nf-stamp 16s ease-in-out infinite;
-  animation-delay: 3.1s;
-}
-@keyframes nf-stamp {
-  0%, 8% { transform: scale(0.86); }
-  14%, 28% { transform: scale(1); }
-  40%, 100% { transform: scale(0.94); }
-}
-.nf-slot:nth-child(2) { animation: nf-slot 16s linear infinite; animation-delay: 3.3s; }
-.nf-slot:nth-child(3) { animation: nf-slot 16s linear infinite; animation-delay: 3.6s; }
-.nf-slot:nth-child(4) { animation: nf-slot 16s linear infinite; animation-delay: 3.9s; }
-@keyframes nf-slot {
-  0%, 10% { fill: #3a4a3c; }
-  16%, 36% { fill: #60cc5d; }
-  48%, 100% { fill: #3a4a3c; }
-}
-.nf-packet {
-  offset-path: path("M320 114 V 588");
-  offset-rotate: 0deg;
-  animation: inst-travel 16s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-}
-.nf-node--win {
-  animation: nf-win 16s ease-in-out infinite;
-}
-@keyframes nf-win {
-  0%, 36% { filter: none; }
-  42%, 70% { filter: drop-shadow(0 0 10px rgba(96, 204, 93, 0.55)); }
-  82%, 100% { filter: none; }
-}
-.nf-fill {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: nf-well 16s ease-in-out infinite;
-}
-@keyframes nf-well {
-  0%, 54% { transform: scaleY(0.06); }
-  62%, 86% { transform: scaleY(1); }
-  96%, 100% { transform: scaleY(0.06); }
-}
-.nf-usage {
-  animation: nf-use 16s linear infinite;
-}
-@keyframes nf-use {
-  0%, 72% { width: 18px; }
-  78%, 94% { width: 148px; }
-  100% { width: 18px; }
-}
-.nf-tick {
-  offset-path: path("M404 721 C 470 721, 500 640, 320 538");
-  offset-rotate: 0deg;
-  animation: inst-travel 16s ease-in-out infinite;
-  animation-delay: 12.6s;
-}
-.nf-tick-b { animation-delay: 13.2s; }
 
 .cred-rail {
   position: relative;
@@ -3799,9 +3699,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
   }
   .home-hero-visual {
     display: block;
-    height: auto;
-    min-height: 28rem;
-    opacity: 1;
+    margin-top: 0.5rem;
   }
   .cred-rail .container-site { grid-template-columns: 1fr 1fr; }
   .cred-rail a { border-bottom: 1px solid var(--color-night-line); }
@@ -3842,16 +3740,10 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nf-g, .nf-gpu, .nf-stamp, .nf-slot, .nf-packet, .nf-node--win, .nf-fill, .nf-usage, .nf-tick, .mk-bid, .arch-signal i {
+  .mk-bid, .arch-signal i {
     animation: none !important;
     opacity: 1 !important;
     filter: none !important;
-    transform: none !important;
-  }
-  .hero-variant,
-  .nf-r,
-  .nf-ol {
-    transition: none !important;
     transform: none !important;
   }
 }
@@ -4124,17 +4016,9 @@ body.is-home { background-color: #0a100c; }
 
 /* ======================================= 14. MOBILE POLISH =============== */
 
-/* Touch devices cannot hover: swap the hero instrument's hint copy and give
-   the quiet inline link rows a comfortable thumb target. */
+/* Touch devices cannot hover: give the quiet inline link rows a
+   comfortable thumb target. */
 @media (hover: none), (pointer: coarse) {
-  .nf-r-idle { opacity: 0; visibility: hidden; }
-  .nf-r-touch {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
-  }
-  .hero-stages-note span:last-child { display: none; }
-
   .home-close-links a,
   .home-trust a,
   .home-arch-link .btn-quiet,
@@ -4155,11 +4039,8 @@ body.is-home { background-color: #0a100c; }
   /* inline links in footer copy: grow the hit area without moving the line */
   .site-footer p a { padding-block: 0.6rem; }
 
-  /* The lowest hotspots in the hero diagram are the hardest to hit. */
-  .nf-hit-bid-a,
-  .nf-hit-bid-win,
-  .nf-hit-bid-c,
-  .nf-hit-settle { min-height: 2.25rem; }
+  /* Acquisition path cards keep a full-card thumb target. */
+  .aqf-path { min-height: 3.5rem; }
 }
 
 @media (max-width: 1099px) {
@@ -4178,8 +4059,8 @@ body.is-home { background-color: #0a100c; }
 }
 
 @media (max-width: 640px) {
-  /* The hero diagram needs no floor height on a phone. */
-  .home-hero-visual { min-height: 0; }
+  /* Phones: the hero figure is document flow — no floor height needed. */
+  .home-hero-visual .aqf { max-width: none; }
 }
 
 /* ======================================================================
@@ -4474,58 +4355,21 @@ section[id] { scroll-margin-top: 100px; }
 /* ======================================================================
    HOME HERO VEIL — Cerebrium-inspired cinematic depth, kept subtle.
    Layer order in .home-hero: RibbonField (drapes, z 0) → FieldBackdrop
-   (constellation dust, z 1) → copy/visual grid (z 2). Pointer tilt is
-   published as --veil-* vars by RibbonField; scroll dolly lives inside
-   the canvas so content never jumps.
+   (constellation dust, z 1) → copy/visual grid (z 2). The veil's pointer
+   tilt stays inside the veil canvas; the hero's copy and figure are plain
+   2D document flow. The old 3D child transforms (perspective +
+   preserve-3d + will-change) were removed deliberately: on real Android
+   GPUs that compositing stack rasterised the figure at the wrong scale,
+   which no amount of responsive geometry could fix.
    ====================================================================== */
 .home-hero .ribbon-veil { z-index: 0; }
 .home-hero .field-backdrop {
   z-index: 1;
   opacity: 0.55;
 }
-.home-hero-grid {
-  perspective: 1300px;
-}
-.home-hero-copy,
-.home-hero-visual {
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-/* gentle counter-drift on the copy so the scene reads as depth, not motion */
-.home-hero-copy {
-  transform:
-    translate3d(calc(var(--veil-px, 0px) * -0.45), calc(var(--veil-py, 0px) * -0.4), 0);
-}
-/* the instrument floats in front of the drapes and tips toward the cursor */
-.home-hero-visual {
-  transform:
-    rotateX(var(--veil-tiltx, 0deg))
-    rotateY(var(--veil-tilty, 0deg))
-    translate3d(var(--veil-px, 0px), var(--veil-py, 0px), 0);
-}
-.home-hero-visual .nf-canvas {
-  filter: drop-shadow(0 30px 60px rgba(4, 10, 6, 0.5));
-}
-/* hovering the instrument deepens its glow — the "things move" moment.
-   Gate to hover-capable pointers: on touch, tapping a hotspot leaves
-   :focus-within stuck and the glow would never fade. */
-.home-hero-visual .nf-canvas .network-field {
-  transition: filter 260ms ease;
-}
-@media (hover: hover) {
-  .home-hero-visual:hover .nf-canvas .network-field,
-  .home-hero-visual:focus-within .nf-canvas .network-field {
-    filter: drop-shadow(0 0 22px rgba(96, 204, 93, 0.28));
-  }
-}
 @media (max-width: 960px) {
   /* on small screens keep the drapes behind the stacked copy */
   .home-hero .field-backdrop { opacity: 0.4; }
-  .home-hero-copy, .home-hero-visual { transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .home-hero-copy, .home-hero-visual { transform: none; }
-  .home-hero-visual .nf-canvas { filter: none; }
 }
 
 /* ======================================================================
