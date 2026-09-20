@@ -10,6 +10,9 @@ export interface HowStep {
   label: string;
   title: string;
   body: string;
+  /** Optional anchor into a fuller section — the panel becomes a map, not a copy. */
+  href?: string;
+  hrefLabel?: string;
 }
 
 interface Props {
@@ -37,6 +40,11 @@ const { id, steps, class: className } = Astro.props;
           </p>
           <h3 class="mt-2 text-xl font-semibold text-ink">{s.title}</h3>
           <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate">{s.body}</p>
+          {s.href && (
+            <a class="hiw-link" href={s.href}>
+              {s.hrefLabel ?? "Read the full section"} <span aria-hidden="true">↓</span>
+            </a>
+          )}
         </section>
       </>
     ))

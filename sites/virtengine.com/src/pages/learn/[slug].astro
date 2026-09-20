@@ -4,6 +4,8 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import DiagramFrame from "@components/DiagramFrame.astro";
+import FaqList from "@components/FaqList.astro";
+import HowItWorks from "@components/HowItWorks.astro";
 import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
 import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
@@ -25,6 +27,16 @@ const crumbs = [
   { name: "Learn", href: "/learn" },
   { name: guide.label, href: `/learn/${guide.slug}` },
 ];
+
+/** Stable anchor ids for sections — journey step links are written to match. */
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/** Short pill label for the on-page nav: "Stage 1 — Order: …" → "Stage 1". */
+const navLabel = (heading: string) => heading.split("—")[0].split(":")[0].trim();
 
 const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
   lifecycle: {
@@ -104,6 +116,30 @@ const guideSchema = {
     mediaCaption={guide.mediaCaption}
   />
 
+  <Section eyebrow="At a glance" title="Key takeaways">
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {
+        guide.takeaways.map((t, i) => (
+          <li class="reveal clip-corner rounded-card border border-line bg-panel p-5">
+            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </p>
+            <p class="mt-2 text-sm leading-relaxed text-slate">{t}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <div class="container-site">
+    <nav class="route-tabs reveal" aria-label="On this page">
+      {guide.sections.map((section) => (
+        <a href={`#${slugify(section.heading)}`}>{navLabel(section.heading)}</a>
+      ))}
+      <a href="#questions">Questions</a>
+    </nav>
+  </div>
+
   {
     diagram && (
       <div class="container-site pt-14 md:pt-20">
@@ -151,10 +187,22 @@ const guideSchema = {
     )
   }
 
+  {
+    guide.journey && (
+      <Section
+        eyebrow="Overview"
+        title="Follow it step by step"
+        lede="Select each step for the short version — every panel links into the full section below."
+      >
+        <HowItWorks id={`learn-${guide.slug}`} steps={guide.journey} />
+      </Section>
+    )
+  }
+
   <article>
     {
       guide.sections.map((section) => (
-        <Section eyebrow={guide.kicker} title={section.heading}>
+        <Section eyebrow={guide.kicker} title={section.heading} id={slugify(section.heading)}>
           <div class="prose-body space-y-5 text-base">
             {section.paragraphs.map((para) => <p>{para}</p>)}
             {section.bullets && (
@@ -167,6 +215,10 @@ const guideSchema = {
       ))
     }
   </article>
+
+  <Section eyebrow="Questions" title={`Asked about ${guide.label.toLowerCase()}`} id="questions">
+    <FaqList items={guide.faqs} />
+  </Section>
 
   {
     guide.sources && (

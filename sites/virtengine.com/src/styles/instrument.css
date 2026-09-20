@@ -2652,6 +2652,11 @@
   color: var(--color-night-text);
   font-weight: 500;
 }
+/* lift footer copy above the continuous veil */
+.site-footer > .container-site {
+  position: relative;
+  z-index: 1;
+}
 /* hollow ring: the network is not live — not a “go” lamp */
 .site-footer .footer-status .lamp {
   display: inline-block;
@@ -2868,33 +2873,39 @@ body.is-home .mega-header:has(.mega-group[open]) {
   transform: none;
   transition-delay: 0s;
 }
-.home-hero-grid:has(.nf-hit:is(:hover, :focus-visible)) .hero-variant--idle,
-.home-hero-grid:has(.hs-chip:hover) .hero-variant--idle {
-  opacity: 0;
-  visibility: hidden;
-}
-.home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hero-variant--order,
-.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .hero-variant--order,
-.home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hero-variant--veid,
-.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .hero-variant--veid,
-.home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hero-variant--attest,
-.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .hero-variant--attest,
-.home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hero-variant--core,
-.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .hero-variant--core,
-.home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hero-variant--bid-a,
-.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .hero-variant--bid-a,
-.home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hero-variant--bid-win,
-.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .hero-variant--bid-win,
-.home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hero-variant--bid-c,
-.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .hero-variant--bid-c,
-.home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hero-variant--escrow,
-.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .hero-variant--escrow,
-.home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hero-variant--settle,
-.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .hero-variant--settle {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition-delay: 0s;
+/* Hover-preview affordances are gated to hover-capable pointers. On touch,
+   a tap leaves :hover stuck on the invisible .nf-hit link forever, which
+   dimmed every other stage to 0.2 opacity and paused all animation — the
+   "broken figure" on phones. Touch devices navigate on tap instead. */
+@media (hover: hover) {
+  .home-hero-grid:has(.nf-hit:is(:hover, :focus-visible)) .hero-variant--idle,
+  .home-hero-grid:has(.hs-chip:hover) .hero-variant--idle {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hero-variant--order,
+  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .hero-variant--order,
+  .home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hero-variant--veid,
+  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .hero-variant--veid,
+  .home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hero-variant--attest,
+  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .hero-variant--attest,
+  .home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hero-variant--core,
+  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .hero-variant--core,
+  .home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hero-variant--bid-a,
+  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .hero-variant--bid-a,
+  .home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hero-variant--bid-win,
+  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .hero-variant--bid-win,
+  .home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hero-variant--bid-c,
+  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .hero-variant--bid-c,
+  .home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hero-variant--escrow,
+  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .hero-variant--escrow,
+  .home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hero-variant--settle,
+  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .hero-variant--settle {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
 }
 
 .hero-stages {
@@ -2950,24 +2961,26 @@ body.is-home .mega-header:has(.mega-group[open]) {
   font-size: 0.6rem;
   color: var(--color-night-faint);
 }
-.hs-chip:hover {
-  border-color: var(--color-green);
-  color: var(--color-green);
-  background: rgba(96, 204, 93, 0.08);
-}
-.hs-chip:hover .hs-num { color: var(--color-green); }
-.home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hs-chip[data-for="order"],
-.home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hs-chip[data-for="veid"],
-.home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hs-chip[data-for="attest"],
-.home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hs-chip[data-for="core"],
-.home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hs-chip[data-for="bid-a"],
-.home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hs-chip[data-for="bid-win"],
-.home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hs-chip[data-for="bid-c"],
-.home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hs-chip[data-for="escrow"],
-.home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hs-chip[data-for="settle"] {
-  border-color: var(--color-green);
-  color: var(--color-green);
-  background: rgba(96, 204, 93, 0.08);
+@media (hover: hover) {
+  .hs-chip:hover {
+    border-color: var(--color-green);
+    color: var(--color-green);
+    background: rgba(96, 204, 93, 0.08);
+  }
+  .hs-chip:hover .hs-num { color: var(--color-green); }
+  .home-hero-grid:has(.nf-hit-order:is(:hover, :focus-visible)) .hs-chip[data-for="order"],
+  .home-hero-grid:has(.nf-hit-veid:is(:hover, :focus-visible)) .hs-chip[data-for="veid"],
+  .home-hero-grid:has(.nf-hit-attest:is(:hover, :focus-visible)) .hs-chip[data-for="attest"],
+  .home-hero-grid:has(.nf-hit-core:is(:hover, :focus-visible)) .hs-chip[data-for="core"],
+  .home-hero-grid:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .hs-chip[data-for="bid-a"],
+  .home-hero-grid:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .hs-chip[data-for="bid-win"],
+  .home-hero-grid:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .hs-chip[data-for="bid-c"],
+  .home-hero-grid:has(.nf-hit-escrow:is(:hover, :focus-visible)) .hs-chip[data-for="escrow"],
+  .home-hero-grid:has(.nf-hit-settle:is(:hover, :focus-visible)) .hs-chip[data-for="settle"] {
+    border-color: var(--color-green);
+    color: var(--color-green);
+    background: rgba(96, 204, 93, 0.08);
+  }
 }
 
 .nf-stage { width: 100%; }
@@ -3031,37 +3044,39 @@ body.is-home .mega-header:has(.mega-group[open]) {
   transition: opacity 0.18s ease;
   pointer-events: none;
 }
-.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-ol[data-ol="order"],
-.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-ol[data-ol="order"],
-.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-ol[data-ol="veid"],
-.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-ol[data-ol="veid"],
-.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-ol[data-ol="attest"],
-.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-ol[data-ol="attest"],
-.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-ol[data-ol="core"],
-.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-ol[data-ol="core"],
-.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-a"],
-.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-ol[data-ol="bid-a"],
-.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-win"],
-.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-ol[data-ol="bid-win"],
-.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-c"],
-.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-ol[data-ol="bid-c"],
-.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-ol[data-ol="escrow"],
-.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-ol[data-ol="escrow"],
-.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-ol[data-ol="settle"],
-.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-ol[data-ol="settle"] {
-  opacity: 1;
-}
-.home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-g-order,
-.home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-g-veid,
-.home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-g-attest,
-.home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-core,
-.home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-g-escrow,
-.home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-g-settle,
-.home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-g-bids,
-.home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-g-bids,
-.home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-g-bids {
-  opacity: 1;
-  animation-play-state: paused;
+@media (hover: hover) {
+  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-ol[data-ol="order"],
+  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-ol[data-ol="order"],
+  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-ol[data-ol="veid"],
+  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-ol[data-ol="veid"],
+  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-ol[data-ol="attest"],
+  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-ol[data-ol="attest"],
+  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-ol[data-ol="core"],
+  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-ol[data-ol="core"],
+  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-a"],
+  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-ol[data-ol="bid-a"],
+  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-win"],
+  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-ol[data-ol="bid-win"],
+  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-ol[data-ol="bid-c"],
+  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-ol[data-ol="bid-c"],
+  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-ol[data-ol="escrow"],
+  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-ol[data-ol="escrow"],
+  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-ol[data-ol="settle"],
+  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-ol[data-ol="settle"] {
+    opacity: 1;
+  }
+  .home-hero-grid:has(.hs-chip[data-for="order"]:hover) .nf-g-order,
+  .home-hero-grid:has(.hs-chip[data-for="veid"]:hover) .nf-g-veid,
+  .home-hero-grid:has(.hs-chip[data-for="attest"]:hover) .nf-g-attest,
+  .home-hero-grid:has(.hs-chip[data-for="core"]:hover) .nf-core,
+  .home-hero-grid:has(.hs-chip[data-for="escrow"]:hover) .nf-g-escrow,
+  .home-hero-grid:has(.hs-chip[data-for="settle"]:hover) .nf-g-settle,
+  .home-hero-grid:has(.hs-chip[data-for="bid-a"]:hover) .nf-g-bids,
+  .home-hero-grid:has(.hs-chip[data-for="bid-win"]:hover) .nf-g-bids,
+  .home-hero-grid:has(.hs-chip[data-for="bid-c"]:hover) .nf-g-bids {
+    opacity: 1;
+    animation-play-state: paused;
+  }
 }
 
 .nf-readout {
@@ -3088,19 +3103,21 @@ body.is-home .mega-header:has(.mega-group[open]) {
   visibility: visible;
   transition-delay: 0s;
 }
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-idle { opacity: 0; visibility: hidden; }
-.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-r-order,
-.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-r-veid,
-.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-r-attest,
-.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-r-core,
-.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-r-bid-a,
-.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-r-bid-win,
-.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-r-bid-c,
-.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-r-escrow,
-.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-r-settle {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s;
+@media (hover: hover) {
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-idle { opacity: 0; visibility: hidden; }
+  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-r-order,
+  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-r-veid,
+  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-r-attest,
+  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-r-core,
+  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-r-bid-a,
+  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-r-bid-win,
+  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-r-bid-c,
+  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-r-escrow,
+  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-r-settle {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
 }
 
 .nf-spine { opacity: 0.7; }
@@ -3114,37 +3131,39 @@ body.is-home .mega-header:has(.mega-group[open]) {
   0%, 16% { opacity: 1; }
   22%, 100% { opacity: 0.42; }
 }
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-packet,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-gpu,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-stamp,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-slot,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-fill,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-usage,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-tick,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-node--win,
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .spin-slow {
-  animation-play-state: paused;
-}
-.nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g { opacity: 0.2; }
-.nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-g-order,
-.nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-g-veid,
-.nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-g-attest,
-.nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-core,
-.nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-g-escrow,
-.nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-g-settle,
-.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-g-bids,
-.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-g-bids,
-.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-g-bids {
-  opacity: 1;
-}
-.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-win,
-.nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-c,
-.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-a,
-.nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-c,
-.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-a,
-.nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-win {
-  opacity: 0.28;
+@media (hover: hover) {
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-packet,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-gpu,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-stamp,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-slot,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-fill,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-usage,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-tick,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-node--win,
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .spin-slow {
+    animation-play-state: paused;
+  }
+  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-g { opacity: 0.2; }
+  .nf-stage:has(.nf-hit-order:is(:hover, :focus-visible)) .nf-g-order,
+  .nf-stage:has(.nf-hit-veid:is(:hover, :focus-visible)) .nf-g-veid,
+  .nf-stage:has(.nf-hit-attest:is(:hover, :focus-visible)) .nf-g-attest,
+  .nf-stage:has(.nf-hit-core:is(:hover, :focus-visible)) .nf-core,
+  .nf-stage:has(.nf-hit-escrow:is(:hover, :focus-visible)) .nf-g-escrow,
+  .nf-stage:has(.nf-hit-settle:is(:hover, :focus-visible)) .nf-g-settle,
+  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-g-bids,
+  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-g-bids,
+  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-g-bids {
+    opacity: 1;
+  }
+  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-win,
+  .nf-stage:has(.nf-hit-bid-a:is(:hover, :focus-visible)) .nf-bid-c,
+  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-a,
+  .nf-stage:has(.nf-hit-bid-win:is(:hover, :focus-visible)) .nf-bid-c,
+  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-a,
+  .nf-stage:has(.nf-hit-bid-c:is(:hover, :focus-visible)) .nf-bid-win {
+    opacity: 0.28;
+  }
 }
 .nf-gpu {
   transform-box: fill-box;
@@ -3216,6 +3235,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 .nf-tick-b { animation-delay: 13.2s; }
 
 .cred-rail {
+  position: relative;
   background: var(--color-night);
   border-top: 1px solid var(--color-night-line);
   border-bottom: 1px solid var(--color-night-line);
@@ -3917,6 +3937,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 
 .support-ex {
+  position: relative;
   padding-block: clamp(4rem, 7vw, 6.5rem);
   background: var(--color-paper);
   border-block: 1px solid var(--color-line);
@@ -4065,7 +4086,6 @@ body.is-home { background-color: #0a100c; }
     visibility: visible;
     transition-delay: 0s;
   }
-  .nf-stage:has(.nf-hit:is(:hover, :focus-visible)) .nf-r-touch { opacity: 0; visibility: hidden; }
   .hero-stages-note span:last-child { display: none; }
 
   .home-close-links a,
@@ -4380,10 +4400,26 @@ body.is-home { background-color: #0a100c; }
   padding: clamp(1.25rem, 3vw, 2rem);
 }
 .hiw-input:checked + .hiw-tab + .hiw-panel { display: block; animation: hiw-in 220ms ease both; }
+.hiw-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-green-deep);
+  text-decoration: underline;
+  text-decoration-color: rgba(96, 204, 93, 0.5);
+  text-underline-offset: 3px;
+}
+.hiw-link:hover { color: var(--color-green-dark); }
 @keyframes hiw-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
+/* Anchored article sections sit below the sticky header when jumped to. */
+section[id] { scroll-margin-top: 100px; }
 @media (prefers-reduced-motion: reduce) {
   .hiw-input:checked + .hiw-tab + .hiw-panel { animation: none; }
 }
@@ -4423,13 +4459,17 @@ body.is-home { background-color: #0a100c; }
 .home-hero-visual .nf-canvas {
   filter: drop-shadow(0 30px 60px rgba(4, 10, 6, 0.5));
 }
-/* hovering the instrument deepens its glow — the "things move" moment */
+/* hovering the instrument deepens its glow — the "things move" moment.
+   Gate to hover-capable pointers: on touch, tapping a hotspot leaves
+   :focus-within stuck and the glow would never fade. */
 .home-hero-visual .nf-canvas .network-field {
   transition: filter 260ms ease;
 }
-.home-hero-visual:hover .nf-canvas .network-field,
-.home-hero-visual:focus-within .nf-canvas .network-field {
-  filter: drop-shadow(0 0 22px rgba(96, 204, 93, 0.28));
+@media (hover: hover) {
+  .home-hero-visual:hover .nf-canvas .network-field,
+  .home-hero-visual:focus-within .nf-canvas .network-field {
+    filter: drop-shadow(0 0 22px rgba(96, 204, 93, 0.28));
+  }
 }
 @media (max-width: 960px) {
   /* on small screens keep the drapes behind the stacked copy */
@@ -4440,4 +4480,14 @@ body.is-home { background-color: #0a100c; }
   .home-hero-copy, .home-hero-visual { transform: none; }
   .home-hero-visual .nf-canvas { filter: none; }
 }
+
+/* ======================================================================
+   CONTINUOUS RIBBON VEIL (homepage) — one fixed field behind the page.
+   Opaque light sections cover it; transparent dark sections reveal the
+   same ribbons, so the field reads as continuous from hero to footer.
+   Scoped to body.is-home so other pages keep their own grounds.
+   ====================================================================== */
+body.is-home .home-hero { background: transparent; }
+body.is-home .band-night { background: transparent; }
+body.is-home .site-footer { background-color: transparent; }
 

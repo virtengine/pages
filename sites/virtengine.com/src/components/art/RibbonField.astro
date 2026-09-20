@@ -13,11 +13,17 @@
  */
 interface Props {
   class?: string;
+  /**
+   * Fixed full-viewport continuous veil: one field behind the whole page that
+   * dark sections reveal and light sections cover — the same ribbons continue
+   * instead of respawning per section.
+   */
+  fixed?: boolean;
 }
-const { class: className } = Astro.props;
+const { class: className, fixed = false } = Astro.props;
 ---
 
-<div class:list={["ribbon-veil", className]} aria-hidden="true">
+<div class:list={["ribbon-veil", fixed && "ribbon-veil--fixed", className]} aria-hidden="true">
   <canvas class="ribbon-veil-canvas"></canvas>
   <span class="ribbon-veil-grain"></span>
   <span class="ribbon-veil-fade"></span>
@@ -38,6 +44,35 @@ const { class: className } = Astro.props;
     width: 100%;
     height: 100%;
     opacity: 0.9;
+  }
+  /* full-bleed band variant — even veil for dark sections without a copy
+     column (kinds / source / launch / close / footer). Must sit after the
+     base rule so it wins the specificity tie. */
+  .ribbon-veil--band {
+    mask-image: radial-gradient(
+      115% 95% at 50% 38%,
+      #000 0%,
+      rgba(0, 0, 0, 0.88) 62%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
+  /* fixed continuous veil — viewport-anchored, behind page content; opaque
+     light sections cover it, transparent dark sections reveal the same field.
+     z-index 0 (not negative): sections paint above in DOM order, so every
+     light ground hides it while dark grounds let it through. */
+  .ribbon-veil--fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    mask-image: radial-gradient(
+      115% 95% at 50% 38%,
+      #000 0%,
+      rgba(0, 0, 0, 0.9) 62%,
+      rgba(0, 0, 0, 0.62) 100%
+    );
+  }
+  .ribbon-veil--fixed .ribbon-veil-fade {
+    display: none;
   }
   /* film grain — static SVG noise, cheap depth like Cerebrium's grain pass */
   .ribbon-veil-grain {
@@ -68,6 +103,11 @@ const { class: className } = Astro.props;
     if (!ctx) return;
 
     const hero = root.closest(".home-hero") || root.parentElement;
+    // fixed continuous veil: measure against the viewport, not a section rect
+    const isFixed = root.classList.contains("ribbon-veil--fixed");
+    // the single global field carries every dark section, so give it more
+    // presence — except on narrow screens, where it stays calm
+    const gain = () => (isFixed && !narrow ? 1.7 : 1);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let w = 0;
@@ -84,23 +124,45 @@ const { class: className } = Astro.props;
     let scrollP = 0;
     let scrollT = 0;
 
-    // Five drapes, weighted to the right 2/3 like the reference.
+    // Five drapes spread across the full width so the field balances the page —
+    // the leftmost stays soft and far so copy stays crisp over it.
     // depth 0..1 drives parallax + alpha so nearer bands move more.
     const ribbons = [
-      { fx: 0.36, wd: 150, lean: 0.1, amp: 26, freq: 1.6, phase: 0.4, speed: 0.16, depth: 0.3, alpha: 0.1 },
-      { fx: 0.5, wd: 118, lean: 0.12, amp: 34, freq: 1.3, phase: 1.7, speed: 0.2, depth: 0.45, alpha: 0.13 },
-      { fx: 0.63, wd: 96, lean: 0.14, amp: 42, freq: 1.1, phase: 2.9, speed: 0.24, depth: 0.62, alpha: 0.16 },
-      { fx: 0.75, wd: 74, lean: 0.16, amp: 50, freq: 0.9, phase: 4.2, speed: 0.28, depth: 0.8, alpha: 0.19 },
-      { fx: 0.87, wd: 56, lean: 0.18, amp: 58, freq: 0.8, phase: 5.5, speed: 0.32, depth: 1.0, alpha: 0.22 },
+      { fx: 0.22, wd: 175, lean: 0.1, amp: 26, freq: 1.6, phase: 0.4, speed: 0.16, depth: 0.3, alpha: 0.1 },
+      { fx: 0.37, wd: 138, lean: 0.12, amp: 34, freq: 1.3, phase: 1.7, speed: 0.2, depth: 0.45, alpha: 0.13 },
+      { fx: 0.52, wd: 112, lean: 0.14, amp: 42, freq: 1.1, phase: 2.9, speed: 0.24, depth: 0.62, alpha: 0.16 },
+      { fx: 0.67, wd: 86, lean: 0.16, amp: 50, freq: 0.9, phase: 4.2, speed: 0.28, depth: 0.8, alpha: 0.19 },
+      { fx: 0.81, wd: 66, lean: 0.18, amp: 58, freq: 0.8, phase: 5.5, speed: 0.32, depth: 1.0, alpha: 0.22 },
     ];
 
-    const dust = Array.from({ length: 64 }, () => ({
-      x: Math.random(),
-      y: Math.random(),
-      z: 0.25 + Math.random() * 0.75,
-      r: 0.5 + Math.random() * 1.4,
-      tw: Math.random() * Math.PI * 2,
-    }));
+    // Narrow screens get 3 calm drapes spread across the hero instead of 5 —
+    // five bands across ~390px merge into one washed blob. Re-evaluated
+    // live (rotation-safe).
+    const narrowMQ = window.matchMedia("(max-width: 640px)");
+    let narrow = narrowMQ.matches;
+    narrowMQ.addEventListener?.("change", (e) => {
+      narrow = e.matches;
+      buildDust();
+      if (reduce.matches) draw(t);
+    });
+    const narrowRibbons = [
+      { fx: 0.3, wd: 132, lean: 0.08, amp: 18, freq: 1.2, phase: 1.7, speed: 0.18, depth: 0.5, alpha: 0.12 },
+      { fx: 0.56, wd: 108, lean: 0.1, amp: 24, freq: 1.05, phase: 3.1, speed: 0.21, depth: 0.68, alpha: 0.15 },
+      { fx: 0.8, wd: 88, lean: 0.12, amp: 30, freq: 0.9, phase: 4.6, speed: 0.24, depth: 0.88, alpha: 0.18 },
+    ];
+    const activeRibbons = () => (narrow ? narrowRibbons : ribbons);
+
+    let dust = [];
+    function buildDust() {
+      const n = w < 640 || narrow ? 26 : 64;
+      dust = Array.from({ length: n }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        z: 0.25 + Math.random() * 0.75,
+        r: 0.5 + Math.random() * 1.4,
+        tw: Math.random() * Math.PI * 2,
+      }));
+    }
 
     function resize() {
       const rect = root.getBoundingClientRect();
@@ -110,6 +172,7 @@ const { class: className } = Astro.props;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildDust();
       if (reduce.matches) draw(0);
     }
 
@@ -125,7 +188,7 @@ const { class: className } = Astro.props;
 
     function ribbonWidth(r, y) {
       const persp = 0.82 + 0.42 * (y / h); // widen toward viewer, like the stills
-      const scale = Math.min(1.15, Math.max(0.6, w / 1100));
+      const scale = Math.min(1.15, Math.max(0.6, w / 1100)) * (narrow ? 0.62 : 1);
       return r.wd * persp * scale;
     }
 
@@ -149,7 +212,7 @@ const { class: className } = Astro.props;
       const midX = centerX(r, h * 0.5, time);
       const hwMid = ribbonWidth(r, h * 0.5) / 2;
       const g = ctx.createLinearGradient(midX - hwMid, 0, midX + hwMid, 0);
-      const a = r.alpha;
+      const a = Math.min(0.42, r.alpha * (narrow ? 0.85 : 1) * gain());
       g.addColorStop(0, `rgba(6, 12, 8, ${a})`);
       g.addColorStop(0.28, `rgba(35, 104, 63, ${a + 0.06})`);
       g.addColorStop(0.52, `rgba(96, 204, 93, ${(a * 0.55).toFixed(3)})`);
@@ -172,7 +235,7 @@ const { class: className } = Astro.props;
       ctx.stroke();
     }
 
-    function drawPulse(r, time) {
+    function drawPulse(r, time, soft = false) {
       // travelling light streak down the spine of near ribbons
       const span = 1.5;
       const p = ((time * 0.07 * r.speed * 4 + r.phase * 0.13) % span) - 0.25;
@@ -180,16 +243,17 @@ const { class: className } = Astro.props;
       const y = p * h;
       const x = centerX(r, y, time);
       const len = h * 0.16;
+      const k = soft ? 0.45 : 1;
       const g = ctx.createLinearGradient(0, y - len, 0, y + len * 0.25);
       g.addColorStop(0, "rgba(233, 240, 234, 0)");
-      g.addColorStop(0.72, "rgba(233, 240, 234, 0.75)");
-      g.addColorStop(1, "rgba(255, 255, 255, 0.95)");
+      g.addColorStop(0.72, `rgba(233, 240, 234, ${(0.75 * k).toFixed(2)})`);
+      g.addColorStop(1, `rgba(255, 255, 255, ${(0.95 * k).toFixed(2)})`);
       ctx.save();
       ctx.strokeStyle = g;
-      ctx.lineWidth = 3.2;
+      ctx.lineWidth = soft ? 2 : 3.2;
       ctx.lineCap = "round";
       ctx.shadowColor = "rgba(125, 221, 122, 0.9)";
-      ctx.shadowBlur = 16;
+      ctx.shadowBlur = soft ? 8 : 16;
       ctx.beginPath();
       const y0 = Math.max(0, y - len);
       ctx.moveTo(centerX(r, y0, time), y0);
@@ -202,15 +266,21 @@ const { class: className } = Astro.props;
       ctx.clearRect(0, 0, w, h);
       // soft emerald wash behind the drapes
       const wash = ctx.createRadialGradient(w * 0.68, h * 0.42, 0, w * 0.68, h * 0.42, Math.max(w, h) * 0.55);
-      wash.addColorStop(0, "rgba(96, 204, 93, 0.10)");
+      wash.addColorStop(0, `rgba(96, 204, 93, ${(0.1 * gain()).toFixed(3)})`);
       wash.addColorStop(1, "rgba(96, 204, 93, 0)");
       ctx.fillStyle = wash;
       ctx.fillRect(0, 0, w, h);
 
-      for (const r of ribbons) drawRibbon(r, time);
-      // pulses on the two nearest bands only — one hero streak at a time
-      drawPulse(ribbons[3], time);
-      drawPulse(ribbons[4], time + 9);
+      for (const r of activeRibbons()) drawRibbon(r, time);
+      // pulses on the nearest visible bands — one streak at a time (a single
+      // softer streak on narrow screens so it never blows out)
+      const vis = activeRibbons();
+      if (narrow) {
+        drawPulse(vis[vis.length - 1] ?? vis[0], time, true);
+      } else {
+        drawPulse(vis[vis.length - 2] ?? vis[0], time);
+        drawPulse(vis[vis.length - 1] ?? vis[0], time + 9);
+      }
 
       // dust
       for (const d of dust) {
@@ -252,6 +322,14 @@ const { class: className } = Astro.props;
     }
 
     function onPointer(e) {
+      if (isFixed) {
+        const vw = window.innerWidth || 1;
+        const vh = window.innerHeight || 1;
+        ptr.tx = Math.max(-1, Math.min(1, (e.clientX / vw) * 2 - 1));
+        ptr.ty = Math.max(-1, Math.min(1, (e.clientY / vh) * 2 - 1));
+        ptr.active = true;
+        return;
+      }
       if (!(hero instanceof HTMLElement)) return;
       const rect = hero.getBoundingClientRect();
       const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
@@ -262,6 +340,15 @@ const { class: className } = Astro.props;
     }
 
     function onScroll() {
+      if (isFixed) {
+        // page progress 0 → 1 so the single field drifts as you travel it
+        const max = Math.max(
+          1,
+          document.documentElement.scrollHeight - (window.innerHeight || 1)
+        );
+        scrollT = Math.max(0, Math.min(1, window.scrollY / max));
+        return;
+      }
       if (!(hero instanceof HTMLElement)) return;
       const rect = hero.getBoundingClientRect();
       const vh = window.innerHeight || 1;

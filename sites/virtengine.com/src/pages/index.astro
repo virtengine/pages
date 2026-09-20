@@ -96,8 +96,10 @@ const surfaces = [
   title="VirtEngine — The open infrastructure network"
   description="VirtEngine is an open-source protocol for discovering, verifying and using computing infrastructure across independent providers. Compute, identity, and settlement on one verifiable chain."
 >
+  <!-- one continuous ribbon field behind the page: dark sections reveal it,
+       opaque light sections cover it -->
+  <RibbonField fixed />
   <section class="home-hero">
-    <RibbonField />
     <FieldBackdrop />
     <div class="container-site home-hero-grid">
       <div class="home-hero-copy">
@@ -342,6 +344,8 @@ const surfaces = [
     </div>
   </section>
 
+  <PartnerStrip />
+
   <section class="home-launch band-night" id="status">
     <FieldBackdrop density={0.8} />
     <div class="container-site">
@@ -376,8 +380,6 @@ const surfaces = [
       <a class="btn-quiet btn-quiet--night" href="/network">Read the launch criteria <span aria-hidden="true">→</span></a>
     </div>
   </section>
-
-  <PartnerStrip />
 
   <section class="home-steward">
     <SurfaceWash />
