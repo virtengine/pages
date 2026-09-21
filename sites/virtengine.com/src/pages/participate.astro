@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import MediaBand from "@components/media/MediaBand.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import {SITE} from "@data/site";
 
 const paths = [
@@ -62,7 +63,7 @@ const paths = [
 ];
 ---
 <Base title="Get Involved: Learn, Build & Provide | VirtEngine" description="Get involved with VirtEngine: read free DePIN guides, contribute Apache 2.0 code and docs, or prepare as a GPU provider or validator for TestNet 2027." path="/participate" breadcrumbs={[{name:"Home",href:"/"},{name:"Get involved",href:"/participate"}]}>
-<div class="container-site"><div class="content-hero"><p class="kicker">GET INVOLVED</p><h1>Your next step into<br/>an open project.</h1><p class="intro">Start with what you want to do. Learning and open-source contributions are possible today. Network participation depends on a future approved launch.</p></div>
+<div class="container-site"><div class="content-hero content-hero--split"><div><p class="kicker">GET INVOLVED</p><h1>Your next step into<br/>an open project.</h1><p class="intro">Start with what you want to do. Learning and open-source contributions are possible today. Network participation depends on a future approved launch.</p></div><MediaFigure slug="closing-hands" ratio="4 / 3" sizes="(min-width: 1024px) 32vw, 100vw" caption="Four paths, one open project." /></div>
 <div class="pp">
   <input type="radio" name="participation-path" id="pp-all" checked class="sr-only" />
   {paths.map((p) => <input type="radio" name="participation-path" id={`pp-${p.id}`} class="sr-only" />)}

@@ -32,12 +32,25 @@ const docsPath = `${SITE.docs}/modules/${mod.slug}`;
 >
   <div class="container-site mod-ref-head">
     <Breadcrumbs crumbs={crumbs} class="mb-4" />
-    <p class="mod-group">{mod.domain}</p>
-    <h1 class="mod-title">{mod.path} — {mod.name}</h1>
-    <p class="mod-purpose">{mod.summary}</p>
-    <div class="mod-actions">
-      <CTA href={githubPath}>Source ↗</CTA>
-      <CTA href={SITE.docs} variant="secondary">Docs ↗</CTA>
+    <div class="mod-ref-grid">
+      <div>
+        <p class="mod-group">{mod.domain}</p>
+        <h1 class="mod-title">{mod.path} — {mod.name}</h1>
+        <p class="mod-purpose">{mod.summary}</p>
+        <div class="mod-actions">
+          <CTA href={githubPath}>Source ↗</CTA>
+          <CTA href={SITE.docs} variant="secondary">Docs ↗</CTA>
+        </div>
+      </div>
+      <aside class="mod-ref-card" aria-label="Module at a glance">
+        <p class="mod-ref-kicker">At a glance</p>
+        <dl>
+          <div><dt>Module</dt><dd><code>{mod.path}</code></dd></div>
+          <div><dt>Domain</dt><dd>{mod.domain}</dd></div>
+          <div><dt>Interacts with</dt><dd>{mod.interactions.length} modules</dd></div>
+        </dl>
+        <p class="mod-ref-links"><a href={githubPath}>Source ↗</a><a href={docsPath}>Docs ↗</a></p>
+      </aside>
     </div>
   </div>
 

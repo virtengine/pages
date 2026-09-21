@@ -1,7 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import { repairArchiveLinks } from "../../lib/archive-links";
-import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
 import BlogCard from "@components/BlogCard.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
 import { media } from "@data/media";
@@ -79,21 +79,19 @@ const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt
   section={article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}
 >
   <article>
-    <header class="grid-backdrop border-b border-line">
-      <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
-        <Breadcrumbs crumbs={crumbs} class="mb-8" />
-        <p class="eyebrow">{article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}</p>
-        <h1 class="mt-5 max-w-4xl font-display text-4xl md:text-6xl">{article.title}</h1>
-        <p class="mt-6 max-w-3xl text-lg leading-8 text-slate md:text-xl">{article.description}</p>
-        <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
-          <span>{article.author}</span>
-          <span aria-hidden="true">/</span>
-          <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>
-          <span aria-hidden="true">/</span>
-          <span>{article.readingTime}</span>
-        </div>
-      </div>
-    </header>
+    <PageHero
+      eyebrow={article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}
+      title={article.title}
+      lede={article.description}
+      crumbs={crumbs}
+      media={heroMedia}
+    >
+      <p class="font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+        {article.author} <span aria-hidden="true">/</span>{" "}
+        <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>{" "}
+        <span aria-hidden="true">/</span> {article.readingTime}
+      </p>
+    </PageHero>
 
     <div class="container-site py-12 md:py-20">
       <div class="mx-auto max-w-3xl">

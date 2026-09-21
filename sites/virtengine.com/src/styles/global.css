@@ -93,11 +93,22 @@ body {
   min-height: 100dvh;
   max-width: 90rem;
   border-inline: 1px solid #3d5244;
-  background-color: var(--color-paper);
+  background-color: #0a100c;
   line-height: 1.65;
   text-rendering: optimizeLegibility;
   /* abspos escapes must never widen the layout viewport on mobile */
   overflow-x: clip;
+}
+/* Site-wide ribbon ground (same functionality as the homepage): the fixed
+   veil lives behind everything; light content rides on an opaque paper
+   column while transparent dark grounds (footer, night bands) reveal the
+   same field. The homepage keeps its fully transparent main. */
+main {
+  position: relative;
+  background-color: var(--color-paper);
+}
+body.is-home main {
+  background-color: transparent;
 }
 /* Pre-clip engines: viewport-root guard (sticky-safe: html stays the
    scroller). No effect where `clip` is supported. */

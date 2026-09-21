@@ -2772,7 +2772,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: center;
   min-height: 100svh;
-  padding: 7.5rem 0 4rem;
+  padding-block: 7.5rem 4rem;
 }
 .home-hero-visual {
   position: relative;
@@ -2840,6 +2840,16 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .btn-quiet--night { color: var(--color-green); }
 .btn-quiet--night:hover { color: var(--color-green-bright); }
+/* Safeguard: night variant must never render bright green on light paper.
+   If misused outside a dark band, fall back to readable deep green. */
+.home-dev .btn-quiet--night,
+.home-buy .btn-quiet--night,
+.home-catalog .btn-quiet--night,
+.home-support .btn-quiet--night { color: var(--color-green-deep); }
+.home-dev .btn-quiet--night:hover,
+.home-buy .btn-quiet--night:hover,
+.home-catalog .btn-quiet--night:hover,
+.home-support .btn-quiet--night:hover { color: var(--color-green-dark); }
 
 /* ======================================================================
    ACQUISITION FLOW — the homepage hero figure.
@@ -3414,7 +3424,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
   max-width: 14ch;
 }
 .home-dev p { margin-top: 1rem; max-width: 34rem; font-size: 1.05rem; line-height: 1.65; }
-.home-dev code { color: var(--color-green); }
+.home-dev code { color: var(--color-green-deep); }
 .source-term {
   border: 1px solid var(--color-night-line-strong);
   border-radius: var(--radius-frame);
@@ -4339,12 +4349,16 @@ section[id] { scroll-margin-top: 100px; }
 }
 
 /* ======================================================================
-   CONTINUOUS RIBBON VEIL (homepage) — one fixed field behind the page.
-   Opaque light sections cover it; transparent dark sections reveal the
+   CONTINUOUS RIBBON VEIL (site-wide) — one fixed field behind every page.
+   Opaque light sections cover it; transparent dark grounds reveal the
    same ribbons, so the field reads as continuous from hero to footer.
-   Scoped to body.is-home so other pages keep their own grounds.
+   Edges outside the centred column show the field even on fully opaque
+   pages, and translucent cards continue it via ribbon-glass canvases.
    ====================================================================== */
 body.is-home .home-hero { background: transparent; }
 body.is-home .band-night { background: transparent; }
 body.is-home .site-footer { background-color: transparent; }
+/* Footer reveals the shared field on every page (footer sits outside the
+   opaque paper main, directly over the dark body + fixed veil). */
+.site-footer.night-scope { background-color: transparent; }
 

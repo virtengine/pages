@@ -48,9 +48,9 @@ footer .container-site>*{min-width:0}footer a,footer p{overflow-wrap:anywhere}
    / 6 source are opaque light bands. Every dark band gets explicit light text. */
 .home-philosophy .tag,
 .home-trust .tag{color:var(--color-green)}
-.home-philosophy .mk-market-col h3{color:var(--color-green)}
+.home-philosophy .mk-market-col h3{color:#fff;background:var(--color-green-deep)}
 .home-philosophy .mk-market-col--providers .mk-market-node::after,
-.home-philosophy .mk-market-col--tenants .mk-market-node::before{border-top-color:var(--color-green)}
+.home-philosophy .mk-market-col--tenants .mk-market-node::before{border-top-color:var(--color-green-deep)}
 section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5rem);border-top:0}
 .home-trust h2{margin-top:.7rem;font-family:var(--font-display);font-size:clamp(2rem,3.4vw,3.1rem);line-height:1.08;max-width:26ch}
 .home-trust-grid article{color:var(--color-slate)}
@@ -156,8 +156,31 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .learn-shot img{width:100%;height:auto;border:1px solid var(--line,#dfe7e0);border-radius:10px}
 .learn-shot figcaption{font-size:13.5px;color:#4a5a4e;margin-top:8px}
 .learn-journey-inline{margin-top:16px;border:1px solid var(--line,#dfe7e0);border-radius:10px;padding:12px 16px}
+/* Guide intro: copy left, brand photography right — every guide opens with a visual. */
+.learn-editorial{max-width:1100px}
+.learn-intro-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.5rem,4vw,3rem);align-items:start;margin-top:6px}
+.learn-intro-media{margin:0;position:sticky;top:24px}
 @media(max-width:1000px){.learn-layout{grid-template-columns:1fr}.learn-toc{position:static;border-left:none;padding-left:0;border-bottom:1px solid var(--line,#dfe7e0);padding-bottom:14px}}
+@media(max-width:860px){.learn-intro-grid{grid-template-columns:1fr}.learn-intro-media{position:static;max-width:34rem}}
 @media(prefers-reduced-motion:reduce){.learn-progress i{transform:none}}
+
+/* Split content heroes: copy left, visual right — no bare intros. */
+.content-hero--split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.5rem,4vw,3rem);align-items:center}
+.content-hero--split figure{margin:0}
+@media(max-width:860px){.content-hero--split{grid-template-columns:1fr}.content-hero--split figure{max-width:34rem}}
+
+/* Module reference intro: copy left, glance card right — no bare headers. */
+.mod-ref-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(1.5rem,4vw,3rem);align-items:start}
+.mod-ref-card{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:20px;background:var(--panel,#fff)}
+.mod-ref-kicker{font-family:var(--font-mono,monospace);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#54725d;margin:0 0 12px}
+.mod-ref-card dl{margin:0;padding:0;display:grid;gap:12px}
+.mod-ref-card dl div{border-top:1px solid var(--line,#dfe7e0);padding-top:10px}
+.mod-ref-card dt{font-family:var(--font-mono,monospace);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#54725d}
+.mod-ref-card dd{margin:4px 0 0;font-size:14px;color:#16241b}
+.mod-ref-card dd code{font-family:ui-monospace,monospace;color:#1c5632}
+.mod-ref-links{display:flex;gap:16px;margin:16px 0 0}
+.mod-ref-links a{font-size:14px;font-weight:600;color:#1c5632}
+@media(max-width:860px){.mod-ref-grid{grid-template-columns:1fr}}
 
 /* Protocol page: interactive four-layer architecture strip. */
 .arch-strip{display:grid;gap:14px;margin-top:28px}

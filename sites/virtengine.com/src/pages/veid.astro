@@ -5,6 +5,7 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import PlateFigure from "@components/art/PlateFigure.astro";
+import RibbonField from "@components/art/RibbonField.astro";
 import VeidWalletDemo from "@components/art/VeidWalletDemo.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
 import { SITE } from "@data/site";
@@ -150,6 +151,7 @@ const scenarios = [
 
   <!-- ======================= THE WALLET (dark) ======================= -->
   <section class="band-night mt-16" id="wallet">
+    <RibbonField class="ribbon-veil--band" />
     <div class="container-site py-16 md:py-20">
       <div class="folio-head folio-head--night folio-head--split">
         <div>

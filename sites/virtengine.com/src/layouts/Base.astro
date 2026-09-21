@@ -12,6 +12,7 @@ import "../styles/media.css";
 import "../styles/marketplace.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import RibbonField from "@components/art/RibbonField.astro";
 import { SITE } from "@data/site";
 import { fitTitle, metaDescription } from "@lib/meta";
 import {
@@ -155,6 +156,7 @@ const graph = schemaGraph([
     <slot name="head" />
   </head>
   <body class:list={["bg-paper text-slate", isHome && "is-home"]}>
+    <RibbonField fixed />
     <a href="#main" class="skip-link">Skip to content</a>
     <Header />
     <main id="main">

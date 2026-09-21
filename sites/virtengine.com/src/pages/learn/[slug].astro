@@ -1,5 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import DiagramFrame from "@components/DiagramFrame.astro";
 import FaqList from "@components/FaqList.astro";
 import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
@@ -131,17 +132,22 @@ const glossarySchema = guide.glossary
       <a href="/learn">Learn</a> <span aria-hidden="true">/</span>
       <span aria-current="page">{guide.label}</span>
     </nav>
-    <p class="learn-kicker">Learn · {guide.kicker}</p>
-    <h1 class="learn-title">{guide.title}</h1>
-    <p class="learn-lede">{guide.intro}</p>
-    {guide.takeaways && guide.takeaways.length > 0 && (
-      <aside class="learn-keypoints" aria-label="Key points">
-        <p>Key points</p>
-        <ul>
-          {guide.takeaways.slice(0, 4).map((t) => <li>{t}</li>)}
-        </ul>
-      </aside>
-    )}
+    <div class="learn-intro-grid">
+      <div>
+        <p class="learn-kicker">Learn · {guide.kicker}</p>
+        <h1 class="learn-title">{guide.title}</h1>
+        <p class="learn-lede">{guide.intro}</p>
+        {guide.takeaways && guide.takeaways.length > 0 && (
+          <aside class="learn-keypoints" aria-label="Key points">
+            <p>Key points</p>
+            <ul>
+              {guide.takeaways.slice(0, 4).map((t) => <li>{t}</li>)}
+            </ul>
+          </aside>
+        )}
+      </div>
+      <MediaFigure slug={guide.media} ratio="4 / 3" priority sizes="(min-width: 1024px) 32vw, 100vw" caption={guide.mediaCaption} class="learn-intro-media" />
+    </div>
   </div>
 
   {diagram && (

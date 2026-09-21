@@ -1,5 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import { NETWORK_STATUS } from "@data/status";
 ---
@@ -11,16 +12,19 @@ import { NETWORK_STATUS } from "@data/status";
   image="/media/hero-infrastructure-1440.webp"
   breadcrumbs={[{ name: "Home", href: "/" }, { name: "Launch updates", href: "/launch" }]}
 >
-  <div class="container-site">
-    <div class="content-hero">
-      <p class="kicker">LAUNCH UPDATES</p>
-      <h1>Follow the VirtEngine launch</h1>
-      <p class="intro">
-        {NETWORK_STATUS.short} {NETWORK_STATUS.testnet.label} — {NETWORK_STATUS.testnet.timing.toLowerCase()}; {NETWORK_STATUS.mainnet.label} — {NETWORK_STATUS.mainnet.timing.toLowerCase()}.
-        <a href="/network">View network status →</a>
-      </p>
-    </div>
-  </div>
+  <PageHero
+    eyebrow="Launch updates"
+    title="Follow the VirtEngine launch"
+    lede={`${NETWORK_STATUS.short} ${NETWORK_STATUS.testnet.label} — ${NETWORK_STATUS.testnet.timing.toLowerCase()}; ${NETWORK_STATUS.mainnet.label} — ${NETWORK_STATUS.mainnet.timing.toLowerCase()}.`}
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Launch updates", href: "/launch" },
+    ]}
+    media="network-earth"
+    mediaCaption="TestNet and MainNet, watched closely."
+  >
+    <a class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-green-deep hover:text-green-dark" href="/network">View network status →</a>
+  </PageHero>
 
   <Section
     eyebrow="Launch list"

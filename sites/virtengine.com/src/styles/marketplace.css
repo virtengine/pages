@@ -1550,11 +1550,17 @@ a.mk-listing:hover .mk-listing-cta {
   align-items: center;
 }
 .mk-market-col h3 {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.64rem;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-green-deep);
+  color: #ffffff;
+  background: var(--color-green-deep);
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.3rem;
+  box-shadow: 0 6px 18px -8px rgb(35 104 63 / 0.6);
 }
 .mk-market-col ul {
   display: grid;

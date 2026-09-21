@@ -37,3 +37,17 @@
 .mega-status-pill .rail-lamp{width:8px;height:8px;border-radius:50%;background:#d9a214;display:inline-block}
 @media(max-width:1099px){.mega-columns{grid-template-columns:1fr 1fr}.mega-right{margin-left:auto}.mega-foot{flex-direction:column;align-items:stretch}}
 @media(max-width:650px){.mega-columns{grid-template-columns:1fr}.mega-docs{display:none}.mega-status-pill span{max-width:140px;overflow:hidden;text-overflow:ellipsis}}
+/* Mobile polish: the header status pill pushes the hamburger menu down on
+   small screens, so remove it from the header layout entirely below the
+   hamburger breakpoint. Keep desktop behavior unchanged. */
+@media(max-width:1099px){
+  .mega-header .mega-status-pill,
+  .mega-header .status-badge{display:none!important}
+  .mega-header .mega-right{gap:0;margin-left:auto}
+}
+/* Mobile polish: restore readable horizontal padding inside menus/panels. */
+@media(max-width:650px){
+  .mega-panel .container-site{padding-inline:1rem}
+  .mega-inner,.search-inner{padding-inline:1rem}
+  .mega-header .header-row{padding-inline:1rem}
+}

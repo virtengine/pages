@@ -1,7 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
 import FieldBackdrop from "@components/art/FieldBackdrop.astro";
-import RibbonField from "@components/art/RibbonField.astro";
 import SurfaceWash from "@components/art/SurfaceWash.astro";
 import BuyPaths from "@components/BuyPaths.astro";
 import InfrastructureMarket from "@components/marketplace/InfrastructureMarket.astro";
@@ -28,7 +27,6 @@ const breadthTags = [
   description="Order cloud infrastructure and services from providers you choose — direct at published prices, open to bids, or matched by specification. Identity, escrow and settlement on-chain."
   image="/og.png"
 >
-  <RibbonField fixed />
   <!-- 1 — HERO -->
   <section class="home-hero">
     <FieldBackdrop />
@@ -167,7 +165,7 @@ const breadthTags = [
           </li>
         ))}
       </ul>
-      <a class="btn-quiet btn-quiet--night" href="/about#support">Project partners &amp; support <span aria-hidden="true">→</span></a>
+      <a class="btn-quiet" href="/about#support">Project partners &amp; support <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
