@@ -11,6 +11,16 @@ export const SITE = {
   patentId: "AU2024203136B2",
 } as const;
 
+/** Single source for Foundation identity. /about owns full history; others link. */
+export const foundationDetails = {
+  name: "DETIO FOUNDATION LTD",
+  structure: "Australian not-for-profit public company limited by guarantee",
+  acn: "ACN 699 651 771",
+  purpose:
+    "Supporting open infrastructure, privacy-preserving identity and public-interest technology.",
+  lock: "Constitutional public-benefit lock: no private commercial operation, no dividends, no private capture; assets pass to another public-benefit entity on winding-up.",
+} as const;
+
 export interface NavItem {
   label: string;
   href: string;

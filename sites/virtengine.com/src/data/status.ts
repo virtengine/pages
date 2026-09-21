@@ -1,9 +1,12 @@
 /**
- * Canonical network-status strings. Every surface that mentions launch posture
- * (footer rail, marketplace notes, new service pages) reads from here so the
- * message cannot drift between pages. Wording matches the repository posture:
- * TestNet is planned for January 2027; MainNet is planned for March 2027 after
- * TestNet exit criteria and a fresh go/no-go approval.
+ * Canonical network-status source. Every surface that mentions launch posture
+ * (header badge, footer rail, marketplace notes, network page) reads from here
+ * so the message cannot drift between pages. Wording matches the repository
+ * posture: TestNet is planned for January 2027; MainNet is planned for March
+ * 2027 after TestNet exit criteria and a fresh go/no-go approval.
+ *
+ * Ownership: /network is the canonical explanation. All other pages render
+ * at most one compact StatusBadge linking there.
  */
 export const NETWORK_STATUS = {
   /** One-line posture used on hero rails and page notes. */
@@ -23,4 +26,20 @@ export const NETWORK_STATUS = {
     timing: "Planned March 2027, subject to approval",
     detail: "Requires TestNet exit evidence, remediation, final artifacts, and a fresh go/no-go decision.",
   },
+  lastUpdated: "17 Sep 2026",
+} as const;
+
+/** Single structured status object consumed by header, footer and /network. */
+export const networkStatus = {
+  protocol: "development" as const,
+  protocolLabel: NETWORK_STATUS.posture,
+  publicTestnet: {
+    status: "planned" as const,
+    ...NETWORK_STATUS.testnet,
+  },
+  mainnet: {
+    status: "not-live" as const,
+    ...NETWORK_STATUS.mainnet,
+  },
+  lastUpdated: NETWORK_STATUS.lastUpdated,
 } as const;

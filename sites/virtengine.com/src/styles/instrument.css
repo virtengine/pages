@@ -4220,48 +4220,6 @@ body.is-home { background-color: #0a100c; }
   .lg-hit { display: none; }
 }
 
-/* ---------- MarketplaceBids cap panel ---------- */
-.mk-bids input { position: absolute; opacity: 0; pointer-events: none; }
-.mk-bid:hover { border-color: var(--color-green); }
-.mk-bids li:has(input:focus-visible) .mk-bid { outline: 2px solid var(--color-green); outline-offset: 1px; }
-.mk-read {
-  display: grid;
-  margin: 0.85rem 1.4rem 0;
-  padding: 0.6rem 0 0.75rem;
-  border-top: 1px solid var(--color-night-line);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--color-night-muted);
-}
-.mk-read > .mk-ri { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.18s ease; }
-.mk-read > .mk-ri--idle { opacity: 1; visibility: visible; }
-.mk-dot {
-  display: inline-block;
-  width: 0.42rem;
-  height: 0.42rem;
-  margin-right: 0.35rem;
-  border-radius: 50%;
-  background: var(--color-night-line-strong);
-}
-.mk-bid--win .mk-dot { background: var(--color-green); }
-.mk-board:has(.mk-bids input:checked) .mk-bid { opacity: 0.55; }
-.mk-board:has(#mk-syd-01:checked) .mk-bid[data-mk="syd-01"],
-.mk-board:has(#mk-mel-gpu:checked) .mk-bid[data-mk="mel-gpu"],
-.mk-board:has(#mk-act-hpc:checked) .mk-bid[data-mk="act-hpc"] { opacity: 1; }
-.mk-bid { transition: border-color 150ms ease, opacity 150ms ease; }
-.mk-board:has(.mk-bid[data-mk="syd-01"]:hover, #mk-syd-01:checked) .mk-ri--syd-01,
-.mk-board:has(.mk-bid[data-mk="mel-gpu"]:hover, #mk-mel-gpu:checked) .mk-ri--mel-gpu,
-.mk-board:has(.mk-bid[data-mk="act-hpc"]:hover, #mk-act-hpc:checked) .mk-ri--act-hpc {
-  opacity: 1;
-  visibility: visible;
-}
-.mk-board:has(.mk-bid:hover, .mk-bids input:checked) .mk-ri--idle { opacity: 0; visibility: hidden; }
-@supports not (selector(:has(*))) {
-  .mk-read { display: none; }
-}
-
 /* ======================================================================
    HOW IT WORKS STEPPER — zero-JS tabs for solution / module pages.
    Light-surface component: white panels, ink text, deep-green active tab

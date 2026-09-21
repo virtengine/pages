@@ -15,6 +15,9 @@ interface Props {
 
 const { id = "acq", class: className } = Astro.props;
 
+/** On the canonical guide itself, do not link to the page being read. */
+const currentPath = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+
 const bestFor: Record<string, string[]> = {
   direct: [
     "published plans",
@@ -73,7 +76,8 @@ const compareRows: [string, string, string, string][] = [
               </ul>
             </div>
             <a class="mk-acq-link" href={path.href}>
-              Read the full explanation <span aria-hidden="true">→</span>
+              {currentPath === path.href ? "This guide is the full explanation" : "Read the full explanation"}{" "}
+              <span aria-hidden="true">→</span>
             </a>
           </div>
 
@@ -82,8 +86,8 @@ const compareRows: [string, string, string, string][] = [
               <>
                 <div class="mk-fig-card">
                   <small>Catalogue · example listing</small>
-                  <strong>Harbour GPU</strong>
-                  <span>A100 GPU · published price</span>
+                  <strong>H100 GPU Node</strong>
+                  <span>1 × H100 · published price</span>
                 </div>
                 <i class="mk-fig-arrow" aria-hidden="true">↓</i>
                 <div class="mk-fig-card">
@@ -107,7 +111,7 @@ const compareRows: [string, string, string, string][] = [
               <>
                 <div class="mk-fig-card">
                   <small>Tenant requirement</small>
-                  <strong>8 GPUs · ≥ 320 GB VRAM</strong>
+                  <strong>4 GPUs · ≥ 320 GB VRAM</strong>
                   <span>region: AU · max price set</span>
                 </div>
                 <i class="mk-fig-arrow" aria-hidden="true">↓</i>
@@ -117,9 +121,9 @@ const compareRows: [string, string, string, string][] = [
                   <span>eligible providers notified by their daemons</span>
                 </div>
                 <ul class="mk-fig-bids">
-                  <li class="mk-fig-bid"><span>Provider A</span><b>$0.42 / GPU-hr</b></li>
-                  <li class="mk-fig-bid mk-fig-bid--win"><span>Provider B</span><b>$0.39 / GPU-hr · selected</b></li>
-                  <li class="mk-fig-bid"><span>Provider C</span><b>$0.51 / GPU-hr</b></li>
+                  <li class="mk-fig-bid"><span>Provider A</span><b>$1.42 / GPU-hr</b></li>
+                  <li class="mk-fig-bid mk-fig-bid--win"><span>Provider B</span><b>$1.29 / GPU-hr · selected</b></li>
+                  <li class="mk-fig-bid"><span>Provider C</span><b>$1.51 / GPU-hr</b></li>
                 </ul>
                 <div class="mk-fig-card mk-fig-card--win">
                   <small>Lease</small>

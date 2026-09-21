@@ -4,9 +4,8 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
-import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
-import ServiceComparison from "@components/marketplace/ServiceComparison.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
 
 const title = "SaaS on VirtEngine: Software as a Service";
@@ -22,19 +21,11 @@ const listings = [
   { title: "Analytics Workspace", specs: ["10 seats", "Monthly plan", "Standard support"], components: ["seat-month", "support tier"], price: "$50 / seat / month" },
   { title: "Developer Tool Seats", specs: ["Per-developer licence", "CI minutes included"], components: ["seat-month", "compute minutes"], price: "$24 / seat / month" },
   { title: "Monitoring Subscription", specs: ["Host monitoring", "Alert routing", "30-day retention"], components: ["host-month"], price: "$6 / host / month" },
-  { title: "Enterprise Support", specs: ["Named contact", "Response targets", "Quarterly review"], components: ["support tier"], price: "Fixed monthly plan" },
-  { title: "Secure Collaboration Plan", specs: ["End-to-end encrypted", "Guest access", "Audit log"], components: ["seat-month", "storage GB-month"], price: "$18 / seat / month" },
 ];
 
-const anatomy = [
-  ["Plan", "the purchasable variant — monthly, annual, prepaid or tiered"],
-  ["Seats", "how many users or accounts the plan covers"],
-  ["Billing interval", "monthly, annual or term-based"],
-  ["Included features", "what the plan entitles the tenant to use"],
-  ["Support level", "the response and assistance tier attached to the plan"],
-  ["Region / data residency", "where relevant to the software service"],
-  ["Provider", "the organisation that owns and operates the application"],
-  ["Identity and audit attributes", "verified provider state and any auditor-signed claims"],
+const moreListings = [
+  "Enterprise Support — named contact and response targets",
+  "Secure Collaboration — encrypted seats and audit log",
 ];
 ---
 
@@ -51,33 +42,35 @@ const anatomy = [
     lede="Software plans can use the same catalogue and settlement rail as infrastructure."
     crumbs={crumbs}
   >
-    <CTA href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs SaaS</CTA>
+    <CTA href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS</CTA>
     <CTA href="/marketplace/custom-listings" variant="secondary">Custom listings</CTA>
     <div class="mk-page-hero-flag">
       <span class="mk-status">{NETWORK_STATUS.posture}</span>
       <span class="mk-flag">Example listings are illustrative</span>
     </div>
     <div slot="art">
-      <FulfilmentFlow
-        nodes={[
-          "Select plan",
-          "Order",
-          "Lease / entitlement agreement",
-          "Provider fulfils access",
-          "Usage or subscription state",
-          "Settlement",
-        ]}
-        kinds={{ Order: "protocol", "Lease / entitlement agreement": "protocol", Settlement: "protocol", "Provider fulfils access": "provider" }}
-        caption="The provider operates the application. VirtEngine records the agreement and settles it."
-      />
+      <figure class="mk-viz">
+        <div class="mk-viz-flow">
+          <span>Catalogue plan</span>
+          <i aria-hidden="true">↓</i>
+          <span>Order</span>
+          <i aria-hidden="true">↓</i>
+          <span>Entitlement</span>
+        </div>
+        <div class="mk-viz-branch">
+          <div class="mk-viz-col">Seat <em>per user</em></div>
+          <div class="mk-viz-col">Licence <em>per term</em></div>
+          <div class="mk-viz-col">Support <em>per tier</em></div>
+        </div>
+        <figcaption>Entitlement rather than infrastructure: the plan grants access, and the provider's software delivers it.</figcaption>
+      </figure>
     </div>
   </PageHero>
 
   <Section
     eyebrow="Catalogue"
     title="Software plans in the same catalogue"
-    lede="Five illustrative listings showing how software presents as a product. No production software vendors are implied."
-    class="border-b border-line"
+    lede="Three illustrative listings. No production software vendors are implied. A SaaS listing sells access to software; it does not imply that VirtEngine deploys the application."
   >
     <div class="mk-cards-3">
       {
@@ -94,9 +87,19 @@ const anatomy = [
         ))
       }
     </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {moreListings.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
   </Section>
 
-  <Section eyebrow="Boundary" title="What VirtEngine does — and does not do">
+  <Section
+    eyebrow="Boundary"
+    title="What VirtEngine does — and does not do"
+    class="border-y border-line bg-paper-soft"
+  >
     <div class="mk-cards-2">
       <article class="mk-check-col mk-check-col--code">
         <h3>VirtEngine provides</h3>
@@ -123,106 +126,24 @@ const anatomy = [
     </div>
     <div class="mk-tech-note">
       <p>
-        A SaaS listing does not need to be "deployed as a virtual machine" by VirtEngine. The listing can represent
-        access to a service the provider already operates; fulfilment is an entitlement change, not a machine.
+        Fulfilment is an entitlement change, not a machine. <a href="/waldur">Waldur integration</a> explains plan,
+        order-field and lifecycle handling; <a href="/marketplace/custom-listings#fulfilment">custom fulfilment
+        patterns</a> cover provider-defined plans; and <a href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs
+        SaaS</a> draws the comparison in full.
       </p>
     </div>
   </Section>
 
-  <Section
-    eyebrow="Comparison"
-    title="What changes compared with IaaS?"
-    lede="Same rail, different thing being delivered."
-    class="border-y border-line bg-paper-soft"
-  >
-    <ServiceComparison />
-    <div class="mk-cards-2 mt-6">
-      <article class="mk-order-col">
-        <h3>IaaS meter</h3>
-        <p>CPU, RAM, GPU and storage components — metered per running resource.</p>
-      </article>
-      <article class="mk-order-col">
-        <h3>SaaS meter</h3>
-        <p>Seat, plan, subscription or a provider-defined component — often fixed, sometimes usage-based.</p>
-      </article>
-    </div>
-  </Section>
-
-  <Section eyebrow="Listing" title="Example SaaS listing anatomy">
-    <div class="mk-anatomy">
-      <MarketplaceListingCard
-        serviceType="SaaS"
-        title="Analytics Workspace"
-        provider="Example Provider"
-        region="Region-independent"
-        specs={["10 seats", "Monthly plan", "Standard support"]}
-        components={["seat-month", "storage GB-month"]}
-        priceLabel="$50 / seat / month"
-        badges={["audited"]}
-        cta="Order"
-      />
-      <ol>
-        {
-          anatomy.map(([term, definition], index) => (
-            <li class="mk-anatomy-note">
-              <span class="mk-anatomy-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{term}</strong>
-                <p>{definition}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </Section>
-
-  <Section
-    eyebrow="Fulfilment"
-    title="How software fulfilment can work"
-    class="border-y border-line bg-paper-soft"
-  >
-    <FulfilmentFlow
-      nodes={[
-        "Software plan",
-        "Order",
-        "Lease / entitlement agreement",
-        "Provider order workflow",
-        "Account · seat · licence",
-        "Subscription state",
-        "Component usage",
-        "Settlement",
-      ]}
-      kinds={{ Order: "protocol", "Lease / entitlement agreement": "protocol", "Component usage": "protocol", Settlement: "protocol", "Provider order workflow": "provider" }}
-      caption="Waldur or a custom integration can represent the plan, seats, limits, order fields and lifecycle; the protocol keeps the agreement and the money verifiable."
-    />
-    <div class="mk-rb-note">
-      <strong>Status note:</strong> the marketplace does not currently contain production SaaS vendors. This page
-      describes the product model the catalogue supports.
-    </div>
-  </Section>
-
-  <Section eyebrow="Technical detail" title="Under the hood">
-    <div class="mk-tech-note">
-      <p>
-        <strong>Verify it:</strong> <a href="/waldur">Waldur integration</a> for plan, order-field and lifecycle
-        handling, <a href="/learn/how-custom-offerings-work">how custom offerings work</a> for provider-defined
-        plans, <a href="/modules/market">x/market</a> for lease state, and{" "}
-        <a href="https://docs.waldur.com/latest/about/concepts/marketplace/" rel="noopener">Waldur's marketplace
-        model</a> for offering, plan and component concepts.
-      </p>
-    </div>
-  </Section>
+  <div class="container-site">
+    <LifecycleRail />
+  </div>
 
   <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
     <RelatedMarketplacePages
       eyebrow="Explore"
       title="Related destinations"
       links={[
-        { label: "IaaS vs PaaS vs SaaS", href: "/learn/iaas-paas-saas-on-virtengine" },
         { label: "Custom listings", href: "/marketplace/custom-listings" },
-        { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
-        { label: "Waldur integration", href: "/waldur" },
         { label: "Marketplace overview", href: "/marketplace" },
         { label: "Use infrastructure through VirtEngine", href: "/tenants" },
       ]}

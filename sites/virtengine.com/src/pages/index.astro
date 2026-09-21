@@ -1,499 +1,186 @@
 ---
 import Base from "@layouts/Base.astro";
-import AcquisitionFlow from "@components/art/AcquisitionFlow.astro";
 import FieldBackdrop from "@components/art/FieldBackdrop.astro";
 import RibbonField from "@components/art/RibbonField.astro";
-import MarketplaceBids from "@components/art/MarketplaceBids.astro";
-import VeidScopes from "@components/art/VeidScopes.astro";
-import SettlementLedger from "@components/art/SettlementLedger.astro";
-import ArchitectureLayers from "@components/art/ArchitectureLayers.astro";
-import SourceTerminal from "@components/art/SourceTerminal.astro";
-import LatticeMark from "@components/art/LatticeMark.astro";
 import SurfaceWash from "@components/art/SurfaceWash.astro";
-import MediaFigure from "@components/media/MediaFigure.astro";
-import PartnerStrip from "@components/PartnerStrip.astro";
 import BuyPaths from "@components/BuyPaths.astro";
 import InfrastructureMarket from "@components/marketplace/InfrastructureMarket.astro";
 import ServiceModelShowcase from "@components/marketplace/ServiceModelShowcase.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { CURRENT_POSTS } from "@data/blog";
-import { SITE } from "@data/site";
-import { idleCopy } from "@data/network";
+import { SITE, foundationDetails } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
+import { SERVICE_MODEL_BY_ID } from "@data/market";
+import { SUPPORT } from "@data/partners";
 
-const journalLead = CURRENT_POSTS[0];
-const journalSide = CURRENT_POSTS.slice(1, 3);
+const journalPair = CURRENT_POSTS.slice(0, 2);
+const featuredListing = SERVICE_MODEL_BY_ID.gpu.listing;
 
-const kinds = [
-  { slug: "provider-datacenter" as const, label: "GPU compute", note: "Dense accelerators offered into the market." },
-  { slug: "hpc-supercomputer" as const, label: "HPC", note: "Scheduler-backed clusters, same lease." },
-  { slug: "hero-infrastructure" as const, label: "General cloud", note: "CPU, storage, and regional capacity." },
-  { slug: "marketplace-hardware" as const, label: "Confidential workloads", note: "Attested paths over real interconnect." },
-];
-
-const surfaces = [
-  {
-    id: "cap-market",
-    n: "01",
-    label: "Marketplace",
-    title: "Capacity, discovered in the open.",
-    body: "Orders meet offerings on chain — buy a named listing at its published price, open demand to competing bids, or describe requirements and get matched. The match becomes a lease under escrow. Every step is protocol state, not a private arrangement.",
-    facts: [
-      ["x/market", "order → match → lease state machine"],
-      ["x/escrow", "funds held against active leases"],
-      ["x/take", "settlement policy set by governance"],
-    ],
-    href: "/learn/how-the-marketplace-works",
-    cta: "How the marketplace works",
-    art: "market",
-  },
-  {
-    id: "cap-veid",
-    n: "02",
-    label: "VEID",
-    title: "Identity verified by consensus.",
-    body: "Encrypted identity scopes are scored by the validator set. Participants prove facts with zero-knowledge proofs and reveal nothing more. The Foundation does not operate a central VEID verification service.",
-    facts: [
-      ["x/veid", "identity verification and scoring"],
-      ["x/veid/zk", "score-threshold and attribute proofs"],
-      ["x/mfa", "on-chain multi-factor authentication"],
-    ],
-    href: "/veid",
-    cta: "Explore the identity network",
-    art: "veid",
-  },
-  {
-    id: "cap-settle",
-    n: "03",
-    label: "Settlement",
-    title: "Metered usage, settled honestly.",
-    body: "The provider daemon meters workloads, batches signed usage records, and the settlement module converts them into billable line items after a 24-hour dispute window.",
-    facts: [
-      ["usage", "Signed records, submitted on a scheduled cadence"],
-      ["escrow", "Funds release to the provider under the governed fee policy"],
-      ["x/settlement", "usage → line items → payout"],
-    ],
-    href: "/learn/escrow-and-settlement-explained",
-    cta: "Escrow & settlement",
-    art: "settle",
-  },
-  {
-    id: "cap-infra",
-    n: "04",
-    label: "Providers",
-    title: "Independent operators. One market.",
-    body: "VirtEngine is not the cloud. It is the market independent operators join — GPU fleets, HPC centres, regional datacentres and confidential enclaves serve tenants through one lease, at prices they set themselves.",
-    facts: [
-      ["providerd", "registers, prices, provisions, meters"],
-      ["x/provider", "on-chain attributes, audits and benchmarks"],
-      ["Onboarding", "VEID identity, MFA and domain verification"],
-    ],
-    href: "/providers",
-    cta: "Provider path",
-    art: "infra",
-  },
+const breadthTags = [
+  { label: "Managed Kubernetes", tag: "PaaS" },
+  { label: "GPU Batch Queue", tag: "HPC" },
+  { label: "Analytics Workspace", tag: "SaaS" },
 ];
 ---
-
 <Base
   title="Open Cloud & Services Marketplace | VirtEngine"
   description="Order cloud infrastructure and services from providers you choose — direct at published prices, open to bids, or matched by specification. Identity, escrow and settlement on-chain."
   image="/og.png"
 >
-  <!-- one continuous ribbon field behind the page: dark sections reveal it,
-       opaque light sections cover it -->
   <RibbonField fixed />
+  <!-- 1 — HERO -->
   <section class="home-hero">
     <FieldBackdrop />
     <div class="container-site home-hero-grid">
       <div class="home-hero-copy">
-        <p class="status-pill">
-          <i class="rail-lamp" aria-hidden="true"></i>
-          Protocol in development · Public TestNet planned
-        </p>
-        <h1>{idleCopy.title}</h1>
-        <p class="home-hero-kicker">{idleCopy.tag}</p>
-        <p class="home-hero-lede">{idleCopy.lede}</p>
+        <p class="home-eyebrow">OPEN INFRASTRUCTURE MARKETPLACE</p>
+        <h1>The open market for infrastructure and services.</h1>
+        <p class="home-hero-lede">Buy from providers you choose, let providers compete for your workload, or match by requirements. Identity, escrow and settlement remain verifiable protocol state.</p>
         <div class="action-row">
-          <a class="btn-solid" href="#buy">
-            See how buying works
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path>
-            </svg>
+          <a class="btn-solid" href="/marketplace">
+            Explore the marketplace
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path></svg>
           </a>
-          <a class="btn-quiet btn-quiet--night" href="/protocol">
-            Explore the protocol
-          </a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.github}>
-            View source <span aria-hidden="true">↗</span>
-          </a>
+          <a class="btn-quiet btn-quiet--night" href="/learn/how-the-marketplace-works">How it works</a>
+          <a class="btn-quiet btn-quiet--night" href={SITE.github}>View source <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="home-hero-steward">
-          Stewarded in the public benefit by DETIO FOUNDATION LTD.
-        </p>
+        <p class="home-hero-status"><a href="/network"><i class="rail-lamp" aria-hidden="true"></i>{NETWORK_STATUS.posture}</a></p>
       </div>
-      <div class="home-hero-visual">
-        <AcquisitionFlow />
+      <div class="home-hero-visual" aria-label="Illustrative market board">
+        <p class="home-board-label">Market board · illustrative listings</p>
+        <MarketplaceListingCard
+          serviceType={featuredListing.serviceType}
+          title={featuredListing.title}
+          provider={featuredListing.provider}
+          region={featuredListing.region}
+          specs={featuredListing.specs.slice(0, 3)}
+          components={featuredListing.components}
+          priceLabel={featuredListing.priceLabel}
+          badges={featuredListing.badges}
+          compact
+          titleTag="p"
+        />
+        <ul class="home-board-tags">
+          {breadthTags.map((item) => (
+            <li>{item.label} <span>{item.tag}</span></li>
+          ))}
+        </ul>
       </div>
     </div>
   </section>
 
-  <nav class="cred-rail" aria-label="Project facts">
-    <div class="container-site">
-      <a href="/open-source"><span>Open source</span><strong>Apache 2.0</strong></a>
-      <a href="/about"><span>Stewardship</span><strong>Australian not-for-profit</strong></a>
-      <a href="/modules"><span>Protocol</span><strong>27 modules</strong></a>
-      <a href="/protocol"><span>Stack</span><strong>Cosmos SDK + CometBFT</strong></a>
-      <a href={SITE.github}><span>Source</span><strong>Public on GitHub ↗</strong></a>
-    </div>
-  </nav>
-
-  <section class="home-philosophy">
-    <SurfaceWash />
-    <div class="container-site">
-      <p class="tag">Why it exists</p>
-      <h2>Infrastructure should be an open market.</h2>
-      <p class="home-philosophy-lede">
-        Computing capacity already exists in independent facilities — GPU clusters,
-        HPC centres, regional datacentres, confidential enclaves. Today those machines
-        sit behind closed catalogues.
-      </p>
-      <div class="home-market-visual">
-        <InfrastructureMarket />
-      </div>
-      <p class="home-stages-link">
-        <a class="btn-quiet" href="/learn/how-the-marketplace-works">
-          Walk through the lifecycle <span aria-hidden="true">→</span>
-        </a>
-        <a class="btn-quiet" href="/marketplace">
-          Explore the marketplace <span aria-hidden="true">→</span>
-        </a>
-      </p>
-    </div>
-  </section>
-
+  <!-- 2 — THREE WAYS IN, ONE RAIL OUT -->
   <section class="home-buy" id="buy">
     <SurfaceWash />
     <div class="container-site">
       <div class="folio-head folio-head--split">
         <div>
           <div class="folio-coord"><span>Buying</span><span>Three paths · one rail</span></div>
-          <h2>Three ways to buy. One settlement rail.</h2>
+          <h2>Three ways in. One market rail out.</h2>
         </div>
-        <p>
-          Direct ordering is the default: pick a listing and pay its published price.
-          Open bidding and attribute matching are there when price discovery or fit
-          matters more than the vendor name. Whichever path you take, the match is
-          on-chain and the money settles from escrow.
-        </p>
+        <p>Pick a listing, open demand to bids, or describe requirements. The match becomes a lease under escrow — the rail below never changes.</p>
       </div>
-      <BuyPaths foot="Illustrated with example figures. Every path resolves to protocol state — no private order book, no off-platform deal." />
+      <BuyPaths foot="Compact overview. Full comparison lives in the buying guide." />
+      <LifecycleRail class="mt-6" />
+      <p class="home-stages-link"><a class="btn-quiet" href="/learn/three-ways-to-buy">Explore all three buying methods <span aria-hidden="true">→</span></a></p>
     </div>
   </section>
 
+  <!-- 3 — SUPPLY / DEMAND NETWORK -->
+  <section class="home-philosophy">
+    <SurfaceWash />
+    <div class="container-site">
+      <p class="tag">Why it exists</p>
+      <h2>Infrastructure should be an open market.</h2>
+      <div class="home-market-visual"><InfrastructureMarket /></div>
+    </div>
+  </section>
+
+  <!-- 4 — SERVICE ATLAS -->
   <section class="home-catalog" id="catalog">
     <SurfaceWash />
+    <div class="container-site"><ServiceModelShowcase /></div>
+  </section>
+
+  <!-- 5 — TRUST -->
+  <section class="home-trust">
     <div class="container-site">
-      <ServiceModelShowcase />
+      <p class="tag">Guarantees</p>
+      <h2>Trust built into every transaction</h2>
+      <div class="home-trust-grid">
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 4l12 5v10c0 8-5 13-12 17C13 32 8 27 8 19V9z"/><path d="M14.5 20.5l4 4 7.5-8"/></svg></span>
+          <p class="eyebrow">Identity</p><h3>VEID</h3><p>Verified counterparties without exposing unnecessary identity data.</p><a class="btn-quiet" href="/veid">Identity <span aria-hidden="true">→</span></a>
+        </article>
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 4h14l6 6v26H10z"/><path d="M24 4v6h6"/><path d="M15 18h10M15 23h10M15 28h6"/></svg></span>
+          <p class="eyebrow">Evidence</p><h3>Audit · benchmark · attestation</h3><p>Evidence travels with providers and capacity.</p><a class="btn-quiet" href="/providers">Providers <span aria-hidden="true">→</span></a>
+        </article>
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="12" width="22" height="16" rx="3"/><path d="M27 20h8M31 16l4 4-4 4"/><circle cx="11" cy="20" r="2.5"/></svg></span>
+          <p class="eyebrow">Money</p><h3>Escrow · usage · dispute · payout</h3><p>Payment follows recorded service.</p><a class="btn-quiet" href="/learn/escrow-and-settlement-explained">Settlement <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+      <p class="home-arch-strip"><strong>Want the architecture?</strong> Client → Protocol → Provider daemon → Infrastructure <a class="btn-quiet" href="/protocol">Explore the protocol <span aria-hidden="true">→</span></a></p>
     </div>
   </section>
 
-  <section class="home-explore" id="capabilities">
-    <div class="container-site">
-      <div class="folio-head folio-head--split">
-        <div>
-          <div class="folio-coord"><span>Protocol surfaces</span><span>Explore</span></div>
-          <h2>See the market work.</h2>
-        </div>
-        <p>
-          Choose a surface. Each panel is a live instrument for that part of the
-          protocol — not a feature card.
-        </p>
-      </div>
-
-      <div class="cap-ex">
-        <input type="radio" name="home-cap" id="cap-market" checked />
-        <input type="radio" name="home-cap" id="cap-veid" />
-        <input type="radio" name="home-cap" id="cap-settle" />
-        <input type="radio" name="home-cap" id="cap-infra" />
-        <div class="cap-tabs" role="tablist" aria-label="Protocol surfaces">
-          {
-            surfaces.map((s) => (
-              <label class="cap-tab" for={s.id}>
-                <small>{s.n}</small>
-                <span>{s.label}</span>
-              </label>
-            ))
-          }
-        </div>
-        <div class="cap-stage">
-          {
-            surfaces.map((s) => (
-              <article class={`cap-panel cap-panel--${s.art}`} data-for={s.id}>
-                <div>
-                  <p class="tag">{s.n} / {s.label}</p>
-                  <h3>{s.title}</h3>
-                  <p class="explorer-lede">{s.body}</p>
-                  <ul class="home-facts tri-list">
-                    {s.facts.map(([code, text]) => (
-                      <li><code>{code}</code>{text}</li>
-                    ))}
-                  </ul>
-                  <a class="btn-line" href={s.href}>
-                    {s.cta} <span aria-hidden="true">→</span>
-                  </a>
-                </div>
-                <div class="cap-art">
-                  {s.art === "market" && <MarketplaceBids />}
-                  {s.art === "veid" && <VeidScopes />}
-                  {s.art === "settle" && <SettlementLedger />}
-                  {s.art === "infra" && (
-                    <div class="cap-infra-grid">
-                      {kinds.map((k) => (
-                        <MediaFigure
-                          slug={k.slug}
-                          ratio="4 / 3"
-                          sizes="(min-width: 1024px) 14vw, 40vw"
-                          caption={k.label}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
-            ))
-          }
-        </div>
-        <p class="cap-escape">
-          <a class="btn-quiet" href="/protocol">View the full protocol <span aria-hidden="true">→</span></a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="home-kinds band-night">
-    <div class="container-site">
-      <div class="folio-head folio-head--night">
-        <div>
-          <div class="folio-coord"><span>One protocol</span><span>Many kinds of infrastructure</span></div>
-          <h2>Independent machines. One market.</h2>
-        </div>
-        <p>
-          GPU clusters, HPC schedulers, general cloud, and confidential interconnects
-          all speak the same lease. VirtEngine does not pretend to be the physical cloud.
-        </p>
-      </div>
-      <div class="infra-kinds">
-        {
-          kinds.map((k) => (
-            <div class="infra-kind">
-              <MediaFigure
-                slug={k.slug}
-                ratio="4 / 3"
-                sizes="(min-width: 1024px) 22vw, 50vw"
-                caption={`${k.label} — ${k.note}`}
-              />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="home-arch" id="architecture">
-    <SurfaceWash />
-    <div class="container-site">
-      <div class="folio-head folio-head--split">
-        <div>
-          <div class="folio-coord"><span>Architecture</span><span>Four layers</span></div>
-          <h2>A protocol, not a portal.</h2>
-        </div>
-        <p>
-          Four layers, one engineered system. Hover a band for a live preview, or
-          open it to inspect what it receives, produces, and guarantees.
-        </p>
-      </div>
-      <ArchitectureLayers />
-      <p class="home-arch-link">
-        <a class="btn-quiet" href="/modules">View all 27 modules <span aria-hidden="true">→</span></a>
-        <a class="btn-quiet" href="/protocol">Protocol architecture <span aria-hidden="true">→</span></a>
-      </p>
-    </div>
-  </section>
-
+  <!-- 6 — OPEN + STATUS + STEWARDSHIP -->
   <section class="home-dev band-night" id="source">
     <FieldBackdrop density={0.85} />
-    <div class="container-site home-dev-grid">
+    <div class="container-site home-dev-grid home-dev-grid--slim">
       <div>
         <p class="tag">Source</p>
-        <h2>Build the binary. Read the chain.</h2>
-        <p>
-          Everything — chain, modules, provider daemon, docs — ships from one
-          repository and compiles with <code>make virtengine</code>. Linux and macOS
-          on amd64/arm64; Windows amd64 is experimental. The network is not live;
-          the code is.
-        </p>
+        <h2>Built in the open</h2>
+        <ul class="home-facts tri-list">
+          <li><code>27 modules</code>Consensus-executed protocol surfaces.</li>
+          <li><code>One repository</code>Chain, client and provider tooling.</li>
+          <li><code>Apache 2.0</code>Inspect and build the implementation.</li>
+        </ul>
         <div class="action-row">
-          <a class="btn-solid" href={SITE.docs}>Read the docs</a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.github}>Browse GitHub ↗</a>
-          <a class="btn-quiet btn-quiet--night" href="/modules">Explore modules</a>
+          <a class="btn-solid" href={SITE.github}>Browse source</a>
+          <a class="btn-quiet btn-quiet--night" href={SITE.docs}>Read docs</a>
         </div>
       </div>
-      <SourceTerminal />
-    </div>
-  </section>
-
-  <PartnerStrip />
-
-  <section class="home-launch band-night" id="status">
-    <FieldBackdrop density={0.8} />
-    <div class="container-site">
-      <div class="folio-head folio-head--split folio-head--night">
-        <div>
-          <div class="folio-coord"><span>Launch posture</span><span>Last updated 17 Sep 2026</span></div>
-          <h2>Building openly. Launching carefully.</h2>
-        </div>
-        <p>
-          The network is not live. You can read the source, review the design, and
-          contribute today. Production services depend on testing and a separate
-          launch approval.
-        </p>
+      <div class="home-side-stack">
+        <p class="eyebrow">Network status</p>
+        <p><strong>Protocol development</strong> · Active<br /><strong>Public TestNet</strong> · Planned<br /><strong>Production MainNet</strong> · Not live</p>
+        <p class="text-xs">Last updated {NETWORK_STATUS.lastUpdated}</p>
+        <a class="btn-quiet btn-quiet--night" href="/network">View network status <span aria-hidden="true">→</span></a>
+        <hr />
+        <p class="text-sm">VirtEngine is stewarded by {foundationDetails.name}, {foundationDetails.structure} ({foundationDetails.acn}), supporting open infrastructure, privacy-preserving identity and public-interest technology.</p>
+        <p><a class="btn-quiet btn-quiet--night" href="/about">About the Foundation</a> <a class="btn-quiet btn-quiet--night" href="https://det.io">DET.io ↗</a></p>
       </div>
-      <ol class="launch-track">
-        <li class="launch-step launch-step--now">
-          <small>Now</small>
-          <h3>Research &amp; development</h3>
-          <p>Open code, documentation, and release preparation.</p>
-        </li>
-        <li class="launch-step">
-          <small>Planned · January 2027</small>
-          <h3>Public TestNet</h3>
-          <p>Validation with operators. Test state may reset.</p>
-        </li>
-        <li class="launch-step">
-          <small>Planned · March 2027</small>
-          <h3>MainNet, subject to approval</h3>
-          <p>Only after evidence, remediation, and a go/no-go decision.</p>
-        </li>
-      </ol>
-      <a class="btn-quiet btn-quiet--night" href="/network">Read the launch criteria <span aria-hidden="true">→</span></a>
     </div>
-  </section>
-
-  <section class="home-steward">
-    <SurfaceWash />
-    <div class="container-site">
-      <p class="tag">Public-benefit stewardship</p>
-      <h2>Technology held for public benefit.</h2>
-      <div class="home-steward-copy">
-        <p>
-          DETIO FOUNDATION LTD is an Australian not-for-profit public company limited
-          by guarantee (ACN 699 651 771). It stewards the protocol software, reference
-          implementations, and token policy under a constitutional public-benefit lock.
-          The Foundation does not operate the decentralised network, and it does not
-          operate a central VEID verification service.
-        </p>
-        <p>
-          We publish software, specifications, and learning resources so students,
-          researchers, developers, and operators can inspect the design. The intended
-          public benefit is greater access to secure digital infrastructure — and the
-          ability to examine how it works.
-        </p>
-      </div>
-      <ul class="home-trust">
-        <li><a href="/about">Foundation <span aria-hidden="true">↗</span></a></li>
-        <li><a href="/open-source">Open-source licensing &amp; IP <span aria-hidden="true">↗</span></a></li>
-        <li><a href="/about">Australian company details <span aria-hidden="true">↗</span></a></li>
-        <li><a href="/about">Project history <span aria-hidden="true">↗</span></a></li>
+    <div class="container-site home-support">
+      <p class="eyebrow">Supported by and working with</p>
+      <ul>
+        {SUPPORT.map((org) => (
+          <li><img src={org.logo} alt={org.logoAlt} width="120" height="32" loading="lazy" decoding="async" /></li>
+        ))}
       </ul>
+      <a class="btn-quiet btn-quiet--night" href="/about#support">Project partners &amp; support <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
+  <!-- 7 — JOURNAL (slim, max 2) -->
   <section class="home-journal">
     <SurfaceWash />
     <div class="container-site">
       <div class="folio-head folio-head--journal">
-        <div class="folio-coord">
-          <span>Journal — field notes</span>
-          <a class="journal-readall" href="/blog">Read all notes <span aria-hidden="true">→</span></a>
-        </div>
+        <div class="folio-coord"><span>Journal</span><a class="journal-readall" href="/blog">All notes <span aria-hidden="true">→</span></a></div>
         <h2>The thinking behind the protocol.</h2>
       </div>
-      <div class="journal-editorial">
-        {
-          journalLead && (
-            <article class="journal-lead">
-              <a class="journal-lead-media" href={`/blog/${journalLead.slug}`}>
-                <MediaFigure
-                  slug="settlement-ledger"
-                  ratio="16 / 9"
-                  sizes="(min-width: 1024px) 52vw, 100vw"
-                />
-              </a>
-              <div class="journal-lead-copy">
-                <p class="journal-meta">
-                  {new Date(journalLead.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
-                  · {journalLead.readingTime}
-                </p>
-                <h3>
-                  <a href={`/blog/${journalLead.slug}`}>
-                    {journalLead.title} <span aria-hidden="true">↗</span>
-                  </a>
-                </h3>
-                <p>{journalLead.description}</p>
-              </div>
-            </article>
-          )
-        }
-        <div class="journal-side">
-          {
-            journalSide.map((post) => (
-              <article>
-                <p class="journal-meta">
-                  {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}
-                  · {post.readingTime}
-                </p>
-                <h3>
-                  <a href={`/blog/${post.slug}`}>
-                    {post.title} <span aria-hidden="true">↗</span>
-                  </a>
-                </h3>
-                <p>{post.description}</p>
-              </article>
-            ))
-          }
-          <a class="journal-more" href="/blog">All field notes <span aria-hidden="true">→</span></a>
-        </div>
+      <div class="journal-slim">
+        {journalPair.map((post) => (
+          <article>
+            <p class="journal-meta">{new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })} · {post.readingTime}</p>
+            <h3><a href={`/blog/${post.slug}`}>{post.title} <span aria-hidden="true">→</span></a></h3>
+            <p>{post.description}</p>
+          </article>
+        ))}
       </div>
-      <p class="mt-8 text-sm text-slate">
-        Earlier work is preserved in the{" "}
-        <a class="underline decoration-green/50 underline-offset-4 hover:decoration-green-deep" href="/blog/archive">
-          2015–2016 historical archive
-        </a>, separately from current technical guidance.
-      </p>
-    </div>
-  </section>
-
-  <section class="home-close">
-    <img
-      class="home-close-bg"
-      src="/media/hero-infrastructure-1920.webp"
-      srcset="/media/hero-infrastructure-960.webp 960w, /media/hero-infrastructure-1440.webp 1440w, /media/hero-infrastructure-1920.webp 1920w"
-      sizes="100vw"
-      alt=""
-      aria-hidden="true"
-      loading="lazy"
-      decoding="async"
-    />
-    <span class="home-close-scrim" aria-hidden="true"></span>
-    <div class="container-site home-close-inner">
-      <span class="home-close-lattice" aria-hidden="true">
-        <LatticeMark class="text-green" />
-      </span>
-      <h2>Open infrastructure starts with participation.</h2>
-      <ul class="home-close-links">
-        <li><a href="/learn/how-the-marketplace-works">Understand the technology</a></li>
-        <li><a href={SITE.github}>Contribute on GitHub</a></li>
-        <li><a href="/contact">Talk to the Foundation</a></li>
-      </ul>
     </div>
   </section>
 </Base>

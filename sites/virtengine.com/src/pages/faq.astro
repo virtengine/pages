@@ -14,6 +14,14 @@ const crumbs = [
 
 const canonical = new URL("/faq", SITE.url).href;
 const faqSchema = faqPageNode(canonical, FAQ);
+
+/** Stable deep anchors so other pages can link straight to /faq#providers etc. */
+const catId = (category: string) =>
+  category
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 ---
 
 <Base
@@ -35,7 +43,7 @@ const faqSchema = faqPageNode(canonical, FAQ);
 
   {
     FAQ_CATEGORIES.map((cat) => (
-      <Section eyebrow="FAQ" title={cat}>
+      <Section eyebrow="FAQ" title={cat} id={catId(cat)}>
         <div class="max-w-3xl space-y-4">
           {FAQ.filter((f) => f.category === cat).map((f) => (
             <details class="reveal clip-corner group rounded-card border border-line bg-panel">

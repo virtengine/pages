@@ -1209,300 +1209,6 @@ a.mk-listing:hover .mk-listing-cta {
 }
 
 /* ---------------------------------------------------------------- *
- * Waldur hero visual (HomePort ↔ daemon ↔ chain)
- * ---------------------------------------------------------------- */
-
-.mk-whv {
-  display: grid;
-  gap: 0.7rem;
-  padding: clamp(0.9rem, 2.5vw, 1.4rem);
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-frame);
-  background: linear-gradient(150deg, #ffffff 0%, var(--color-green-wash) 100%);
-}
-.mk-whv-flag {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-faint);
-}
-.mk-whv-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 0.6rem;
-  align-items: stretch;
-}
-.mk-whv-window {
-  grid-column: 1 / -1;
-}
-.mk-whv-window {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-card);
-  background: var(--color-panel);
-}
-.mk-whv-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.7rem;
-  border-bottom: 1px solid var(--color-line);
-  background: var(--color-paper-soft);
-}
-.mk-whv-bar i {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--color-line-strong);
-}
-.mk-whv-bar span {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--color-faint);
-}
-.mk-whv-window-body {
-  display: grid;
-  gap: 0.55rem;
-  padding: 0.75rem;
-}
-.mk-whv-search {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-card);
-  background: var(--color-paper-soft);
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  color: var(--color-faint);
-}
-.mk-whv-selects {
-  display: flex;
-  gap: 0.35rem;
-}
-.mk-whv-selects li {
-  padding: 0.22rem 0.5rem;
-  border: 1px solid var(--color-line);
-  border-radius: 999px;
-  background: var(--color-panel);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--color-slate);
-}
-.mk-whv-cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-}
-.mk-whv-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.6rem 0.7rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-card);
-  background: var(--color-panel);
-}
-.mk-whv-card:last-child {
-  grid-column: 1 / -1;
-}
-.mk-whv-card small {
-  font-family: var(--font-mono);
-  font-size: 0.54rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-green-deep);
-}
-.mk-whv-card strong {
-  font-size: 0.78rem;
-  line-height: 1.25;
-  color: var(--color-ink);
-}
-.mk-whv-card span {
-  font-size: 0.66rem;
-  color: var(--color-muted);
-}
-.mk-whv-card em {
-  font-style: normal;
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  color: var(--color-slate);
-}
-.mk-whv-badge {
-  align-self: flex-start;
-  margin-top: 0.2rem;
-  padding: 0.12rem 0.4rem;
-  border: 1px solid var(--color-green-soft);
-  border-radius: 999px;
-  background: var(--color-green-wash);
-  font-family: var(--font-mono);
-  font-size: 0.54rem;
-  color: var(--color-green-deep);
-}
-
-.mk-whv-bridge {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.75rem 0.7rem;
-  border: 1px solid var(--color-night-line-strong);
-  border-radius: var(--radius-card);
-  background: var(--color-night-panel);
-}
-.mk-whv-bridge .mk-whv-panel-title {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-green-bright);
-}
-.mk-whv-bridge ul {
-  display: grid;
-  gap: 0.3rem;
-}
-.mk-whv-bridge li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.4rem;
-  font-size: 0.68rem;
-  color: var(--color-night-muted);
-}
-.mk-whv-bridge li b {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  color: var(--color-green-bright);
-}
-.mk-whv-bridge-foot {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--color-night-line);
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-night-faint);
-}
-.mk-whv-packets {
-  position: relative;
-  height: 0.7rem;
-  overflow: hidden;
-}
-.mk-whv-packets i {
-  position: absolute;
-  top: 50%;
-  width: 0.32rem;
-  height: 0.32rem;
-  margin-top: -0.16rem;
-  border-radius: 50%;
-  background: var(--color-green);
-  animation: mk-packet 3.2s linear infinite;
-}
-.mk-whv-packets i:nth-child(2) { animation-delay: 1.05s; }
-.mk-whv-packets i:nth-child(3) { animation-delay: 2.1s; }
-@keyframes mk-packet {
-  0% { left: -6%; opacity: 0; }
-  12% { opacity: 1; }
-  88% { opacity: 1; }
-  100% { left: 104%; opacity: 0; }
-}
-
-.mk-whv-chain {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.75rem 0.7rem;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-card);
-  background: var(--color-panel);
-}
-.mk-whv-chain .mk-whv-panel-title {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-green-deep);
-}
-.mk-whv-modules {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-.mk-whv-modules li {
-  padding: 0.2rem 0.45rem;
-  border: 1px solid var(--color-line);
-  border-radius: 0.25rem;
-  background: var(--color-paper-soft);
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--color-ink);
-}
-.mk-whv-seq {
-  display: grid;
-  gap: 0.15rem;
-  margin-top: 0.15rem;
-}
-.mk-whv-seq li {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--color-slate);
-}
-.mk-whv-seq li::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.45rem;
-  background: var(--color-green);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  flex: none;
-}
-.mk-whv-seq li + li {
-  border-top: 1px dashed var(--color-line-strong);
-  padding-top: 0.3rem;
-}
-.mk-whv-caption {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  color: var(--color-green-deep);
-}
-
-@media (max-width: 480px) {
-  .mk-whv-row {
-    grid-template-columns: 1fr;
-  }
-  .mk-whv-cards {
-    grid-template-columns: 1fr;
-  }
-  .mk-whv-card:last-child {
-    grid-column: auto;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .mk-whv-packets i {
-    animation: none;
-    left: 45%;
-    opacity: 0.6;
-  }
-  .mk-whv-packets i:nth-child(2),
-  .mk-whv-packets i:nth-child(3) {
-    display: none;
-  }
-}
-
-/* ---------------------------------------------------------------- *
  * Listing anatomy
  * ---------------------------------------------------------------- */
 
@@ -3681,3 +3387,71 @@ a.mk-listing:hover .mk-listing-cta {
     display: none;
   }
 }
+
+/* Marketplace hub consolidation: mixed catalogue, compact rails. */
+.mk-mixed-catalogue{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+.mk-mixed-catalogue li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:14px;background:var(--panel,#fff);display:grid;gap:10px}
+.mk-mixed-link{font-size:13.5px;font-weight:600;color:#1c5632}
+.mk-compact-acq{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+.mk-compact-acq li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:16px;background:var(--panel,#fff);display:grid;gap:6px}
+.mk-compact-acq strong{font-size:15px}
+.mk-compact-acq span{font-size:13.5px;color:#4a5a4e;line-height:1.5}
+.mk-trust-signals{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+.mk-trust-signals li{border-left:3px solid #1c6838;padding:4px 0 4px 14px;display:grid;gap:2px}
+.mk-trust-signals span{font-size:13.5px;color:#4a5a4e}
+.mk-related-compact{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mk-related-compact a{font-size:15px;font-weight:600;color:#1c5632}
+@media(max-width:900px){.mk-mixed-catalogue,.mk-compact-acq,.mk-trust-signals{grid-template-columns:1fr}}
+
+/* Category trim: expandable examples, compact rails, buyer/storage notes. */
+.mk-more{margin-top:14px;border:1px solid var(--line,#dfe7e0);border-radius:10px;padding:10px 14px;background:var(--panel,#fff)}
+.mk-more summary{cursor:pointer;font-weight:600;font-size:14px;color:#1c5632}
+.mk-buyer-note{font-size:14px;color:#4a5a4e;margin-bottom:12px}
+.mk-buyer-selector{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:14px;margin-bottom:16px;background:var(--panel,#fff)}
+
+/* Waldur page: interactive hero demo sits directly beneath the text hero. */
+.waldur-demo{padding-block:clamp(1.5rem,4vw,2.5rem) 0}
+
+/* IaaS/PaaS/SaaS responsibility stack (canonical in the Learn article only). */
+.mk-resp{display:grid;gap:12px}
+.mk-resp-table th[scope="row"]{white-space:nowrap}
+.mk-who-you{color:#8a5a12;font-weight:600}
+.mk-who-provider{color:#1c5632;font-weight:600}
+.mk-resp-rail{margin:0;border:1px solid #bcd6c2;background:#eef7ee;border-radius:10px;padding:12px 16px;font-family:var(--font-mono,monospace);font-size:13px;color:#1c5632}
+@media(max-width:640px){.mk-resp{overflow-x:auto}}
+
+/* Shared compact lifecycle rail — the only lifecycle strip outside the guide. */
+.mk-rail-band{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:14px 18px;background:var(--panel,#fff);font-size:13.5px}
+.mk-rail-band .lifecycle-rail-compact a{font-weight:600;color:#1c5632;text-decoration:none}
+.mk-rail-band .lifecycle-rail-compact a:hover{text-decoration:underline;text-underline-offset:3px}
+.mk-rail-band .lifecycle-rail-compact span[aria-hidden]{color:#7f9284}
+.mk-rail-band-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.mk-rail-band-links a{font-weight:600;color:#1c5632}
+@media(max-width:700px){.mk-rail-band{flex-direction:column;align-items:flex-start}}
+
+/* Page-unique service-model figures (one explanatory visual per category page). */
+.mk-viz{border:1px solid var(--line,#dfe7e0);border-radius:12px;background:var(--panel,#fff);padding:20px;margin:0;display:grid;gap:16px}
+.mk-viz figcaption{font-size:12.5px;color:#4a5a4e;font-family:var(--font-mono,monospace)}
+.mk-viz-split{display:grid;gap:18px;grid-template-columns:1fr auto 1fr;align-items:center}
+.mk-viz-col{border:1px solid var(--line,#dfe7e0);border-radius:10px;padding:14px 16px;background:#f8fbf8}
+.mk-viz-col h3{margin:0 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono,monospace);color:#54725d}
+.mk-viz-col ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px}
+.mk-viz-col li::before{content:"├ ";color:#9db3a2}
+.mk-viz-col li:last-child::before{content:"└ "}
+.mk-viz-arrow{font-size:20px;color:#1c6838;text-align:center}
+.mk-viz-stack{display:grid;gap:6px;max-width:560px}
+.mk-viz-stack div{border:1px solid var(--line,#dfe7e0);border-radius:8px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:14px;background:#fff}
+.mk-viz-stack div em{font-style:normal;color:#4a5a4e;font-size:13px}
+.mk-viz-stack .mk-viz-managed{background:#eef7ee;border-color:#bcd6c2}
+.mk-viz-stack .mk-viz-you{background:#fdf6e7;border-color:#e8d9af}
+.mk-viz-flow{display:grid;gap:8px;justify-items:start;font-size:14px}
+.mk-viz-flow span{border:1px solid var(--line,#dfe7e0);border-radius:8px;padding:8px 14px;background:#fff}
+.mk-viz-flow i{color:#1c6838;font-style:normal}
+.mk-viz-branch{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mk-viz-branch .mk-viz-col{display:grid;gap:2px;text-align:center}
+.mk-viz-branch em{font-style:normal;font-size:12.5px;color:#4a5a4e}
+.mk-matrix{width:100%;border-collapse:collapse;font-size:14px}
+.mk-matrix th,.mk-matrix td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line,#dfe7e0);vertical-align:top}
+.mk-matrix th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono,monospace);color:#54725d}
+.mk-matrix td:first-child{font-weight:600;white-space:nowrap}
+@media(max-width:820px){.mk-viz-split{grid-template-columns:1fr}.mk-viz-arrow{transform:rotate(90deg)}}

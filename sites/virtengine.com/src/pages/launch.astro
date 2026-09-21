@@ -1,7 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import Section from "@components/Section.astro";
-import MediaBand from "@components/media/MediaBand.astro";
+import { NETWORK_STATUS } from "@data/status";
 ---
 
 <Base
@@ -16,9 +16,8 @@ import MediaBand from "@components/media/MediaBand.astro";
       <p class="kicker">LAUNCH UPDATES</p>
       <h1>Follow the VirtEngine launch</h1>
       <p class="intro">
-        TestNet is planned for January 2027, followed by MainNet in March 2027 after
-        validation and a separate production approval. Join the list for confirmed
-        dates, releases and network updates.
+        {NETWORK_STATUS.short} {NETWORK_STATUS.testnet.label} — {NETWORK_STATUS.testnet.timing.toLowerCase()}; {NETWORK_STATUS.mainnet.label} — {NETWORK_STATUS.mainnet.timing.toLowerCase()}.
+        <a href="/network">View network status →</a>
       </p>
     </div>
   </div>
@@ -28,18 +27,7 @@ import MediaBand from "@components/media/MediaBand.astro";
     title="Join the launch list"
     lede="We will only send updates relevant to the protocol launch, releases and network availability."
   >
-    <div class="mb-8 grid max-w-2xl gap-4 sm:grid-cols-2">
-      <div class="rounded-card border border-line bg-panel p-5">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
-        <p class="mt-2 text-sm text-slate">Public pre-production validation; state may reset and does not automatically migrate to MainNet.</p>
-      </div>
-      <div class="rounded-card border border-green-soft bg-green-wash p-5">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
-        <p class="mt-2 font-display text-2xl text-green-deep">March 2027</p>
-        <p class="mt-2 text-sm text-slate">Production launch after TestNet exit criteria, remediation, final artifacts, and a fresh go/no-go decision.</p>
-      </div>
-    </div>
+    <p class="mb-8 max-w-2xl text-sm"><a href="/network">Full status, criteria and artifacts →</a></p>
     <div class="clip-corner max-w-2xl border border-line-strong bg-panel p-6 md:p-8">
       <form id="launch-signup" class="mt-1" novalidate>
         <label for="launch-email" class="font-semibold text-ink">Email address</label>
@@ -55,14 +43,6 @@ import MediaBand from "@components/media/MediaBand.astro";
       </form>
     </div>
   </Section>
-
-  <MediaBand
-    slug="hero-infrastructure"
-    eyebrow="Launch posture"
-    title="Two stages, two separate decisions."
-    lede="TestNet validates the protocol in public and its state may reset. MainNet follows only after TestNet exit criteria, remediation, final artifacts, and a fresh go/no-go decision — availability is confirmed through official announcements."
-    caption="TestNet January 2027 · MainNet March 2027, subject to approval."
-  />
 
   <script id="turnstile-api" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <script>

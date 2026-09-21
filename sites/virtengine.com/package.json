@@ -14,6 +14,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:schema": "node ./scripts/check-structured-data.mjs dist",
+    "check:duplication": "node ./scripts/check-duplication.mjs dist",
     "audit:seo": "node ./scripts/audit-seo-meta.mjs ."
   },
   "dependencies": {

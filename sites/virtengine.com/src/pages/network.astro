@@ -5,6 +5,7 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import { SITE } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
 
 const artifacts = [
   {
@@ -50,20 +51,21 @@ const artifacts = [
   </PageHero>
 
   <Section eyebrow="Launch posture" title="TestNet in January; MainNet in March">
+    <p class="text-sm text-muted">Last updated {NETWORK_STATUS.lastUpdated}. All dates and statuses come from this page — other pages link here.</p>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div class="reveal rounded-card border border-green-soft bg-green-wash p-6">
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Current status</p>
         <p class="mt-2 font-display text-3xl text-green-deep">Preparing</p>
-        <p class="mt-1.5 font-mono text-xs text-muted">not live</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">{NETWORK_STATUS.short}</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">{NETWORK_STATUS.testnet.label}</p>
+        <p class="mt-2 font-display text-2xl text-ink">{NETWORK_STATUS.testnet.timing.replace("Planned ", "")}</p>
         <p class="mt-1.5 font-mono text-xs text-muted">public pre-production</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">March 2027</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">{NETWORK_STATUS.mainnet.label}</p>
+        <p class="mt-2 font-display text-2xl text-ink">{NETWORK_STATUS.mainnet.timing.replace("Planned ", "").replace(", subject to approval", "")}</p>
         <p class="mt-1.5 font-mono text-xs text-muted">production, after approval</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">

@@ -28,19 +28,22 @@ const crumbs = [
     mediaCaption="Twenty-seven state machines, readable in the open."
   />
 
+  <div class="container-site">
+    <input id="mod-filter" class="mod-filter" type="search" placeholder="Filter modules — try escrow, VEID, market…" aria-label="Filter modules" />
+  </div>
+
   {
     MODULE_DOMAINS.map((group) => (
       <Section eyebrow={group.domain} title={group.domain} lede={group.blurb}>
-        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="mod-tiles" data-mod-group>
           {modulesByDomain(group.domain).map((mod) => (
-            <li>
+            <li data-mod-item data-search={`${mod.path} ${mod.name} ${mod.summary}`.toLowerCase()}>
               <a
                 href={`/modules/${mod.slug}`}
-                class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
               >
-                <span class="font-mono text-sm font-medium text-green-deep group-hover:text-green-dark">{mod.path}</span>
-                <h3 class="mt-1 text-base font-semibold text-ink">{mod.name}</h3>
-                <p class="mt-1.5 text-sm leading-relaxed text-slate">{mod.summary}</p>
+                <code>{mod.path}</code>
+                <h3>{mod.name}</h3>
+                <p>{mod.summary}</p>
               </a>
             </li>
           ))}
@@ -65,4 +68,20 @@ const crumbs = [
       <CTA href="/learn" variant="secondary">Guides &amp; explainers</CTA>
     </div>
   </Section>
+  <script>
+    const input = document.querySelector("#mod-filter");
+    input?.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      document.querySelectorAll("[data-mod-item]").forEach((el) => {
+        const hay = el.getAttribute("data-search") ?? "";
+        el.style.display = !q || hay.includes(q) ? "" : "none";
+      });
+      document.querySelectorAll("[data-mod-group]").forEach((ul) => {
+        const visible = Array.from(ul.querySelectorAll("[data-mod-item]")).some(
+          (li) => li.style.display !== "none"
+        );
+        ul.closest("section").style.display = visible ? "" : "none";
+      });
+    });
+  </script>
 </Base>

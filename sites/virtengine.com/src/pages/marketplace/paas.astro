@@ -5,9 +5,8 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
 import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
-import ServiceComparison from "@components/marketplace/ServiceComparison.astro";
-import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
 
 const title = "PaaS on VirtEngine: Platform as a Service";
@@ -21,14 +20,23 @@ const crumbs = [
 
 const platforms = [
   { title: "Managed Kubernetes", specs: ["Control plane managed", "Autoscaling workers", "Managed upgrades"], components: ["vCPU-hour", "storage GB-month"], price: "Component-priced plan" },
-  { title: "PostgreSQL Database", specs: ["Replicated", "Automated backups", "Point-in-time restore"], components: ["node-hour", "storage GB-month"], price: "Component-priced plan" },
+  { title: "Managed Database", specs: ["Replicated", "Automated backups", "Point-in-time restore"], components: ["node-hour", "storage GB-month"], price: "Component-priced plan" },
   { title: "AI Inference Endpoint", specs: ["Managed runtime", "Autoscaling", "Model versioning"], components: ["request", "GPU-hour"], price: "Usage-priced" },
-  { title: "ML Workspace", specs: ["Managed notebook", "GPU attach", "Shared storage"], components: ["workspace-hour", "GPU-hour"], price: "Component-priced plan" },
-  { title: "Application Runtime", specs: ["Build and deploy", "TLS termination", "Managed scaling"], components: ["instance-hour"], price: "Plan-based" },
-  { title: "Batch Scheduler", specs: ["Queue management", "Job templates", "Priority classes"], components: ["job-hour", "core-hour"], price: "Allocation-based" },
 ];
 
-const lifecycle = ["provision", "resize", "suspend", "resume", "terminate", "backup where supported"];
+const morePlatforms = [
+  "ML Workspace — managed notebooks with GPU attach",
+  "Application Runtime — build, TLS, scaling",
+  "Batch Scheduler — queues and job templates",
+];
+
+const stack: [string, "you" | "provider"][] = [
+  ["Your application", "you"],
+  ["PaaS runtime", "provider"],
+  ["Managed service", "provider"],
+  ["Orchestration", "provider"],
+  ["Infrastructure", "provider"],
+];
 ---
 
 <Base
@@ -44,43 +52,34 @@ const lifecycle = ["provision", "resize", "suspend", "resume", "terminate", "bac
     lede="Order a managed platform instead of assembling every server beneath it."
     crumbs={crumbs}
   >
-    <CTA href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs SaaS</CTA>
+    <CTA href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS</CTA>
     <CTA href="/marketplace/custom-listings" variant="secondary">Custom listings</CTA>
     <div class="mk-page-hero-flag">
       <span class="mk-status">{NETWORK_STATUS.posture}</span>
       <span class="mk-flag">Example listings are illustrative</span>
     </div>
     <div slot="art">
-      <FulfilmentFlow
-        nodes={["Tenant", "Managed service plan", "Lease", "Provider fulfilment", "Platform endpoint"]}
-        kinds={{ Lease: "protocol", "Managed service plan": "protocol", "Provider fulfilment": "provider" }}
-        caption="VirtEngine supplies the verifiable marketplace relationship. The provider operates the platform."
-      />
+      <figure class="mk-viz">
+        <div class="mk-viz-stack">
+          <p class="eyebrow">Responsibility stack</p>
+          {
+            stack.map(([label, owner]) => (
+              <div class={owner === "you" ? "mk-viz-you" : "mk-viz-managed"}>
+                {label}
+                <em>{owner === "you" ? "you manage" : "provider manages"}</em>
+              </div>
+            ))
+          }
+        </div>
+        <figcaption>The provider operates the platform; you deploy onto it. The line moves down the stack, not away from the chain.</figcaption>
+      </figure>
     </div>
   </PageHero>
-
-  <Section eyebrow="Scope" title="Who does what">
-    <div class="mk-cards-3">
-      <article class="mk-order-col">
-        <h3>The provider operates the platform</h3>
-        <p>Kubernetes, the database, the inference runtime — the provider runs it, upgrades it and keeps it available.</p>
-      </article>
-      <article class="mk-order-col">
-        <h3>Waldur or provider integrations fulfil it</h3>
-        <p>Fulfilment and lifecycle management run through the provider's control plane and its plugins.</p>
-      </article>
-      <article class="mk-order-col">
-        <h3>VirtEngine records the agreement</h3>
-        <p>Identity, lease, escrow, signed component usage and settlement. It does not operate databases or Kubernetes for customers.</p>
-      </article>
-    </div>
-  </Section>
 
   <Section
     eyebrow="Catalogue"
     title="Example managed platforms"
-    lede="Illustrative listings — example providers, not live availability."
-    class="border-y border-line bg-paper-soft"
+    lede="Three illustrative listings — example providers, not live availability. What changes between providers is the runtime they operate, not the market rail."
   >
     <div class="mk-cards-3">
       {
@@ -97,162 +96,50 @@ const lifecycle = ["provision", "resize", "suspend", "resume", "terminate", "bac
         ))
       }
     </div>
-  </Section>
-
-  <Section eyebrow="Comparison" title="PaaS vs IaaS — where the line moves">
-    <ServiceComparison />
-  </Section>
-
-  <Section
-    eyebrow="Listing"
-    title="Anatomy of a managed-platform listing"
-    lede="The card describes the platform; the plan describes how it is measured and capped."
-  >
-    <div class="mk-cards-2">
-      <MarketplaceListingCard
-        serviceType="PaaS"
-        title="Managed Kubernetes"
-        provider="Example Provider"
-        region="ap-southeast"
-        specs={["3 control-plane nodes", "Autoscaling workers", "Managed upgrades"]}
-        components={["vCPU-hour", "RAM GB-hour", "storage GB-month"]}
-        priceLabel="Component-priced plan"
-        badges={["managed lifecycle"]}
-      />
-      <article class="mk-order-col">
-        <h3>What the plan adds</h3>
-        <ul>
-          <li>components and how they are measured</li>
-          <li>limits that bound consumption</li>
-          <li>region and data-residency notes where relevant</li>
-          <li>lifecycle actions the provider supports</li>
-          <li>support tier and response expectations</li>
-        </ul>
-        <p>
-          Attributes on the offering — audited, benchmarked, attested — describe the provider and can be used as
-          match filters.
-        </p>
-      </article>
-    </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {morePlatforms.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
+    <p class="mk-rb-note">
+      A managed-platform plan adds components and how they are measured, limits that bound consumption, and the
+      lifecycle actions the provider supports. Where the responsibility line sits for each service model is the
+      subject of the <a href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs SaaS article</a>.
+    </p>
   </Section>
 
   <Section
     eyebrow="Fulfilment"
-    title="How provisioning works"
+    title="How a platform is provisioned"
     class="border-y border-line bg-paper-soft"
   >
     <FulfilmentFlow
-      nodes={[
-        "Plan",
-        "Order",
-        "Lease",
-        "Provider integration",
-        "Managed platform",
-        "Platform endpoint",
-        "Component usage",
-        "Settlement",
-      ]}
-      kinds={{ Order: "protocol", Lease: "protocol", "Provider integration": "provider", "Managed platform": "provider", "Component usage": "protocol", Settlement: "protocol" }}
-      caption="The chain records the lease. The provider's integration creates the platform; the endpoint is what the tenant uses."
-    />
-  </Section>
-
-  <Section eyebrow="Billing" title="How component billing can work">
-    <div class="mk-cards-2">
-      <MeterAnimation
-        meters={[
-          { label: "vCPU hours", value: "412 h", percent: 68 },
-          { label: "RAM GB-hours", value: "1,648 GB-h", percent: 55 },
-          { label: "Storage GB-months", value: "2.1 GB-mo", percent: 42 },
-        ]}
-      />
-      <article class="mk-order-col">
-        <h3>Components, not invoices</h3>
-        <p>
-          A managed platform defines measurable components — vCPU-hours, RAM GB-hours, storage, requests. The
-          provider daemon meters them per workload, signs the records, and settlement prices them against the
-          lease.
-        </p>
-        <p>
-          Fixed components (a control-plane fee, a support tier) can sit alongside metered ones in the same plan.
-        </p>
-      </article>
-    </div>
-  </Section>
-
-  <Section eyebrow="Lifecycle" title="Lifecycle actions">
-    <ul class="mk-chip-row">
-      {lifecycle.map((item) => <li>{item}</li>)}
-    </ul>
-    <p class="mk-rb-note">
-      Actions are asynchronous. The provider's control plane performs them and returns authenticated callbacks,
-      which the bridge validates before the outcome becomes protocol state.
-    </p>
-  </Section>
-
-  <Section eyebrow="Responsibilities" title="Provider and tenant responsibilities" class="border-y border-line bg-paper-soft">
-    <div class="mk-check">
-      <section class="mk-check-col mk-check-col--code">
-        <h3>Provider</h3>
-        <p class="mk-check-note">Operates the platform and the infrastructure beneath it.</p>
-        <ul>
-          <li>provision and lifecycle operations</li>
-          <li>platform availability and upgrades</li>
-          <li>backups where the plan includes them</li>
-          <li>metering and signed usage submission</li>
-          <li>support at the plan's tier</li>
-        </ul>
-      </section>
-      <section class="mk-check-col mk-check-col--deploy">
-        <h3>Tenant</h3>
-        <p class="mk-check-note">Uses the platform and owns what runs on it.</p>
-        <ul>
-          <li>deployments, data and application configuration</li>
-          <li>access management within the platform</li>
-          <li>staying inside plan limits and quotas</li>
-          <li>funding escrow for the lease</li>
-          <li>raising corrections inside the dispute window</li>
-        </ul>
-      </section>
-    </div>
-  </Section>
-
-  <Section eyebrow="Example architecture" title="A managed platform end to end">
-    <FulfilmentFlow
-      nodes={[
-        "Catalogue listing",
-        "Order",
-        "Lease",
-        "Provider daemon",
-        "Waldur order",
-        "Kubernetes / database plugin",
-        "Platform",
-        "Signed usage",
-        "Settlement",
-      ]}
-      kinds={{ Order: "protocol", Lease: "protocol", "Signed usage": "protocol", Settlement: "protocol", "Provider daemon": "provider", "Waldur order": "provider", "Kubernetes / database plugin": "provider" }}
-      caption="One architecture for any managed platform: the plugin changes, the rail does not."
+      nodes={["Lease", "Provider daemon", "Waldur plugin", "Managed platform", "Platform endpoint"]}
+      kinds={{ Lease: "protocol", "Provider daemon": "provider", "Waldur plugin": "provider", "Managed platform": "provider" }}
+      caption="The chain records the lease. The provider's integration creates the platform; the endpoint is what your team uses."
     />
     <div class="mk-tech-note">
       <p>
-        <strong>Under the hood:</strong> <a href="/waldur">Waldur integration</a> for order routing and lifecycle
-        callbacks, <a href="/learn/from-listing-to-running-resource">from listing to running resource</a> for the
-        full path, and <a href="/modules/market">x/market</a> for lease state.
+        <strong>Go deeper:</strong> <a href="/waldur">Waldur integration</a> for order routing and lifecycle callbacks,{" "}
+        <a href="/learn/how-the-marketplace-works#fulfilment">fulfilment</a> for the full path, and{" "}
+        <a href="/modules/market">x/market</a> for lease state.
       </p>
     </div>
   </Section>
+
+  <div class="container-site">
+    <LifecycleRail aside={{ label: "Compare the service models", href: "/learn/iaas-paas-saas-on-virtengine" }} />
+  </div>
 
   <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
     <RelatedMarketplacePages
       eyebrow="Explore"
       title="Related destinations"
       links={[
-        { label: "IaaS comparison", href: "/marketplace/iaas" },
-        { label: "Custom offerings", href: "/learn/how-custom-offerings-work" },
-        { label: "Waldur integration", href: "/waldur" },
-        { label: "IaaS vs PaaS vs SaaS", href: "/learn/iaas-paas-saas-on-virtengine" },
-        { label: "Marketplace lifecycle", href: "/learn/how-the-marketplace-works" },
-        { label: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "SaaS", href: "/marketplace/saas" },
+        { label: "Custom listings", href: "/marketplace/custom-listings#fulfilment" },
       ]}
     />
   </Section>

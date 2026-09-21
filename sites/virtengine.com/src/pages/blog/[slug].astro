@@ -3,7 +3,6 @@ import Base from "@layouts/Base.astro";
 import { repairArchiveLinks } from "../../lib/archive-links";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import BlogCard from "@components/BlogCard.astro";
-import MediaFigure from "@components/media/MediaFigure.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
 import { media } from "@data/media";
 import { SITE } from "@data/site";
@@ -98,7 +97,6 @@ const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt
 
     <div class="container-site py-12 md:py-20">
       <div class="mx-auto max-w-3xl">
-        <MediaFigure slug={heroMedia} ratio="16 / 9" sizes="(min-width: 1024px) 48rem, 100vw" class="mb-10" />
         {
           article.kind === "legacy" && (
             <aside class="archive-warning mb-10" aria-label="Historic content notice">

@@ -26,18 +26,21 @@ const groups = [
     eyebrow: "Supply the network",
     title: "For operators with capacity to lease",
     lede: "Datacenters, GPU fleets, and HPC facilities earn settled revenue by serving on-chain leases.",
+    graphic: "Operator topology: facility → daemon → market",
     items: provide,
   },
   {
     eyebrow: "Secure the network",
     title: "For validators, partners & token holders",
     lede: "Consensus plus the VEID Network — one bonded stake, layered rewards, honest risk disclosure.",
+    graphic: "Protocol nodes: stake → consensus + identity → rewards",
     items: secure,
   },
   {
     eyebrow: "Build & deploy on the network",
     title: "For developers, enterprises & workloads",
     lede: "Typed module surfaces for builders; verifiable confidentiality, GPU sourcing, and auction-set pricing for tenants.",
+    graphic: "Workload requirements → matching capacity",
     items: build,
   },
 ];
@@ -62,6 +65,7 @@ const groups = [
   {
     groups.map((group) => (
       <Section eyebrow={group.eyebrow} title={group.title} lede={group.lede}>
+        <p class="sol-group-graphic" aria-label={group.graphic}>{group.graphic}</p>
         <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {group.items.map((sol) => (
             <li>

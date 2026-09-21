@@ -60,6 +60,85 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
     </div>
   </Section>
 
+  <Section eyebrow="In one view" title="Audience-specific visual" lede="Each solution gets its own explanatory figure — not the same template art.">
+    {sol.slug === "gpu-compute-providers" && (
+      <div class="sol-visual sol-fleet" role="group" aria-label="Fleet utilisation dashboard: total, leased, idle GPUs, benchmark status, region and demand">
+        <ul><li><strong>Total GPUs</strong><span>1,280</span></li><li><strong>Leased</strong><span>812</span></li><li><strong>Idle</strong><span>468 → offering</span></li><li><strong>Benchmark</strong><span>verified</span></li><li><strong>Region</strong><span>ap-southeast</span></li><li><strong>Demand</strong><span>high for A100 class</span></li></ul>
+        <p>idle GPU → offering → lease → metering → payout</p>
+      </div>
+    )}
+    {sol.slug === "datacenter-operators" && (
+      <div class="sol-visual sol-racks" role="group" aria-label="Facility capacity topology publishing headroom to the market">
+        <pre>Facility
+├ Cluster A   62% used
+├ Cluster B   34% used
+└ GPU pod     48% used
+          ↓ publish headroom
+VirtEngine marketplace</pre>
+      </div>
+    )}
+    {sol.slug === "hpc-clusters" && (
+      <div class="sol-visual sol-queue" role="group" aria-label="Scheduler queue showing external jobs becoming submissions without replacing local policy">
+        <ol><li>Queue: gpu — 14 pending</li><li>VirtEngine job → scheduler submission</li><li>Local policy unchanged</li><li><a href="/learn/hpc-on-virtengine">HPC guide →</a></li></ol>
+      </div>
+    )}
+    {sol.slug === "enterprises-confidential-compute" && (
+      <div class="sol-visual sol-enclave" role="group" aria-label="Attested enclave flow from encrypted secret to verified workload">
+        <pre>Tenant secret
+     ↓ encrypted
+Attested enclave
+     ↓ measurement proof
+x/enclave
+     ↓ verified
+Workload released</pre>
+      </div>
+    )}
+    {sol.slug === "ai-ml-workloads" && (
+      <div class="sol-visual sol-selector" role="group" aria-label="Requirement selector matching training, inference and fine-tuning to capacity">
+        <ul><li>Training / Inference / Fine-tuning</li><li>GPU memory ≥ X GB</li><li>Region + topology</li><li>→ matching capacity</li></ul>
+      </div>
+    )}
+    {sol.slug === "cost-optimized-cloud" && (
+      <div class="sol-visual sol-bids" role="group" aria-label="Competitive bidding exposing price competition without promising savings">
+        <ul><li>Provider A — $1.42</li><li>Provider B — $1.29 · selected</li><li>Provider C — $1.51</li></ul>
+        <p>Open bidding exposes competition per order — not a savings guarantee.</p>
+      </div>
+    )}
+    {sol.slug === "validators" && (
+      <div class="sol-visual sol-validator" role="group" aria-label="Validator with consensus and VEID duties">
+        <pre>                VALIDATOR
+                /       \
+        CONSENSUS       VEID
+        blocks          verification</pre>
+        <p>bond → duties → rewards → slashing</p>
+      </div>
+    )}
+    {sol.slug === "staking-partners" && (
+      <div class="sol-visual sol-delegate" role="group" aria-label="Delegation state machine">
+        <p>Delegate → Bonded → Rewards → Redelegate / Unbond</p>
+      </div>
+    )}
+    {sol.slug === "token-holders" && (
+      <div class="sol-visual sol-token" role="group" aria-label="Token utility map with risk context">
+        <ul><li>escrow</li><li>staking</li><li>governance</li><li>network fees</li><li>protocol economics</li></ul>
+        <p>Risk: delegated stake is slashable; unbonding takes 21 days. <a href="/learn/understanding-slashing">Slashing →</a></p>
+      </div>
+    )}
+    {sol.slug === "web3-developers" && (
+      <div class="sol-visual sol-code" role="group" aria-label="Module API surface over gRPC and REST">
+        <pre>gRPC / REST
+    │
+ ┌──┼───────────┐
+x/market
+x/provider
+x/escrow
+x/veid
+x/settlement</pre>
+        <p>One code example in docs: query orders, submit bids, track leases. <a href="https://docs.virtengine.com">Docs ↗</a></p>
+      </div>
+    )}
+  </Section>
+
   {
     sol.diagram && (
       <Section eyebrow="The mechanism" title="How the protocol carries it">
@@ -122,7 +201,8 @@ const others = SOLUTIONS.filter((s) => s.slug !== sol.slug).slice(0, 3);
   </Section>
 
   <Section eyebrow="Questions" title={`Asked about ${sol.label.toLowerCase()}`}>
-    <FaqList items={sol.faqs} />
+    <FaqList items={sol.faqs.slice(0, 3)} />
+    <p class="mt-6 text-sm"><a class="font-semibold text-green-deep underline underline-offset-4" href="/faq">More questions → FAQ</a></p>
   </Section>
 
   <Section eyebrow="Related" title="Continue from here">

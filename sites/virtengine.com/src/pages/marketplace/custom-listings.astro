@@ -86,7 +86,7 @@ const patterns = [
     lede="Custom listings are provider-defined offerings: order forms, approvals, provider-defined components and the same lease and settlement guarantees as any other product."
     crumbs={crumbs}
   >
-    <CTA href="/learn/how-custom-offerings-work">How custom offerings work</CTA>
+    <CTA href="#fulfilment">Fulfilment patterns</CTA>
     <CTA href="/marketplace" variant="secondary">Marketplace overview</CTA>
     <div class="mk-page-hero-flag">
       <span class="mk-status">{NETWORK_STATUS.posture}</span>
@@ -157,7 +157,7 @@ const patterns = [
     </ol>
   </Section>
 
-  <Section eyebrow="Fulfilment" title="Fulfilment patterns">
+  <Section eyebrow="Fulfilment" title="Fulfilment patterns" id="fulfilment">
     <div class="mk-cards-3">
       {
         patterns.map((pattern) => (
@@ -214,7 +214,7 @@ const patterns = [
   <Section eyebrow="Technical detail" title="Under the hood">
     <div class="mk-tech-note">
       <p>
-        <strong>Verify it:</strong> <a href="/learn/how-custom-offerings-work">how custom offerings work</a> for
+        <strong>Verify it:</strong> <a href="#fulfilment">fulfilment patterns above</a> for
         the fulfilment patterns, <a href="/waldur">Waldur integration</a> for custom offering types and approval
         workflows, and <a href="https://docs.waldur.com/latest/about/concepts/marketplace/" rel="noopener">Waldur's
         marketplace model</a> for the upstream offering structure.
@@ -227,12 +227,9 @@ const patterns = [
       eyebrow="Explore"
       title="Related destinations"
       links={[
-        { label: "How custom offerings work", href: "/learn/how-custom-offerings-work" },
         { label: "SaaS", href: "/marketplace/saas" },
         { label: "Marketplace overview", href: "/marketplace" },
         { label: "Waldur integration", href: "/waldur" },
-        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
-        { label: "Use infrastructure through VirtEngine", href: "/tenants" },
       ]}
     />
   </Section>

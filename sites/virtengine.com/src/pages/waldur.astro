@@ -3,11 +3,9 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
-import BuyPaths from "@components/BuyPaths.astro";
-import ServiceCategories from "@components/ServiceCategories.astro";
 import ResponsibilityBoundary from "@components/marketplace/ResponsibilityBoundary.astro";
 import WaldurInterfaceShowcase from "@components/marketplace/WaldurInterfaceShowcase.astro";
-import WaldurHeroVisual from "@components/marketplace/WaldurHeroVisual.astro";
+import MarketplaceDemo from "@components/marketplace/MarketplaceDemo.astro";
 import OrderJourneyDemo from "@components/marketplace/OrderJourneyDemo.astro";
 import ImplementationChecklist from "@components/marketplace/ImplementationChecklist.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
@@ -19,41 +17,6 @@ const description =
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "Waldur", href: "/waldur" },
-];
-
-const catalog = [
-  {
-    category: "IaaS",
-    name: "Harbour GPU cluster",
-    provider: "Example provider",
-    price: "$0.39 / GPU-hour",
-    plan: "Limit-based plan",
-    action: "Order",
-  },
-  {
-    category: "PaaS",
-    name: "Managed Postgres cluster",
-    provider: "Example provider",
-    price: "$120 / month",
-    plan: "Limit-based plan",
-    action: "Order",
-  },
-  {
-    category: "SaaS",
-    name: "Northwind analytics SaaS",
-    provider: "Example provider",
-    price: "$50 / seat / month",
-    plan: "Fixed plan",
-    action: "Order",
-  },
-  {
-    category: "Custom listing",
-    name: "Lead Product Designer",
-    provider: "Example provider",
-    price: "Flat-fee service",
-    plan: "Custom order form",
-    action: "Request",
-  },
 ];
 
 const implemented = [
@@ -101,20 +64,6 @@ const upstreamGroups = [
   },
 ];
 
-const organizationLogos = [
-  "org-1.png",
-  "org-2.png",
-  "org-3.png",
-  "org-4.png",
-  "org-5.png",
-  "cambridge_university.svg",
-  "org-7.png",
-  "org-8.png",
-  "org-9.png",
-  "org-10.png",
-  "org-11.png",
-  "org-12.png",
-];
 ---
 
 <Base title={title} description={description} path="/waldur" breadcrumbs={crumbs}>
@@ -132,15 +81,22 @@ const organizationLogos = [
     <div class="mk-page-hero-flag">
       <span class="mk-status">{NETWORK_STATUS.posture}</span>
     </div>
-    <div slot="art">
-      <WaldurHeroVisual />
-    </div>
   </PageHero>
+
+  <Section
+    eyebrow="Demonstration"
+    title="Watch one service move through the layers"
+    lede="Interactive example: switch lifecycle stages, hover a daemon duty, and follow the connectors into protocol state. Illustrative example only."
+    class="waldur-demo"
+  >
+    <MarketplaceDemo />
+  </Section>
 
   <Section
     eyebrow="Architecture"
     title="One marketplace, three layers"
     lede="VirtEngine treats the chain as the marketplace source of truth. Waldur remains the provider-operated control plane for fulfilment and infrastructure operations. The provider daemon keeps the two correlated."
+    id="responsibilities"
   >
     <ResponsibilityBoundary />
     <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
@@ -148,15 +104,6 @@ const organizationLogos = [
       public platform and client interfaces; it does not own or replace Waldur, and Waldur is not “running on
       the blockchain”.
     </p>
-  </Section>
-
-  <Section
-    eyebrow="How buying works"
-    title="Buy it your way"
-    lede="Direct ordering is what Waldur's catalogue fulfils end to end — and the default on-chain. Open bids and selector matching are chain-side paths that can target Waldur-backed listings when the provider opts in."
-    class="border-y border-line bg-paper-soft"
-  >
-    <BuyPaths foot="Illustrated with example figures. Whatever the path, match selection and escrow never leave the chain — HomePort presents, the protocol decides." />
   </Section>
 
   <Section
@@ -177,32 +124,14 @@ const organizationLogos = [
   </Section>
 
   <Section
-    eyebrow="What the catalogue sells"
-    title="One catalogue. Different things being delivered."
-    lede="A Waldur offering is any service or product that can be ordered. VirtEngine settles whatever the catalogue is allowed to sell — infrastructure, managed platforms, software plans and provider-defined services — through the same escrow rail."
+    eyebrow="Catalogue"
+    title="Fulfilled here, explained there."
+    lede="Waldur fulfils IaaS, PaaS, SaaS and custom listings — the catalogue itself is owned by the marketplace hub. Direct ordering is what this catalogue fulfils end to end; open bids and selector matching are chain-side paths covered in the buying guide."
   >
-    <div class="catalog-mock" role="img" aria-label="Example marketplace catalogue showing IaaS, PaaS, SaaS and custom service listings side by side">
-      <p class="catalog-mock-flag">Illustrative listings · in the style of Waldur's catalogue</p>
-      <div class="catalog-grid">
-        {
-          catalog.map((c) => (
-            <article class="catalog-card">
-              <p class="catalog-cat">{c.category}</p>
-              <h3>{c.name}</h3>
-              <p class="catalog-provider">{c.provider}</p>
-              <p class="catalog-price">{c.price}</p>
-              <p class="catalog-plan">{c.plan}</p>
-              <span class="catalog-action">{c.action} <span aria-hidden="true">→</span></span>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-    <ServiceCategories />
-    <p class="mt-6 max-w-4xl text-sm leading-relaxed text-muted">
-      Every category settles the same way: the order becomes an on-chain lease against funded escrow, signed usage
-      is metered, and settlement releases payment to the provider.{" "}
-      <a class="font-semibold text-green-deep underline underline-offset-4" href="/marketplace">Explore each service type in the marketplace hub →</a>
+    <p class="max-w-4xl text-sm leading-relaxed text-muted">
+      Buying modes: <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/three-ways-to-buy">Three ways to buy →</a>
+      Service types: <a class="font-semibold text-green-deep underline underline-offset-4" href="/marketplace#service-types">Marketplace catalogue →</a>
+      Lifecycle: <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/how-the-marketplace-works">Order → Match → Lease → Usage → Settlement →</a>
     </p>
   </Section>
 
@@ -297,23 +226,6 @@ const organizationLogos = [
   </section>
 
   <Section
-    eyebrow="Waldur ecosystem"
-    title="Organizations featured by Waldur"
-    lede="Waldur publishes the following organizations in its own customer and partner showcase."
-  >
-    <div class="waldur-logo-grid" aria-label="Organization logos published in Waldur's official showcase">
-      {organizationLogos.map((file) => (
-        <div class="waldur-logo-tile">
-          <img src={`https://waldur.com/img/partners/${file}`} alt="" loading="lazy" decoding="async" />
-        </div>
-      ))}
-    </div>
-    <p class="mt-6 max-w-4xl text-xs leading-relaxed text-muted">
-      Logos are reproduced from Waldur's published showcase to describe Waldur adoption. Their appearance here does not imply endorsement of VirtEngine or DETIO FOUNDATION LTD.
-    </p>
-  </Section>
-
-  <Section
     eyebrow="Primary sources"
     title="Explore the platform directly"
     lede="Architecture and integration details on this page are grounded in the VirtEngine repository and Waldur's official material."
@@ -335,13 +247,8 @@ const organizationLogos = [
       title="Related destinations"
       links={[
         { label: "Marketplace overview", href: "/marketplace" },
-        { label: "IaaS", href: "/marketplace/iaas" },
-        { label: "PaaS", href: "/marketplace/paas" },
-        { label: "SaaS", href: "/marketplace/saas" },
-        { label: "Provider onboarding", href: "/providers" },
-        { label: "Who controls what", href: "/learn/who-controls-what" },
-        { label: "From listing to running resource", href: "/learn/from-listing-to-running-resource" },
-        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
+        { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
+        { label: "Three ways to buy", href: "/learn/three-ways-to-buy" },
       ]}
     />
   </Section>

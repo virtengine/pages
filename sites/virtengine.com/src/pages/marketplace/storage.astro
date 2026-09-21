@@ -6,6 +6,7 @@ import CTA from "@components/CTA.astro";
 import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
 import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
 
 const title = "Storage & Data Services on VirtEngine";
@@ -20,10 +21,13 @@ const crumbs = [
 const listings = [
   { title: "Object Storage Bucket", specs: ["S3-compatible", "Versioning", "Lifecycle rules"], components: ["storage GB-month", "egress GB"], price: "$0.02 / GB-month" },
   { title: "Block Storage Volume", specs: ["SSD-backed", "Snapshots", "Attach to any VM"], components: ["storage GB-month", "IOPS tier"], price: "$0.08 / GB-month" },
-  { title: "Persistent Volume", specs: ["Cluster-attached", "Replicated", "Dynamic provisioning"], components: ["storage GB-month"], price: "$0.10 / GB-month" },
   { title: "Archive Tier", specs: ["Cold storage", "Retrieval windows", "Retention policy"], components: ["storage GB-month", "retrieval GB"], price: "$0.01 / GB-month" },
-  { title: "Backup Repository", specs: ["Scheduled backups", "Restore points", "Encryption"], components: ["protected GB-month"], price: "$0.04 / GB-month" },
-  { title: "High-Throughput Storage", specs: ["Parallel filesystem", "HPC-optimised", "Shared across nodes"], components: ["storage GB-month", "throughput tier"], price: "Reserved plan" },
+];
+
+const moreListings = [
+  "Persistent Volume — cluster-attached replicated",
+  "Backup Repository — scheduled encrypted restore points",
+  "High-Throughput Storage — parallel HPC filesystem",
 ];
 ---
 
@@ -56,7 +60,29 @@ const listings = [
   </PageHero>
 
   <Section eyebrow="Catalogue" title="Example storage listings">
-    <div class="mk-cards-3">
+    <figure class="mk-viz">
+      <div class="mk-viz-split">
+        <div class="mk-viz-col">
+          <h3>Ordered on its own</h3>
+          <ul>
+            <li>Object — buckets, archive, datasets</li>
+            <li>Block — VM and database volumes</li>
+            <li>Managed data service — provider-operated</li>
+          </ul>
+        </div>
+        <p class="mk-viz-arrow" aria-hidden="true">→</p>
+        <div class="mk-viz-col">
+          <h3>Attached to compute</h3>
+          <ul>
+            <li>Storage bundled in a VM or cluster plan</li>
+            <li>Metered alongside CPU, GPU and RAM</li>
+            <li>Visible as a component, not a separate order</li>
+          </ul>
+        </div>
+      </div>
+      <figcaption>Independent versus attached: both settle through the same capacity components.</figcaption>
+    </figure>
+    <div class="mk-cards-3 mt-8">
       {
         listings.map((listing) => (
           <MarketplaceListingCard
@@ -71,6 +97,12 @@ const listings = [
         ))
       }
     </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {moreListings.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
     <p class="mk-rb-note">
       Which storage classes a provider offers depends on its backend and Waldur configuration. Backup, archive and
       high-throughput tiers are provider-dependent — check the listing rather than assuming a category default.
@@ -105,6 +137,10 @@ const listings = [
     </div>
   </Section>
 
+  <div class="container-site">
+    <LifecycleRail />
+  </div>
+
   <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
     <RelatedMarketplacePages
       eyebrow="Explore"
@@ -113,9 +149,6 @@ const listings = [
         { label: "IaaS", href: "/marketplace/iaas" },
         { label: "PaaS", href: "/marketplace/paas" },
         { label: "Custom & managed listings", href: "/marketplace/custom-listings" },
-        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
-        { label: "Waldur integration", href: "/waldur" },
-        { label: "Marketplace overview", href: "/marketplace" },
       ]}
     />
   </Section>

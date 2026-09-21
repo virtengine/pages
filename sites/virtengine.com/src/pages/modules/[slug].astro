@@ -1,13 +1,10 @@
 ---
 import Base from "@layouts/Base.astro";
-import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
-import GlanceStrip from "@components/GlanceStrip.astro";
-import HowItWorks from "@components/HowItWorks.astro";
 import FaqList from "@components/FaqList.astro";
+import Breadcrumbs from "@components/Breadcrumbs.astro";
 import { MODULES, modulesByDomain } from "@data/modules";
-import { media } from "@data/media";
 import { SITE } from "@data/site";
 
 export function getStaticPaths() {
@@ -24,112 +21,83 @@ const crumbs = [
 
 const siblings = modulesByDomain(mod.domain).filter((m) => m.slug !== mod.slug).slice(0, 3);
 const githubPath = `${SITE.github}/tree/main/${mod.path}`;
+const docsPath = `${SITE.docs}/modules/${mod.slug}`;
 ---
 
 <Base
   title={`${mod.path} — ${mod.name} module — VirtEngine`}
-  description={`${mod.name} module reference: ${mod.summary} How ${mod.path} works, why it exists, and how it interacts with the rest of the VirtEngine protocol.`}
+  description={`${mod.name} module reference: ${mod.summary}`}
   path={`/modules/${mod.slug}`}
-  image={media[mod.media].src}
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow={`Module reference · ${mod.domain}`}
-    title={`${mod.path} — ${mod.name}`}
-    lede={mod.summary}
-    crumbs={crumbs}
-    media={mod.media}
-    mediaCaption={mod.mediaCaption}
-  >
-    <div class="mt-8 flex flex-wrap gap-4">
-      <CTA href={githubPath}>Source on GitHub</CTA>
-      <CTA href={SITE.docs} variant="secondary">Protocol docs</CTA>
+  <div class="container-site mod-ref-head">
+    <Breadcrumbs crumbs={crumbs} class="mb-4" />
+    <p class="mod-group">{mod.domain}</p>
+    <h1 class="mod-title">{mod.path} — {mod.name}</h1>
+    <p class="mod-purpose">{mod.summary}</p>
+    <div class="mod-actions">
+      <CTA href={githubPath}>Source ↗</CTA>
+      <CTA href={SITE.docs} variant="secondary">Docs ↗</CTA>
     </div>
-  </PageHero>
+  </div>
 
-  <Section eyebrow="At a glance" title={`${mod.name} in three lines`}>
-    <GlanceStrip items={mod.glance} />
-  </Section>
-
-  <Section eyebrow="What it does" title={`Inside ${mod.path}`}>
+  <Section eyebrow="Reference" title="What it does">
     <div class="prose-body max-w-3xl space-y-5 text-base">
       {mod.whatItDoes.map((para) => <p>{para}</p>)}
     </div>
+    <p class="mod-why"><strong>Why it exists:</strong> {mod.whyItExists}</p>
   </Section>
 
-  <Section
-    eyebrow="How it works"
-    title="The flow, step by step"
-    lede="Select each step — the panel walks the sequence in order."
-  >
-    <HowItWorks id={mod.slug} steps={mod.flow} />
+  <Section eyebrow="State" title="Primary objects">
+    <table class="mod-table">
+      <thead><tr><th>Concept</th><th>Definition</th></tr></thead>
+      <tbody>
+        {mod.concepts.map((c) => (
+          <tr><td><code>{c.term}</code></td><td>{c.def}</td></tr>
+        ))}
+      </tbody>
+    </table>
   </Section>
 
-  <Section eyebrow="Why it exists" title="The design rationale">
-    <div class="prose-body reveal max-w-3xl text-base">
-      <p>{mod.whyItExists}</p>
-    </div>
+  <Section eyebrow="Messages" title="Messages & queries">
+    <p class="max-w-3xl text-sm leading-relaxed text-muted">
+      Message and query surfaces are documented at implementation level in the
+      <a href={docsPath}> module docs ↗</a> and the <a href={githubPath}>source ↗</a>.
+      The objects above are the state those messages create and transition.
+    </p>
   </Section>
 
-  <Section
-    eyebrow="Interactions"
-    title="How it connects to the rest of the chain"
-    lede="No module stands alone — these are the protocol surfaces this module depends on or serves."
-  >
-    <ul class="grid gap-3 sm:grid-cols-2">
-      {
-        mod.interactions.map((ix) => (
-          <li class="reveal clip-corner rounded-card border border-line bg-panel p-5">
-            {ix.slug ? (
-              <a href={`/modules/${ix.slug}`} class="font-mono text-sm font-medium text-green-deep underline decoration-green/40 underline-offset-2 hover:text-green-dark">
-                {ix.label}
-              </a>
-            ) : (
-              <span class="font-mono text-sm font-medium text-ink">{ix.label}</span>
-            )}
-            <p class="mt-1.5 text-sm text-slate">{ix.how}</p>
-          </li>
-        ))
-      }
+  <Section eyebrow="Connections" title="Module interactions">
+    <ul class="mod-graph">
+      {mod.interactions.map((ix) => (
+        <li>
+          {ix.slug ? <a href={`/modules/${ix.slug}`}><code>{ix.label}</code></a> : <code>{ix.label}</code>}
+          <span>{ix.how}</span>
+        </li>
+      ))}
     </ul>
   </Section>
 
-  <Section eyebrow="Key concepts" title="Terms that matter here">
-    <dl class="grid max-w-4xl gap-4 sm:grid-cols-2">
-      {
-        mod.concepts.map((c) => (
-          <div class="reveal border-l-2 border-green pl-4">
-            <dt class="text-sm font-semibold text-ink">{c.term}</dt>
-            <dd class="mt-1 text-sm text-slate">{c.def}</dd>
-          </div>
-        ))
-      }
-    </dl>
+  <Section eyebrow="Flows" title="Core flow">
+    <ol class="mod-flow">
+      {mod.flow.map((s) => (
+        <li><strong>{s.label} — {s.title}.</strong> {s.body}</li>
+      ))}
+    </ol>
   </Section>
 
   <Section eyebrow="Questions" title={`Asked about ${mod.path}`}>
-    <FaqList items={mod.faqs} />
+    <FaqList items={mod.faqs.slice(0, 3)} />
+    <p class="mt-6 text-sm"><a class="font-semibold text-green-deep underline underline-offset-4" href="/faq">More questions → FAQ</a></p>
   </Section>
 
-  <Section eyebrow="Keep exploring" title={`More from ${mod.domain.toLowerCase()}`}>
-    <ul class="grid gap-3 sm:grid-cols-3">
-      {
-        siblings.map((sib) => (
-          <li>
-            <a
-              href={`/modules/${sib.slug}`}
-              class="clip-corner group block h-full rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
-            >
-              <span class="font-mono text-sm font-medium text-green-deep group-hover:text-green-dark">{sib.path}</span>
-              <p class="mt-1.5 text-sm text-slate">{sib.summary}</p>
-            </a>
-          </li>
-        ))
-      }
+  <Section eyebrow="Related" title="Related modules">
+    <ul class="mod-related">
+      {siblings.map((sib) => (
+        <li><a href={`/modules/${sib.slug}`}><code>{sib.path}</code> — {sib.name} <span aria-hidden="true">→</span></a></li>
+      ))}
+      <li><a href="/modules">Full module reference →</a></li>
+      <li><a href="/protocol">Protocol architecture →</a></li>
     </ul>
-    <div class="reveal mt-8 flex flex-wrap gap-4">
-      <CTA href="/modules" variant="secondary">Full module reference</CTA>
-      <CTA href="/protocol" variant="ghost">Protocol architecture</CTA>
-    </div>
   </Section>
 </Base>

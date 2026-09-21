@@ -7,6 +7,7 @@ import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCa
 import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
 import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
 
 const title = "GPU & AI Compute on VirtEngine";
@@ -19,12 +20,15 @@ const crumbs = [
 ];
 
 const products = [
-  { title: "GPU Virtual Machine", specs: ["1 × GPU", "16 vCPU", "64 GB RAM"], components: ["GPU-hour"], price: "$0.39 / GPU-hour" },
-  { title: "Dedicated GPU Node", specs: ["2 × GPU", "48 vCPU", "256 GB RAM"], components: ["GPU-hour", "node-month"], price: "Metered or reserved" },
-  { title: "Multi-GPU Node", specs: ["4 × GPU", "96 vCPU", "768 GB RAM", "NVMe scratch"], components: ["GPU-hour", "storage GB-month"], price: "$0.39 / GPU-hour" },
-  { title: "Training Allocation", specs: ["Cluster slice", "Interconnect-aware", "Reserved term"], components: ["GPU-hour", "reserved capacity"], price: "Reserved plan" },
-  { title: "Inference Endpoint", specs: ["Managed runtime", "Autoscaling", "Model versioning"], components: ["request", "GPU-hour"], price: "Usage-priced" },
-  { title: "HPC GPU Queue", specs: ["Scheduler-backed", "Job duration limits", "Queue priority"], components: ["GPU-hour", "core-hour"], price: "Allocation-based" },
+  { title: "GPU Virtual Machine", specs: ["1 × A100 80GB", "16 vCPU", "64 GB RAM"], components: ["GPU-hour", "vCPU-hour"], price: "$0.11 / vCPU-hour + GPU-hour" },
+  { title: "Dedicated GPU Node", specs: ["1 × H100", "24 vCPU", "192 GB RAM", "NVMe scratch"], components: ["GPU-hour", "storage GB-month"], price: "$1.29 / GPU-hour" },
+  { title: "Multi-GPU Training Node", specs: ["4 × GPU", "96 vCPU", "768 GB RAM", "Interconnect-aware"], components: ["GPU-hour", "node-month"], price: "Reserved plan" },
+];
+
+const moreProducts = [
+  "Training Allocation — reserved cluster slice",
+  "Inference Endpoint — managed autoscaling runtime",
+  "HPC GPU Queue — scheduler-backed allocation",
 ];
 ---
 
@@ -57,6 +61,17 @@ const products = [
   </PageHero>
 
   <Section eyebrow="Product types" title="How GPU capacity is listed">
+    <p class="mk-buyer-note">Buyer view: what GPU capacity can you source? (Provider economics live on the provider solution page, not here.)</p>
+    <div class="mk-buyer-selector" aria-label="Illustrative workload selector">
+      <ul class="mk-chip-row">
+        <li>Workload: Training / Inference / Batch</li>
+        <li>GPU: A100 / H100 class</li>
+        <li>Memory: ≥ X GB</li>
+        <li>Topology: single / multi-GPU</li>
+        <li>Region: AU / ap-southeast</li>
+        <li>Attestation: required / optional</li>
+      </ul>
+    </div>
     <div class="mk-cards-3">
       {
         products.map((product) => (
@@ -72,6 +87,12 @@ const products = [
         ))
       }
     </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {moreProducts.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
     <p class="mk-rb-note">
       The same accelerator capacity can be sold as a machine, a node, a reservation, a queue allocation or a
       managed endpoint. What changes is who operates the software layer above it.
@@ -128,6 +149,10 @@ const products = [
     </div>
   </Section>
 
+  <div class="container-site">
+    <LifecycleRail aside={{ label: "GPU providers", href: "/solutions/gpu-compute-providers" }} />
+  </div>
+
   <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
     <RelatedMarketplacePages
       eyebrow="Explore"
@@ -136,9 +161,6 @@ const products = [
         { label: "IaaS", href: "/marketplace/iaas" },
         { label: "HPC & batch", href: "/marketplace/hpc" },
         { label: "GPU compute providers", href: "/solutions/gpu-compute-providers" },
-        { label: "AI & ML workloads", href: "/solutions/ai-ml-workloads" },
-        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
-        { label: "Marketplace overview", href: "/marketplace" },
       ]}
     />
   </Section>

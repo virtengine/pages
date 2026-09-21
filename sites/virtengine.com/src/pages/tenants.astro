@@ -4,7 +4,6 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import HowItWorks from "@components/HowItWorks.astro";
-import MarketplaceLifecycle from "@components/marketplace/MarketplaceLifecycle.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
 import { NETWORK_STATUS } from "@data/status";
 
@@ -48,23 +47,9 @@ const journey = [
   {
     label: "Run",
     title: "The provider provisions the service",
-    body: "The provider daemon routes the matched request into the provider's control plane and backend. The chain records the outcome; it does not create the resource.",
-    href: "/learn/from-listing-to-running-resource",
-    hrefLabel: "From listing to resource",
-  },
-  {
-    label: "Observe",
-    title: "Resource status and usage become visible",
-    body: "The provider's console shows resource state, quotas and actions; metered components appear as the service runs.",
-    href: "/waldur",
-    hrefLabel: "Waldur integration",
-  },
-  {
-    label: "Settle",
-    title: "Validated usage releases funds",
-    body: "Signed records pass through the dispute window, then settle from escrow to the provider under the governed fee policy.",
-    href: "/learn/escrow-and-settlement-explained",
-    hrefLabel: "Escrow & settlement",
+    body: "The provider daemon routes the matched request into the provider's control plane and backend. Usage settles from escrow — full lifecycle in the guide.",
+    href: "/learn/how-the-marketplace-works",
+    hrefLabel: "Marketplace lifecycle",
   },
 ];
 
@@ -87,8 +72,8 @@ const entryPaths = [
 >
   <PageHero
     eyebrow="For tenants & buyers"
-    title="Use infrastructure through VirtEngine"
-    lede="Find a service, form a lease, run it through the provider's control plane, and settle from verified usage. This is the buyer's path through the market."
+    title="Source infrastructure without committing to a single provider."
+    lede="What are you looking for? Pick a workload below — then verify, find, choose, fund, run."
     crumbs={crumbs}
   >
     <CTA href="/marketplace">Explore the marketplace</CTA>
@@ -99,17 +84,9 @@ const entryPaths = [
     </div>
   </PageHero>
 
-  <Section eyebrow="Tenant journey" title="Seven steps from requirement to settlement">
+  <Section eyebrow="Tenant journey" title="Five steps from requirement to running service">
     <HowItWorks id="tenant-journey" steps={journey} />
-  </Section>
-
-  <Section
-    eyebrow="Lifecycle"
-    title="What the protocol does at each stage"
-    lede="The same five-stage lifecycle every buyer passes through, with the responsibility split made explicit."
-    class="border-y border-line bg-paper-soft"
-  >
-    <MarketplaceLifecycle id="tenants" />
+    <p class="mt-6 text-sm">Full protocol detail: <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/how-the-marketplace-works">Order → Match → Lease → Usage → Settlement →</a></p>
   </Section>
 
   <Section eyebrow="Entry paths" title="Start from the workload">
@@ -159,9 +136,6 @@ const entryPaths = [
         { label: "Marketplace overview", href: "/marketplace" },
         { label: "Three ways to buy", href: "/learn/three-ways-to-buy" },
         { label: "Anatomy of a listing", href: "/learn/anatomy-of-a-marketplace-listing" },
-        { label: "Escrow & settlement", href: "/learn/escrow-and-settlement-explained" },
-        { label: "Waldur integration", href: "/waldur" },
-        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
       ]}
     />
   </Section>

@@ -1,11 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
-import PageHero from "@components/PageHero.astro";
-import Section from "@components/Section.astro";
-import CTA from "@components/CTA.astro";
 import DiagramFrame from "@components/DiagramFrame.astro";
 import FaqList from "@components/FaqList.astro";
-import HowItWorks from "@components/HowItWorks.astro";
 import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
 import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
 import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
@@ -75,7 +71,8 @@ const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
 };
 
 const diagram = guide.diagram ? diagrams[guide.diagram] : null;
-const otherGuides = LEARN.filter((g) => g.slug !== guide.slug).slice(0, 4);
+const hasVisuals = Boolean(guide.visuals && guide.visuals.length);
+const hasJourney = Boolean(guide.journey && guide.journey.length);
 
 const canonical = new URL(`/learn/${guide.slug}`, SITE.url).href;
 const guideSchema = {
@@ -127,227 +124,147 @@ const glossarySchema = guide.glossary
   ogType="article"
   schema={[guideSchema, glossarySchema]}
 >
-  <PageHero
-    eyebrow={`Learn · ${guide.kicker}`}
-    title={guide.title}
-    lede={guide.intro}
-    crumbs={crumbs}
-    media={guide.media}
-    mediaCaption={guide.mediaCaption}
-  />
-
-  <Section eyebrow="At a glance" title="Key takeaways">
-    <ul class="grid gap-4 sm:grid-cols-2">
-      {
-        guide.takeaways.map((t, i) => (
-          <li class="reveal clip-corner rounded-card border border-line bg-panel p-5">
-            <p class="font-mono text-sm font-medium text-green-deep" aria-hidden="true">
-              {String(i + 1).padStart(2, "0")}
-            </p>
-            <p class="mt-2 text-sm leading-relaxed text-slate">{t}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </Section>
-
-  <div class="container-site">
-    <nav class="route-tabs reveal" aria-label="On this page">
-      {guide.sections.map((section) => (
-        <a href={`#${slugify(section.heading)}`}>{navLabel(section.heading)}</a>
-      ))}
-      <a href="#questions">Questions</a>
+  <div class="learn-progress" aria-hidden="true"><i></i></div>
+  <div class="container-site learn-editorial">
+    <nav class="learn-crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">/</span>
+      <a href="/learn">Learn</a> <span aria-hidden="true">/</span>
+      <span aria-current="page">{guide.label}</span>
     </nav>
+    <p class="learn-kicker">Learn · {guide.kicker}</p>
+    <h1 class="learn-title">{guide.title}</h1>
+    <p class="learn-lede">{guide.intro}</p>
+    {guide.takeaways && guide.takeaways.length > 0 && (
+      <aside class="learn-keypoints" aria-label="Key points">
+        <p>Key points</p>
+        <ul>
+          {guide.takeaways.slice(0, 4).map((t) => <li>{t}</li>)}
+        </ul>
+      </aside>
+    )}
   </div>
 
-  {
-    diagram && (
-      <div class="container-site pt-14 md:pt-20">
-        <DiagramFrame label={diagram.label} caption={guide.diagramCaption} class="reveal">
-          <diagram.component />
-        </DiagramFrame>
-      </div>
-    )
-  }
+  {diagram && (
+    <div class="container-site learn-figure">
+      <h2 class="sr-only">Figures</h2>
+      <DiagramFrame label={diagram.label} caption={guide.diagramCaption} class="reveal">
+        <diagram.component />
+      </DiagramFrame>
+    </div>
+  )}
 
-  {
-    guide.visuals && (
-      <div class="container-site pt-14 md:pt-20">
-        <div class="mk-visual-stack">
-          {guide.visuals.map((visual, index) => (
-            <MarketplaceVisual visual={visual} id={`${guide.slug}-${index}`} />
-          ))}
-        </div>
+  {hasVisuals && (
+    <div class="container-site learn-figure">
+      {!diagram && <h2 class="sr-only">Figures</h2>}
+      <div class="mk-visual-stack">
+        {guide.visuals!.map((visual, index) => (
+          <MarketplaceVisual visual={visual} id={`${guide.slug}-${index}`} />
+        ))}
       </div>
-    )
-  }
+    </div>
+  )}
 
-  {
-    guide.glossary && (
-      <Section eyebrow="Definitions" title="Marketplace glossary">
-        <div class="mk-glossary">
+  <div class="container-site learn-layout">
+    <aside class="learn-toc" aria-label="On this page">
+      <p>On this page</p>
+      <ul>
+        {guide.sections.map((section) => (
+          <li><a href={`#${slugify(section.heading)}`}>{navLabel(section.heading)}</a></li>
+        ))}
+        <li><a href="#questions">Questions</a></li>
+      </ul>
+      {hasJourney && (
+        <ul class="learn-journey-nav">
+          {guide.journey!.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+        </ul>
+      )}
+    </aside>
+
+    <div class="learn-body">
+      {guide.glossary && (
+        <section class="learn-glossary" aria-label="Marketplace glossary">
           {GLOSSARY.map((group) => (
-            <section class="mk-glossary-group" aria-labelledby={`glossary-${group.id}`}>
+            <section aria-labelledby={`glossary-${group.id}`}>
               <h2 id={`glossary-${group.id}`}>{group.heading}</h2>
               <p>{group.intro}</p>
               <dl>
                 {group.terms.map((term) => (
-                  <div class="mk-glossary-term" id={term.id}>
-                    <dt>
-                      {term.term}
-                      <span class="mk-tag mk-tag--quiet">glossary</span>
-                    </dt>
+                  <div id={term.id}>
+                    <dt>{term.term}</dt>
                     <dd>{term.definition}</dd>
-                    <div class="mk-glossary-links">
-                      {term.href && (
-                        <a href={term.href} rel={term.href.startsWith("http") ? "noopener" : undefined}>
-                          {term.hrefLabel ?? "Read more"} <span aria-hidden="true">→</span>
-                        </a>
-                      )}
-                      {term.see && term.see.length > 0 && (
-                        <span>
-                          See:{" "}
-                          {term.see.map((id, index) => (
-                            <>
-                              {index > 0 && ", "}
-                              <a href={`#${id}`}>{id.replace(/-/g, " ")}</a>
-                            </>
-                          ))}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 ))}
               </dl>
             </section>
           ))}
-        </div>
-      </Section>
-    )
-  }
+        </section>
+      )}
 
-  {
-    guide.screenshots && (
-      <Section eyebrow="Waldur HomePort" title="See the control plane users actually operate">
-        <div class="grid gap-5 md:grid-cols-2">
-          {guide.screenshots.map((shot, index) => (
-            <figure
-              class:list={[
-                "reveal overflow-hidden rounded-frame border border-line-strong bg-panel shadow-[0_16px_34px_rgba(38,43,38,0.08)]",
-                index === 0 && "md:col-span-2",
-              ]}
-            >
-              <a href={shot.sourceHref} rel="noopener" class="group block" aria-label={`View official source for ${shot.title}`}>
-                <img
-                  src={shot.src}
-                  alt={shot.alt}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  class="block h-auto w-full border-b border-line bg-paper-soft transition-transform duration-300 group-hover:scale-[1.01]"
-                />
-              </a>
-              <figcaption class="p-5">
-                <h3 class="text-base font-semibold text-ink">{shot.title}</h3>
-                <p class="mt-2 text-sm leading-relaxed text-slate">{shot.caption}</p>
-                <a href={shot.sourceHref} rel="noopener" class="mt-3 inline-flex text-xs font-semibold text-green-deep underline decoration-green/40 underline-offset-4 hover:text-green-dark">
-                  Official Waldur source
-                </a>
-              </figcaption>
+      {guide.screenshots && (
+        <section aria-label="Control plane screenshots">
+          {guide.screenshots.slice(0, 2).map((shot) => (
+            <figure class="learn-shot">
+              <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+              <figcaption><strong>{shot.title}.</strong> {shot.caption}</figcaption>
             </figure>
           ))}
-        </div>
-        <p class="mt-5 max-w-3xl text-xs leading-relaxed text-muted">
-          Screenshots are reproduced from Waldur's official website and documentation to explain the integration. Waldur is developed independently by the Waldur community; the interface shown is illustrative and can vary by release and deployment branding.
-        </p>
-      </Section>
-    )
-  }
+        </section>
+      )}
 
-  {
-    guide.journey && (
-      <Section
-        eyebrow="Overview"
-        title="Follow it step by step"
-        lede="Select each step for the short version — every panel links into the full section below."
-      >
-        <HowItWorks id={`learn-${guide.slug}`} steps={guide.journey} />
-      </Section>
-    )
-  }
+      {guide.sections.map((section, si) => (
+        <section id={slugify(section.heading)} aria-label={section.heading}>
+          <h2>{section.heading}</h2>
+          {section.paragraphs.map((para) => <p>{para}</p>)}
+          {section.bullets && (
+            <ul>
+              {section.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          )}
+          {si === 0 && hasJourney && (
+            <ol class="learn-journey-inline">
+              {guide.journey!.map((s) => (
+                <li><a href={s.href}><strong>{s.label}</strong> — {s.title}</a></li>
+              ))}
+            </ol>
+          )}
+        </section>
+      ))}
 
-  <article>
-    {
-      guide.sections.map((section) => (
-        <Section eyebrow={guide.kicker} title={section.heading} id={slugify(section.heading)}>
-          <div class="prose-body space-y-5 text-base">
-            {section.paragraphs.map((para) => <p>{para}</p>)}
-            {section.bullets && (
-              <ul class="tri-list text-base">
-                {section.bullets.map((b) => <li>{b}</li>)}
-              </ul>
-            )}
-          </div>
-        </Section>
-      ))
-    }
-  </article>
+      <section id="questions" aria-label="Questions">
+        <h2>Asked about {guide.label.toLowerCase()}</h2>
+        <FaqList items={guide.faqs.slice(0, 3)} />
+        <p><a href="/faq">More questions → FAQ</a></p>
+      </section>
 
-  <Section eyebrow="Questions" title={`Asked about ${guide.label.toLowerCase()}`} id="questions">
-    <FaqList items={guide.faqs} />
-  </Section>
+      {guide.sources && (
+        <section aria-label="Sources">
+          <h2>Sources</h2>
+          <ul>
+            {guide.sources.map((source) => (
+              <li><a href={source.href}>{source.label}</a> — {source.detail}</li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-  {
-    guide.sources && (
-      <Section eyebrow="Sources" title="Follow the implementation and upstream model">
-        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {guide.sources.map((source) => (
-            <li>
-              <a
-                href={source.href}
-                rel={source.href.startsWith("http") ? "noopener" : undefined}
-                class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
-              >
-                <strong class="text-sm text-ink group-hover:text-green-dark">{source.label}</strong>
-                <span class="mt-2 text-xs leading-relaxed text-muted">{source.detail}</span>
-              </a>
-            </li>
+      <nav class="related-links" aria-label="Continue">
+        <p>Continue</p>
+        <ul>
+          {guide.related.slice(0, 3).map((rel) => (
+            <li><a href={rel.href}>{rel.label} →</a></li>
           ))}
         </ul>
-      </Section>
-    )
-  }
-
-  <Section eyebrow="Related" title="Continue from here">
-    <ul class="grid gap-3 sm:grid-cols-2">
-      {
-        guide.related.map((rel) => (
-          <li>
-            <a
-              href={rel.href}
-              class="clip-corner group flex items-center justify-between gap-4 rounded-card border border-line bg-panel px-5 py-4 transition-colors hover:border-green-deep"
-            >
-              <span class="text-sm font-medium text-ink group-hover:text-green-dark">{rel.label}</span>
-              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-green-deep">
-                <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
-              </svg>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <div class="mt-8">
-      <p class="eyebrow">More guides</p>
-      <ul class="mt-4 flex flex-wrap gap-3">
-        {
-          otherGuides.map((g) => (
-            <li>
-              <a href={`/learn/${g.slug}`} class="inline-block rounded-sm border border-line-strong px-4 py-2 text-sm font-medium text-slate transition-colors hover:border-green-deep hover:text-green-dark">
-                {g.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      </nav>
     </div>
-  </Section>
+  </div>
+  <script>
+    const bar = document.querySelector(".learn-progress i");
+    const onScroll = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      if (bar && max > 0) bar.style.transform = `scaleX(${h.scrollTop / max})`;
+    };
+    document.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  </script>
 </Base>

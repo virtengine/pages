@@ -11,36 +11,22 @@ const crumbs = [
   { name: "Learn", href: "/learn" },
 ];
 
-const marketplace = LEARN.filter((g) =>
-  [
-    "what-can-you-buy-through-virtengine",
-    "iaas-paas-saas-on-virtengine",
-    "three-ways-to-buy",
-    "anatomy-of-a-marketplace-listing",
-    "from-listing-to-running-resource",
-    "how-custom-offerings-work",
-    "who-controls-what",
-    "marketplace-glossary",
-  ].includes(g.slug),
-);
-const fundamentals = LEARN.filter((g) =>
-  ["how-the-marketplace-works", "waldur-and-virtengine", "escrow-and-settlement-explained", "what-is-veid"].includes(g.slug),
-);
-const economics = LEARN.filter((g) =>
-  ["tokenomics-explained", "understanding-slashing", "provider-economics", "governance-guide"].includes(g.slug),
-);
-const advanced = LEARN.filter((g) =>
-  ["confidential-computing-on-virtengine", "hpc-on-virtengine", "mainnet-roadmap"].includes(g.slug),
-);
+const bySlug = (slug: string) => LEARN.find((g) => g.slug === slug);
+const pick = (slugs: string[]) => slugs.map(bySlug).filter((g): g is NonNullable<typeof g> => Boolean(g));
+
+const fundamentals = pick(["how-the-marketplace-works", "iaas-paas-saas-on-virtengine", "what-is-veid", "escrow-and-settlement-explained"]);
+const marketplace = pick(["three-ways-to-buy", "anatomy-of-a-marketplace-listing", "marketplace-glossary"]);
+const infrastructure = pick(["hpc-on-virtengine", "confidential-computing-on-virtengine"]);
+const economics = pick(["tokenomics-explained", "understanding-slashing", "provider-economics", "governance-guide"]);
+const network = pick(["mainnet-roadmap"]);
 
 const groups = [
-  { eyebrow: "Marketplace & services", title: "What the market sells, and how buying works", items: marketplace },
-  { eyebrow: "Fundamentals", title: "Start here", items: fundamentals },
+  { eyebrow: "Marketplace", title: "Buying modes, listings, vocabulary", items: marketplace },
+  { eyebrow: "Infrastructure", title: "HPC and confidential computing", items: infrastructure },
   { eyebrow: "Economics & governance", title: "Money, risk, and control", items: economics },
-  { eyebrow: "Advanced capabilities", title: "Confidential compute, HPC & mainnet", items: advanced },
-];
+  { eyebrow: "Network", title: "Status and roadmap", items: network },
+].filter((g) => g.items.length > 0);
 ---
-
 <Base
   title="Learn: Marketplace, Tokenomics & Cloud Guides | VirtEngine"
   description="Guides that explain how VirtEngine works — from the marketplace and service catalogue to identity, infrastructure, settlement and the MainNet roadmap."
@@ -53,36 +39,44 @@ const groups = [
     mediaCaption="Written to be checked, not skimmed."
     eyebrow="Learn"
     title="The protocol, explained properly"
-    lede="Guides that explain how VirtEngine works — from the marketplace and service catalogue to identity, infrastructure and settlement. Grounded in the protocol repository, official integration documentation, and its economic simulation framework. No filler, no invented numbers."
+    lede="Fewer, stronger guides — each with a distinct job. Start with fundamentals, go deeper where needed, use reference material for lookup."
     crumbs={crumbs}
   >
   </PageHero>
 
+  <Section eyebrow="Fundamentals" title="Start with these four">
+    <ul class="learn-map-feature">
+      {
+        fundamentals.map((guide) => (
+          <li>
+            <a href={`/learn/${guide.slug}`}>
+              <MediaFigure slug={guide.media} ratio="16 / 9" sizes="(min-width: 1024px) 44vw, 100vw" />
+              <div>
+                <p class="learn-map-kicker">{guide.kicker}</p>
+                <h3>{guide.title}</h3>
+                <p>{guide.metaDescription}</p>
+                <span class="learn-map-go">Read the guide <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
   {
     groups.map((group) => (
       <Section eyebrow={group.eyebrow} title={group.title}>
-        <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="learn-map-list">
           {group.items.map((guide) => (
             <li>
-              <a
-                href={`/learn/${guide.slug}`}
-                class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
-              >
-                <MediaFigure
-                  slug={guide.media}
-                  ratio="16 / 9"
-                  sizes="(min-width: 1024px) 30vw, 100vw"
-                  class="mb-5"
-                />
-                <p class="font-mono text-xs font-medium uppercase tracking-[0.16em] text-green-deep">{guide.kicker}</p>
-                <h3 class="mt-2 text-lg font-semibold text-ink group-hover:text-green-dark">{guide.title}</h3>
-                <p class="mt-2.5 flex-1 text-sm leading-relaxed text-slate">{guide.metaDescription}</p>
-                <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-green-deep">
-                  Read the guide
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
-                  </svg>
+              <a href={`/learn/${guide.slug}`}>
+                <span>
+                  <small>{guide.kicker}</small>
+                  <strong>{guide.title}</strong>
+                  <em>{guide.metaDescription}</em>
                 </span>
+                <span class="learn-map-arrow" aria-hidden="true">→</span>
               </a>
             </li>
           ))}

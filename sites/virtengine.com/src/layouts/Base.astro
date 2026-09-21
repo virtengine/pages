@@ -158,7 +158,6 @@ const graph = schemaGraph([
     <a href="#main" class="skip-link">Skip to content</a>
     <Header />
     <main id="main">
-      {!["/", "/about", "/contact", "/participate", "/activities", "/launch"].includes(pathname.replace(/\/$/, "") || "/") && <aside class="phase-note container-site"><strong>In development.</strong> These pages describe the protocol design. The network is not live. <a href="/network">Check launch status →</a></aside>}
       <slot />
     </main>
     <Footer />

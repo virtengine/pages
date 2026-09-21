@@ -181,6 +181,13 @@ export const LEARN: LearnEntry[] = [
         ],
       },
       {
+        heading: "Fulfilment",
+        paragraphs: [
+          "The chain does not provision infrastructure. After the lease binds tenant, provider and escrow, the provider daemon routes the matched request into the provider control plane, which invokes the configured backend.",
+          "Provision, resize, suspend, resume and terminate are asynchronous. Each outcome returns as an authenticated callback before it becomes correlated lease state. Operational dashboards remain views; protocol payout follows the lease.",
+        ],
+      },
+      {
         heading: "Why this design holds up",
         paragraphs: [
           "Each stage hands off with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts.",
@@ -207,7 +214,7 @@ export const LEARN: LearnEntry[] = [
         question: "Where do I start — Waldur or the chain?",
         answer:
           "Either. Tenants can begin from a Waldur offering and buy it outright at its listed price; the protocol client creates the verifiable market order and the lease is correlated with a Waldur order for fulfilment. Open bidding is available when you want price discovery instead, and selector orders match eligible listings by attribute and price cap. Match selection and escrow never leave the chain.",
-        links: [{ label: "Waldur + VirtEngine", href: "/learn/waldur-and-virtengine" }],
+        links: [{ label: "Waldur + VirtEngine", href: "/waldur" }],
       },
       {
         question: "Who sets the price?",
@@ -257,186 +264,6 @@ export const LEARN: LearnEntry[] = [
         title: "Records become payment",
         body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout under the governed fee policy — and unspent funds return.",
         href: "#stage-5-settlement-usage-becomes-payment",
-      },
-    ],
-  },
-  {
-    slug: "waldur-and-virtengine",
-    title: "How Waldur and VirtEngine work together",
-    label: "Waldur + VirtEngine",
-    metaDescription:
-      "Waldur and VirtEngine integration guide: HomePort, MasterMind, offering sync, order routing, resource lifecycle, usage and on-chain settlement.",
-    kicker: "Control-plane integration",
-    intro:
-      "Waldur gives cloud and HPC users a mature catalogue, project workspace, resource console and reporting interface. VirtEngine adds the verifiable market: provider registration, direct purchase and optional competitive bidding, leases, identity, escrow and settlement. The provider daemon is the bridge that keeps chain state and the Waldur control plane correlated.",
-    diagram: "waldur",
-    diagramCaption:
-      "The responsibility boundary: VirtEngine coordinates the verifiable market; the provider daemon translates and reconciles; Waldur presents and operates the service catalogue.",
-    screenshots: [
-      {
-        src: "/media/waldur/marketplace.webp",
-        alt: "Waldur HomePort marketplace showing service categories, providers, orders, search and offering cards",
-        title: "Marketplace catalogue",
-        caption:
-          "HomePort gives users a searchable service catalogue. In a VirtEngine deployment, the provider daemon correlates these Waldur offerings with their on-chain offering identifiers.",
-        sourceHref: "https://waldur.com/#screenshots",
-      },
-      {
-        src: "/media/waldur/project-workspace.webp",
-        alt: "Waldur HomePort project dashboard showing costs, team size, usage and aggregated limits",
-        title: "Project workspace",
-        caption:
-          "Projects group people, resources, orders, limits and operational cost views. VirtEngine leases and provider allocations can be surfaced in the same workspace.",
-        sourceHref: "https://waldur.com/#screenshots",
-      },
-      {
-        src: "/media/waldur/resource-details.png",
-        alt: "Waldur HomePort private cloud resource detail showing status, quotas, compute, network and storage usage",
-        title: "Resource lifecycle and quotas",
-        caption:
-          "Waldur remains the provider-side operational console for resource state, quotas and actions while signed callbacks return lifecycle outcomes to the bridge.",
-        sourceHref: "https://docs.waldur.com/latest/developer-guide/homeport/",
-      },
-      {
-        src: "/media/waldur/reporting.webp",
-        alt: "Waldur HomePort reporting screen showing providers, offerings, plans and active resource counts",
-        title: "Usage and reporting",
-        caption:
-          "Waldur exposes operational and accounting reports. VirtEngine separately turns signed usage records into protocol settlement against escrow.",
-        sourceHref: "https://waldur.com/#screenshots",
-      },
-    ],
-    sections: [
-      {
-        heading: "One marketplace, two distinct responsibilities",
-        paragraphs: [
-          "Waldur is the service-management control plane. Its HomePort web application talks to the MasterMind API to manage organizations, projects, offerings, orders, resources, quotas, usage views and provider integrations. Waldur's own marketplace follows a uniform offering → order → resource pipeline across OpenStack, SLURM, Rancher, VMware, Azure, scripted services, remote Waldur deployments and site-agent plugins.",
-          "VirtEngine is the consensus and settlement layer. Its chain records provider and offering state, orders, bids, leases, identity checks, escrow and settlement. It does not replace Waldur's cloud UI or backend plugins; it makes the commercial relationship between otherwise independent tenants and providers verifiable on-chain.",
-        ],
-      },
-      {
-        heading: "The bridge is part of the provider daemon",
-        paragraphs: [
-          "The integration code lives in pkg/waldur and pkg/provider_daemon. The Waldur client lists and creates offerings, creates and tracks orders, manages resources and lifecycle actions, and submits component usage. The provider daemon subscribes to marketplace events and translates the relevant state into Waldur API operations.",
-          "Offering synchronization is chain-to-Waldur. When enabled, the worker maps an on-chain offering to a Waldur provider offering, persists the mapping, retries transient failures and periodically reconciles drift. The on-chain offering ID is retained as the backend cross-reference, so a polished catalogue card never becomes detached from the protocol object it represents.",
-        ],
-      },
-      {
-        heading: "What a tenant experiences",
-        paragraphs: [
-          "A tenant can discover services through a branded HomePort catalogue and work inside familiar organization and project boundaries. Categories, plans, components, limits and custom order fields turn provider capacity into understandable products instead of raw infrastructure APIs.",
-          "The current VirtEngine code is strongest on chain-to-Waldur orchestration: the protocol client creates the verifiable market order — a direct purchase of a named offering, or an open order providers can bid on — and the resulting lease is correlated with a Waldur order or resource for fulfilment. HomePort then becomes the day-to-day resource console for status, quotas, access details and supported actions. A deployment can expose more of the ordering path in HomePort, but that does not move match selection or escrow out of the chain.",
-        ],
-      },
-      {
-        heading: "What a provider operates",
-        paragraphs: [
-          "The provider publishes capacity and pricing into VirtEngine, configures the Waldur organization, categories and backend integration, and runs the provider daemon with both chain and Waldur credentials. The bridge keeps the catalogue synchronized and routes the matched service request to the correct Waldur offering and project.",
-          "Waldur then invokes the configured processor: OpenStack for tenants, VMs, volumes and networks; SLURM or site agent for HPC allocations; Rancher for Kubernetes; or a custom processor for a provider-defined service. This is why Waldur is valuable here: VirtEngine does not need to embed every infrastructure-specific workflow into consensus code.",
-        ],
-      },
-      {
-        heading: "Lifecycle updates return as authenticated events",
-        paragraphs: [
-          "Provision, resize, suspend, resume and terminate operations are asynchronous. The bridge includes callback URLs and idempotency keys in Waldur actions, tracks the expected operation, and maps Waldur order and resource states back to VirtEngine allocation states.",
-          "The callback handler is designed for an adversarial boundary: signatures are required by default, payload size is bounded, timestamps expire, nonces are tracked to reject replay, signer allow-lists can be enforced, and accepted callbacks can be submitted through a durable chain mutation sink. A green status badge in HomePort therefore becomes protocol state only after the bridge has validated and correlated it.",
-        ],
-      },
-      {
-        heading: "Usage is visible in Waldur and settled by VirtEngine",
-        paragraphs: [
-          "Waldur offerings define measurable components such as CPU-hours, GPU-hours, RAM GB-hours, storage and network transfer. The VirtEngine Waldur client can submit those component readings against the correlated resource, which makes provider and project reporting useful for operators and customers.",
-          "The decentralized payment path remains separate. Signed usage records are validated against the VirtEngine lease, pass through the dispute window, and settle against on-chain escrow. Waldur's invoices, estimates and dashboards are operational views; they do not override the lease price or authorize a protocol payout.",
-        ],
-      },
-      {
-        heading: "A practical end-to-end walkthrough",
-        paragraphs: [],
-        bullets: [
-          "Publish: a provider registers an offering on-chain; the sync worker creates or updates the corresponding Waldur offering and stores both identifiers.",
-          "Discover: the service appears in HomePort with a category, plan, limits, measured components and provider details.",
-          "Match: a direct order binds its named offering, or — for open orders — the tenant selects a bid and the lease binds provider, tenant and escrow.",
-          "Provision: the provider daemon routes the matched request to Waldur, which invokes the configured cloud, HPC or custom processor.",
-          "Operate: HomePort exposes resource state and actions; authenticated callbacks keep the bridge and chain allocation correlated.",
-          "Measure: component usage is visible in Waldur and submitted into VirtEngine's signed usage and settlement pipeline.",
-          "Settle: after validation and the dispute window, VirtEngine releases the agreed amount from escrow and returns unused funds when the deployment closes.",
-        ],
-      },
-      {
-        heading: "What is implemented, and what still depends on deployment",
-        paragraphs: [
-          "The repository contains the Waldur API client, marketplace and resource operations, automatic offering synchronization, order routing, lifecycle control, callback verification, usage submission and provider-daemon wiring. Those are real code paths, not a design-only diagram.",
-          "Production availability still depends on operator configuration: Waldur credentials and organization IDs, category mappings, callback TLS and signer policy, durable chain submission, a supported backend plugin, and deployment-specific certification. An integration present in upstream Waldur is not automatically a certified VirtEngine provider adapter.",
-        ],
-      },
-    ],
-    sources: [
-      {
-        label: "Waldur marketplace model",
-        detail: "Official offering, order, resource, plugin and policy concepts",
-        href: "https://docs.waldur.com/latest/about/concepts/marketplace/",
-      },
-      {
-        label: "Waldur HomePort",
-        detail: "Official browser UI, accessibility and mobile requirements",
-        href: "https://docs.waldur.com/latest/developer-guide/homeport/",
-      },
-      {
-        label: "Waldur screenshots",
-        detail: "Official Marketplace, project and reporting interface gallery",
-        href: "https://waldur.com/#screenshots",
-      },
-      {
-        label: "VirtEngine Waldur client",
-        detail: "Marketplace, lifecycle and usage API implementation",
-        href: "https://github.com/virtengine/virtengine/tree/main/pkg/waldur",
-      },
-      {
-        label: "VirtEngine provider bridge",
-        detail: "Offering sync, event routing and authenticated callbacks",
-        href: "https://github.com/virtengine/virtengine/tree/main/pkg/provider_daemon",
-      },
-      {
-        label: "Integration status overview",
-        detail: "Implemented, upstream and planned capability boundaries",
-        href: "/waldur",
-      },
-    ],
-    related: [
-      { label: "Waldur integration overview", href: "/waldur" },
-      { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
-      { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
-      { label: "Become a provider", href: "/providers" },
-    ],
-    media: "network-earth",
-    mediaCaption: "The control plane, reconciled with the chain.",
-    takeaways: [
-      "Waldur is the control plane — catalogue, projects, resource console. VirtEngine is the consensus and settlement layer.",
-      "The bridge lives in the provider daemon: offering sync, event routing, and authenticated callbacks.",
-      "Match selection and escrow never leave the chain — HomePort presents, the protocol decides.",
-      "Waldur invoices are operational views; protocol payout follows the lease, escrow, and dispute rules.",
-    ],
-    faqs: [
-      {
-        question: "Does VirtEngine replace Waldur?",
-        answer:
-          "No. Waldur keeps the catalogue, projects, quotas, and backend plugins; VirtEngine makes the commercial relationship between independent tenants and providers verifiable on-chain. The provider daemon correlates the two.",
-        links: [{ label: "Waldur integration overview", href: "/waldur" }],
-      },
-      {
-        question: "How do lifecycle events reach the chain safely?",
-        answer:
-          "Through authenticated callbacks: signatures required by default, bounded payloads, expiring timestamps, tracked nonces against replay, optional signer allow-lists — validated and correlated before any status becomes protocol state.",
-      },
-      {
-        question: "Which usage numbers actually get paid?",
-        answer:
-          "Signed records validated against the VirtEngine lease, through the dispute window, settled from escrow. Waldur's invoices, estimates, and dashboards are operational views that do not override the lease price or authorize payout.",
-      },
-      {
-        question: "What must an operator configure for production?",
-        answer:
-          "Waldur credentials and organization IDs, category mappings, callback TLS and signer policy, durable chain submission, a supported backend plugin, and deployment-specific certification. Upstream Waldur support is not automatically a certified VirtEngine adapter.",
       },
     ],
   },

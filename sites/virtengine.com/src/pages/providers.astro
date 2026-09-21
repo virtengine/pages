@@ -4,8 +4,6 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
-import DiagramFrame from "@components/DiagramFrame.astro";
-import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
 import { SITE } from "@data/site";
 
 const whyProvide = [
@@ -99,26 +97,13 @@ const onboarding = [
   <Section
     eyebrow="Economics"
     title="Usage in, payment out"
-    lede="The settlement pipeline connects your running workloads to escrowed tenant funds. Every hop is signed, windowed for disputes, and reconciled."
+    lede="Metered usage settles from escrow. Full money path lives in the canonical guides — not repeated here."
   >
-    <DiagramFrame
-      label="Settlement flow diagram in two halves. Left, the provider daemon: a usage meter collects per-workload resource metrics; a scheduled collector produces hourly usage records; the settlement pipeline batches records and runs anomaly detection; a chain submitter sends signed MsgRecordUsage batches. Right, on-chain: the settlement module converts usage into billable line items; a 24-hour dispute window allows corrections; the escrow module holds funds against the lease; then payout — the provider receives the agreed settlement amount under the governed fee policy."
-      caption="fig 01 — usage reporting and settlement pipeline (docs/usage-reporting-settlement.md)"
-      class="reveal"
-    >
-      <SettlementFlow />
-    </DiagramFrame>
-    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
-      <p>
-        Settlement runs on a default one-hour interval. Reported usage sits in a
-        <strong>24-hour dispute window</strong> during which either party can raise
-        corrections; anomaly detection flags outliers automatically before they ever
-        reach the chain. After the window closes, line items settle against lease escrow
-        and the agreed funds transfer to your provider account under the governed
-        settlement fee policy — protocol parameters, not a private platform deduction.
-        Low validator transaction fees apply only to the on-chain actions involved.
-      </p>
-    </div>
+    <p class="max-w-3xl text-sm leading-relaxed text-muted">
+      Usage is metered hourly as signed records, passes a 24-hour dispute window, then settles from lease escrow
+      under the governed fee policy. <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/escrow-and-settlement-explained">Escrow & settlement →</a>
+      <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/provider-economics">Provider economics →</a>
+    </p>
   </Section>
 
   <Section
@@ -178,7 +163,18 @@ const onboarding = [
     </ul>
   </Section>
 
-  <Section eyebrow="Onboarding" title="The planned provider workflow" id="onboarding">
+  <Section eyebrow="Onboarding" title="Readiness checklist" id="onboarding">
+    <ul class="provider-readiness">
+      <li><strong>Infrastructure</strong><span>✓ Kubernetes or HPC scheduler</span></li>
+      <li><strong>Public endpoint</strong><span>✓ reachable by tenants</span></li>
+      <li><strong>Metering</strong><span>✓ per-workload collection</span></li>
+      <li><strong>VEID / organisation</strong><span>○ verify identity</span></li>
+      <li><strong>Audit / benchmark</strong><span>○ optional attestation</span></li>
+      <li><strong>Daemon configuration</strong><span>○ prices + keys</span></li>
+    </ul>
+  </Section>
+
+  <Section eyebrow="Onboarding" title="The planned provider workflow">
     <ol class="grid gap-5 lg:grid-cols-5">
       {
         onboarding.map((step) => (

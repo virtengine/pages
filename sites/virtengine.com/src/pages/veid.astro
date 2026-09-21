@@ -188,17 +188,27 @@ const scenarios = [
       <VeidPipeline />
     </PlateFigure>
 
-    <ol class="stage-grid">
-      {
-        stages.map((stage) => (
-          <li class="stage-item reveal">
-            <span class="stage-idx">Stage {stage.step}</span>
-            <h3>{stage.title}</h3>
-            <p>{stage.body}</p>
-          </li>
-        ))
-      }
-    </ol>
+    <div class="veid-pipe">
+      {stages.map((stage, i) => (
+        <input type="radio" name="veid-stage" id={`veid-${i}`} checked={i === 0} class="sr-only" />
+      ))}
+      <div class="veid-stages" role="tablist" aria-label="VEID pipeline stages">
+        {stages.map((stage, i) => (
+          <label class="veid-stage" role="tab" for={`veid-${i}`}><strong>{stage.step}</strong> {stage.title}</label>
+        ))}
+      </div>
+      {stages.map((stage, i) => (
+        <div class="veid-detail" data-veid={i}>
+          <h3>Stage {stage.step} — {stage.title}</h3>
+          <p>{stage.body}</p>
+        </div>
+      ))}
+    </div>
+    <style>
+      .veid-detail { display: none; }
+      #veid-0:checked ~ .veid-detail[data-veid="0"], #veid-1:checked ~ .veid-detail[data-veid="1"], #veid-2:checked ~ .veid-detail[data-veid="2"], #veid-3:checked ~ .veid-detail[data-veid="3"], #veid-4:checked ~ .veid-detail[data-veid="4"], #veid-5:checked ~ .veid-detail[data-veid="5"] { display: block; }
+      .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    </style>
   </Section>
 
   <!-- ==================== TRUSTED PROCESSING ==================== -->

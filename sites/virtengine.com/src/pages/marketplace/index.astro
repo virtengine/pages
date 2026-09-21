@@ -3,13 +3,9 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
-import MarketplaceDemo from "@components/marketplace/MarketplaceDemo.astro";
-import AcquisitionPathSwitcher from "@components/marketplace/AcquisitionPathSwitcher.astro";
-import MarketplaceLifecycle from "@components/marketplace/MarketplaceLifecycle.astro";
-import OrderAnatomy from "@components/marketplace/OrderAnatomy.astro";
-import SettlementRail from "@components/marketplace/SettlementRail.astro";
-import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
-import { SERVICE_MODELS } from "@data/market";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import { SERVICE_MODELS, ACQUISITION_PATHS } from "@data/market";
 import { NETWORK_STATUS } from "@data/status";
 
 const title = "Marketplace: Infrastructure & Services | VirtEngine";
@@ -19,8 +15,18 @@ const crumbs = [
   { name: "Home", href: "/" },
   { name: "Marketplace", href: "/marketplace" },
 ];
----
 
+/** Mixed catalogue visual: the point is variety in one catalogue — not chain wiring. */
+const mixedCatalogue = [
+  SERVICE_MODELS.find(m => m.id === "gpu")!,
+  SERVICE_MODELS.find(m => m.id === "paas")!,
+  SERVICE_MODELS.find(m => m.id === "iaas")!,
+  SERVICE_MODELS.find(m => m.id === "hpc")!,
+  SERVICE_MODELS.find(m => m.id === "saas")!,
+  SERVICE_MODELS.find(m => m.id === "storage")!,
+  SERVICE_MODELS.find(m => m.id === "custom")!,
+];
+---
 <Base
   title={title}
   description={description}
@@ -31,110 +37,77 @@ const crumbs = [
   <PageHero
     eyebrow="Marketplace"
     title="Infrastructure and services, through one verifiable market."
-    lede="VirtEngine connects independent providers and tenants through a common catalogue, order, lease, usage and settlement protocol — infrastructure, managed platforms, software plans and provider-defined services on one market rail, with fulfilment staying with the provider that operates the service."
+    lede="Very different services can exist in one catalogue — compute, platforms, software, HPC, storage and custom work — ordered three ways and settled on one rail."
     crumbs={crumbs}
-    media="marketplace-hardware"
-    mediaCaption="Demand meets capacity on one exchange."
   >
     <CTA href="#service-types">Explore service types</CTA>
-    <CTA href="#interactive-demo" variant="secondary">Try the flow demo</CTA>
+    <CTA href="/learn/how-the-marketplace-works" variant="secondary">How the lifecycle works</CTA>
     <div class="mk-page-hero-flag">
-      <span class="mk-status">{NETWORK_STATUS.posture}</span>
-      <span class="mk-flag">Example listings throughout this section are illustrative</span>
+      <span class="mk-status">Illustrative catalogue · {NETWORK_STATUS.posture}</span>
     </div>
   </PageHero>
 
   <Section
-    eyebrow="Interactive demo"
-    title="See the flow: catalogue → daemon → protocol state."
-    lede="Switch stages to follow one order end to end, hover a listing to preview its fulfilment path, and watch the provider daemon and chain state change with it. Illustrative example — no live availability is implied."
-    id="interactive-demo"
-  >
-    <MarketplaceDemo />
-  </Section>
-
-  <Section
-    eyebrow="What you can buy"
-    title="One catalogue. Different things being delivered."
-    lede="The catalogue is organised by what a tenant receives, not by technology. Eight service categories share the same order, lease, usage and settlement machinery."
+    eyebrow="Service model atlas"
+    title="One catalogue, many service types."
+    lede="Each tile is an illustrative example from a different category. The visual point: very different services share one market."
     id="service-types"
   >
-    <div class="mk-cards-4">
-      {
-        SERVICE_MODELS.map((model) => (
-          <a class="mk-category-card" href={model.route}>
-            <span class="mk-tag">{model.label}</span>
-            <h3>{model.title}</h3>
-            <p class="mk-category-sub">{model.subtitle}</p>
-            <ul class="mk-atlas-chips">
-              {model.examples.slice(0, 5).map((example) => <li>{example}</li>)}
-            </ul>
-            <span class="mk-category-cta">{model.cta} <span aria-hidden="true">→</span></span>
-          </a>
-        ))
-      }
-    </div>
+    <ul class="mk-mixed-catalogue">
+      {mixedCatalogue.map((model) => (
+        <li>
+          <MarketplaceListingCard
+            serviceType={model.listing.serviceType}
+            title={model.listing.title}
+            provider={model.listing.provider}
+            region={model.listing.region}
+            specs={model.listing.specs.slice(0, 3)}
+            components={model.listing.components}
+            priceLabel={model.listing.priceLabel}
+            badges={model.listing.badges}
+            compact
+          />
+          <a class="mk-mixed-link" href={model.route}>{model.label} <span aria-hidden="true">→</span></a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-6 text-sm"><a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS →</a></p>
   </Section>
 
-  <Section
-    eyebrow="How buying works"
-    title="Three ways to source a service. One market rail."
-    lede="Choose a listed product, let providers compete, or describe what qualifies. Every path resolves on-chain and ends in the same escrow-backed lease."
-    class="border-y border-line bg-paper-soft"
-    id="buying"
-  >
-    <AcquisitionPathSwitcher id="hub" />
+  <Section eyebrow="How you source it" title="Direct, bid, or selector." lede="Compact overview — the full walkthrough is the canonical buying guide." id="buying">
+    <ul class="mk-compact-acq">
+      {ACQUISITION_PATHS.map((p) => (
+        <li><strong>{p.tab}</strong><span>{p.short}</span></li>
+      ))}
+    </ul>
+    <p class="mt-6"><a class="btn-quiet" href="/learn/three-ways-to-buy">Three ways to buy — full guide <span aria-hidden="true">→</span></a></p>
   </Section>
 
-  <Section
-    eyebrow="Lifecycle"
-    title="Order → match → lease → usage → settlement."
-    lede="Select a stage to see what the tenant does, what the provider does, what becomes protocol state, and what stays off-chain."
-    id="lifecycle"
-  >
-    <MarketplaceLifecycle id="hub" />
+  <Section eyebrow="One market rail" title="Order → Match → Lease → Usage → Settlement." lede="The lifecycle is explained once, in full, in the canonical guide." class="border-y border-line bg-paper-soft" id="lifecycle">
+    <LifecycleRail />
   </Section>
 
-  <Section
-    eyebrow="Anatomy"
-    title="An order is more than a shopping cart."
-    lede="It carries requirements, constraints, a price expectation and funded escrow — then resolves into an enforceable lease."
-    class="border-y border-line bg-paper-soft"
-  >
-    <OrderAnatomy />
-    <div class="mt-10">
-      <h3 class="mb-4 font-display text-2xl text-ink">One settlement rail under every service type</h3>
-      <SettlementRail />
-    </div>
-  </Section>
-
-  <Section eyebrow="Technical detail" title="Where to verify the implementation">
-    <div class="mk-tech-note">
-      <p>
-        <strong>Under the hood:</strong> read the{" "}
-        <a href="/modules/market">x/market module reference</a> for order, match and lease state, the{" "}
-        <a href="/modules/escrow">x/escrow</a> and <a href="/modules/settlement">x/settlement</a> modules for the
-        money path, <a href="/waldur">Waldur integration</a> for the control-plane bridge, and{" "}
-        <a href="https://docs.virtengine.com" rel="noopener">docs.virtengine.com</a> for message-level detail.
-        Source is public on <a href="https://github.com/virtengine/virtengine" rel="noopener">GitHub</a>.
-      </p>
+  <Section eyebrow="Trust signals" title="What every listing carries.">
+    <ul class="mk-trust-signals">
+      <li><strong>Provider identity</strong><span>VEID-verified counterparties</span></li>
+      <li><strong>Region</strong><span>placement and compliance input</span></li>
+      <li><strong>Audits</strong><span>auditor-signed attributes</span></li>
+      <li><strong>Benchmarks</strong><span>measured performance</span></li>
+      <li><strong>Attestation</strong><span>confidential paths where required</span></li>
+      <li><strong>Pricing</strong><span>published or competitive, always on-chain</span></li>
+    </ul>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="/tenants">For tenants</CTA>
+      <CTA href="/providers" variant="secondary">For providers</CTA>
+      <CTA href="/waldur" variant="ghost">How Waldur fulfils orders →</CTA>
     </div>
   </Section>
 
   <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
-    <RelatedMarketplacePages
-      eyebrow="Explore"
-      title="Go deeper"
-      links={[
-        { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
-        { label: "IaaS", href: "/marketplace/iaas" },
-        { label: "PaaS", href: "/marketplace/paas" },
-        { label: "SaaS", href: "/marketplace/saas" },
-        { label: "Custom listings", href: "/marketplace/custom-listings" },
-        { label: "Use infrastructure through VirtEngine", href: "/tenants" },
-        { label: "Waldur integration", href: "/waldur" },
-        { label: "Marketplace glossary", href: "/learn/marketplace-glossary" },
-      ]}
-    />
+    <ul class="mk-related-compact">
+      <li><a href="/learn/how-the-marketplace-works">How the marketplace works →</a></li>
+      <li><a href="/learn/three-ways-to-buy">Three ways to buy →</a></li>
+      <li><a href="/learn/anatomy-of-a-marketplace-listing">Anatomy of a listing →</a></li>
+    </ul>
   </Section>
 </Base>

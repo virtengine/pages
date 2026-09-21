@@ -5,10 +5,48 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import DiagramFrame from "@components/DiagramFrame.astro";
-import StatCallout from "@components/StatCallout.astro";
 import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
-import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
-import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import { MODULE_GROUPS, SITE } from "@data/site";
+
+const architectureLayers = [
+  {
+    id: "intent",
+    n: "01",
+    name: "Intent",
+    stack: "wallet · CLI · application",
+    input: "A signed instruction from a user, tenant or service.",
+    output: "A transaction submitted to the network.",
+    guarantee: "Only the holder of the keys can authorise the action — intent cannot be forged.",
+  },
+  {
+    id: "coordination",
+    n: "02",
+    name: "Coordination",
+    stack: "market · VEID · escrow",
+    input: "Orders, bids, identity scopes and funded escrow.",
+    output: "Matches, leases and settlement state.",
+    guarantee: "Matching, identity gating and funds follow protocol rules — not a private operator's discretion.",
+  },
+  {
+    id: "consensus",
+    n: "03",
+    name: "Consensus",
+    stack: "27 protocol modules",
+    input: "Transactions from every client and provider daemon.",
+    output: "Ordered, replicated chain state.",
+    guarantee: "Every validator executes the same modules under the same rules; the state is verifiable.",
+  },
+  {
+    id: "execution",
+    n: "04",
+    name: "Execution",
+    stack: "provider daemon · Waldur · Kubernetes · SLURM",
+    input: "Lease events and lifecycle actions.",
+    output: "Running resources and signed usage records.",
+    guarantee: "The chain does not provision; the provider's control plane does, and reports back under signature.",
+  },
+];
 ---
 
 <Base
@@ -25,8 +63,6 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
     eyebrow="Protocol"
     title="One chain that runs a cloud marketplace end to end"
     lede="VirtEngine is a purpose-built blockchain: consensus, identity verification, resource exchange, and payment settlement in a single Go binary. Here is how it fits together."
-    media="hero-infrastructure"
-    mediaCaption="The physical network the protocol runs on."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Protocol", href: "/protocol" },
@@ -46,6 +82,37 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
     >
       <ArchitectureMap />
     </DiagramFrame>
+
+    <div class="arch-strip">
+      {
+        architectureLayers.map((layer, i) => (
+          <input type="radio" name="arch-layer" id={`arch-${layer.id}`} checked={i === 0} class="sr-only" />
+        ))
+      }
+      <div class="arch-nodes" role="tablist" aria-label="Protocol architecture layers">
+        {
+          architectureLayers.map((layer) => (
+            <label class="arch-node" for={`arch-${layer.id}`}>
+              <small>{layer.n}</small>
+              <span>{layer.name}</span>
+              <em>{layer.stack}</em>
+            </label>
+          ))
+        }
+      </div>
+      {
+        architectureLayers.map((layer) => (
+          <div class="arch-detail" data-arch={layer.id}>
+            <dl>
+              <div><dt>Input</dt><dd>{layer.input}</dd></div>
+              <div><dt>Output</dt><dd>{layer.output}</dd></div>
+              <div><dt>Guarantee</dt><dd>{layer.guarantee}</dd></div>
+            </dl>
+          </div>
+        ))
+      }
+      <p class="arch-signed">signed usage returns through the stack ↑</p>
+    </div>
   </Section>
 
   <Section
@@ -83,51 +150,20 @@ import { LIFECYCLE, MODULE_GROUPS, SITE } from "@data/site";
   <Section
     eyebrow="Lifecycle"
     title="Order to settlement, on chain"
-    lede="Every marketplace interaction follows the same five-stage state machine."
+    lede="The five-stage marketplace lifecycle in brief. The canonical guide owns the full stage-by-stage explanation."
   >
-    <DiagramFrame
-      label="Marketplace lifecycle flow diagram in five stages. Stage one, order: a tenant posts a deployment. Stage two, match: a direct purchase at a listed price, an accepted competitive bid, or an attribute match. Stage three, lease: escrow is funded and the workload starts. Stage four, usage: signed usage records are submitted. Stage five, settlement: escrow is released after the dispute window, paying the agreed amount to the provider under the governed fee policy and returning any remaining escrow to the tenant."
-      caption="fig 02 — order → match → lease → usage → settlement"
-      class="reveal"
-    >
-      <LifecycleFlow />
-    </DiagramFrame>
-    <dl class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {
-        LIFECYCLE.map((stage) => (
-          <div class="reveal rounded-card border border-line bg-panel p-5">
-            <dt class="text-sm font-semibold">
-              <span class="mr-2 font-mono text-xs text-green-deep">{stage.step}</span>
-              {stage.name}
-            </dt>
-            <dd class="mt-2 text-xs leading-relaxed text-slate">{stage.detail}</dd>
-          </div>
-        ))
-      }
-    </dl>
+    <LifecycleRail />
   </Section>
 
   <Section
     eyebrow="Economics"
-    title="Tokenomics designed for a self-balancing network"
-    lede="Supply starts at zero. New tokens are issued only when unique human identities are verified, with no fixed maximum supply or hard cap."
+    title="Tokenomics — detail lives in the guide"
+    lede="Supply, issuance and rewards are owned by the tokenomics guide. This page keeps architecture only."
   >
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCallout value="0 tokens" label="Initial supply · no maximum supply cap" source="docs/tokenomics-analysis.md" />
-      <StatCallout value="14 : 1" label="Eligible humans to Foundation genesis allocation per 15 issued" source="Proposed policy" />
-      <StatCallout value="Identity-led" label="Proposed issuance model" source="Proposed policy" />
-      <StatCallout value="0%" label="Marketplace commission; validator transaction fees are separate" source="Proposed policy" />
-    </div>
-    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
-      <p>
-        Supply follows verified human participation and can continue growing as new
-        identities are verified and the human population grows. The Foundation genesis
-        account starts with zero tokens and receives its share through eligible issuance
-        batches. Staking rewards do not independently authorize new token issuance. Details on the
-        <a href="/staking">staking page</a> and in the
-        <a href={`${SITE.docs}`}>protocol documentation</a>.
-      </p>
-    </div>
+    <p class="max-w-3xl text-sm leading-relaxed text-muted">
+      Initial supply zero, identity-led issuance, governed parameters. <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/tokenomics-explained">Tokenomics explained →</a>
+      Staking roles: <a class="font-semibold text-green-deep underline underline-offset-4" href="/staking">Staking overview →</a>
+    </p>
   </Section>
 
   <Section

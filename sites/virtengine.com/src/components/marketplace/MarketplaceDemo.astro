@@ -53,15 +53,15 @@ const filters = ["Compute", "Kubernetes", "Storage", "Networking", "AI/ML", "Reg
 const listings = [
   {
     id: "a100",
-    title: "A100 GPU node",
+    title: "Managed GPU Workspace",
     provider: "Example provider",
-    description: "NVIDIA A100 80GB GPU node for AI/ML workloads.",
-    chips: ["GPU", "Compute", "On-demand"],
-    price: "$0.39 / GPU-hr",
+    description: "Provider-operated workspace on an A100 GPU node.",
+    chips: ["GPU", "Managed", "On-demand"],
+    price: "$1.29 / GPU-hour",
     flow: "Provider daemon → GPU backend → metering",
     detail: {
       status: "Available",
-      description: "High-performance NVIDIA A100 80GB GPU node for AI training and inference workloads. Provisioned on demand in multiple regions.",
+      description: "A provider-operated GPU workspace on an NVIDIA A100 80GB node for AI training and inference workloads. Provisioned on demand in multiple regions.",
       rows: [
         ["Category", "Compute / GPU"],
         ["Provider", "Example provider"],
@@ -291,11 +291,11 @@ const icons: Record<string, string> = {
               <span class="mk-flag">Illustrative example</span>
             </div>
             <p class="mkt-detail-desc">
-              The order names the A100 GPU node, resolves at the listed price, and funds escrow before anything is
+              The order names the GPU workspace, resolves at the listed price, and funds escrow before anything is
               provisioned.
             </p>
             <dl class="mkt-rows">
-              <div><dt>Offering</dt><dd>A100 GPU node</dd></div>
+              <div><dt>Offering</dt><dd>Managed GPU Workspace</dd></div>
               <div><dt>Components</dt><dd>GPU-hour · storage GB-month</dd></div>
               <div><dt>Region</dt><dd>ap-southeast</dd></div>
               <div><dt>Match</dt><dd>Direct · listed price</dd></div>
@@ -316,8 +316,8 @@ const icons: Record<string, string> = {
             <dl class="mkt-rows">
               <div><dt>Tenant</dt><dd>Example tenant</dd></div>
               <div><dt>Provider</dt><dd>Example provider</dd></div>
-              <div><dt>Offering</dt><dd>A100 GPU node</dd></div>
-              <div><dt>Pricing</dt><dd>$0.39 / GPU-hour</dd></div>
+              <div><dt>Offering</dt><dd>Managed GPU Workspace</dd></div>
+              <div><dt>Pricing</dt><dd>$1.29 / GPU-hour</dd></div>
               <div><dt>Escrow</dt><dd>Locked against the lease</dd></div>
               <div><dt>Resource state</dt><dd>Provisioning → Ready</dd></div>
             </dl>

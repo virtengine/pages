@@ -1,76 +1,53 @@
 ---
 /**
- * ServiceComparison — IaaS vs PaaS vs SaaS as a three-column comparison,
- * with the shared VirtEngine rail underneath. Used by the comparison article
- * and the PaaS/SaaS pages.
+ * ServiceComparison — IaaS vs PaaS vs SaaS as a responsibility stack.
+ *
+ * Who manages each layer, with the shared VirtEngine market rail underneath.
+ * The Learn article owns this comparison; service pages link to it instead
+ * of copying it.
  */
-import { SERVICE_MODEL_BY_ID } from "@data/market";
-
 interface Props {
   class?: string;
 }
 
 const { class: className } = Astro.props;
 
-const rows: { id: "iaas" | "paas" | "saas"; delivered: string; managed: string; meter: string }[] = [
-  {
-    id: "iaas",
-    delivered: "Infrastructure resource",
-    managed: "Tenant manages the OS, runtime and application.",
-    meter: "CPU / RAM / GPU / storage",
-  },
-  {
-    id: "paas",
-    delivered: "Managed platform",
-    managed: "Provider manages the runtime, orchestration or database; tenant deploys onto it.",
-    meter: "Platform components — vCPU-hours, RAM GB-hours, storage",
-  },
-  {
-    id: "saas",
-    delivered: "Software entitlement",
-    managed: "Provider manages the complete software service.",
-    meter: "Seat / plan / subscription / provider-defined component",
-  },
+const rows: { layer: string; iaas: "you" | "provider"; paas: "you" | "provider"; saas: "you" | "provider" }[] = [
+  { layer: "Application", iaas: "you", paas: "you", saas: "provider" },
+  { layer: "Runtime", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Platform", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Operating system", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Infrastructure", iaas: "provider", paas: "provider", saas: "provider" },
 ];
 
-const shared = [
-  "catalogue",
-  "order",
-  "counterparty identity",
-  "lease / agreement",
-  "usage where applicable",
-  "settlement",
-];
+const label = (owner: "you" | "provider") => (owner === "you" ? "You" : "Provider");
 ---
 
-<div class:list={["mk-svc-cmp-wrap", className]}>
-  <div class="mk-svc-cmp">
-    {
-      rows.map((row) => (
-        <article class="mk-svc-col">
-          <h3>{SERVICE_MODEL_BY_ID[row.id].title}</h3>
-          <dl>
-            <div>
-              <dt>What is delivered</dt>
-              <dd>{row.delivered}</dd>
-            </div>
-            <div>
-              <dt>Who manages what</dt>
-              <dd>{row.managed}</dd>
-            </div>
-            <div>
-              <dt>Typical meter</dt>
-              <dd>{row.meter}</dd>
-            </div>
-          </dl>
-        </article>
-      ))
-    }
-  </div>
-  <div class="mk-svc-shared">
-    <h3>Shared on VirtEngine — in every case</h3>
-    <ul>
-      {shared.map((item) => <li>{item}</li>)}
-    </ul>
-  </div>
+<div class:list={["mk-resp", className]}>
+  <table class="mk-matrix mk-resp-table">
+    <caption class="sr-only">Who manages each layer under IaaS, PaaS and SaaS</caption>
+    <thead>
+      <tr>
+        <th scope="col">Layer</th>
+        <th scope="col">IaaS</th>
+        <th scope="col">PaaS</th>
+        <th scope="col">SaaS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <th scope="row">{row.layer}</th>
+            <td class={row.iaas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.iaas)}</td>
+            <td class={row.paas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.paas)}</td>
+            <td class={row.saas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.saas)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="mk-resp-rail">
+    VirtEngine market · identity · settlement rail — the same underneath all three
+  </p>
 </div>

@@ -33,7 +33,7 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tag: "Default · listed price",
     title: "Name the listing. Buy at the published price.",
     short: "Take a provider's published plan. The order names that listing and matches at its price.",
-    href: "/waldur",
+    href: "/learn/three-ways-to-buy",
     body: "Pick a provider's offering and plan from the catalogue and order it directly. The order names that exact listing, matches without a bidding window, and becomes a lease backed by escrow. This is the default path — and the right one for most purchases.",
     steps: [
       ["Pick", "offering + plan"],
@@ -50,7 +50,7 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tag: "Opt-in · price discovery",
     title: "Post what you need. Providers compete on price.",
     short: "Open the order to a bidding window. Providers compete; you accept one, or the engine resolves the best.",
-    href: "/solutions/cost-optimized-cloud",
+    href: "/learn/three-ways-to-buy",
     body: "Open your order to a bidding window and let eligible providers offer prices. Accept a bid yourself, or let the matching engine take the best-ranked offer when the window closes. Use it for fungible capacity where competition should set the price.",
     steps: [
       ["Post", "specs + max price + window"],
@@ -67,7 +67,7 @@ export const ACQUISITION_PATHS: AcquisitionPath[] = [
     tag: "Attribute matching",
     title: "State the requirements. Get matched to eligible listings.",
     short: "Describe category, region, specs and a price cap. The engine matches the best eligible listing.",
-    href: "/learn/how-the-marketplace-works",
+    href: "/learn/three-ways-to-buy",
     body: "Instead of naming a provider, describe the category, region, minimum specifications and maximum price. The engine filters to eligible listings and matches deterministically within your cap — request-for-quote semantics without the negotiation round-trip.",
     steps: [
       ["Describe", "category · region · specs · cap"],
@@ -180,12 +180,12 @@ export const SERVICE_MODELS: ServiceModel[] = [
     fulfilmentTargets: ["OpenStack", "VMware", "Kubernetes / Rancher where applicable", "Provider custom integration"],
     listing: {
       serviceType: "IaaS",
-      title: "GPU Virtual Machine",
+      title: "General Purpose VM",
       provider: "Example Provider",
       region: "Sydney · AU",
-      specs: ["8 vCPU", "64 GB RAM", "1 × GPU", "1 TB block storage"],
-      components: ["GPU-hour", "storage GB-month"],
-      priceLabel: "$0.39 / GPU-hour",
+      specs: ["4 vCPU", "16 GB RAM", "200 GB NVMe"],
+      components: ["vCPU-hour", "storage GB-month"],
+      priceLabel: "$0.06 / vCPU-hour",
       badges: ["audited", "benchmarked"],
     },
     flow: [
@@ -390,12 +390,12 @@ export const SERVICE_MODELS: ServiceModel[] = [
     fulfilmentTargets: ["Kubernetes / Rancher", "GPU backends and runtimes", "Inference runtimes", "Provider custom integration"],
     listing: {
       serviceType: "GPU & AI",
-      title: "Multi-GPU Training Node",
+      title: "H100 GPU Node",
       provider: "Example Provider",
       region: "ap-southeast",
-      specs: ["4 × GPU", "96 vCPU", "768 GB RAM", "NVMe scratch"],
+      specs: ["1 × H100", "24 vCPU", "192 GB RAM", "NVMe scratch"],
       components: ["GPU-hour", "storage GB-month"],
-      priceLabel: "$0.39 / GPU-hour",
+      priceLabel: "$1.29 / GPU-hour",
       badges: ["benchmarked", "attested"],
     },
     flow: [
@@ -515,7 +515,7 @@ export const SERVICE_MODELS: ServiceModel[] = [
     cta: "Explore custom & managed listings",
     related: [
       { label: "Custom listings", href: "/marketplace/custom-listings" },
-      { label: "How custom offerings work", href: "/learn/how-custom-offerings-work" },
+      { label: "How custom offerings work", href: "/marketplace/custom-listings#fulfilment" },
       { label: "SaaS", href: "/marketplace/saas" },
       { label: "Waldur integration", href: "/waldur" },
     ],
@@ -564,7 +564,7 @@ export const SERVICE_MODELS: ServiceModel[] = [
     route: "/marketplace/custom-listings",
     cta: "Explore custom listings",
     related: [
-      { label: "How custom offerings work", href: "/learn/how-custom-offerings-work" },
+      { label: "How custom offerings work", href: "/marketplace/custom-listings#fulfilment" },
       { label: "Managed & professional services", href: "/marketplace/custom-listings" },
       { label: "Waldur integration", href: "/waldur" },
       { label: "Marketplace overview", href: "/marketplace" },
