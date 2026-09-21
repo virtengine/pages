@@ -7,28 +7,50 @@
  *   • stage tabs (Catalogue / Order / Lease / Usage) switch the right-hand
  *     stage panel, the chain stage highlight, the daemon task highlight and
  *     the banner copy — following the lifecycle;
- *   • hovering (or focusing) a listing previews its fulfilment path and
- *     swaps the detail card;
- *   • hovering a daemon task highlights the chain modules it touches, and
- *     vice versa (shared `data-link` tokens);
- *   • hovering a chain stage reveals what that state means;
- *   • the toggle freezes/plays the animated connectors.
+ *   • clicking (or Enter/Space on) a listing selects it: the card, the detail
+ *     drawer, the Order/Lease panels and the bridge copy all follow the same
+ *     service. Hover/focus previews without losing the selection;
+ *   • search, category, filter chips, region and plan controls filter the
+ *     catalogue like a real app, with a result count and an empty state;
+ *   • "Inspect flow" advances catalogue → order; chain stages and daemon
+ *     tasks are clickable and cross-highlight the modules they touch;
+ *   • the toggle enables/disables preview animations and hover linking.
  *
- * Zero client JavaScript: radios + labels + sibling selectors, with :has()
- * used only for the hover previews (the default state stays readable
- * without it). All content is real DOM text. Illustrative example only.
+ * Radios keep the stage tabs working with zero JS; the script below upgrades
+ * the figure to a real app (selection, filtering, cross-highlighting).
+ * All content is real DOM text. Illustrative example only.
  */
 const stageInputs = [
-  { id: "catalogue", label: "Catalogue", n: "01" },
-  { id: "order", label: "Order", n: "02" },
-  { id: "lease", label: "Lease", n: "03" },
-  { id: "usage", label: "Usage", n: "04" },
+  {
+    id: "catalogue",
+    label: "Catalogue",
+    n: "01",
+    icon: '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 2.5l7 3.8v7.4l-7 3.8-7-3.8V6.3z"/><path d="M10 2.5V10m0 0l7-3.7M10 10L3 6.3"/></svg>',
+  },
+  {
+    id: "order",
+    label: "Order",
+    n: "02",
+    icon: '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 3.5h2l1.6 8.2h8.6l1.8-6.2H5.4"/><circle cx="7" cy="15.5" r="1.3"/><circle cx="14" cy="15.5" r="1.3"/></svg>',
+  },
+  {
+    id: "lease",
+    label: "Lease",
+    n: "03",
+    icon: '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2.5h8v15l-2-1.2-2 1.2-2-1.2-2 1.2z"/><path d="M8 7h4M8 10h4"/></svg>',
+  },
+  {
+    id: "usage",
+    label: "Usage",
+    n: "04",
+    icon: '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 16.5V11M10 16.5V5M16 16.5V8.5"/><path d="M2.5 16.5h15"/></svg>',
+  },
 ];
 
 const banners = [
   {
     id: "catalogue",
-    stage: "Offering",
+    stage: "Catalogue",
     text: "The synced catalogue card represents a provider offering mapped into Waldur and registered on-chain.",
   },
   {
@@ -48,77 +70,83 @@ const banners = [
   },
 ];
 
-const filters = ["Compute", "Kubernetes", "Storage", "Networking", "AI/ML", "Region ▾", "Plan type ▾"];
-
 const listings = [
   {
     id: "a100",
-    title: "Managed GPU Workspace",
+    title: "A100 GPU node",
     provider: "Example provider",
-    description: "Provider-operated workspace on an A100 GPU node.",
-    chips: ["GPU", "Managed", "On-demand"],
-    price: "$1.29 / GPU-hour",
+    description: "NVIDIA A100 80GB GPU node for AI/ML workloads.",
+    longDescription:
+      "High-performance NVIDIA A100 80GB GPU node for AI training and inference workloads. Provisioned on demand in multiple regions.",
+    chips: ["GPU", "Compute", "On-demand"],
+    tags: ["Compute", "AI/ML"],
+    category: "Compute / GPU",
+    regions: "us-east · eu-central · ap-southeast",
+    regionValues: ["us-east", "eu-central", "ap-southeast"],
+    plans: "On-demand · Reserved",
+    planValues: ["on-demand", "reserved"],
+    sla: "99.9%",
+    price: "$0.39 / GPU-hr",
+    priceValue: "$0.39 / GPU-hr",
+    components: "GPU-hour · storage GB-month",
     flow: "Provider daemon → GPU backend → metering",
-    detail: {
-      status: "Available",
-      description: "A provider-operated GPU workspace on an NVIDIA A100 80GB node for AI training and inference workloads. Provisioned on demand in multiple regions.",
-      rows: [
-        ["Category", "Compute / GPU"],
-        ["Provider", "Example provider"],
-        ["Regions", "us-east · eu-central · ap-southeast"],
-        ["Plan types", "On-demand · Reserved"],
-        ["Lifecycle", "Provision · resize · terminate"],
-      ],
-    },
+    daemon: "route usage",
+    modules: "x/market x/escrow",
   },
   {
     id: "k8s",
     title: "Managed Kubernetes cluster",
     provider: "Example provider",
     description: "Production-grade Kubernetes on your chosen region.",
+    longDescription:
+      "Managed Kubernetes control plane with autoscaling workers and managed upgrades, operated by the provider.",
     chips: ["Kubernetes", "Containers", "HA"],
+    tags: ["Kubernetes"],
+    category: "Platforms / Kubernetes",
+    regions: "ap-southeast · eu-central",
+    regionValues: ["ap-southeast", "eu-central"],
+    plans: "Component-priced",
+    planValues: ["component"],
+    sla: "99.9%",
     price: "$0.12 / vCPU-hr",
+    priceValue: "$0.12 / vCPU-hr",
+    components: "vCPU-hour · RAM GB-hour",
     flow: "Provider daemon → Rancher → platform endpoint",
-    detail: {
-      status: "Available",
-      description: "Managed Kubernetes control plane with autoscaling workers and managed upgrades, operated by the provider.",
-      rows: [
-        ["Category", "Platforms / Kubernetes"],
-        ["Provider", "Example provider"],
-        ["Regions", "ap-southeast · eu-central"],
-        ["Plan types", "Component-priced"],
-        ["Lifecycle", "Provision · resize · terminate"],
-      ],
-    },
+    daemon: "route lifecycle",
+    modules: "x/market x/marketplace",
   },
   {
     id: "openstack",
     title: "OpenStack tenant",
     provider: "Example provider",
     description: "Isolated OpenStack project with full API access.",
+    longDescription:
+      "An isolated OpenStack project with quotas, image catalogue and network access, operated by the provider.",
     chips: ["OpenStack", "IaaS", "Custom"],
+    tags: ["Compute"],
+    category: "Compute / private cloud",
+    regions: "eu-central",
+    regionValues: ["eu-central"],
+    plans: "Reserved · metered",
+    planValues: ["reserved", "metered"],
+    sla: "99.5%",
     price: "$299 / month",
+    priceValue: "$299 / month",
+    components: "vCPU-hour · storage GB-month",
     flow: "Provider daemon → OpenStack → VM · network · storage",
-    detail: {
-      status: "Available",
-      description: "An isolated OpenStack project with quotas, image catalogue and network access, operated by the provider.",
-      rows: [
-        ["Category", "Compute / private cloud"],
-        ["Provider", "Example provider"],
-        ["Regions", "eu-central"],
-        ["Plan types", "Reserved · metered"],
-        ["Lifecycle", "Provision · resize · terminate"],
-      ],
-    },
+    daemon: "lifecycle reconcile",
+    modules: "x/provider x/market",
   },
 ];
 
+const quickFilters = ["Compute", "Kubernetes", "Storage", "Networking", "AI/ML"];
+
 const daemonTasks = [
-  { link: "sync", title: "Offering sync", note: "Syncs provider catalogue", state: "✓" },
-  { link: "route", title: "Order routing", note: "Translates orders to provider API", state: "✓" },
-  { link: "lifecycle", title: "Lifecycle callback", note: "Receives provisioning updates", state: "✓" },
-  { link: "usage", title: "Usage reporting", note: "Collects and normalises metering", state: "✓" },
-  { link: "reconcile", title: "Reconciliation", note: "Ensures consistent state", state: "✓" },
+  { link: "sync", title: "Offering sync", note: "Syncs provider catalogue" },
+  { link: "route", title: "Order routing", note: "Translates orders to provider API" },
+  { link: "lifecycle", title: "Lifecycle callback", note: "Receives provisioning updates" },
+  { link: "usage", title: "Usage reporting", note: "Collects and normalises metering" },
+  { link: "reconcile", title: "Reconciliation", note: "Ensures consistent state" },
 ];
 
 const modules = [
@@ -135,41 +163,63 @@ const chainStages = [
     label: "Offering",
     note: "Service published on-chain",
     detail: "The provider's offering is registered and mapped into the Waldur catalogue.",
+    goto: "catalogue",
   },
   {
     id: "order",
     label: "Order",
     note: "Order created and escrowed",
     detail: "Creates a verifiable order on-chain and locks the payment in escrow.",
+    goto: "order",
   },
   {
     id: "lease",
     label: "Lease",
     note: "Resources provisioned and leased",
     detail: "The match binds tenant, provider and escrow; fulfilment is correlated back to the lease.",
+    goto: "lease",
   },
   {
     id: "usage",
     label: "Usage",
     note: "Metering data committed on-chain",
     detail: "Signed usage records are submitted and screened against the lease.",
+    goto: "usage",
   },
   {
     id: "settlement",
     label: "Settlement",
     note: "Usage reconciled and funds released",
     detail: "Validated usage releases escrow to the provider after the dispute window.",
+    goto: "usage",
   },
 ];
 
 const icons: Record<string, string> = {
-  gpu: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="6" width="8" height="8" rx="1.5"/><path d="M9 6V3.5M11 6V3.5M9 16.5V14M11 16.5V14M6 9H3.5M6 11H3.5M16.5 9H14M16.5 11H14"/></svg>',
-  k8s: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 2.5l6 3.4v7.2l-6 3.4-6-3.4V5.9z"/><circle cx="10" cy="10" r="2"/><path d="M10 8V5.5M11.7 11l2.2 1.3M8.3 11l-2.2 1.3"/></svg>',
-  cloud: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 15.5h8.2a3.3 3.3 0 0 0 .4-6.6A4.6 4.6 0 0 0 6 7.6a4 4 0 0 0 0 7.9z"/></svg>',
+  gpu: '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="6" width="8" height="8" rx="1.5"/><path d="M9 6V3.5M11 6V3.5M9 16.5V14M11 16.5V14M6 9H3.5M6 11H3.5M16.5 9H14M16.5 11H14"/></svg>',
+  k8s: '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 2.5l6 3.4v7.2l-6 3.4-6-3.4V5.9z"/><circle cx="10" cy="10" r="2"/><path d="M10 8V5.5M11.7 11l2.2 1.3M8.3 11l-2.2 1.3"/></svg>',
+  cloud:
+    '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 15.5h8.2a3.3 3.3 0 0 0 .4-6.6A4.6 4.6 0 0 0 6 7.6a4 4 0 0 0 0 7.9z"/></svg>',
 };
+
+const rowIcons: Record<string, string> = {
+  Category:
+    '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 2.5l7 3.8v7.4l-7 3.8-7-3.8V6.3z"/></svg>',
+  Provider:
+    '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="6.5" r="2.5"/><path d="M4 16.5c1-3 3.2-4.5 6-4.5s5 1.5 6 4.5"/></svg>',
+  Regions:
+    '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M3 10h14M10 3c2.5 2.4 2.5 11.6 0 14-2.5-2.4-2.5-11.6 0-14z"/></svg>',
+  "Plan types":
+    '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 3.5h10v13l-2.5-1.5L10 16.5l-2.5-1.5L5 16.5z"/></svg>',
+  SLA: '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 2"/></svg>',
+};
+
+function cardIcon(id: string): string {
+  return icons[id === "a100" ? "gpu" : id === "k8s" ? "k8s" : "cloud"];
+}
 ---
 
-<div class="mkt-demo" id="marketplace-demo">
+<div class="mkt-demo" id="marketplace-demo" data-stage="catalogue" data-listing="a100" data-interactive="on">
   {
     stageInputs.map((stage, index) => (
       <input
@@ -177,6 +227,7 @@ const icons: Record<string, string> = {
         type="radio"
         name="mkt-demo-stage"
         id={`mkt-demo-stage-${stage.id}`}
+        value={stage.id}
         checked={index === 0}
       />
     ))
@@ -185,9 +236,15 @@ const icons: Record<string, string> = {
 
   <div class="mkt-body">
     <div class="mkt-hints">
-      <p class="mkt-hint">Switch tabs to follow the lifecycle</p>
+      <p class="mkt-hint mkt-hint--tabs">
+        <span class="mkt-hint-dot" aria-hidden="true" />
+        Switch tabs to follow the lifecycle
+      </p>
       <span class="mkt-hint-dash" aria-hidden="true" />
-      <p class="mkt-hint">Hover a listing to preview its fulfilment path</p>
+      <p class="mkt-hint mkt-hint--listing">
+        <span class="mkt-hint-dot" aria-hidden="true" />
+        Hover a listing to preview fulfilment path
+      </p>
       <span class="mkt-hint-dash" aria-hidden="true" />
       <label class="mkt-toggle" for="mkt-demo-anim">
         Interactive demo
@@ -201,8 +258,8 @@ const icons: Record<string, string> = {
         <div class="mkt-tabs" role="group" aria-label="Demo lifecycle stage">
           {
             stageInputs.map((stage) => (
-              <label class="mkt-tab" for={`mkt-demo-stage-${stage.id}`}>
-                <span class="mkt-tab-n" aria-hidden="true">{stage.n}</span>
+              <label class="mkt-tab" for={`mkt-demo-stage-${stage.id}`} data-tab={stage.id}>
+                <span class="mkt-tab-icon" set:html={stage.icon} aria-hidden="true" />
                 {stage.label}
               </label>
             ))
@@ -220,19 +277,74 @@ const icons: Record<string, string> = {
 
       <div class="mkt-grid">
         <div class="mkt-catalogue">
-          <p class="mkt-search" aria-hidden="true">
-            ⌕ Search offerings, providers, technologies…
-            <span>All categories ▾</span>
-          </p>
-          <ul class="mkt-filters" aria-label="Illustrative catalogue filters">
-            {filters.map((filter) => <li>{filter}</li>)}
-          </ul>
-          <div class="mkt-cards">
+          <div class="mkt-search">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="m13.5 13.5 3.5 3.5"/></svg>
+            <input
+              id="mkt-demo-search"
+              type="search"
+              placeholder="Search offerings, providers, technologies…"
+              aria-label="Search offerings, providers, technologies"
+              autocomplete="off"
+            />
+            <select id="mkt-demo-category" aria-label="Filter by category">
+              <option value="all">All categories</option>
+              <option value="Compute">Compute</option>
+              <option value="Kubernetes">Kubernetes</option>
+              <option value="Platforms">Platforms</option>
+            </select>
+          </div>
+          <div class="mkt-filters" role="group" aria-label="Quick filters">
             {
-              listings.map((listing) => (
-                <article class={`mkt-card mkt-card--${listing.id}`} tabindex="0">
+              quickFilters.map((filter) => (
+                <button type="button" class="mkt-filter" data-filter={filter} aria-pressed="false">
+                  {filter}
+                </button>
+              ))
+            }
+            <label class="mkt-select">
+              Region
+              <select id="mkt-demo-region" aria-label="Filter by region">
+                <option value="all">All</option>
+                <option value="us-east">us-east</option>
+                <option value="eu-central">eu-central</option>
+                <option value="ap-southeast">ap-southeast</option>
+              </select>
+            </label>
+            <label class="mkt-select">
+              Plan type
+              <select id="mkt-demo-plan" aria-label="Filter by plan type">
+                <option value="all">All</option>
+                <option value="on-demand">On-demand</option>
+                <option value="reserved">Reserved</option>
+                <option value="component">Component-priced</option>
+                <option value="metered">Metered</option>
+              </select>
+            </label>
+          </div>
+          <p class="mkt-count" id="mkt-demo-count" role="status" aria-live="polite">3 offerings</p>
+          <div class="mkt-cards" role="listbox" aria-label="Offerings. Select a service to trace protocol state." id="mkt-demo-cards">
+            {
+              listings.map((listing, index) => (
+                <article
+                  class={`mkt-card mkt-card--${listing.id}${index === 0 ? " is-selected" : ""}`}
+                  role="option"
+                  tabindex="0"
+                  aria-selected={index === 0 ? "true" : "false"}
+                  data-listing={listing.id}
+                  data-tags={listing.tags.join(" ")}
+                  data-category={listing.category}
+                  data-regions={listing.regionValues.join(" ")}
+                  data-plans={listing.planValues.join(" ")}
+                  data-title={listing.title}
+                  data-provider={listing.provider}
+                  data-price={listing.priceValue}
+                  data-components={listing.components}
+                  data-search={`${listing.title} ${listing.provider} ${listing.description} ${listing.chips.join(" ")} ${listing.category}`.toLowerCase()}
+                  aria-label={`${listing.title}, ${listing.provider}, ${listing.price}. Select to trace protocol state.`}
+                >
+                  <span class="mkt-card-check" aria-hidden="true">✓</span>
                   <div class="mkt-card-head">
-                    <span class="mkt-card-icon" set:html={icons[listing.id === "a100" ? "gpu" : listing.id === "k8s" ? "k8s" : "cloud"]} />
+                    <span class={`mkt-card-icon mkt-card-icon--${listing.id}`} set:html={cardIcon(listing.id)} />
                     <div>
                       <p class="mkt-card-title">{listing.title}</p>
                       <p class="mkt-card-provider">{listing.provider}</p>
@@ -247,42 +359,68 @@ const icons: Record<string, string> = {
                   </p>
                   <div class="mkt-card-foot">
                     <span class="mkt-card-price">{listing.price}</span>
-                    <span class="mkt-card-go" aria-hidden="true">→</span>
+                    <span class="mkt-card-go" aria-hidden="true">›</span>
                   </div>
                 </article>
               ))
             }
           </div>
+          <div class="mkt-empty" id="mkt-demo-empty" hidden>
+            <p>No offerings match those filters.</p>
+            <button type="button" class="mkt-reset" id="mkt-demo-reset">Reset filters</button>
+          </div>
         </div>
 
-        <div class="mkt-side">
+        <div class="mkt-side" id="mkt-demo-side">
           <div class="mkt-panel mkt-panel--catalogue">
             {
-              listings.map((listing) => (
-                <article class={`mkt-detail mkt-detail--${listing.id}`}>
+              listings.map((listing, index) => (
+                <article class={`mkt-detail mkt-detail--${listing.id}${index === 0 ? " is-visible" : ""}`} data-detail={listing.id}>
                   <div class="mkt-detail-head">
-                    <span class="mkt-card-icon" set:html={icons[listing.id === "a100" ? "gpu" : listing.id === "k8s" ? "k8s" : "cloud"]} />
+                    <span class={`mkt-card-icon mkt-card-icon--${listing.id}`} set:html={cardIcon(listing.id)} />
                     <div>
                       <h3>{listing.title}</h3>
                       <p>{listing.provider}</p>
                     </div>
+                    <button type="button" class="mkt-detail-close" data-close-detail aria-label={`Clear ${listing.title} selection`}>×</button>
                   </div>
-                  <p class="mkt-detail-status">{listing.detail.status}</p>
-                  <p class="mkt-detail-desc">{listing.detail.description}</p>
-                  <dl class="mkt-rows">
-                    {listing.detail.rows.map(([term, value]) => (
-                      <div>
-                        <dt>{term}</dt>
-                        <dd>{value}</dd>
-                      </div>
-                    ))}
+                  <p class="mkt-detail-status">
+                    <span class="mkt-status-pill">Available</span>
+                  </p>
+                  <p class="mkt-detail-desc">{listing.longDescription}</p>
+                  <dl class="mkt-rows mkt-rows--icons">
+                    <div>
+                      <dt><span set:html={rowIcons.Category} aria-hidden="true" />Category</dt><dd>{listing.category}</dd>
+                    </div>
+                    <div>
+                      <dt><span set:html={rowIcons.Provider} aria-hidden="true" />Provider</dt><dd>{listing.provider}</dd>
+                    </div>
+                    <div>
+                      <dt><span set:html={rowIcons.Regions} aria-hidden="true" />Regions</dt><dd>{listing.regions}</dd>
+                    </div>
+                    <div>
+                      <dt><span set:html={rowIcons["Plan types"]} aria-hidden="true" />Plan types</dt><dd>{listing.plans}</dd>
+                    </div>
+                    <div>
+                      <dt><span set:html={rowIcons.SLA} aria-hidden="true" />SLA</dt><dd>{listing.sla}</dd>
+                    </div>
                   </dl>
-                  <a class="mkt-cta" href="#marketplace-demo-daemon">
+                  <button type="button" class="mkt-cta" data-inspect="order" data-from={listing.id}>
                     Inspect flow <span aria-hidden="true">→</span>
-                  </a>
+                  </button>
                 </article>
               ))
             }
+            <article class="mkt-detail mkt-detail--placeholder" data-detail="none">
+              <div class="mkt-detail-head">
+                <div>
+                  <h3>No service selected</h3>
+                  <p>Catalogue</p>
+                </div>
+              </div>
+              <p class="mkt-detail-desc">Select a listing to trace its fulfilment path through the daemon into protocol state.</p>
+              <button type="button" class="mkt-cta" data-inspect="catalogue">Browse offerings</button>
+            </article>
           </div>
 
           <article class="mkt-panel mkt-panel--order">
@@ -291,17 +429,21 @@ const icons: Record<string, string> = {
               <span class="mk-flag">Illustrative example</span>
             </div>
             <p class="mkt-detail-desc">
-              The order names the GPU workspace, resolves at the listed price, and funds escrow before anything is
-              provisioned.
+              The order names the <strong data-order-field="offering">A100 GPU node</strong>, resolves at the listed
+              price, and funds escrow before anything is provisioned.
             </p>
             <dl class="mkt-rows">
-              <div><dt>Offering</dt><dd>Managed GPU Workspace</dd></div>
-              <div><dt>Components</dt><dd>GPU-hour · storage GB-month</dd></div>
-              <div><dt>Region</dt><dd>ap-southeast</dd></div>
+              <div><dt>Offering</dt><dd data-order-field="offering">A100 GPU node</dd></div>
+              <div><dt>Components</dt><dd data-order-field="components">GPU-hour · storage GB-month</dd></div>
+              <div><dt>Region</dt><dd data-order-field="region">ap-southeast</dd></div>
               <div><dt>Match</dt><dd>Direct · listed price</dd></div>
               <div><dt>Escrow</dt><dd>Funded before match</dd></div>
             </dl>
             <p class="mkt-detail-status">Order created on-chain</p>
+            <div class="mkt-panel-nav">
+              <button type="button" class="mkt-ghost" data-inspect="catalogue">← Catalogue</button>
+              <button type="button" class="mkt-cta" data-inspect="lease">Continue to lease →</button>
+            </div>
           </article>
 
           <article class="mkt-panel mkt-panel--lease">
@@ -316,12 +458,16 @@ const icons: Record<string, string> = {
             <dl class="mkt-rows">
               <div><dt>Tenant</dt><dd>Example tenant</dd></div>
               <div><dt>Provider</dt><dd>Example provider</dd></div>
-              <div><dt>Offering</dt><dd>Managed GPU Workspace</dd></div>
-              <div><dt>Pricing</dt><dd>$1.29 / GPU-hour</dd></div>
+              <div><dt>Offering</dt><dd data-order-field="offering">A100 GPU node</dd></div>
+              <div><dt>Pricing</dt><dd data-order-field="price">$0.39 / GPU-hr</dd></div>
               <div><dt>Escrow</dt><dd>Locked against the lease</dd></div>
               <div><dt>Resource state</dt><dd>Provisioning → Ready</dd></div>
             </dl>
             <p class="mkt-detail-status">Fulfilment in progress</p>
+            <div class="mkt-panel-nav">
+              <button type="button" class="mkt-ghost" data-inspect="order">← Order</button>
+              <button type="button" class="mkt-cta" data-inspect="usage">See usage →</button>
+            </div>
           </article>
 
           <article class="mkt-panel mkt-panel--usage">
@@ -330,8 +476,8 @@ const icons: Record<string, string> = {
               <span class="mk-flag">Illustrative example</span>
             </div>
             <p class="mkt-detail-desc">
-              The provider daemon meters GPU hours and storage per workload, signs the records and submits them
-              against the lease.
+              The provider daemon meters <strong data-order-field="offering">A100 GPU node</strong> consumption, signs
+              the records and submits them against the lease.
             </p>
             <div class="mkt-meter">
               <div class="mkt-meter-row">
@@ -348,68 +494,96 @@ const icons: Record<string, string> = {
               <div><dt>Dispute window</dt><dd>24 hours before settlement</dd></div>
               <div><dt>Settlement</dt><dd>Escrow release under the governed fee policy</dd></div>
             </dl>
+            <div class="mkt-panel-nav">
+              <button type="button" class="mkt-ghost" data-inspect="lease">← Lease</button>
+              <button type="button" class="mkt-ghost" data-inspect="catalogue">New offering</button>
+            </div>
           </article>
         </div>
       </div>
     </div>
 
-    <div class="mkt-bridge" aria-hidden="true">
-      <span class="mkt-bridge-line" />
-      <p class="mkt-bridge-pill">Select a service to trace protocol state</p>
-      <span class="mkt-bridge-line" />
+    <div class="mkt-bridge">
+      <span class="mkt-bridge-line" aria-hidden="true" />
+      <p class="mkt-bridge-pill" id="mkt-demo-bridge" role="status" aria-live="polite">Select a service to trace protocol state</p>
+      <span class="mkt-bridge-line" aria-hidden="true" />
     </div>
 
     <div class="mkt-panels" id="marketplace-demo-daemon">
       <section class="mkt-daemon" aria-label="Provider daemon responsibilities">
         <div class="mkt-daemon-head">
           <div class="mkt-daemon-title">
-            <strong>Provider daemon</strong>
-            <small>Bridges provider systems with VirtEngine</small>
+            <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3.5" width="14" height="5" rx="1.5"/><rect x="3" y="11.5" width="14" height="5" rx="1.5"/><circle cx="6" cy="6" r="0.8" fill="currentColor"/><circle cx="6" cy="14" r="0.8" fill="currentColor"/></svg>
+            <div>
+              <strong>Provider daemon</strong>
+              <small>Bridges provider systems with VirtEngine.</small>
+            </div>
           </div>
-          <span class="mkt-live">Mapping active</span>
+          <span class="mkt-live">Live mapping</span>
         </div>
         <ul class="mkt-tasks">
           {
             daemonTasks.map((task) => (
-              <li class={`mkt-task mkt-task--${task.link}`} data-link={task.link} tabindex="0">
-                <span class="mkt-task-mark" aria-hidden="true">{task.state}</span>
+              <li
+                class={`mkt-task mkt-task--${task.link}`}
+                data-link={task.link}
+                data-task={task.link}
+                tabindex="0"
+                role="button"
+                aria-label={`${task.title}: ${task.note}. Activate to highlight related chain modules.`}
+              >
+                <span class="mkt-task-mark" aria-hidden="true">✓</span>
                 <span>
                   <strong>{task.title}</strong>
                   <small>{task.note}</small>
                 </span>
-                <span class="mkt-task-state" />
+                <span class="mkt-task-state" aria-hidden="true" />
+                <span class="mkt-task-arrow" aria-hidden="true">›</span>
               </li>
             ))
           }
         </ul>
         <p class="mkt-daemon-foot">
-          Hover a step to highlight the chain modules it touches — and the active stage follows the tab above.
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.5v.5"/></svg>
+          Hover a step to highlight related chain modules.
         </p>
       </section>
 
       <section class="mkt-chain" aria-label="VirtEngine chain state">
+        <p class="mkt-chain-callout"><span class="mkt-hint-dot" aria-hidden="true" />Hover daemon tasks to highlight related modules</p>
         <div class="mkt-chain-head">
-          <strong>VirtEngine chain</strong>
-          <small>On-chain protocol for verifiable service delivery.</small>
+          <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="4" r="2"/><circle cx="4.5" cy="15" r="2"/><circle cx="15.5" cy="15" r="2"/><path d="M8.5 5.5 6 13.2M11.5 5.5 14 13.2M6.5 15h7"/></svg>
+          <div>
+            <strong>VirtEngine chain</strong>
+            <small>On-chain protocol for verifiable service delivery.</small>
+          </div>
         </div>
         <ul class="mkt-modules">
           {
             modules.map((module) => (
-              <li data-link={module.links} tabindex="0">{module.name}</li>
+              <li data-link={module.links} data-module={module.name} tabindex="0" role="button" aria-label={`${module.name}. Activate to highlight related daemon tasks.`} title={module.name}>{module.name}</li>
             ))
           }
         </ul>
         <ol class="mkt-chain-stages">
           {
             chainStages.map((stage) => (
-              <li class={`mkt-chain-stage mkt-chain-stage--${stage.id}`} tabindex="0">
+              <li
+                class={`mkt-chain-stage mkt-chain-stage--${stage.id}`}
+                data-stage={stage.id}
+                data-goto={stage.goto}
+                tabindex="0"
+                role="button"
+                aria-label={`${stage.label}: ${stage.note}. Activate to open the ${stage.goto} tab.`}
+                title={`Open ${stage.goto} tab`}
+              >
                 <span class="mkt-chain-dot" aria-hidden="true" />
                 <span>
                   <strong>{stage.label}</strong>
                   <small>{stage.note}</small>
                 </span>
                 <span class="mkt-bubble">
-                  <span>{stage.detail}</span>
+                  <span><strong>{stage.label} — </strong>{stage.detail}</span>
                 </span>
               </li>
             ))
@@ -421,3 +595,340 @@ const icons: Record<string, string> = {
     <p class="mkt-caption">Interactive service flow: catalogue → daemon bridge → protocol state.</p>
   </div>
 </div>
+
+<script>
+(function () {
+  var root = document.getElementById("marketplace-demo");
+  if (!root) return;
+  if (root.dataset.booted === "true") return;
+  root.dataset.booted = "true";
+
+  var stageIds = ["catalogue", "order", "lease", "usage"];
+  var radios = {};
+  stageIds.forEach(function (id) {
+    radios[id] = document.getElementById("mkt-demo-stage-" + id);
+  });
+  var toggle = document.getElementById("mkt-demo-anim");
+  var cards = Array.prototype.slice.call(root.querySelectorAll(".mkt-card"));
+  var details = Array.prototype.slice.call(root.querySelectorAll(".mkt-detail[data-detail]"));
+  var search = document.getElementById("mkt-demo-search");
+  var category = document.getElementById("mkt-demo-category");
+  var region = document.getElementById("mkt-demo-region");
+  var plan = document.getElementById("mkt-demo-plan");
+  var filterBtns = Array.prototype.slice.call(root.querySelectorAll(".mkt-filter"));
+  var count = document.getElementById("mkt-demo-count");
+  var empty = document.getElementById("mkt-demo-empty");
+  var resetBtn = document.getElementById("mkt-demo-reset");
+  var bridge = document.getElementById("mkt-demo-bridge");
+  var tasks = Array.prototype.slice.call(root.querySelectorAll("[data-task]"));
+  var moduleChips = Array.prototype.slice.call(root.querySelectorAll("[data-module]"));
+  var stages = Array.prototype.slice.call(root.querySelectorAll(".mkt-chain-stage[data-goto]"));
+
+  var selected = "a100";
+  var previewed = null;
+  var activeFilter = "all";
+
+  function interactive() {
+    return !toggle || toggle.checked;
+  }
+
+  function listingById(id) {
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].getAttribute("data-listing") === id) return cards[i];
+    }
+    return null;
+  }
+
+  function setStage(id) {
+    if (radios[id]) radios[id].checked = true;
+    root.setAttribute("data-stage", id);
+  }
+
+  stageIds.forEach(function (id) {
+    if (radios[id]) {
+      radios[id].addEventListener("change", function () {
+        if (radios[id].checked) root.setAttribute("data-stage", id);
+      });
+    }
+  });
+
+  function showDetail(id) {
+    details.forEach(function (d) {
+      var match = d.getAttribute("data-detail") === id || (id === null && d.getAttribute("data-detail") === "none");
+      d.classList.toggle("is-visible", match);
+    });
+  }
+
+  function paintCards() {
+    cards.forEach(function (c) {
+      var id = c.getAttribute("data-listing");
+      var isSel = id === selected;
+      c.classList.toggle("is-selected", isSel);
+      c.setAttribute("aria-selected", isSel ? "true" : "false");
+    });
+  }
+
+  function paintBridge() {
+    if (!bridge) return;
+    if (!selected) {
+      bridge.textContent = "Select a service to trace protocol state";
+      return;
+    }
+    var card = listingById(selected);
+    var title = card ? card.getAttribute("data-title") : selected;
+    bridge.textContent = title + " → daemon bridge → protocol state";
+  }
+
+  function paintOrderPanels() {
+    var card = selected ? listingById(selected) : null;
+    if (!card) return;
+    var fields = {
+      offering: card.getAttribute("data-title") || "",
+      price: card.getAttribute("data-price") || "",
+      components: card.getAttribute("data-components") || "",
+      region: (card.getAttribute("data-regions") || "").split(" ").filter(Boolean).join(" · ") || "ap-southeast",
+    };
+    Object.keys(fields).forEach(function (key) {
+      root.querySelectorAll('[data-order-field="' + key + '"]').forEach(function (el) {
+        el.textContent = fields[key];
+      });
+    });
+  }
+
+  function clearLinkPaint() {
+    root.querySelectorAll(".is-linked").forEach(function (el) {
+      el.classList.remove("is-linked");
+    });
+  }
+
+  function paintLinks(tokenString) {
+    clearLinkPaint();
+    if (!tokenString) return;
+    tokenString.split(" ").forEach(function (token) {
+      root.querySelectorAll('[data-link~="' + token + '"]').forEach(function (el) {
+        el.classList.add("is-linked");
+      });
+    });
+  }
+
+  function preview(id) {
+    previewed = id;
+    var card = id ? listingById(id) : null;
+    showDetail(id);
+    if (card && card.getAttribute("data-daemon")) {
+      paintLinks(card.getAttribute("data-daemon"));
+    } else if (!card) {
+      clearLinkPaint();
+    }
+  }
+
+  // Attach fulfilment tokens to cards from listing data (kept in DOM-light form)
+  var fulfilmentByListing = { a100: "route usage", k8s: "route lifecycle", openstack: "lifecycle reconcile" };
+  cards.forEach(function (c) {
+    var id = c.getAttribute("data-listing");
+    if (id && fulfilmentByListing[id]) c.setAttribute("data-daemon", fulfilmentByListing[id]);
+  });
+
+  function select(id) {
+    selected = id;
+    root.setAttribute("data-listing", id || "none");
+    paintCards();
+    showDetail(id);
+    paintBridge();
+    paintOrderPanels();
+    var card = id ? listingById(id) : null;
+    if (card && card.getAttribute("data-daemon")) paintLinks(card.getAttribute("data-daemon"));
+    else if (!id) clearLinkPaint();
+  }
+
+  cards.forEach(function (card) {
+    var id = card.getAttribute("data-listing");
+    card.addEventListener("mouseenter", function () {
+      if (interactive()) preview(id);
+    });
+    card.addEventListener("focus", function () {
+      if (interactive()) preview(id);
+    });
+    card.addEventListener("mouseleave", function () {
+      preview(selected);
+    });
+    card.addEventListener("blur", function () {
+      preview(selected);
+    });
+    card.addEventListener("click", function () {
+      select(id);
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        select(id);
+      }
+    });
+  });
+
+  function visibleCardCount() {
+    return cards.filter(function (c) {
+      return !c.hidden;
+    }).length;
+  }
+
+  function applyFilters() {
+    var q = search && search.value ? search.value.trim().toLowerCase() : "";
+    var cat = category ? category.value : "all";
+    var reg = region ? region.value : "all";
+    var pl = plan ? plan.value : "all";
+    cards.forEach(function (card) {
+      var hay = card.getAttribute("data-search") || "";
+      var tags = (card.getAttribute("data-tags") || "").split(" ").filter(Boolean);
+      var cardCat = card.getAttribute("data-category") || "";
+      var regs = (card.getAttribute("data-regions") || "").split(" ").filter(Boolean);
+      var plans = (card.getAttribute("data-plans") || "").split(" ").filter(Boolean);
+      var ok = true;
+      if (q && hay.indexOf(q) === -1) ok = false;
+      if (activeFilter !== "all" && tags.indexOf(activeFilter) === -1) ok = false;
+      if (cat !== "all" && cardCat.indexOf(cat) === -1) ok = false;
+      if (reg !== "all" && regs.indexOf(reg) === -1) ok = false;
+      if (pl !== "all" && plans.indexOf(pl) === -1) ok = false;
+      card.hidden = !ok;
+    });
+    var n = visibleCardCount();
+    if (count) count.textContent = n === 1 ? "1 offering" : n + " offerings";
+    if (empty) empty.hidden = n !== 0;
+    // If the selected card got filtered out, preview the first visible one
+    var selCard = selected ? listingById(selected) : null;
+    if (selCard && selCard.hidden) {
+      var first = cards.filter(function (c) {
+        return !c.hidden;
+      })[0];
+      preview(first ? first.getAttribute("data-listing") : null);
+    } else {
+      preview(selected);
+    }
+  }
+
+  if (search) search.addEventListener("input", applyFilters);
+  if (category) category.addEventListener("change", applyFilters);
+  if (region) region.addEventListener("change", applyFilters);
+  if (plan) plan.addEventListener("change", applyFilters);
+
+  filterBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var f = btn.getAttribute("data-filter");
+      activeFilter = activeFilter === f ? "all" : f;
+      filterBtns.forEach(function (b) {
+        var on = b.getAttribute("data-filter") === activeFilter;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      applyFilters();
+    });
+  });
+
+  function resetFilters() {
+    activeFilter = "all";
+    filterBtns.forEach(function (b) {
+      b.classList.remove("is-active");
+      b.setAttribute("aria-pressed", "false");
+    });
+    if (search) search.value = "";
+    if (category) category.value = "all";
+    if (region) region.value = "all";
+    if (plan) plan.value = "all";
+    applyFilters();
+  }
+
+  if (resetBtn) resetBtn.addEventListener("click", resetFilters);
+
+  root.querySelectorAll("[data-inspect]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = btn.getAttribute("data-inspect");
+      if (target && stageIds.indexOf(target) !== -1) {
+        setStage(target);
+        var side = document.getElementById("mkt-demo-side");
+        if (side && window.matchMedia("(max-width: 1000px)").matches) {
+          side.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+    });
+  });
+
+  root.querySelectorAll("[data-close-detail]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      select(null);
+    });
+  });
+
+  function linkableEnter(token) {
+    return function () {
+      if (interactive()) paintLinks(token);
+    };
+  }
+  function linkableLeave() {
+    var card = selected ? listingById(selected) : null;
+    if (card && card.getAttribute("data-daemon")) paintLinks(card.getAttribute("data-daemon"));
+    else clearLinkPaint();
+  }
+
+  tasks.forEach(function (task) {
+    var token = task.getAttribute("data-link") || "";
+    task.addEventListener("mouseenter", linkableEnter(token));
+    task.addEventListener("focus", linkableEnter(token));
+    task.addEventListener("mouseleave", linkableLeave);
+    task.addEventListener("blur", linkableLeave);
+    task.addEventListener("click", function () {
+      paintLinks(token);
+    });
+    task.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        paintLinks(token);
+      }
+    });
+  });
+
+  moduleChips.forEach(function (chip) {
+    var token = chip.getAttribute("data-link") || "";
+    chip.addEventListener("mouseenter", linkableEnter(token));
+    chip.addEventListener("focus", linkableEnter(token));
+    chip.addEventListener("mouseleave", linkableLeave);
+    chip.addEventListener("blur", linkableLeave);
+    chip.addEventListener("click", function () {
+      paintLinks(token);
+    });
+    chip.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        paintLinks(token);
+      }
+    });
+  });
+
+  stages.forEach(function (stage) {
+    stage.addEventListener("click", function () {
+      var target = stage.getAttribute("data-goto");
+      if (target) setStage(target);
+    });
+    stage.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        var target = stage.getAttribute("data-goto");
+        if (target) setStage(target);
+      }
+    });
+  });
+
+  if (toggle) {
+    toggle.addEventListener("change", function () {
+      root.setAttribute("data-interactive", toggle.checked ? "on" : "off");
+      if (!toggle.checked) {
+        clearLinkPaint();
+        preview(selected);
+      }
+    });
+  }
+
+  select("a100");
+  applyFilters();
+})();
+</script>
