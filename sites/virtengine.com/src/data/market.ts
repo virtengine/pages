@@ -83,6 +83,8 @@ export interface ServiceCategory {
   id: ServiceModelId;
   label: string;
   name: string;
+  /** One-line card summary for the catalogue showcase. */
+  tagline: string;
   body: string;
   examples: string[];
   billing: string;
@@ -583,23 +585,30 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = (
   ["iaas", "paas", "saas", "custom"] as const
 ).map((id) => {
   const model = SERVICE_MODEL_BY_ID[id];
-  const legacy: Record<(typeof id), { body: string; billing: string; delivery: string }> = {
+  const legacy: Record<
+    (typeof id),
+    { tagline: string; body: string; billing: string; delivery: string }
+  > = {
     iaas: {
+      tagline: "Compute, storage and networking on demand.",
       body: "Rented infrastructure, from virtual machines and private clouds to Kubernetes clusters, bare-metal nodes, GPU fleets, HPC allocations, storage and network.",
       billing: "Reserved limits, monthly or metered usage",
       delivery: "OpenStack · Kubernetes · SLURM · VMware · cloud connectors",
     },
     paas: {
+      tagline: "Managed platforms for modern application teams.",
       body: "Managed platforms your teams deploy onto — container orchestration, databases, AI/ML runtimes, inference endpoints and job schedulers — ordered per project, not per server.",
       billing: "Per component: limits or usage",
       delivery: "Waldur service plugins and software catalogs over provider infrastructure",
     },
     saas: {
+      tagline: "Software sold as plans, with seats, licences and support.",
       body: "Software sold as plans: seats, licences, subscriptions and support packages. Fixed-price products sit in the same catalogue as compute and settle the same way.",
       billing: "Fixed monthly, per seat or prepaid",
       delivery: "Provider-published plans ordered through Waldur",
     },
     custom: {
+      tagline: "From consultancy to scripted provisioning and bespoke bundles.",
       body: "Consultancy hours, support desks, training credits, scripted provisioning, and remote catalogues federated from other Waldur instances. If it can be priced and described, it can be listed.",
       billing: "Custom components: hourly, flat fee or order form",
       delivery: "Waldur custom offering types with per-order terms and approvals",
@@ -609,6 +618,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = (
     id,
     label: model.label,
     name: id === "custom" ? "Anything a provider can describe" : model.title,
+    tagline: legacy[id].tagline,
     body: legacy[id].body,
     examples: model.examples.slice(0, 5),
     billing: legacy[id].billing,

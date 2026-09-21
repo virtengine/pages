@@ -1,0 +1,423 @@
+---
+/**
+ * MarketplaceDemo — the interactive service-flow demo.
+ *
+ * Catalogue → provider daemon → protocol state, as one browsable figure:
+ *
+ *   • stage tabs (Catalogue / Order / Lease / Usage) switch the right-hand
+ *     stage panel, the chain stage highlight, the daemon task highlight and
+ *     the banner copy — following the lifecycle;
+ *   • hovering (or focusing) a listing previews its fulfilment path and
+ *     swaps the detail card;
+ *   • hovering a daemon task highlights the chain modules it touches, and
+ *     vice versa (shared `data-link` tokens);
+ *   • hovering a chain stage reveals what that state means;
+ *   • the toggle freezes/plays the animated connectors.
+ *
+ * Zero client JavaScript: radios + labels + sibling selectors, with :has()
+ * used only for the hover previews (the default state stays readable
+ * without it). All content is real DOM text. Illustrative example only.
+ */
+const stageInputs = [
+  { id: "catalogue", label: "Catalogue", n: "01" },
+  { id: "order", label: "Order", n: "02" },
+  { id: "lease", label: "Lease", n: "03" },
+  { id: "usage", label: "Usage", n: "04" },
+];
+
+const banners = [
+  {
+    id: "catalogue",
+    stage: "Offering",
+    text: "The synced catalogue card represents a provider offering mapped into Waldur and registered on-chain.",
+  },
+  {
+    id: "order",
+    stage: "Order",
+    text: "The tenant's order names the offering, resolves at the listed price, and funds escrow before anything is provisioned.",
+  },
+  {
+    id: "lease",
+    stage: "Lease",
+    text: "The match becomes a lease binding tenant, provider and escrow; the daemon routes fulfilment into the provider's control plane.",
+  },
+  {
+    id: "usage",
+    stage: "Usage",
+    text: "Signed usage records are submitted against the lease; validated usage releases escrow after the dispute window.",
+  },
+];
+
+const filters = ["Compute", "Kubernetes", "Storage", "Networking", "AI/ML", "Region ▾", "Plan type ▾"];
+
+const listings = [
+  {
+    id: "a100",
+    title: "A100 GPU node",
+    provider: "Example provider",
+    description: "NVIDIA A100 80GB GPU node for AI/ML workloads.",
+    chips: ["GPU", "Compute", "On-demand"],
+    price: "$0.39 / GPU-hr",
+    flow: "Provider daemon → GPU backend → metering",
+    detail: {
+      status: "Available",
+      description: "High-performance NVIDIA A100 80GB GPU node for AI training and inference workloads. Provisioned on demand in multiple regions.",
+      rows: [
+        ["Category", "Compute / GPU"],
+        ["Provider", "Example provider"],
+        ["Regions", "us-east · eu-central · ap-southeast"],
+        ["Plan types", "On-demand · Reserved"],
+        ["Lifecycle", "Provision · resize · terminate"],
+      ],
+    },
+  },
+  {
+    id: "k8s",
+    title: "Managed Kubernetes cluster",
+    provider: "Example provider",
+    description: "Production-grade Kubernetes on your chosen region.",
+    chips: ["Kubernetes", "Containers", "HA"],
+    price: "$0.12 / vCPU-hr",
+    flow: "Provider daemon → Rancher → platform endpoint",
+    detail: {
+      status: "Available",
+      description: "Managed Kubernetes control plane with autoscaling workers and managed upgrades, operated by the provider.",
+      rows: [
+        ["Category", "Platforms / Kubernetes"],
+        ["Provider", "Example provider"],
+        ["Regions", "ap-southeast · eu-central"],
+        ["Plan types", "Component-priced"],
+        ["Lifecycle", "Provision · resize · terminate"],
+      ],
+    },
+  },
+  {
+    id: "openstack",
+    title: "OpenStack tenant",
+    provider: "Example provider",
+    description: "Isolated OpenStack project with full API access.",
+    chips: ["OpenStack", "IaaS", "Custom"],
+    price: "$299 / month",
+    flow: "Provider daemon → OpenStack → VM · network · storage",
+    detail: {
+      status: "Available",
+      description: "An isolated OpenStack project with quotas, image catalogue and network access, operated by the provider.",
+      rows: [
+        ["Category", "Compute / private cloud"],
+        ["Provider", "Example provider"],
+        ["Regions", "eu-central"],
+        ["Plan types", "Reserved · metered"],
+        ["Lifecycle", "Provision · resize · terminate"],
+      ],
+    },
+  },
+];
+
+const daemonTasks = [
+  { link: "sync", title: "Offering sync", note: "Syncs provider catalogue", state: "✓" },
+  { link: "route", title: "Order routing", note: "Translates orders to provider API", state: "✓" },
+  { link: "lifecycle", title: "Lifecycle callback", note: "Receives provisioning updates", state: "✓" },
+  { link: "usage", title: "Usage reporting", note: "Collects and normalises metering", state: "✓" },
+  { link: "reconcile", title: "Reconciliation", note: "Ensures consistent state", state: "✓" },
+];
+
+const modules = [
+  { name: "x/provider", links: "sync" },
+  { name: "x/marketplace", links: "sync" },
+  { name: "x/market", links: "route lifecycle" },
+  { name: "x/escrow", links: "route usage" },
+  { name: "x/settlement", links: "usage reconcile" },
+];
+
+const chainStages = [
+  {
+    id: "offering",
+    label: "Offering",
+    note: "Service published on-chain",
+    detail: "The provider's offering is registered and mapped into the Waldur catalogue.",
+  },
+  {
+    id: "order",
+    label: "Order",
+    note: "Order created and escrowed",
+    detail: "Creates a verifiable order on-chain and locks the payment in escrow.",
+  },
+  {
+    id: "lease",
+    label: "Lease",
+    note: "Resources provisioned and leased",
+    detail: "The match binds tenant, provider and escrow; fulfilment is correlated back to the lease.",
+  },
+  {
+    id: "usage",
+    label: "Usage",
+    note: "Metering data committed on-chain",
+    detail: "Signed usage records are submitted and screened against the lease.",
+  },
+  {
+    id: "settlement",
+    label: "Settlement",
+    note: "Usage reconciled and funds released",
+    detail: "Validated usage releases escrow to the provider after the dispute window.",
+  },
+];
+
+const icons: Record<string, string> = {
+  gpu: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="6" width="8" height="8" rx="1.5"/><path d="M9 6V3.5M11 6V3.5M9 16.5V14M11 16.5V14M6 9H3.5M6 11H3.5M16.5 9H14M16.5 11H14"/></svg>',
+  k8s: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 2.5l6 3.4v7.2l-6 3.4-6-3.4V5.9z"/><circle cx="10" cy="10" r="2"/><path d="M10 8V5.5M11.7 11l2.2 1.3M8.3 11l-2.2 1.3"/></svg>',
+  cloud: '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 15.5h8.2a3.3 3.3 0 0 0 .4-6.6A4.6 4.6 0 0 0 6 7.6a4 4 0 0 0 0 7.9z"/></svg>',
+};
+---
+
+<div class="mkt-demo" id="marketplace-demo">
+  {
+    stageInputs.map((stage, index) => (
+      <input
+        class="mkt-stage-input"
+        type="radio"
+        name="mkt-demo-stage"
+        id={`mkt-demo-stage-${stage.id}`}
+        checked={index === 0}
+      />
+    ))
+  }
+  <input class="mkt-anim-input" type="checkbox" id="mkt-demo-anim" checked />
+
+  <div class="mkt-body">
+    <div class="mkt-hints">
+      <p class="mkt-hint">Switch tabs to follow the lifecycle</p>
+      <span class="mkt-hint-dash" aria-hidden="true" />
+      <p class="mkt-hint">Hover a listing to preview its fulfilment path</p>
+      <span class="mkt-hint-dash" aria-hidden="true" />
+      <label class="mkt-toggle" for="mkt-demo-anim">
+        Interactive demo
+        <i aria-hidden="true" />
+      </label>
+    </div>
+
+    <div class="mkt-shell">
+      <div class="mkt-topbar">
+        <span class="mkt-dots" aria-hidden="true"><i /><i /><i /></span>
+        <div class="mkt-tabs" role="group" aria-label="Demo lifecycle stage">
+          {
+            stageInputs.map((stage) => (
+              <label class="mkt-tab" for={`mkt-demo-stage-${stage.id}`}>
+                <span class="mkt-tab-n" aria-hidden="true">{stage.n}</span>
+                {stage.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="mkt-source">Waldur Marketplace</p>
+      </div>
+
+      {banners.map((banner) => (
+        <p class={`mkt-banner mkt-banner--${banner.id}`}>
+          <strong>{banner.stage}</strong>
+          {banner.text}
+        </p>
+      ))}
+
+      <div class="mkt-grid">
+        <div class="mkt-catalogue">
+          <p class="mkt-search" aria-hidden="true">
+            ⌕ Search offerings, providers, technologies…
+            <span>All categories ▾</span>
+          </p>
+          <ul class="mkt-filters" aria-label="Illustrative catalogue filters">
+            {filters.map((filter) => <li>{filter}</li>)}
+          </ul>
+          <div class="mkt-cards">
+            {
+              listings.map((listing) => (
+                <article class={`mkt-card mkt-card--${listing.id}`} tabindex="0">
+                  <div class="mkt-card-head">
+                    <span class="mkt-card-icon" set:html={icons[listing.id === "a100" ? "gpu" : listing.id === "k8s" ? "k8s" : "cloud"]} />
+                    <div>
+                      <p class="mkt-card-title">{listing.title}</p>
+                      <p class="mkt-card-provider">{listing.provider}</p>
+                    </div>
+                  </div>
+                  <p class="mkt-card-desc">{listing.description}</p>
+                  <ul class="mkt-card-chips">
+                    {listing.chips.map((chip) => <li>{chip}</li>)}
+                  </ul>
+                  <p class="mkt-card-flow" aria-hidden="true">
+                    <span>{listing.flow}</span>
+                  </p>
+                  <div class="mkt-card-foot">
+                    <span class="mkt-card-price">{listing.price}</span>
+                    <span class="mkt-card-go" aria-hidden="true">→</span>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="mkt-side">
+          <div class="mkt-panel mkt-panel--catalogue">
+            {
+              listings.map((listing) => (
+                <article class={`mkt-detail mkt-detail--${listing.id}`}>
+                  <div class="mkt-detail-head">
+                    <span class="mkt-card-icon" set:html={icons[listing.id === "a100" ? "gpu" : listing.id === "k8s" ? "k8s" : "cloud"]} />
+                    <div>
+                      <h3>{listing.title}</h3>
+                      <p>{listing.provider}</p>
+                    </div>
+                  </div>
+                  <p class="mkt-detail-status">{listing.detail.status}</p>
+                  <p class="mkt-detail-desc">{listing.detail.description}</p>
+                  <dl class="mkt-rows">
+                    {listing.detail.rows.map(([term, value]) => (
+                      <div>
+                        <dt>{term}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <a class="mkt-cta" href="#marketplace-demo-daemon">
+                    Inspect flow <span aria-hidden="true">→</span>
+                  </a>
+                </article>
+              ))
+            }
+          </div>
+
+          <article class="mkt-panel mkt-panel--order">
+            <div class="mkt-detail-head">
+              <h3>Order</h3>
+              <span class="mk-flag">Illustrative example</span>
+            </div>
+            <p class="mkt-detail-desc">
+              The order names the A100 GPU node, resolves at the listed price, and funds escrow before anything is
+              provisioned.
+            </p>
+            <dl class="mkt-rows">
+              <div><dt>Offering</dt><dd>A100 GPU node</dd></div>
+              <div><dt>Components</dt><dd>GPU-hour · storage GB-month</dd></div>
+              <div><dt>Region</dt><dd>ap-southeast</dd></div>
+              <div><dt>Match</dt><dd>Direct · listed price</dd></div>
+              <div><dt>Escrow</dt><dd>Funded before match</dd></div>
+            </dl>
+            <p class="mkt-detail-status">Order created on-chain</p>
+          </article>
+
+          <article class="mkt-panel mkt-panel--lease">
+            <div class="mkt-detail-head">
+              <h3>Lease</h3>
+              <span class="mk-flag">Illustrative example</span>
+            </div>
+            <p class="mkt-detail-desc">
+              The match becomes a lease binding one tenant, one provider and one escrow account. Fulfilment routes
+              through the provider daemon into the provider's control plane.
+            </p>
+            <dl class="mkt-rows">
+              <div><dt>Tenant</dt><dd>Example tenant</dd></div>
+              <div><dt>Provider</dt><dd>Example provider</dd></div>
+              <div><dt>Offering</dt><dd>A100 GPU node</dd></div>
+              <div><dt>Pricing</dt><dd>$0.39 / GPU-hour</dd></div>
+              <div><dt>Escrow</dt><dd>Locked against the lease</dd></div>
+              <div><dt>Resource state</dt><dd>Provisioning → Ready</dd></div>
+            </dl>
+            <p class="mkt-detail-status">Fulfilment in progress</p>
+          </article>
+
+          <article class="mkt-panel mkt-panel--usage">
+            <div class="mkt-detail-head">
+              <h3>Usage</h3>
+              <span class="mk-flag">Illustrative example</span>
+            </div>
+            <p class="mkt-detail-desc">
+              The provider daemon meters GPU hours and storage per workload, signs the records and submits them
+              against the lease.
+            </p>
+            <div class="mkt-meter">
+              <div class="mkt-meter-row">
+                <span>GPU hours <b>12.4 h</b></span>
+                <div class="mkt-meter-bar"><i style="--mkt-fill: 62%" /></div>
+              </div>
+              <div class="mkt-meter-row">
+                <span>Storage <b>0.41 GB-mo</b></span>
+                <div class="mkt-meter-bar"><i style="--mkt-fill: 41%" /></div>
+              </div>
+            </div>
+            <dl class="mkt-rows">
+              <div><dt>Record type</dt><dd>Signed usage batch</dd></div>
+              <div><dt>Dispute window</dt><dd>24 hours before settlement</dd></div>
+              <div><dt>Settlement</dt><dd>Escrow release under the governed fee policy</dd></div>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="mkt-bridge" aria-hidden="true">
+      <span class="mkt-bridge-line" />
+      <p class="mkt-bridge-pill">Select a service to trace protocol state</p>
+      <span class="mkt-bridge-line" />
+    </div>
+
+    <div class="mkt-panels" id="marketplace-demo-daemon">
+      <section class="mkt-daemon" aria-label="Provider daemon responsibilities">
+        <div class="mkt-daemon-head">
+          <div class="mkt-daemon-title">
+            <strong>Provider daemon</strong>
+            <small>Bridges provider systems with VirtEngine</small>
+          </div>
+          <span class="mkt-live">Live mapping</span>
+        </div>
+        <ul class="mkt-tasks">
+          {
+            daemonTasks.map((task) => (
+              <li class={`mkt-task mkt-task--${task.link}`} data-link={task.link} tabindex="0">
+                <span class="mkt-task-mark" aria-hidden="true">{task.state}</span>
+                <span>
+                  <strong>{task.title}</strong>
+                  <small>{task.note}</small>
+                </span>
+                <span class="mkt-task-state" />
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mkt-daemon-foot">
+          Hover a step to highlight the chain modules it touches — and the active stage follows the tab above.
+        </p>
+      </section>
+
+      <section class="mkt-chain" aria-label="VirtEngine chain state">
+        <div class="mkt-chain-head">
+          <strong>VirtEngine chain</strong>
+          <small>On-chain protocol for verifiable service delivery.</small>
+        </div>
+        <ul class="mkt-modules">
+          {
+            modules.map((module) => (
+              <li data-link={module.links} tabindex="0">{module.name}</li>
+            ))
+          }
+        </ul>
+        <ol class="mkt-chain-stages">
+          {
+            chainStages.map((stage) => (
+              <li class={`mkt-chain-stage mkt-chain-stage--${stage.id}`} tabindex="0">
+                <span class="mkt-chain-dot" aria-hidden="true" />
+                <span>
+                  <strong>{stage.label}</strong>
+                  <small>{stage.note}</small>
+                </span>
+                <span class="mkt-bubble" aria-hidden="true">
+                  <span>{stage.detail}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </div>
+
+    <p class="mkt-caption">Interactive service flow: catalogue → daemon bridge → protocol state.</p>
+  </div>
+</div>
