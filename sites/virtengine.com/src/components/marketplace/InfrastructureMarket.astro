@@ -6,6 +6,9 @@
  * Right: tenant demand. The figure carries the homepage statement:
  * VirtEngine is not the cloud; it is the market independent infrastructure
  * can join.
+ *
+ * Interactive: every provider, market-state and tenant node links to the
+ * page that owns it, so the diagram reads as a map rather than a poster.
  */
 interface Props {
   class?: string;
@@ -13,21 +16,28 @@ interface Props {
 
 const { class: className } = Astro.props;
 
-const providers = [
-  ["GPU cluster", "accelerator capacity"],
-  ["HPC facility", "scheduler-backed"],
-  ["Regional cloud", "general compute"],
-  ["Confidential node", "attested enclave"],
+const providers: [string, string, string][] = [
+  ["GPU cluster", "accelerator capacity", "/marketplace/gpu-compute"],
+  ["HPC facility", "scheduler-backed", "/marketplace/hpc"],
+  ["Regional cloud", "general compute", "/marketplace/iaas"],
+  ["Confidential node", "attested enclave", "/solutions/enterprises-confidential-compute"],
 ];
 
-const tenants = [
-  ["AI training", "GPU-hours"],
-  ["Simulation", "job queue"],
-  ["Virtual machines", "regional"],
-  ["Private workload", "confidential"],
+const tenants: [string, string, string][] = [
+  ["AI training", "GPU-hours", "/solutions/ai-ml-workloads"],
+  ["Simulation", "job queue", "/marketplace/hpc"],
+  ["Virtual machines", "regional", "/marketplace/iaas"],
+  ["Private workload", "confidential", "/solutions/enterprises-confidential-compute"],
 ];
 
-const marketState = ["Identity", "Capacity", "Order", "Lease", "Usage", "Settlement"];
+const marketState: [string, string][] = [
+  ["Identity", "/veid"],
+  ["Capacity", "/marketplace"],
+  ["Order", "/learn/how-the-marketplace-works"],
+  ["Lease", "/learn/how-the-marketplace-works"],
+  ["Usage", "/learn/escrow-and-settlement-explained"],
+  ["Settlement", "/learn/escrow-and-settlement-explained"],
+];
 ---
 
 <div class:list={["mk-market", className]}>
@@ -35,11 +45,13 @@ const marketState = ["Identity", "Capacity", "Order", "Lease", "Usage", "Settlem
     <h3>Providers</h3>
     <ul>
       {
-        providers.map(([name, note]) => (
-          <li class="mk-market-node">
-            <span class="mk-market-dot" aria-hidden="true" />
-            {name}
-            <small>{note}</small>
+        providers.map(([name, note, href]) => (
+          <li>
+            <a class="mk-market-node" href={href}>
+              <span class="mk-market-dot" aria-hidden="true" />
+              {name}
+              <small>{note}</small>
+            </a>
           </li>
         ))
       }
@@ -47,25 +59,32 @@ const marketState = ["Identity", "Capacity", "Order", "Lease", "Usage", "Settlem
   </div>
 
   <div class="mk-market-core">
-    <h3>Market</h3>
+    <h3><a href="/marketplace">Market</a></h3>
     <p>
       Orders meet offerings on-chain. Every step becomes protocol state — not a private arrangement between
       two companies that have never met.
     </p>
     <ul>
-      {marketState.map((item) => <li>{item}</li>)}
+      {marketState.map(([item, href]) => (
+        <li>
+          <a href={href}>{item}</a>
+        </li>
+      ))}
     </ul>
+    <p class="mk-market-more"><a href="/protocol">Explore the protocol →</a></p>
   </div>
 
   <div class="mk-market-col mk-market-col--tenants">
     <h3>Tenants</h3>
     <ul>
       {
-        tenants.map(([name, note]) => (
-          <li class="mk-market-node">
-            <span class="mk-market-dot" aria-hidden="true" />
-            {name}
-            <small>{note}</small>
+        tenants.map(([name, note, href]) => (
+          <li>
+            <a class="mk-market-node" href={href}>
+              <span class="mk-market-dot" aria-hidden="true" />
+              {name}
+              <small>{note}</small>
+            </a>
           </li>
         ))
       }

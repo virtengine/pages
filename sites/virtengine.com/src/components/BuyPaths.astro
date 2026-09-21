@@ -48,6 +48,7 @@ const { foot, class: className } = Astro.props;
               ))}
             </ol>
             <p class="buy-when"><strong>When to use it — </strong>{p.when}</p>
+            <p class="buy-more"><a class="btn-quiet" href={p.href}>Compare in the buying guide <span aria-hidden="true">→</span></a></p>
           </div>
           <div class="buy-art" aria-hidden="true">
             {p.id === "direct" && (

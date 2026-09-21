@@ -18,9 +18,9 @@ const journalPair = CURRENT_POSTS.slice(0, 2);
 const featuredListing = SERVICE_MODEL_BY_ID.gpu.listing;
 
 const breadthTags = [
-  { label: "Managed Kubernetes", tag: "PaaS" },
-  { label: "GPU Batch Queue", tag: "HPC" },
-  { label: "Analytics Workspace", tag: "SaaS" },
+  { label: "Managed Kubernetes", tag: "PaaS", href: "/marketplace/paas" },
+  { label: "GPU Batch Queue", tag: "HPC", href: "/marketplace/hpc" },
+  { label: "Analytics Workspace", tag: "SaaS", href: "/marketplace/saas" },
 ];
 ---
 <Base
@@ -58,12 +58,16 @@ const breadthTags = [
           components={featuredListing.components}
           priceLabel={featuredListing.priceLabel}
           badges={featuredListing.badges}
+          href="/marketplace/gpu-compute"
+          cta="Explore GPU & AI compute"
           compact
           titleTag="p"
         />
         <ul class="home-board-tags">
           {breadthTags.map((item) => (
-            <li>{item.label} <span>{item.tag}</span></li>
+            <li>
+              <a href={item.href}>{item.label} <span>{item.tag}</span></a>
+            </li>
           ))}
         </ul>
       </div>
@@ -88,8 +92,7 @@ const breadthTags = [
   </section>
 
   <!-- 3 — SUPPLY / DEMAND NETWORK -->
-  <section class="home-philosophy">
-    <SurfaceWash />
+  <section class="home-philosophy band-night">
     <div class="container-site">
       <p class="tag">Why it exists</p>
       <h2>Infrastructure should be an open market.</h2>
@@ -104,7 +107,7 @@ const breadthTags = [
   </section>
 
   <!-- 5 — TRUST -->
-  <section class="home-trust">
+  <section class="home-trust band-night">
     <div class="container-site">
       <p class="tag">Guarantees</p>
       <h2>Trust built into every transaction</h2>
@@ -127,8 +130,8 @@ const breadthTags = [
   </section>
 
   <!-- 6 — OPEN + STATUS + STEWARDSHIP -->
-  <section class="home-dev band-night" id="source">
-    <FieldBackdrop density={0.85} />
+  <section class="home-dev" id="source">
+    <SurfaceWash />
     <div class="container-site home-dev-grid home-dev-grid--slim">
       <div>
         <p class="tag">Source</p>
@@ -140,24 +143,28 @@ const breadthTags = [
         </ul>
         <div class="action-row">
           <a class="btn-solid" href={SITE.github}>Browse source</a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.docs}>Read docs</a>
+          <a class="btn-quiet" href={SITE.docs}>Read docs</a>
         </div>
       </div>
       <div class="home-side-stack">
         <p class="eyebrow">Network status</p>
         <p><strong>Protocol development</strong> · Active<br /><strong>Public TestNet</strong> · Planned<br /><strong>Production MainNet</strong> · Not live</p>
         <p class="text-xs">Last updated {NETWORK_STATUS.lastUpdated}</p>
-        <a class="btn-quiet btn-quiet--night" href="/network">View network status <span aria-hidden="true">→</span></a>
+        <a class="btn-quiet" href="/network">View network status <span aria-hidden="true">→</span></a>
         <hr />
         <p class="text-sm">VirtEngine is stewarded by {foundationDetails.name}, {foundationDetails.structure} ({foundationDetails.acn}), supporting open infrastructure, privacy-preserving identity and public-interest technology.</p>
-        <p><a class="btn-quiet btn-quiet--night" href="/about">About the Foundation</a> <a class="btn-quiet btn-quiet--night" href="https://det.io">DET.io ↗</a></p>
+        <p><a class="btn-quiet" href="/about">About the Foundation</a> <a class="btn-quiet" href="https://det.io">DET.io ↗</a></p>
       </div>
     </div>
     <div class="container-site home-support">
       <p class="eyebrow">Supported by and working with</p>
       <ul>
         {SUPPORT.map((org) => (
-          <li><img src={org.logo} alt={org.logoAlt} width="120" height="32" loading="lazy" decoding="async" /></li>
+          <li>
+            <a href={org.href} rel={org.href.startsWith("http") ? "noopener" : undefined} aria-label={org.name} title={org.name}>
+              <img src={org.logo} alt={org.logoAlt} width="120" height="32" loading="lazy" decoding="async" />
+            </a>
+          </li>
         ))}
       </ul>
       <a class="btn-quiet btn-quiet--night" href="/about#support">Project partners &amp; support <span aria-hidden="true">→</span></a>
@@ -165,10 +172,9 @@ const breadthTags = [
   </section>
 
   <!-- 7 — JOURNAL (slim, max 2) -->
-  <section class="home-journal">
-    <SurfaceWash />
+  <section class="home-journal band-night">
     <div class="container-site">
-      <div class="folio-head folio-head--journal">
+      <div class="folio-head folio-head--journal folio-head--night">
         <div class="folio-coord"><span>Journal</span><a class="journal-readall" href="/blog">All notes <span aria-hidden="true">→</span></a></div>
         <h2>The thinking behind the protocol.</h2>
       </div>

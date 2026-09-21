@@ -6,8 +6,12 @@
  * a single catalogue, followed by the five-step order flow. All figures are
  * original inline SVG drawn from the brand geometry; they are decorative and
  * every card's meaning is carried by its heading, tagline and chips.
+ *
+ * Interactive: each card is a single stretched link to its dedicated
+ * /marketplace/* page; the rail steps link to the canonical guides; the
+ * "One catalogue" pill links to the marketplace service atlas.
  */
-import { SERVICE_CATEGORIES } from "@data/market";
+import { SERVICE_CATEGORIES, SERVICE_MODEL_BY_ID } from "@data/market";
 
 interface Props {
   eyebrow?: string;
@@ -114,12 +118,20 @@ const stepIcons: string[] = [
 ];
 
 const steps = [
-  { title: "Browse", note: "Explore the catalogue" },
-  { title: "Order", note: "Self-serve or assisted" },
-  { title: "Provision", note: "Automated delivery" },
-  { title: "Use", note: "Track usage and limits" },
-  { title: "Settle", note: "One consistent model" },
+  { title: "Browse", note: "Explore the catalogue", href: "/marketplace#service-types" },
+  { title: "Order", note: "Self-serve or assisted", href: "/learn/three-ways-to-buy" },
+  { title: "Provision", note: "Automated delivery", href: "/learn/how-the-marketplace-works" },
+  { title: "Use", note: "Track usage and limits", href: "/learn/escrow-and-settlement-explained" },
+  { title: "Settle", note: "One consistent model", href: "/learn/escrow-and-settlement-explained" },
 ];
+
+function categoryRoute(id: string): string {
+  return SERVICE_MODEL_BY_ID[id as keyof typeof SERVICE_MODEL_BY_ID]?.route ?? "/marketplace";
+}
+
+function categoryCta(id: string, label: string): string {
+  return SERVICE_MODEL_BY_ID[id as keyof typeof SERVICE_MODEL_BY_ID]?.cta ?? `Explore ${label}`;
+}
 ---
 
 <section class:list={["sms", className]}>
@@ -136,20 +148,32 @@ const steps = [
 
   <div class="sms-grid">
     {
-      SERVICE_CATEGORIES.map((category, index) => (
-        <article class="sms-card">
-          <div class="sms-card-top">
-            <span class="sms-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-            <span class="sms-tag">{category.label}</span>
-          </div>
-          <div class="sms-figure" set:html={figures[category.id]} aria-hidden="true" />
-          <h3>{category.name}</h3>
-          <p class="sms-tagline">{category.tagline}</p>
-          <ul class="sms-chips">
-            {category.examples.slice(0, 4).map((example) => <li>{example}</li>)}
-          </ul>
-        </article>
-      ))
+      SERVICE_CATEGORIES.map((category, index) => {
+        const route = categoryRoute(category.id);
+        const cta = categoryCta(category.id, category.label);
+        return (
+          <article class="sms-card">
+            <a
+              class="sms-card-cover"
+              href={route}
+              aria-label={`${category.name} — ${category.tagline} (${cta})`}
+            />
+            <div class="sms-card-top">
+              <span class="sms-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span class="sms-tag">{category.label}</span>
+            </div>
+            <div class="sms-figure" set:html={figures[category.id]} aria-hidden="true" />
+            <h3>{category.name}</h3>
+            <p class="sms-tagline">{category.tagline}</p>
+            <ul class="sms-chips">
+              {category.examples.slice(0, 4).map((example) => <li>{example}</li>)}
+            </ul>
+            <p class="sms-card-cta" aria-hidden="true">
+              {cta} <span>→</span>
+            </p>
+          </article>
+        );
+      })
     }
   </div>
 
@@ -167,24 +191,26 @@ const steps = [
     </svg>
   </div>
 
-  <p class="sms-pill">
+  <a class="sms-pill" href="/marketplace#service-types" aria-label="One catalogue — all service models, one marketplace. Explore service types.">
     <span class="sms-pill-icon" aria-hidden="true">
       <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5h5a3 3 0 0 1 3 3V17a2 2 0 0 0-2-2H3z"/><path d="M17 4.5h-5a3 3 0 0 0-3 3V17a2 2 0 0 1 2-2h6z"/></svg>
     </span>
     <strong>One catalogue</strong>
     <i aria-hidden="true" />
     <span>All service models, one marketplace</span>
-  </p>
+  </a>
 
   <ol class="sms-rail" aria-label="From catalogue to settlement">
     {
       steps.map((step, index) => (
         <li class="sms-step">
-          <span class="sms-step-icon" set:html={stepIcons[index]} aria-hidden="true" />
-          <span class="sms-step-copy">
-            <strong>{step.title}</strong>
-            <small>{step.note}</small>
-          </span>
+          <a class="sms-step-link" href={step.href} aria-label={`${step.title} — ${step.note}`}>
+            <span class="sms-step-icon" set:html={stepIcons[index]} aria-hidden="true" />
+            <span class="sms-step-copy">
+              <strong>{step.title}</strong>
+              <small>{step.note}</small>
+            </span>
+          </a>
           {index < steps.length - 1 && <i class="sms-step-arrow" aria-hidden="true">→</i>}
         </li>
       ))

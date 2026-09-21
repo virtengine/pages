@@ -22,19 +22,50 @@ footer .container-site>*{min-width:0}footer a,footer p{overflow-wrap:anywhere}
 .home-trust-grid h3{margin:8px 0;font-size:1.25rem}
 .home-arch-strip{margin-top:28px;padding:18px 20px;border:1px dashed var(--line,#dfe7e0);border-radius:12px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .home-dev-grid--slim{grid-template-columns:1.1fr .9fr}
-.home-side-stack{display:grid;gap:10px;align-content:start;border-left:1px solid rgba(255,255,255,.14);padding-left:28px}
-.home-side-stack hr{border:none;border-top:1px solid rgba(255,255,255,.14);margin:8px 0}
+.home-side-stack{display:grid;gap:10px;align-content:start;border-left:1px solid var(--line,#dfe7e0);padding-left:28px}
+.home-side-stack hr{border:none;border-top:1px solid var(--line,#dfe7e0);margin:8px 0}
 .journal-slim{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
 .journal-slim article{border-top:2px solid var(--line,#dfe7e0);padding-top:14px}
 .home-board-label{font:12px var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:#a9bfae;margin:0 0 10px}
 .home-board-tags{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
-.home-board-tags li{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;color:#e9f0ea;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:8px 12px;background:rgba(255,255,255,.04)}
+.home-board-tags li{display:flex;padding:0;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.04);transition:border-color 150ms ease, background 150ms ease}
+.home-board-tags li:has(a:hover){border-color:rgba(143,212,154,.6);background:rgba(255,255,255,.08)}
+.home-board-tags li a{display:flex;flex:1;justify-content:space-between;gap:12px;padding:8px 12px;font-size:13.5px;color:#e9f0ea;text-decoration:none;border-radius:inherit}
+.home-board-tags li a:hover{text-decoration:underline;text-underline-offset:3px}
+.home-board-tags li a:focus-visible{outline:2px solid #8fd49a;outline-offset:2px}
 .home-board-tags li span{font-family:var(--font-mono,monospace);font-size:12px;color:#8fd49a}
 .home-trust-fig{display:inline-flex;color:#1c6838;margin-bottom:6px}
-.home-support{border-top:1px solid rgba(255,255,255,.14);margin-top:10px;padding-top:26px;padding-bottom:10px;display:grid;gap:14px}
+.home-support{border-top:1px solid var(--line,#dfe7e0);margin-top:10px;padding-top:26px;padding-bottom:10px;display:grid;gap:14px}
 .home-support ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center}
-.home-support img{height:26px;width:auto;filter:grayscale(1) brightness(0) invert(1);opacity:.8}
+.home-support img{height:26px;width:auto;filter:grayscale(1);opacity:.7;transition:opacity 150ms ease, filter 150ms ease}
+.home-support a{display:inline-flex;border-radius:6px}
+.home-support a:hover img{filter:none;opacity:1}
+.home-support a:focus-visible{outline:2px solid var(--color-green,#1c6838);outline-offset:4px}
 @media(max-width:700px){.home-support img{height:22px}}
+
+/* Homepage band alternation: clear (ribbon field) ↔ light, never two alike.
+   3 philosophy / 5 trust / 7 journal sit on the ribbon field; 2 buy / 4 atlas
+   / 6 source are opaque light bands. Every dark band gets explicit light text. */
+.home-philosophy .tag,
+.home-trust .tag{color:var(--color-green)}
+.home-philosophy .mk-market-col h3{color:var(--color-green)}
+.home-philosophy .mk-market-col--providers .mk-market-node::after,
+.home-philosophy .mk-market-col--tenants .mk-market-node::before{border-top-color:var(--color-green)}
+section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5rem);border-top:0}
+.home-trust h2{margin-top:.7rem;font-family:var(--font-display);font-size:clamp(2rem,3.4vw,3.1rem);line-height:1.08;max-width:26ch}
+.home-trust-grid article{color:var(--color-slate)}
+.home-trust-grid article h3{color:var(--color-ink)}
+.home-trust-grid article .eyebrow{color:var(--color-green-deep)}
+.home-trust .home-arch-strip{border-color:var(--color-night-line-strong);color:var(--color-night-muted)}
+.home-trust .home-arch-strip strong{color:var(--color-night-text)}
+.home-trust .home-arch-strip .btn-quiet{color:var(--color-green)}
+.home-journal .journal-readall{color:var(--color-green)}
+.home-journal .journal-readall:hover{color:var(--color-green-bright)}
+.home-journal .journal-meta{color:var(--color-night-faint)}
+.home-journal .journal-slim article{border-top-color:var(--color-night-line-strong)}
+.home-journal .journal-slim h3 a{color:var(--color-night-text)}
+.home-journal .journal-slim h3 a:hover{color:var(--color-green)}
+.home-journal .journal-slim p{color:var(--color-night-muted)}
 @media(max-width:900px){.home-trust-grid,.journal-slim,.home-dev-grid--slim{grid-template-columns:1fr}.home-side-stack{border-left:none;padding-left:0}}
 /* Compact lifecycle rail used outside the canonical guide. */
 .lifecycle-rail-compact{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px}

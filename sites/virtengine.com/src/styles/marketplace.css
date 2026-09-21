@@ -1572,6 +1572,17 @@ a.mk-listing:hover .mk-listing-cta {
   background: var(--color-panel);
   font-size: 0.82rem;
   color: var(--color-ink);
+  text-decoration: none;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+a.mk-market-node:hover {
+  border-color: var(--color-green-deep);
+  background: var(--color-green-wash);
+  transform: translateY(-1px);
+}
+a.mk-market-node:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 2px;
 }
 .mk-market-node small {
   margin-left: auto;
@@ -1616,6 +1627,15 @@ a.mk-listing:hover .mk-listing-cta {
   font-weight: 600;
   color: var(--color-ink);
 }
+.mk-market-core h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.mk-market-core h3 a:hover {
+  color: var(--color-green-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .mk-market-core p {
   font-size: 0.8rem;
   line-height: 1.55;
@@ -1627,13 +1647,38 @@ a.mk-listing:hover .mk-listing-cta {
   gap: 0.3rem;
 }
 .mk-market-core li {
-  padding: 0.24rem 0.55rem;
+  padding: 0;
   border: 1px solid var(--color-green-soft);
   border-radius: 999px;
   background: var(--color-panel);
   font-family: var(--font-mono);
   font-size: 0.66rem;
   color: var(--color-green-deep);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.mk-market-core li a {
+  display: inline-block;
+  padding: 0.24rem 0.55rem;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+.mk-market-core li:has(a:hover) {
+  background: var(--color-green-deep);
+  border-color: var(--color-green-deep);
+  color: #fff;
+}
+.mk-market-core li a:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 2px;
+}
+.mk-market-more {
+  margin: 0 !important;
+  font-size: 0.82rem !important;
+}
+.mk-market-more a {
+  font-weight: 600;
+  color: var(--color-green-deep) !important;
 }
 .mk-market-statement {
   margin-top: 1.25rem;
@@ -1904,16 +1949,35 @@ a.mk-listing:hover .mk-listing-cta {
   margin-top: clamp(1.6rem, 3vw, 2.5rem);
 }
 .sms-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 1.1rem 1.1rem 1.25rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   background: var(--color-panel);
-  transition: border-color 180ms ease;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 .sms-card:hover {
   border-color: var(--color-green-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -22px rgb(18 63 39 / 0.55);
+}
+.sms-card-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  text-decoration: none;
+}
+.sms-card-cover:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 3px;
+}
+.sms-card-cta {
+  margin: 0.9rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-green-deep);
 }
 .sms-card-top {
   display: flex;
@@ -1998,6 +2062,16 @@ a.mk-listing:hover .mk-listing-cta {
   background: var(--color-green-deep);
   color: #ffffff;
   box-shadow: 0 18px 36px -20px rgb(18 63 39 / 0.6);
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+a.sms-pill:hover {
+  background: var(--color-green-dark, #1c5632);
+  transform: translateY(-1px);
+}
+a.sms-pill:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 3px;
 }
 .sms-pill-icon {
   display: inline-flex;
@@ -2033,6 +2107,30 @@ a.mk-listing:hover .mk-listing-cta {
   min-width: 0;
   align-items: center;
   gap: 0.65rem;
+}
+.sms-step-link {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.5rem;
+  margin: -0.35rem -0.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+.sms-step-link:hover {
+  background: var(--color-green-wash);
+}
+.sms-step-link:hover .sms-step-copy strong {
+  color: var(--color-green-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.sms-step-link:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 2px;
 }
 .sms-step-icon {
   display: inline-flex;
@@ -3390,14 +3488,23 @@ a.mk-listing:hover .mk-listing-cta {
 
 /* Marketplace hub consolidation: mixed catalogue, compact rails. */
 .mk-mixed-catalogue{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
-.mk-mixed-catalogue li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:14px;background:var(--panel,#fff);display:grid;gap:10px}
+.mk-mixed-catalogue li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:14px;background:var(--panel,#fff);display:grid;gap:10px;transition:border-color 150ms ease, transform 150ms ease}
+.mk-mixed-catalogue li:has(a.mk-listing:hover){border-color:#1c6838}
 .mk-mixed-link{font-size:13.5px;font-weight:600;color:#1c5632}
 .mk-compact-acq{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
-.mk-compact-acq li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:16px;background:var(--panel,#fff);display:grid;gap:6px}
+.mk-compact-acq li{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:0;background:var(--panel,#fff);display:grid;transition:border-color 150ms ease, transform 150ms ease}
+.mk-compact-acq li:has(a:hover){border-color:#1c6838;transform:translateY(-2px)}
+.mk-compact-acq-link{display:grid;gap:6px;padding:16px;color:inherit;text-decoration:none;border-radius:inherit}
+.mk-compact-acq-link:focus-visible{outline:2px solid #1c6838;outline-offset:3px}
 .mk-compact-acq strong{font-size:15px}
+.mk-compact-acq strong::after{content:" →";color:#1c6838;font-weight:600}
 .mk-compact-acq span{font-size:13.5px;color:#4a5a4e;line-height:1.5}
 .mk-trust-signals{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
-.mk-trust-signals li{border-left:3px solid #1c6838;padding:4px 0 4px 14px;display:grid;gap:2px}
+.mk-trust-signals li{border-left:3px solid #1c6838;padding:0;display:grid;transition:border-color 150ms ease}
+.mk-trust-signals li a{display:grid;gap:2px;padding:4px 0 4px 14px;color:inherit;text-decoration:none;border-radius:0 8px 8px 0}
+.mk-trust-signals li a:hover{background:#eef7ee}
+.mk-trust-signals li a:hover strong{color:#1c6838;text-decoration:underline;text-underline-offset:3px}
+.mk-trust-signals li a:focus-visible{outline:2px solid #1c6838;outline-offset:2px}
 .mk-trust-signals span{font-size:13.5px;color:#4a5a4e}
 .mk-related-compact{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .mk-related-compact a{font-size:15px;font-weight:600;color:#1c5632}

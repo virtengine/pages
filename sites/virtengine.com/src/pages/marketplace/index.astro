@@ -65,9 +65,11 @@ const mixedCatalogue = [
             components={model.listing.components}
             priceLabel={model.listing.priceLabel}
             badges={model.listing.badges}
+            href={model.route}
+            cta={model.cta}
             compact
           />
-          <a class="mk-mixed-link" href={model.route}>{model.label} <span aria-hidden="true">→</span></a>
+          <a class="mk-mixed-link" href={model.route} aria-label={`${model.title} — ${model.cta}`}>{model.label} <span aria-hidden="true">→</span></a>
         </li>
       ))}
     </ul>
@@ -77,7 +79,12 @@ const mixedCatalogue = [
   <Section eyebrow="How you source it" title="Direct, bid, or selector." lede="Compact overview — the full walkthrough is the canonical buying guide." id="buying">
     <ul class="mk-compact-acq">
       {ACQUISITION_PATHS.map((p) => (
-        <li><strong>{p.tab}</strong><span>{p.short}</span></li>
+        <li>
+          <a class="mk-compact-acq-link" href={p.href} aria-label={`${p.tab} — ${p.short}`}>
+            <strong>{p.tab}</strong>
+            <span>{p.short}</span>
+          </a>
+        </li>
       ))}
     </ul>
     <p class="mt-6"><a class="btn-quiet" href="/learn/three-ways-to-buy">Three ways to buy — full guide <span aria-hidden="true">→</span></a></p>
@@ -89,12 +96,12 @@ const mixedCatalogue = [
 
   <Section eyebrow="Trust signals" title="What every listing carries.">
     <ul class="mk-trust-signals">
-      <li><strong>Provider identity</strong><span>VEID-verified counterparties</span></li>
-      <li><strong>Region</strong><span>placement and compliance input</span></li>
-      <li><strong>Audits</strong><span>auditor-signed attributes</span></li>
-      <li><strong>Benchmarks</strong><span>measured performance</span></li>
-      <li><strong>Attestation</strong><span>confidential paths where required</span></li>
-      <li><strong>Pricing</strong><span>published or competitive, always on-chain</span></li>
+      <li><a href="/veid"><strong>Provider identity</strong><span>VEID-verified counterparties</span></a></li>
+      <li><a href="/marketplace/iaas"><strong>Region</strong><span>placement and compliance input</span></a></li>
+      <li><a href="/providers"><strong>Audits</strong><span>auditor-signed attributes</span></a></li>
+      <li><a href="/marketplace/gpu-compute"><strong>Benchmarks</strong><span>measured performance</span></a></li>
+      <li><a href="/solutions/enterprises-confidential-compute"><strong>Attestation</strong><span>confidential paths where required</span></a></li>
+      <li><a href="/learn/three-ways-to-buy"><strong>Pricing</strong><span>published or competitive, always on-chain</span></a></li>
     </ul>
     <div class="mt-8 flex flex-wrap gap-4">
       <CTA href="/tenants">For tenants</CTA>

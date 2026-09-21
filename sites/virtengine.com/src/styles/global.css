@@ -446,6 +446,7 @@ h3, h4 {
 .buy-steps small { display: block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-muted); }
 .buy-when { margin-top: 1rem; font-size: 0.85rem; color: var(--color-slate); }
 .buy-when strong { color: var(--color-ink); }
+.buy-more { margin-top: 0.8rem; }
 .buy-flow { display: flex; align-items: stretch; gap: 0.5rem; }
 .buy-chip {
   flex: 1;
@@ -564,6 +565,7 @@ h3, h4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .svc-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 1.3rem 1.2rem 1.35rem;
@@ -573,6 +575,8 @@ h3, h4 {
   transition: border-color 180ms ease, transform 180ms ease;
 }
 .svc-card:hover { border-color: var(--color-green-deep); transform: translateY(-2px); }
+.svc-card-cover { position: absolute; inset: 0; border-radius: inherit; text-decoration: none; }
+.svc-card-cover:focus-visible { outline: 2px solid var(--color-green-deep); outline-offset: 3px; }
 .svc-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .svc-code {
   font-family: var(--font-mono);
