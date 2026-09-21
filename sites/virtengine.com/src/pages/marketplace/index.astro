@@ -31,19 +31,27 @@ const crumbs = [
   <PageHero
     eyebrow="Marketplace"
     title="Infrastructure and services, through one verifiable market."
-    lede="VirtEngine is designed to connect independent providers and tenants through a common catalogue, order, lease, usage and settlement protocol. Infrastructure, managed platforms, software plans and provider-defined services can share the same market rail while keeping fulfilment with the provider that actually operates the service."
+    lede="VirtEngine connects independent providers and tenants through a common catalogue, order, lease, usage and settlement protocol — infrastructure, managed platforms, software plans and provider-defined services on one market rail, with fulfilment staying with the provider that operates the service."
     crumbs={crumbs}
+    media="marketplace-hardware"
+    mediaCaption="Demand meets capacity on one exchange."
   >
     <CTA href="#service-types">Explore service types</CTA>
-    <CTA href="/learn/how-the-marketplace-works" variant="secondary">How orders become leases</CTA>
+    <CTA href="#interactive-demo" variant="secondary">Try the flow demo</CTA>
     <div class="mk-page-hero-flag">
       <span class="mk-status">{NETWORK_STATUS.posture}</span>
       <span class="mk-flag">Example listings throughout this section are illustrative</span>
     </div>
-    <div slot="art">
-      <MarketplaceCatalogueHero />
-    </div>
   </PageHero>
+
+  <Section
+    eyebrow="Interactive demo"
+    title="See the flow: catalogue → daemon → protocol state."
+    lede="Switch stages to follow one order end to end, hover a listing to preview its fulfilment path, and watch the provider daemon and chain state change with it. Illustrative example — no live availability is implied."
+    id="interactive-demo"
+  >
+    <MarketplaceDemo />
+  </Section>
 
   <Section
     eyebrow="What you can buy"
@@ -101,12 +109,6 @@ const crumbs = [
   </Section>
 
   <Section eyebrow="Technical detail" title="Where to verify the implementation">
-    <div class="prose-body space-y-4 text-base">
-      <p>
-        This page explains what the market sells and how buying works. The protocol implementation — order,
-        match and lease state machines, escrow, settlement and identity — is documented separately.
-      </p>
-    </div>
     <div class="mk-tech-note">
       <p>
         <strong>Under the hood:</strong> read the{" "}

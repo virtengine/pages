@@ -242,8 +242,8 @@ const icons: Record<string, string> = {
                   <ul class="mkt-card-chips">
                     {listing.chips.map((chip) => <li>{chip}</li>)}
                   </ul>
-                  <p class="mkt-card-flow" aria-hidden="true">
-                    <span>{listing.flow}</span>
+                  <p class="mkt-card-flow">
+                    <span>Fulfilment path: {listing.flow}</span>
                   </p>
                   <div class="mkt-card-foot">
                     <span class="mkt-card-price">{listing.price}</span>
@@ -366,7 +366,7 @@ const icons: Record<string, string> = {
             <strong>Provider daemon</strong>
             <small>Bridges provider systems with VirtEngine</small>
           </div>
-          <span class="mkt-live">Live mapping</span>
+          <span class="mkt-live">Mapping active</span>
         </div>
         <ul class="mkt-tasks">
           {
@@ -408,7 +408,7 @@ const icons: Record<string, string> = {
                   <strong>{stage.label}</strong>
                   <small>{stage.note}</small>
                 </span>
-                <span class="mkt-bubble" aria-hidden="true">
+                <span class="mkt-bubble">
                   <span>{stage.detail}</span>
                 </span>
               </li>
