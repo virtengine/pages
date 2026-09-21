@@ -7,9 +7,16 @@
  * dolly with scroll — plus a sparse dust field for depth. Deliberately subtle
  * (low alpha, brand greens only) so the protocol instrument stays legible.
  *
+ * The ribbon parameters, geometry and painters live in
+ * `src/scripts/ribbons.ts` and are shared with the live glass cards, so the
+ * streaks inside white cards are the SAME field — same positions, same
+ * clock — never a static copy. Widths run ~15% wider and sway ~15%
+ * quicker/further than the original drapes.
+ *
  * Zero dependencies. Pauses offscreen / when hidden. Renders one static
  * frame under `prefers-reduced-motion`. Also publishes pointer tilt as CSS
- * vars (--veil-*) on the enclosing `.home-hero` for the 3D tilt polish.
+ * vars (--veil-*) on the enclosing `.home-hero` for the 3D tilt polish, and
+ * publishes the field clock on `window.__veilState` for glass subscribers.
  */
 interface Props {
   class?: string;
@@ -96,6 +103,13 @@ const { class: className, fixed = false } = Astro.props;
 </style>
 
 <script>
+  import {
+    RIBBONS,
+    NARROW_RIBBONS,
+    ribbonCenterX,
+    paintRibbon,
+  } from "../../scripts/ribbons";
+
   function initVeil(root) {
     const canvas = root.querySelector("canvas");
     if (!canvas) return;
@@ -124,16 +138,11 @@ const { class: className, fixed = false } = Astro.props;
     let scrollP = 0;
     let scrollT = 0;
 
-    // Five drapes spread across the full width so the field balances the page —
-    // the leftmost stays soft and far so copy stays crisp over it.
+    // Shared field definition (see src/scripts/ribbons.ts): five drapes
+    // spread across the full width so the field balances the page — the
+    // leftmost stays soft and far so copy stays crisp over it.
     // depth 0..1 drives parallax + alpha so nearer bands move more.
-    const ribbons = [
-      { fx: 0.22, wd: 175, lean: 0.1, amp: 26, freq: 1.6, phase: 0.4, speed: 0.16, depth: 0.3, alpha: 0.1 },
-      { fx: 0.37, wd: 138, lean: 0.12, amp: 34, freq: 1.3, phase: 1.7, speed: 0.2, depth: 0.45, alpha: 0.13 },
-      { fx: 0.52, wd: 112, lean: 0.14, amp: 42, freq: 1.1, phase: 2.9, speed: 0.24, depth: 0.62, alpha: 0.16 },
-      { fx: 0.67, wd: 86, lean: 0.16, amp: 50, freq: 0.9, phase: 4.2, speed: 0.28, depth: 0.8, alpha: 0.19 },
-      { fx: 0.81, wd: 66, lean: 0.18, amp: 58, freq: 0.8, phase: 5.5, speed: 0.32, depth: 1.0, alpha: 0.22 },
-    ];
+    const ribbons = RIBBONS;
 
     // Narrow screens get 3 calm drapes spread across the hero instead of 5 —
     // five bands across ~390px merge into one washed blob. Re-evaluated
@@ -143,13 +152,9 @@ const { class: className, fixed = false } = Astro.props;
     narrowMQ.addEventListener?.("change", (e) => {
       narrow = e.matches;
       buildDust();
-      if (reduce.matches) draw(t);
+      if (reduce.matches) { draw(t); publishState(); }
     });
-    const narrowRibbons = [
-      { fx: 0.3, wd: 132, lean: 0.08, amp: 18, freq: 1.2, phase: 1.7, speed: 0.18, depth: 0.5, alpha: 0.12 },
-      { fx: 0.56, wd: 108, lean: 0.1, amp: 24, freq: 1.05, phase: 3.1, speed: 0.21, depth: 0.68, alpha: 0.15 },
-      { fx: 0.8, wd: 88, lean: 0.12, amp: 30, freq: 0.9, phase: 4.6, speed: 0.24, depth: 0.88, alpha: 0.18 },
-    ];
+    const narrowRibbons = NARROW_RIBBONS;
     const activeRibbons = () => (narrow ? narrowRibbons : ribbons);
 
     let dust = [];
@@ -173,66 +178,34 @@ const { class: className, fixed = false } = Astro.props;
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       buildDust();
-      if (reduce.matches) draw(0);
+      if (reduce.matches) { draw(0); publishState(); }
     }
 
     function centerX(r, y, time) {
-      const base = r.fx * w;
-      const leanShift = (y / h - 0.5) * r.lean * w;
-      const sway = Math.sin(y / h * Math.PI * r.freq + r.phase + time * r.speed) * r.amp;
-      const breathe = Math.sin(time * 0.24 + r.phase) * 8 * r.depth;
-      const bend = ptr.x * 30 * r.depth + ptr.y * 10 * r.depth * (y / h - 0.5);
-      const dolly = scrollP * -46 * r.depth;
-      return base + leanShift + sway + breathe + bend + dolly * 0.4;
+      return ribbonCenterX(r, y, { w, h, time, scrollP, ptrX: ptr.x, ptrY: ptr.y });
     }
 
-    function ribbonWidth(r, y) {
-      const persp = 0.82 + 0.42 * (y / h); // widen toward viewer, like the stills
-      const scale = Math.min(1.15, Math.max(0.6, w / 1100)) * (narrow ? 0.62 : 1);
-      return r.wd * persp * scale;
+    function publishState() {
+      // Shared clock for live glass cards: same time/scroll/pointer, so the
+      // streaks inside white cards continue the veil instead of copying it.
+      window.__veilState = {
+        t,
+        scrollP,
+        ptrX: ptr.x,
+        ptrY: ptr.y,
+        narrow,
+        vw: w,
+        vh: h,
+      };
     }
 
     function drawRibbon(r, time) {
-      const steps = 42;
-      const left = [];
-      const right = [];
-      for (let i = 0; i <= steps; i++) {
-        const y = (i / steps) * (h + 80) - 40 + scrollP * 30 * r.depth;
-        const cx = centerX(r, y, time);
-        const hw = ribbonWidth(r, y) / 2;
-        left.push([cx - hw, y]);
-        right.push([cx + hw, y]);
-      }
-      // body
-      ctx.beginPath();
-      ctx.moveTo(left[0][0], left[0][1]);
-      for (const p of left) ctx.lineTo(p[0], p[1]);
-      for (let i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
-      ctx.closePath();
-      const midX = centerX(r, h * 0.5, time);
-      const hwMid = ribbonWidth(r, h * 0.5) / 2;
-      const g = ctx.createLinearGradient(midX - hwMid, 0, midX + hwMid, 0);
-      const a = Math.min(0.42, r.alpha * (narrow ? 0.85 : 1) * gain());
-      g.addColorStop(0, `rgba(6, 12, 8, ${a})`);
-      g.addColorStop(0.28, `rgba(35, 104, 63, ${a + 0.06})`);
-      g.addColorStop(0.52, `rgba(96, 204, 93, ${(a * 0.55).toFixed(3)})`);
-      g.addColorStop(0.74, `rgba(35, 104, 63, ${a + 0.04})`);
-      g.addColorStop(1, `rgba(6, 12, 8, ${a})`);
-      ctx.fillStyle = g;
-      ctx.fill();
-      // lit edge (left) + dark edge (right) => folded-cloth read
-      ctx.beginPath();
-      ctx.moveTo(left[0][0], left[0][1]);
-      for (const p of left) ctx.lineTo(p[0], p[1]);
-      ctx.strokeStyle = `rgba(125, 221, 122, ${(0.1 + r.depth * 0.12).toFixed(3)})`;
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(right[0][0], right[0][1]);
-      for (const p of right) ctx.lineTo(p[0], p[1]);
-      ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
+      paintRibbon(
+        ctx,
+        r,
+        { w, h, time, scrollP, ptrX: ptr.x, ptrY: ptr.y, narrow, gain: gain() },
+        "dark",
+      );
     }
 
     function drawPulse(r, time, soft = false) {
@@ -300,6 +273,7 @@ const { class: className, fixed = false } = Astro.props;
       ptr.x += (ptr.tx - ptr.x) * 0.055;
       ptr.y += (ptr.ty - ptr.y) * 0.055;
       scrollP += (scrollT - scrollP) * 0.08;
+      publishState();
       // publish tilt for the CSS 3D polish (subtle: ±4° / ±6°)
       if (hero instanceof HTMLElement) {
         hero.style.setProperty("--veil-tiltx", `${(-ptr.y * 3.2).toFixed(2)}deg`);
@@ -380,11 +354,11 @@ const { class: className, fixed = false } = Astro.props;
       ).observe(hero);
     }
     reduce.addEventListener?.("change", (e) => {
-      if (e.matches) { stop(); draw(t); }
+      if (e.matches) { stop(); draw(t); publishState(); }
       else start();
     });
 
-    if (reduce.matches) draw(t);
+    if (reduce.matches) { draw(t); publishState(); }
     else start();
   }
 
