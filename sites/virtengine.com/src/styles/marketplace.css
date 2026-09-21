@@ -3560,10 +3560,9 @@ a.sms-pill:focus-visible {
  * ribbon field as the page veil: ribbon-glass.ts injects a viewport-locked
  * canvas (shared clock, shared geometry from src/scripts/ribbons.ts)
  * behind the card content, so the streaks drift, bend and dolly in step
- * with the drapes behind the dark sections — never a static copy. Cards
- * keep a frosted white base so copy stays crisp. Without JS (or on
- * touch/coarse pointers, where live glass never initialises) the static
- * gradient sheen underneath is the fallback. Dark-context surfaces
+ * with the drapes behind the dark sections — on desktop and touch alike,
+ * never a static copy. Cards keep a frosted white base so copy stays
+ * crisp. Without JS the static gradient sheen underneath is the fallback. Dark-context surfaces
  * (.home-arch-strip, .home-board-tags li) are intentionally excluded.
  * ---------------------------------------------------------------- */
 :root{
@@ -3619,42 +3618,6 @@ a.sms-pill:focus-visible {
 .buy-ex:has(#buy-bid:checked) .buy-tab[for="buy-bid"],
 .buy-ex:has(#buy-selector:checked) .buy-tab[for="buy-selector"] {
   background-color:rgba(238,247,238,.88);
-}
-@media(max-width:900px),(hover:none) and (pointer:coarse){
-  .home-trust-grid article,
-  .home-market-visual,
-  .mk-market-core,
-  .mk-market-node,
-  .buy-tab,
-  .buy-stage,
-  .buy-chip,
-  .mk-listing,
-  .sms-card,
-  .sms-rail,
-  .mk-mixed-catalogue li,
-  .mk-compact-acq li,
-  .mk-rail-band,
-  .mk-more,
-  .mk-viz,
-  .mk-buyer-selector,
-  .mk-order-col,
-  .mk-category-card,
-  .mk-check-col,
-  .mk-fig-card,
-  .mk-life-panel,
-  .mk-acq-panel,
-  .mk-atlas-panel,
-  .mk-wis-panel,
-  .mk-demo-panel,
-  .sol-visual,
-  .mod-tiles a,
-  .learn-map-feature li>a,
-  .provider-readiness li,
-  .veid-detail{
-    background-color:var(--color-panel,#fff);
-    background-image:var(--ribbon-glass-sheen);
-  }
-  .ribbon-glass-canvas{display:none}
 }
 @media print{
   .home-trust-grid article,

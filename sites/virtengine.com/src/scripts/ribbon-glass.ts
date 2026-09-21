@@ -14,9 +14,8 @@
  * stays crisp; without JS the static CSS sheen remains as the fallback.
  *
  * Cost control: canvases only animate while visible (IntersectionObserver),
- * paint at most every other frame, and never initialise on touch devices
- * or coarse pointers (the CSS sheen covers those). `prefers-reduced-motion`
- * renders a single static frame.
+ * paint at most every other frame, and use the calmer 3-ribbon set on narrow
+ * screens. `prefers-reduced-motion` renders a single static frame.
  */
 
 import {
@@ -75,9 +74,6 @@ export function initRibbonGlass(scope: ParentNode = document): void {
   if (booted) return;
   booted = true;
   if (typeof window === "undefined") return;
-
-  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-  if (!finePointer.matches) return;
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const narrowMQ = window.matchMedia("(max-width: 640px)");
