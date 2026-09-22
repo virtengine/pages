@@ -1,7 +1,7 @@
 name: Docs defect
 description: Report an error or gap in the VirtEngine documentation sites.
 title: "docs: "
-labels: ["docs"]
+labels: ["documentation"]
 body:
   - type: dropdown
     id: site
