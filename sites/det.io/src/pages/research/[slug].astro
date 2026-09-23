@@ -73,7 +73,7 @@ const topicSchema = articleNode({
                 {artifact.href ? (
                   <a
                     href={artifact.href}
-                    rel={artifact.href.startsWith("http") ? "noopener" : undefined}
+                    target={artifact.href.startsWith("http") ? "_blank" : undefined} rel={artifact.href.startsWith("http") ? "noopener" : undefined}
                     class="font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep"
                   >
                     {artifact.label}

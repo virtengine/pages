@@ -108,7 +108,7 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 @media(max-width:800px){.mod-graph{grid-template-columns:1fr}}
 /* StatusBadge: single source of network state. */
 .status-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line,#dfe7e0);border-radius:999px;padding:6px 12px;font-size:12.5px;color:#1c5632;background:#f3f7f3}
-.status-badge i{width:8px;height:8px;border-radius:50%;background:#d9a214;display:inline-block}
+.status-badge i{width:8px;height:8px;border-radius:50%;background:#9aa89e;box-shadow:none;display:inline-block}
 /* RelatedLinks: compact editorial, not cards. */
 .related-links{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .related-links a{font-size:15px;font-weight:600;color:#1c5632}
@@ -121,7 +121,7 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .mod-filter{width:100%;max-width:420px;border:1px solid var(--line,#dfe7e0);border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:18px}
 @media(max-width:900px){.mod-tiles{grid-template-columns:1fr}}
 /* VEID interactive pipeline. */
-.veid-pipe{display:grid;gap:10px}
+.veid-pipe{display:grid;gap:10px;margin-top:1.75rem}
 .veid-stages{display:flex;gap:8px;flex-wrap:wrap}
 .veid-stage{border:1px solid var(--line,#dfe7e0);border-radius:999px;padding:8px 14px;font-size:13.5px;cursor:pointer;background:#fff}
 .veid-detail{border:1px solid var(--line,#dfe7e0);border-radius:12px;padding:18px;background:var(--panel,#fff);font-size:14.5px;line-height:1.6;max-width:65ch}

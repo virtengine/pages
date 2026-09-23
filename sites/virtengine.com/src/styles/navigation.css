@@ -34,7 +34,7 @@
 .mega-docs:hover{text-decoration:underline;text-underline-offset:4px}
 .mega-status-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #bbcdbf;border-radius:999px;padding:8px 12px;font-size:12.5px;color:#1c5632;background:#f3f7f3;white-space:nowrap}
 .mega-status-pill:hover{background:#e8f0e9}
-.mega-status-pill .rail-lamp{width:8px;height:8px;border-radius:50%;background:#d9a214;display:inline-block}
+.mega-status-pill .rail-lamp{width:8px;height:8px;border-radius:50%;background:#9aa89e;box-shadow:none;display:inline-block}
 @media(max-width:1099px){.mega-columns{grid-template-columns:1fr 1fr}.mega-right{margin-left:auto}.mega-foot{flex-direction:column;align-items:stretch}}
 @media(max-width:650px){.mega-columns{grid-template-columns:1fr}.mega-docs{display:none}.mega-status-pill span{max-width:140px;overflow:hidden;text-overflow:ellipsis}}
 /* Mobile polish: the header status pill pushes the hamburger menu down on

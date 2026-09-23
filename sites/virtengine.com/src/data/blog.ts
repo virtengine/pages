@@ -36,7 +36,7 @@ export const CURRENT_POSTS: BlogArticle[] = [
       <p>Open participation needs more than a wallet address. VirtEngine combines provider attributes, audits, benchmarks, encrypted identity verification, usage records, reviews, and dispute processes. The aim is not to eliminate trust, but to make the evidence behind trust portable and inspectable.</p>
       <h2>One history, one home</h2>
       <p>The legacy VirtEngine blog is now preserved in this journal alongside current protocol writing. The old articles remain unchanged as a historical record, with a clear archive notice because their commands, dependencies, products, and security guidance may no longer be current.</p>
-      <p>For the current system, start with the <a href="/protocol">protocol overview</a>, explore the <a href="/modules">module map</a>, or use the <a href="https://docs.virtengine.com">technical documentation</a>.</p>
+      <p>For the current system, start with the <a href="/protocol">protocol overview</a>, explore the <a href="/modules">module map</a>, or use the <a href="https://docs.virtengine.com" target="_blank" rel="noopener noreferrer">technical documentation</a>.</p>
     `,
   },
   {
@@ -85,7 +85,7 @@ export const CURRENT_POSTS: BlogArticle[] = [
       <p>Different roles need different evidence. A tenant account, an infrastructure provider, and a validator do not necessarily require the same checks. Scoped verification makes the policy legible: participants can see which requirements were satisfied without assuming that one universal score answers every risk question.</p>
       <h2>Identity is one signal among many</h2>
       <p>Identity does not replace provider audits, hardware benchmarks, performance history, reviews, or dispute records. It complements them. A resilient trust model combines who a participant has proven itself to be with evidence about what it can deliver and how it has behaved.</p>
-      <p>Explore the <a href="/veid">VEID overview</a> or read the <a href="https://docs.virtengine.com">implementation documentation</a> for the technical path.</p>
+      <p>Explore the <a href="/veid">VEID overview</a> or read the <a href="https://docs.virtengine.com" target="_blank" rel="noopener noreferrer">implementation documentation</a> for the technical path.</p>
     `,
   },
 ];

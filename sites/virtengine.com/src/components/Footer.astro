@@ -56,7 +56,7 @@ const year = new Date().getFullYear();
         {
           ECOSYSTEM.map((item) => (
             <li>
-              <a href={item.href} rel="noopener" class="text-sm text-night-muted transition-colors hover:text-green">
+              <a href={item.href} target="_blank" rel="noopener" class="text-sm text-night-muted transition-colors hover:text-green">
                 {item.label}
               </a>
             </li>
@@ -76,7 +76,7 @@ const year = new Date().getFullYear();
       </p>
       <p>
         Certain methods are protected by
-        <a href={SITE.patentUrl} rel="noopener" class="underline underline-offset-2 transition-colors hover:text-green">
+        <a href={SITE.patentUrl} target="_blank" rel="noopener" class="underline underline-offset-2 transition-colors hover:text-green">
           patent {SITE.patentId}</a>.
       </p>
     </div>

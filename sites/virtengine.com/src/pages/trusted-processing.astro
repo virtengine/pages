@@ -322,7 +322,7 @@ const related = [
     <p class="mt-5 max-w-3xl text-sm leading-relaxed text-muted">
       Retention and destruction for the identity programme are published commitments, with figures
       attached — the Biometric Data Addendum's schedule is set out in full at
-      <a href="https://identity.org.au/privacy/trusted-processing">identity.org.au/privacy/trusted-processing</a>.
+      <a href="https://identity.org.au/privacy/trusted-processing" target="_blank" rel="noopener noreferrer">identity.org.au/privacy/trusted-processing</a>.
     </p>
   </Section>
 
@@ -417,7 +417,7 @@ const related = [
           <li>
             <a
               href={source.href}
-              rel={source.href.startsWith("http") ? "noopener" : undefined}
+              target={source.href.startsWith("http") ? "_blank" : undefined} rel={source.href.startsWith("http") ? "noopener" : undefined}
               class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-5 transition-colors hover:border-green-deep"
             >
               <strong class="text-sm text-ink group-hover:text-green-dark">{source.label}</strong>

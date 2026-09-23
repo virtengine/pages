@@ -34,7 +34,7 @@ const { items, class: className } = Astro.props;
               {f.links.map((l) => (
                 <a
                   href={l.href}
-                  rel={l.href.startsWith("http") ? "noopener" : undefined}
+                  target={l.href.startsWith("http") ? "_blank" : undefined} rel={l.href.startsWith("http") ? "noopener" : undefined}
                   class="text-sm font-medium text-green-deep underline decoration-green/50 underline-offset-2 hover:text-green-dark"
                 >
                   {l.label}

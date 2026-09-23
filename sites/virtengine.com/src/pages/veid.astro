@@ -155,7 +155,7 @@ const scenarios = [
     <div class="container-site py-16 md:py-20">
       <div class="folio-head folio-head--night folio-head--split">
         <div>
-          <div class="folio-coord"><span>Fig. 02</span><span>The capture wallet</span></div>
+          <div class="folio-coord"><span>Fig. 01</span><span>The capture wallet</span></div>
           <h2>The device does the sensitive work.</h2>
         </div>
         <p>
@@ -169,7 +169,7 @@ const scenarios = [
       <p class="mt-10 max-w-3xl text-sm leading-relaxed text-night-muted">
         The wallet is a reference implementation — <code class="font-mono text-green">mobile/veid-capture-app/</code> in
         the protocol repository — and the consumer-facing identity programme is presented at
-        <a class="text-green underline decoration-green/50 underline-offset-4 hover:decoration-green" href="https://identity.org.au">identity.org.au</a>.
+        <a class="text-green underline decoration-green/50 underline-offset-4 hover:decoration-green" href="https://identity.org.au" target="_blank" rel="noopener noreferrer">identity.org.au</a>.
       </p>
     </div>
   </section>
@@ -181,10 +181,10 @@ const scenarios = [
     lede="Six stages take a user from document capture to a consensus-committed trust score they can use across the marketplace."
   >
     <PlateFigure
-      rail="Fig. 03 — the verification pipeline"
+      rail="Fig. 02 — the verification pipeline"
       railRight="Six stages"
       label="VEID verification pipeline diagram. On device, the VEID capture wallet performs four stages: capture (document OCR and selfie), liveness (active liveness challenge), attestation (fingerprint or iris biometric attestation and device integrity), and encrypt (identity scopes sealed with public-key encryption). The submission, signed by an approved client and the user, flows on-chain to the validator identity network, where validators decrypt with their keys, score identity with shared machine-learning models, and commit the trust score by consensus, using the veid, veidregistry, encryption, and mfa modules. Outputs feed three zero-knowledge verification surfaces: score threshold proofs that prove a score meets a threshold and reveal nothing else, attribute proofs for scopes like age or residency, and marketplace gating where providers and tenants verify each other."
-      caption="fig 03 — capture → liveness → attestation → encryption → consensus scoring → zk tiers"
+      caption="fig 02 — capture → liveness → attestation → encryption → consensus scoring → zk tiers"
       class="reveal"
     >
       <VeidPipeline />
@@ -385,7 +385,7 @@ const scenarios = [
       <p>
         The VEID wallet reference implementation lives in the protocol repository at
         <code>mobile/veid-capture-app/</code>. The consumer-facing identity programme is
-        presented at <a href="https://identity.org.au">identity.org.au</a>.
+        presented at <a href="https://identity.org.au" target="_blank" rel="noopener noreferrer">identity.org.au</a>.
       </p>
     </div>
     <div class="reveal mt-8 flex flex-wrap gap-4">
@@ -394,4 +394,32 @@ const scenarios = [
       <CTA href={SITE.github} variant="ghost">VEID source</CTA>
     </div>
   </Section>
+
+  <script>
+    // Scenario tabs: switch panels without fragment navigation, so the page
+    // never jerks when the content is already in view.
+    const verifier = document.querySelector(".verifier");
+    if (verifier) {
+      const tabs = Array.from(verifier.querySelectorAll<HTMLAnchorElement>(".verifier-tab"));
+      const panels = Array.from(verifier.querySelectorAll<HTMLElement>(".verifier-panel"));
+      const ids = new Set(panels.map((p) => p.id));
+      const apply = (hash: string) => {
+        const raw = hash.startsWith("#") ? hash.slice(1) : hash;
+        const activeId = raw && ids.has(raw) ? raw : panels[0]?.id;
+        verifier.classList.add("has-js");
+        tabs.forEach((t) => t.classList.toggle("is-active", t.getAttribute("href") === `#${activeId}`));
+        panels.forEach((p) => p.classList.toggle("is-active", p.id === activeId));
+      };
+      tabs.forEach((tab) =>
+        tab.addEventListener("click", (event) => {
+          event.preventDefault();
+          const id = (tab.getAttribute("href") || "").slice(1);
+          if (id) history.replaceState(null, "", `#${id}`);
+          apply(id);
+        })
+      );
+      window.addEventListener("hashchange", () => apply(location.hash));
+      apply(location.hash);
+    }
+  </script>
 </Base>

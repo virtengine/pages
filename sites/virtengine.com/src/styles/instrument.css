@@ -1908,9 +1908,9 @@
 .vwd-hint {
   margin-top: 1.1rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--color-night-faint);
+  color: var(--color-night-muted);
 }
 
 /* SVG typography inside the phone */
@@ -2338,13 +2338,22 @@
   text-transform: uppercase;
   color: var(--color-green-dark);
 }
-.verifier-proof::before {
-  content: "";
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: var(--color-green);
-  box-shadow: 0 0 0 3px rgba(96, 204, 93, 0.22);
+/* JS enhancement: switch scenario panels without fragment navigation,
+   so clicking a tab never scrolls or jerks an already-visible page. */
+.verifier.has-js .verifier-panel:not(.is-active) {
+  display: none;
+}
+.verifier.has-js .verifier-panel.is-active {
+  display: grid;
+}
+.verifier.has-js .verifier-tab.is-active {
+  border-color: var(--color-green-deep);
+  background: var(--color-green-deep);
+  color: #ffffff;
+  font-weight: 700;
+}
+.verifier.has-js .verifier-tab.is-active::after {
+  background: var(--color-green-bright);
 }
 .verifier-columns {
   display: grid;
@@ -3914,8 +3923,7 @@ body.is-home .mega-header:has(.mega-group[open]) {
 }
 .support-stage {
   border: 1px solid var(--color-line);
-  border-bottom: 0;
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
   background: #fff;
   min-height: 18rem;
 }
@@ -3962,7 +3970,8 @@ body.is-home .mega-header:has(.mega-group[open]) {
   display: flex;
   flex-wrap: wrap;
   border: 1px solid var(--color-line);
-  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  border-bottom: 0;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
   background: var(--color-paper-soft);
 }
 .support-tab {

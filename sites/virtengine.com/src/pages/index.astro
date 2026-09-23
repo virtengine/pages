@@ -41,7 +41,7 @@ const breadthTags = [
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path></svg>
           </a>
           <a class="btn-quiet btn-quiet--night" href="/learn/how-the-marketplace-works">How it works</a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.github}>View source <span aria-hidden="true">↗</span></a>
+          <a class="btn-quiet btn-quiet--night" href={SITE.github} target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
         </div>
         <p class="home-hero-status"><a href="/network"><i class="rail-lamp" aria-hidden="true"></i>{NETWORK_STATUS.posture}</a></p>
       </div>
@@ -140,8 +140,8 @@ const breadthTags = [
           <li><code>Apache 2.0</code>Inspect and build the implementation.</li>
         </ul>
         <div class="action-row">
-          <a class="btn-solid" href={SITE.github}>Browse source</a>
-          <a class="btn-quiet" href={SITE.docs}>Read docs</a>
+          <a class="btn-solid" href={SITE.github} target="_blank" rel="noopener">Browse source</a>
+          <a class="btn-quiet" href={SITE.docs} target="_blank" rel="noopener">Read docs</a>
         </div>
       </div>
       <div class="home-side-stack">
@@ -151,7 +151,7 @@ const breadthTags = [
         <a class="btn-quiet" href="/network">View network status <span aria-hidden="true">→</span></a>
         <hr />
         <p class="text-sm">VirtEngine is stewarded by {foundationDetails.name}, {foundationDetails.structure} ({foundationDetails.acn}), supporting open infrastructure, privacy-preserving identity and public-interest technology.</p>
-        <p><a class="btn-quiet" href="/about">About the Foundation</a> <a class="btn-quiet" href="https://det.io">DET.io ↗</a></p>
+        <p><a class="btn-quiet" href="/about">About the Foundation</a> <a class="btn-quiet" href="https://det.io" target="_blank" rel="noopener noreferrer">DET.io ↗</a></p>
       </div>
     </div>
     <div class="container-site home-support">
@@ -159,7 +159,7 @@ const breadthTags = [
       <ul>
         {SUPPORT.map((org) => (
           <li>
-            <a href={org.href} rel={org.href.startsWith("http") ? "noopener" : undefined} aria-label={org.name} title={org.name}>
+            <a href={org.href} target={org.href.startsWith("http") ? "_blank" : undefined} rel={org.href.startsWith("http") ? "noopener" : undefined} aria-label={org.name} title={org.name}>
               <img src={org.logo} alt={org.logoAlt} width="120" height="32" loading="lazy" decoding="async" />
             </a>
           </li>

@@ -158,5 +158,19 @@ const graph = schemaGraph([
         }
       }
     </script>
+    <script>
+      // Any link that leaves this site opens in a new tab.
+      document.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((a) => {
+        try {
+          const url = new URL(a.getAttribute("href") || "", window.location.href);
+          if (url.origin === window.location.origin) return;
+          if (url.protocol !== "https:" && url.protocol !== "http:") return;
+          if (a.target !== "_blank") a.target = "_blank";
+          if (!/\bnoopener\b/.test(a.rel)) a.rel = (a.rel ? `${a.rel} ` : "") + "noopener";
+        } catch {
+          /* ignore malformed hrefs */
+        }
+      });
+    </script>
   </body>
 </html>

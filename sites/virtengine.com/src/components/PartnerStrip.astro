@@ -27,6 +27,16 @@ const { class: className } = Astro.props;
         ))
       }
 
+      <div class="support-tabs" role="tablist" aria-label="Organisations that have supported the project">
+        {
+          SUPPORT.map((org) => (
+            <label class="support-tab" for={`support-${org.id}`} title={org.name}>
+              <img src={org.logo} alt={org.logoAlt} width="140" height="36" loading="lazy" decoding="async" />
+            </label>
+          ))
+        }
+      </div>
+
       <div class="support-stage">
         {
           SUPPORT.map((org) => (
@@ -42,22 +52,12 @@ const { class: className } = Astro.props;
                     <li>{f}</li>
                   ))}
                 </ul>
-                <a class="btn-solid" href={org.href} rel={org.href.startsWith("http") ? "noopener" : undefined}>
+                <a class="btn-solid" href={org.href} target={org.href.startsWith("http") ? "_blank" : undefined} rel={org.href.startsWith("http") ? "noopener" : undefined}>
                   {org.ctaLabel}
                   <span aria-hidden="true">↗</span>
                 </a>
               </div>
             </article>
-          ))
-        }
-      </div>
-
-      <div class="support-tabs" role="tablist" aria-label="Organisations that have supported the project">
-        {
-          SUPPORT.map((org) => (
-            <label class="support-tab" for={`support-${org.id}`} title={org.name}>
-              <img src={org.logo} alt={org.logoAlt} width="140" height="36" loading="lazy" decoding="async" />
-            </label>
           ))
         }
       </div>

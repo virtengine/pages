@@ -29,7 +29,7 @@ const { label, facts, class: className } = Astro.props;
               <a
                 class="fact-strip-value"
                 href={fact.href}
-                rel={fact.href.startsWith("http") ? "noopener" : undefined}
+                target={fact.href.startsWith("http") ? "_blank" : undefined} rel={fact.href.startsWith("http") ? "noopener" : undefined}
               >
                 {fact.value}
               </a>

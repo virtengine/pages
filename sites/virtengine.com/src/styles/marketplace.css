@@ -2557,6 +2557,7 @@ a.sms-pill:focus-visible {
   color: var(--color-faint);
 }
 
+/* ----------------------------------------------------------------
  * Print: keep figures legible, drop interactions
  * ---------------------------------------------------------------- */
 @media print {
