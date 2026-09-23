@@ -190,6 +190,8 @@ export interface VeilState {
 declare global {
   interface Window {
     __veilState?: VeilState;
+    /** The fixed veil's canvas: secondary fields blit their slice from it. */
+    __veilCanvas?: HTMLCanvasElement;
   }
 }
 

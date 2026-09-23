@@ -119,6 +119,11 @@ const { class: className, fixed = false } = Astro.props;
     const hero = root.closest(".home-hero") || root.parentElement;
     // fixed continuous veil: measure against the viewport, not a section rect
     const isFixed = root.classList.contains("ribbon-veil--fixed");
+    // The fixed field is the single source of truth: it publishes the clock
+    // and its canvas, and every secondary field (section bands) shows the
+    // exact viewport-locked slice of it so transparent sections continue the
+    // background ribbons pixel-for-pixel instead of diverging.
+    if (isFixed) window.__veilCanvas = canvas;
     // the single global field carries every dark section, so give it more
     // presence — except on narrow screens, where it stays calm
     const gain = () => (isFixed && !narrow ? 1.7 : 1);
@@ -186,6 +191,9 @@ const { class: className, fixed = false } = Astro.props;
     }
 
     function publishState() {
+      // Only the fixed field publishes: a single clock/geometry authority, so
+      // glass subscribers always mirror the background — never a band's copy.
+      if (!isFixed) return;
       // Shared clock for live glass cards: same time/scroll/pointer, so the
       // streaks inside white cards continue the veil instead of copying it.
       window.__veilState = {
@@ -236,6 +244,28 @@ const { class: className, fixed = false } = Astro.props;
     }
 
     function draw(time) {
+      // Secondary fields (section bands): blit the fixed field's slice in
+      // viewport-locked coordinates — same pixels, same moment, same mask of
+      // geometry — so the band continues the background ribbons seamlessly.
+      const fixedCanvas = window.__veilCanvas;
+      const shared = window.__veilState;
+      if (!isFixed && fixedCanvas && fixedCanvas.width > 0 && shared) {
+        ctx.clearRect(0, 0, w, h);
+        const rect = root.getBoundingClientRect();
+        ctx.drawImage(
+          fixedCanvas,
+          0,
+          0,
+          fixedCanvas.width,
+          fixedCanvas.height,
+          -rect.left,
+          -rect.top,
+          shared.vw,
+          shared.vh,
+        );
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
       // soft emerald wash behind the drapes
       const wash = ctx.createRadialGradient(w * 0.68, h * 0.42, 0, w * 0.68, h * 0.42, Math.max(w, h) * 0.55);
@@ -358,8 +388,21 @@ const { class: className, fixed = false } = Astro.props;
       else start();
     });
 
-    if (reduce.matches) { draw(t); publishState(); }
-    else start();
+    // Reduced motion: no rAF loop, but a secondary field's blit is anchored
+    // to its live position — keep the slice aligned while scrolling.
+    if (!isFixed) {
+      window.addEventListener(
+        "scroll",
+        () => { if (reduce.matches) draw(t); },
+        { passive: true },
+      );
+    }
+
+    // Paint and publish immediately so secondary fields init'd later in the
+    // same pass already have a slice to blit (no first-frame blank flash).
+    publishState();
+    draw(t);
+    if (!reduce.matches) start();
   }
 
   document.querySelectorAll(".ribbon-veil").forEach(initVeil);
