@@ -5,7 +5,6 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import ResponsibilityBoundary from "@components/marketplace/ResponsibilityBoundary.astro";
 import WaldurInterfaceShowcase from "@components/marketplace/WaldurInterfaceShowcase.astro";
-import MarketplaceDemo from "@components/marketplace/MarketplaceDemo.astro";
 import OrderJourneyDemo from "@components/marketplace/OrderJourneyDemo.astro";
 import ImplementationChecklist from "@components/marketplace/ImplementationChecklist.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
@@ -87,11 +86,13 @@ const upstreamGroups = [
 
   <Section
     eyebrow="Demonstration"
-    title="Watch one service move through the layers"
-    lede="Interactive example: switch lifecycle stages, hover a daemon duty, and follow the connectors into protocol state. Illustrative example only."
-    class="waldur-demo"
+    title="Try a full order on the marketplace"
+    lede="The interactive order demo now lives where it belongs — on the marketplace hub. Browse the catalogue, configure a plan, buy direct, by bid or by selector, then deploy the lease and settle usage."
   >
-    <MarketplaceDemo />
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="/marketplace#demo">Open the order demo</CTA>
+      <CTA href="/learn/how-the-marketplace-works" variant="secondary">How the lifecycle works</CTA>
+    </div>
   </Section>
 
   <Section

@@ -5,6 +5,7 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
 import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import OrderDemo from "@components/marketplace/OrderDemo.astro";
 import { SERVICE_MODELS, ACQUISITION_PATHS } from "@data/market";
 import { NETWORK_STATUS } from "@data/status";
 
@@ -89,7 +90,16 @@ const mixedCatalogue = [
         </li>
       ))}
     </ul>
-    <p class="mt-6"><a class="btn-quiet" href="/learn/three-ways-to-buy">Three ways to buy — full guide <span aria-hidden="true">→</span></a></p>
+    <p class="mt-6"><a class="btn-quiet" href="/learn/three-ways-to-buy">Three ways to buy — full guide <span aria-hidden="true">→</span></a> <a class="btn-quiet" href="#demo">Try all three in the order demo <span aria-hidden="true">↓</span></a></p>
+  </Section>
+
+  <Section
+    eyebrow="Interactive demo"
+    title="Order infrastructure, end to end."
+    lede="A simulated marketplace terminal: pick a listing, configure the plan, buy direct, by bid or by selector, then deploy the lease and settle usage. Nothing here spends money or provisions hardware."
+    id="demo"
+  >
+    <OrderDemo />
   </Section>
 
   <Section eyebrow="One market rail" title="Order → Match → Lease → Usage → Settlement." lede="The lifecycle is explained once, in full, in the canonical guide." class="border-y border-line bg-paper-soft" id="lifecycle">
