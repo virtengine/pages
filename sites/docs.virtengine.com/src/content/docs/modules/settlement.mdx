@@ -1,0 +1,152 @@
+---
+title: x/settlement — Settlement module
+description: The x/settlement module converts signed usage records into billable line items and releases provider payouts from lease escrow.
+---
+
+The `x/settlement` module turns metered usage into money. Provider daemons
+collect per-workload resource metrics on an hourly cadence, batch them into
+signed usage records, and submit them on-chain; the module validates each
+record against its lease, prices it by the lease terms, and converts it into
+a billable line item.
+
+What providers report, tenants can contest; what survives the dispute window
+is what escrow releases — billing becomes auditable state instead of an
+invoice exchanged off-chain.
+
+## What it does
+
+Provider daemons collect per-workload resource metrics on an hourly cadence
+and submit them on-chain as signed usage records (`MsgRecordUsage`). The
+module validates records against their leases and converts them into billable
+line items priced by the lease terms.
+
+Every reported record sits in a 24-hour dispute window during which either
+party can raise corrections — anomaly detection on the provider side flags
+outliers before they ever reach the chain. After the window closes, line
+items settle against lease escrow and the agreed funds transfer to the
+provider under the governed fee policy. Reconciliation against platform
+metrics (default every 6 hours) cross-checks reported usage.
+
+## Why it exists
+
+Metering and billing are where cloud customers get hurt and providers get
+stiffed. Making settlement a consensus function — signed records, public
+dispute window, automatic escrow release — replaces invoice trust with
+protocol guarantees for both sides.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Usage record | A signed, per-lease report of metered resource consumption for a collection period. |
+| Dispute window | The 24-hour period after reporting during which corrections can be raised. |
+| Line item | A priced billing entry derived from a validated usage record. |
+
+## Core flow
+
+1. **Collect — Daemons meter hourly.** Per-workload resource metrics gathered
+   on schedule and reconciled against platform metrics every 6 hours by
+   default.
+2. **Submit — Signed records go on-chain.** Batched usage records are
+   validated against their leases and priced by lease terms into billable
+   line items.
+3. **Dispute — The window opens.** Twenty-four hours for corrections from
+   either party; fraud and support paths engage on escalation.
+4. **Release — Escrow pays out.** Cleared items transfer the agreed funds to
+   the provider — full amount, no platform deduction.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| **Escrow lifecycle** | The lease-escrow accounts settlement pays from, refunds, and disputes. |
+| `MsgCreateEscrow` | Opens a lease escrow account. |
+| `MsgActivateEscrow` | Activates a funded escrow account for use. |
+| `MsgReleaseEscrow` | Releases escrowed funds per the settlement outcome. |
+| `MsgRefundEscrow` | Returns escrowed funds to the tenant. |
+| `MsgDisputeEscrow` | Places an escrow account into dispute. |
+| **Usage & settlement** | Metered usage validated into billable line items. |
+| `MsgRecordUsage` | Submits a signed, per-lease usage record on-chain. |
+| `MsgAcknowledgeUsage` | Acknowledges a submitted usage record. |
+| `MsgSettleOrder` | Settles cleared billing for an order against escrow. |
+| **Rewards** | Distribution and claiming of marketplace rewards. |
+| `MsgDistributeRewards` | Distributes accrued rewards to their recipients. |
+| `MsgClaimRewards` | Claims accrued rewards. |
+| **Financial cases** | On-chain resolution of disputes over payments. |
+| `MsgOpenFinancialCase` | Opens a financial case over a disputed payment. |
+| `MsgAddFinancialClaim` | Adds a claim to an open financial case. |
+| `MsgSubmitFinancialCaseForReview` | Submits a financial case for review. |
+| `MsgEscalateFinancialCase` | Escalates a financial case for further review. |
+| `MsgResolveFinancialCase` | Records the resolution of a financial case. |
+| `MsgAppealFinancialCase` | Appeals a financial case resolution. |
+| `MsgCancelFinancialCase` | Cancels a financial case. |
+| `MsgFinalizeFinancialCase` | Finalizes a resolved financial case. |
+| **Fiat conversion** | Observations supporting fiat-referenced pricing. |
+| `MsgRecordFiatConversionObservation` | Records an observed fiat conversion observation. |
+| **Params** | Governance-only configuration. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Settlement` / `SettlementsByOrder` | Settlement records individually and by order. |
+| `UsageRecord` / `UsageRecordsByOrder` | Usage records individually and by order. |
+| `UsageSummary` | Aggregated usage across recorded periods. |
+| `UsageStreamState` | The current state of a usage stream. |
+| `Escrow` / `EscrowsByOrder` / `EscrowsByState` | Escrow records individually, by order, or by state. |
+| `Payout` / `PayoutsByProvider` | Payouts individually and by provider. |
+| `FiatConversion` / `FiatConversionsByProvider` | Fiat conversion observations individually and by provider. |
+| `FiatPayoutPreference` | A provider's preferred fiat payout configuration. |
+| `FinancialCase` / `FinancialCases` / `FinancialCaseBySubject` | Financial cases individually, as a list, and by subject. |
+| `FinancialCaseLineage` | The lineage trail of a financial case. |
+| `ClaimableRewards` / `RewardDistribution` / `RewardHistory` / `RewardsByEpoch` | Reward state — claimable balances, distributions, history, and per-epoch totals. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/escrow](/modules/escrow/) | Settled line items draw provider payouts from lease escrow. |
+| [x/take](/modules/take/) | The governed settlement-fee policy is applied at payout time. |
+| [x/market](/modules/market/) | Usage records are validated against the lease they bill. |
+| [x/fraud](/modules/fraud/) | Disputed or anomalous usage escalates before settlement completes. |
+| [x/oracle](/modules/oracle/) | Price feeds inform fiat-referenced pricing where leases use it. |
+
+## Related documentation
+
+- [Escrow & Settlement](/concepts/escrow-settlement/) — the end-to-end path,
+  with verified CLI examples.
+- [Usage Reporting](/concepts/usage-reporting/) — how off-chain metering feeds
+  on-chain records.
+- [Leases & Escrow](/tenants/leases-and-escrow/) — the tenant's view of
+  funding and dispute windows.
+- [Usage & Payments](/providers/usage-and-payments/) — the provider-side
+  reporting and payment workflow.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a usage record?
+
+A signed, per-lease report of metered resource consumption for a collection
+period — the atomic unit of marketplace billing.
+
+### What is a line item?
+
+A priced billing entry derived from a validated usage record — the thing
+escrow actually releases against.
+
+### How are anomalies caught before payout?
+
+Provider-side anomaly detection flags outliers before submission,
+reconciliation cross-checks reported usage every 6 hours by default, and the
+24-hour dispute window gives both parties a final correction pass. See
+[Escrow & settlement explained](/concepts/escrow-settlement/).
+
+:::note
+Message and query types are defined in `x/settlement/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

@@ -11,7 +11,7 @@ not-for-profit DETIO FOUNDATION LTD (ACN 699 651 771).
 Astro 5 + Tailwind CSS v4, static output, ~zero client JS (mobile nav toggle
 only; FAQ uses native `<details>`).
 
-## Routes (62)
+## Routes (77)
 
 - `/` — service homepage (wallet CTA + phone-mockup hero, fact strip, two-surface
   service band, media band, service cards, levels, insights, trust, support)
@@ -21,6 +21,11 @@ only; FAQ uses native `<details>`).
   `security`
 - `/insights/` — analysis hub + 12 evergreen articles from `src/data/insights.ts`
   (Article JSON-LD, topic tags, related rail)
+- `/guides/` — long-form explainers hub + 5 guides from `src/data/guides.ts`
+  (TechArticle + FAQPage JSON-LD, comparison tables, related rail)
+- `/definitions/` — "what is X" reference hub + 8 terms from
+  `src/data/definitions.ts` (TechArticle + FAQPage JSON-LD). Each page maps to
+  exactly one primary search query — see [SEO-PLAN.md](SEO-PLAN.md)
 - `/for-services` + `/for-services/become-a-verifier`,
   `/for-services/integration-overview`
 - `/get-started/` — side-nav guide: `what-you-need`, `set-up-your-wallet`,
@@ -90,9 +95,12 @@ halftone-screened, and exported as WebP variants. Provenance is listed on
   (`#wallet`) referenced by `WebSite.about`; wallet pages are *about* it, policy
   pages are about the foundation.
 - Pages add their own nodes with the `schema` prop: `Article` for `/insights`,
-  `TechArticle` for `/help`, `FAQPage` for `/faq`, and `CollectionPage` +
-  `ItemList` for the `/insights` and `/help` indexes. Never hand-write a
-  `<script type="application/ld+json">` in a page — extend `src/lib/schema.ts`.
+  `TechArticle` for `/help`, `/guides` and `/definitions`, `FAQPage` for `/faq`
+  and for every guide/definition page (emitted from the data file's `faq`
+  block, which must render visibly), and `CollectionPage` + `ItemList` for the
+  `/insights`, `/guides`, `/definitions` and `/help` indexes. Never hand-write
+  a `<script type="application/ld+json">` in a page — extend
+  `src/lib/schema.ts`.
 - `modifiedTime` drives `dateModified` and `article:modified_time`; it is set
   only from the real `updated` field in `src/data/`. Never invent a date.
 - Validate after a build:
@@ -105,6 +113,10 @@ halftone-screened, and exported as WebP variants. Provenance is listed on
   — titles into ~65 characters (dropping a redundant segment or a parenthetical),
   descriptions into 158 characters at a word boundary. Meta output only: visible
   headings and ledes keep their authored text.
-- `/rss.xml` is the insights feed, ordered by the real `updated` field and
-  advertised with `<link rel="alternate" type="application/rss+xml">`.
+- `/rss.xml` is the insights and guides feed, ordered by the real `updated`
+  fields in `src/data/` and advertised with
+  `<link rel="alternate" type="application/rss+xml">`.
+- The keyword → page map, hub rules and measurement plan live in
+  [SEO-PLAN.md](SEO-PLAN.md). When adding a page, claim one primary query
+  there first — two pages targeting the same query cannibalise each other.
 

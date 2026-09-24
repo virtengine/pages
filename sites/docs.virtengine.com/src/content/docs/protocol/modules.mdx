@@ -5,55 +5,56 @@ description: Reference table for all 27 VirtEngine x/ modules — marketplace, e
 
 Every piece of protocol behavior lives in a Cosmos SDK module under `x/` in
 the [virtengine repository](https://github.com/virtengine/virtengine). This
-page is the canonical index. Modules are grouped by function; each name links
-conceptually to the docs page that covers it in depth.
+page is the canonical index. Modules are grouped by function; every module
+name links to its detailed reference page — state objects, messages, queries
+and interactions — in the [Module Reference](/modules/).
 
 ## Marketplace & compute
 
 | Module | Purpose |
 | --- | --- |
-| `x/deployment` | Tenant deployments: the workload manifests and groups that orders are opened against. |
-| `x/market` | The exchange core — orders, provider bids, and the leases formed when they match. |
-| `x/marketplace` | Provider offerings catalog: published capacity listings that tenants and the HPC pipeline reference. |
-| `x/provider` | Provider registry — on-chain identities, attributes, and endpoints for capacity operators. |
-| `x/resources` | Resource type definitions and accounting shared across deployments and offerings. |
-| `x/hpc` | High-performance computing: clusters, queues, job submission, scheduling decisions, and workload templates. See [HPC Workloads](/concepts/hpc/). |
+| [`x/deployment`](/modules/deployment/) | Tenant deployments: the workload manifests and groups that orders are opened against. |
+| [`x/market`](/modules/market/) | The exchange core — orders, provider bids, and the leases formed when they match. |
+| [`x/marketplace`](/modules/marketplace/) | Provider offerings catalog: published capacity listings that tenants and the HPC pipeline reference. |
+| [`x/provider`](/modules/provider/) | Provider registry — on-chain identities, attributes, and endpoints for capacity operators. |
+| [`x/resources`](/modules/resources/) | Resource type definitions and accounting shared across deployments and offerings. |
+| [`x/hpc`](/modules/hpc/) | High-performance computing: clusters, queues, job submission, scheduling decisions, and workload templates. See [HPC Workloads](/concepts/hpc/). |
 
 ## Economics & payments
 
 | Module | Purpose |
 | --- | --- |
-| `x/escrow` | Custody of tenant funds backing leases; releases payment as usage settles. See [Escrow & Settlement](/concepts/escrow-settlement/). |
-| `x/settlement` | Converts signed usage records into billable line items, enforces the dispute window, and tracks reconciliation. |
-| `x/take` | Marketplace settlement policy — proposed at 0% commission; validator transaction fees remain separate. |
-| `x/bme` | Token burn/mint operations and VEID-led issuance mechanics. See [Settlement Policy & Issuance](/concepts/take-and-bme/). |
-| `x/issuancepolicy` | Governance-controlled token issuance policies, including pause controls, applied via proposals. |
-| `x/staking` | VirtEngine's staking extensions — validator reward logic including VEID verification rewards. |
-| `x/delegation` | Delegation records and lifecycle for token holders staking with validators. |
+| [`x/escrow`](/modules/escrow/) | Custody of tenant funds backing leases; releases payment as usage settles. See [Escrow & Settlement](/concepts/escrow-settlement/). |
+| [`x/settlement`](/modules/settlement/) | Converts signed usage records into billable line items, enforces the dispute window, and tracks reconciliation. |
+| [`x/take`](/modules/take/) | Marketplace settlement policy — proposed at 0% commission; validator transaction fees remain separate. |
+| [`x/bme`](/modules/bme/) | Token burn/mint operations and VEID-led issuance mechanics. See [Settlement Policy & Issuance](/concepts/take-and-bme/). |
+| [`x/issuancepolicy`](/modules/issuancepolicy/) | Governance-controlled token issuance policies, including pause controls, applied via proposals. |
+| [`x/staking`](/modules/staking/) | VirtEngine's staking extensions — validator reward logic including VEID verification rewards. |
+| [`x/delegation`](/modules/delegation/) | Delegation records and lifecycle for token holders staking with validators. |
 
 ## Identity & trust
 
 | Module | Purpose |
 | --- | --- |
-| `x/veid` | The VEID identity layer: identity scopes, verification records, consent settings, zero-knowledge proof verification (`x/veid/zk`). See [VEID Overview](/veid/overview/). |
-| `x/veidregistry` | Registry of approved VEID verifier versions — upsert, approve, retire flows and validator readiness reporting. |
-| `x/mfa` | Multi-factor authentication factors and policies for protocol accounts. |
-| `x/cert` | TLS/mTLS certificates used to secure tenant↔provider communication. |
-| `x/roles` | Role-based access control for privileged protocol operations. |
-| `x/review` | Tenant reviews of providers — reputation input for provider selection. |
-| `x/audit` | Third-party auditor attestations about providers. See [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/). |
-| `x/benchmark` | Provider performance benchmarks recorded on-chain. |
-| `x/fraud` | Fraud reporting and evaluation — flags anomalous usage, identity, and marketplace behavior. |
+| [`x/veid`](/modules/veid/) | The VEID identity layer: identity scopes, verification records, consent settings, zero-knowledge proof verification (`x/veid/zk`). See [VEID Overview](/veid/overview/). |
+| [`x/veidregistry`](/modules/veidregistry/) | Registry of approved VEID verifier versions — upsert, approve, retire flows and validator readiness reporting. |
+| [`x/mfa`](/modules/mfa/) | Multi-factor authentication factors and policies for protocol accounts. |
+| [`x/cert`](/modules/cert/) | TLS/mTLS certificates used to secure tenant↔provider communication. |
+| [`x/roles`](/modules/roles/) | Role-based access control for privileged protocol operations. |
+| [`x/review`](/modules/review/) | Tenant reviews of providers — reputation input for provider selection. |
+| [`x/audit`](/modules/audit/) | Third-party auditor attestations about providers. See [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/). |
+| [`x/benchmark`](/modules/benchmark/) | Provider performance benchmarks recorded on-chain. |
+| [`x/fraud`](/modules/fraud/) | Fraud reporting and evaluation — flags anomalous usage, identity, and marketplace behavior. |
 
 ## Security & infrastructure
 
 | Module | Purpose |
 | --- | --- |
-| `x/encryption` | Encrypted payload envelopes and key fingerprints used by VEID and other confidential state. See [Encryption & Enclaves](/concepts/encryption-enclaves/). |
-| `x/enclave` | Trusted execution environment (TEE/enclave) registration and attestation. |
-| `x/oracle` | External data feeds (e.g., pricing) brought on-chain with validator-verified reports. |
-| `x/config` | Chain-level configuration parameters managed through governance. |
-| `x/support` | On-chain support ticketing and escalation workflows. |
+| [`x/encryption`](/modules/encryption/) | Encrypted payload envelopes and key fingerprints used by VEID and other confidential state. See [Encryption & Enclaves](/concepts/encryption-enclaves/). |
+| [`x/enclave`](/modules/enclave/) | Trusted execution environment (TEE/enclave) registration and attestation. |
+| [`x/oracle`](/modules/oracle/) | External data feeds (e.g., pricing) brought on-chain with validator-verified reports. |
+| [`x/config`](/modules/config/) | Chain-level configuration parameters managed through governance. |
+| [`x/support`](/modules/support/) | On-chain support ticketing and escalation workflows. |
 
 :::note
 Module APIs (messages, queries, events, parameters) are defined in each

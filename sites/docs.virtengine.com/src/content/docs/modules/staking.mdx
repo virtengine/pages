@@ -1,0 +1,130 @@
+---
+title: x/staking — Staking module
+description: x/staking extends Cosmos SDK staking with performance recording, reward epochs, and VirtEngine slashing records for the dual validator role.
+---
+
+The `x/staking` module is VirtEngine's validator staking layer. It extends
+Cosmos SDK staking for VirtEngine's needs: bonded stake weights consensus
+voting power under CometBFT, slashing applies to protocol misbehavior, and
+unbonding and reward parameters are governance-controlled.
+
+VirtEngine validators can participate in both consensus and the VEID Network.
+Staking rewards remain but are proposed at roughly 90% lower than the prior
+model; compensation, commission and conditions are governed protocol
+parameters.
+
+## What it does
+
+The base staking machinery — bonding tokens to validators, voting power,
+unbonding, and the standard validator lifecycle — is Cosmos SDK standard and
+is not redefined in this module. What `x/staking` adds on top of that base is
+the VirtEngine-specific surface: performance recording, reward epochs,
+VirtEngine slashing records, and validator signing info.
+
+The practical split is this:
+
+- **SDK-standard (not listed here):** the Cosmos staking messages and queries
+  that operate the global staking pool — delegating, unbonding, editing
+  validator details, and the SDK's own jailing mechanics.
+- **This module's own surface:** the messages and queries below — recording
+  validator performance, applying and lifting slashes, epoch and reward
+  queries, signing info, and VirtEngine slash records.
+
+Staking rewards operate under governed policy at the proposed conservative
+level — roughly 90% lower than the prior model — and validators may earn
+additional VEID identity-scoring rewards under the governed incentive policy.
+
+## Why it exists
+
+Proof-of-stake security is only as strong as the incentive to bond. The
+extended staking module ties security funding to a self-balancing feedback
+loop, and compensates the identity-network work that makes VirtEngine's
+validator role unique.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Bonded stake | Tokens locked to a validator, weighting its consensus vote and earning rewards. |
+| Unbonding period | The 21-day exit delay during which stake earns nothing and remains slashable. |
+| Identity-led issuance | A proposed allocation for accounts meeting the network-defined unique-identity threshold and activity conditions. |
+
+## Core flow
+
+1. **Bond — Stake bonds to validators.** Directly or via delegation, tokens
+   lock and weight consensus power under CometBFT.
+2. **Validate — Duties execute.** Consensus participation plus optional VEID
+   identity scoring under the governed incentive policy.
+3. **Reward — Issuance funds rewards.** Reward schedules run under governed
+   policy at the proposed conservative level — roughly 90% lower than the
+   prior model.
+4. **Exit — Unbond or redelegate.** Twenty-one days to exit; redelegation
+   moves weight between validators without a full unbonding cycle.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgRecordPerformance` | Records a validator's performance data for reward accounting. |
+| `MsgSlashValidator` | Applies a slash to a validator for protocol misbehavior. |
+| `MsgUnjailValidator` | Requests that a jailed validator be restored to active status. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `ValidatorReward` / `ValidatorRewards` | Accrued validator rewards, individually and as a list. |
+| `ValidatorPerformance` / `ValidatorPerformances` | Recorded performance data for one validator or all validators. |
+| `CurrentEpoch` / `RewardEpoch` | The current epoch, and the details of a given reward epoch. |
+| `SigningInfo` | Consensus signing information for a validator. |
+| `SlashRecords` | VirtEngine slash records recorded against validators. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/delegation](/modules/delegation/) | Delegators bond stake to validators through the delegation lifecycle. |
+| [x/veid](/modules/veid/) | Validators may participate in VEID identity scoring under the governed incentive policy. |
+| [x/bme](/modules/bme/) | Issuance mechanics fund the reward schedule. |
+| [x/issuancepolicy](/modules/issuancepolicy/) | Reward issuance operates under governed policy. |
+
+## Related documentation
+
+- [Staking Economics](/validators/staking-economics/) — how rewards, inflation,
+  and tokenomics fit together.
+- [Slashing](/validators/slashing/) — the penalties bonded stake is exposed
+  to.
+- [Delegation](/modules/delegation/) — the delegator-side lifecycle that bonds
+  stake to validators.
+- [Governance & Staking](/concepts/governance-staking/) — staking's role in
+  protocol governance.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is bonded stake?
+
+Tokens locked to a validator, weighting its consensus vote and earning
+rewards — the capital commitment that secures the chain.
+
+### How do VEID rewards work for validators?
+
+Validators participating in identity scoring earn under the governed incentive
+policy — conservative, governance-controlled, with no fixed pool promised. See
+[What is VEID?](/veid/overview/).
+
+### What is identity-led issuance?
+
+A proposed allocation for accounts meeting the network-defined
+unique-identity threshold and activity conditions — issuance that follows
+verified humans. See the
+[x/issuancepolicy module](/modules/issuancepolicy/).
+
+:::note
+Message and query types are defined in `x/staking/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

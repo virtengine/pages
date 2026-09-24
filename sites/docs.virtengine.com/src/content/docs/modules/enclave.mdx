@@ -1,0 +1,125 @@
+---
+title: x/enclave — Enclave module
+description: The x/enclave module records hardware enclave attestations on-chain, letting tenants require provable confidential execution before secrets are delivered.
+---
+
+The `x/enclave` module is the marketplace's confidential-compute
+attestation layer. It records and verifies attestations from trusted
+execution environments, so a provider can prove on-chain that a workload
+runs inside a genuine hardware enclave with a specific measured
+configuration — and a tenant can require that proof before their workload,
+or its data, is delivered.
+
+Attestation evidence is validated against the state machine's
+expectations, turning "trust me, it's confidential" into a verifiable
+claim any counterparty can check.
+
+## What it does
+
+- **Capability is advertised.** Confidential-compute capability becomes a
+  filterable provider attribute through [x/provider](/modules/provider/),
+  discoverable by tenants shopping for it.
+- **Execution is required.** Orders can demand attested enclave execution
+  as a placement constraint through [x/market](/modules/market/), so
+  unverified capacity never matches a sensitive workload.
+- **Evidence is checked.** Hardware-signed attestation is validated against
+  the state machine's expectations: proposed code measurements enter an
+  allowlist (`MsgProposeMeasurement`, `MeasurementAllowlist`) and results
+  stay queryable (`AttestedResult`).
+- **Secrets move last.** Workload secrets are encrypted through
+  [x/encryption](/modules/encryption/) and delivered only after attestation
+  verifies; enclaves keep proving liveness on-chain
+  (`MsgEnclaveHeartbeat`).
+
+## Why it exists
+
+Some workloads cannot leave their trust boundary on faith alone —
+regulated data, proprietary models, private keys. Confidential computing
+solves the technical problem; the enclave module solves the marketplace
+problem of proving it, so confidential capacity can be advertised,
+verified, and priced like any other attribute.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| TEE | Trusted execution environment — hardware-isolated compute whose state the host cannot inspect. |
+| Attestation | Cryptographic evidence, signed by hardware, of exactly what code runs inside an enclave. |
+| Measurement | The digest of an enclave's code and configuration that attestation commits to. |
+
+## Core flow
+
+1. **Offer — Providers advertise capability.** Confidential-compute
+   capability becomes a filterable provider attribute tenants can discover.
+2. **Require — Tenants constrain orders.** Attested enclave execution enters
+   placement constraints for workloads that need it.
+3. **Verify — Attestation is validated.** Hardware-signed evidence is
+   checked against the state machine's expectations.
+4. **Deliver — Secrets flow, workload runs.** Encrypted payloads deliver
+   post-verification; usage settles through the normal pipeline.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgRegisterEnclaveIdentity` | Registers an enclave's identity on-chain. |
+| `MsgRotateEnclaveIdentity` | Replaces a registered enclave identity with a rotated one. |
+| `MsgProposeMeasurement` | Proposes an enclave code measurement for acceptance. |
+| `MsgRevokeMeasurement` | Withdraws a previously accepted measurement. |
+| `MsgEnclaveHeartbeat` | Records a liveness signal from a running enclave. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `EnclaveIdentity` | The registered identity for one enclave. |
+| `Measurement` / `MeasurementAllowlist` | A single measurement and the accepted set of measurements. |
+| `AttestedResult` | Recorded attestation evidence. |
+| `CommitteeEnclaveKeys` / `ActiveValidatorEnclaveKeys` | Enclave keys by committee and across the active validator set. |
+| `KeyRotation` / `ValidKeySet` | Key rotation state and the currently valid key set. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/encryption](/modules/encryption/) | Workload secrets are encrypted for delivery only after attestation verifies. |
+| [x/provider](/modules/provider/) | Confidential-compute capability is a provider attribute tenants filter on. |
+| [x/market](/modules/market/) | Orders can require attested enclave execution as a placement constraint. |
+
+## Related documentation
+
+- [Encryption & Enclaves](/concepts/encryption-enclaves/) — where attested
+  execution sits in the trust fabric.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
+  attested claims when picking a bid.
+- [Security](/providers/security/) — the provider-side security model.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a TEE?
+
+A trusted execution environment — hardware-isolated compute whose state
+even the host operator cannot inspect. The enclave module proves workloads
+actually run inside one.
+
+### What is a measurement?
+
+The digest of an enclave's code and configuration that attestation commits
+to — the precise fingerprint tenants accept or reject in placement
+constraints.
+
+### How is confidential capacity priced?
+
+Like any other attribute: confidential capability is priced by open
+bidding, with its premium set by supply and demand rather than a vendor
+price list. See [Encryption & Enclaves](/concepts/encryption-enclaves/).
+
+:::note
+Message and query types are defined in `x/enclave/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

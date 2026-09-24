@@ -309,6 +309,25 @@ invention creeps in:
   major argument; a related-articles rail; cross-links into `/wallet`,
   `/help` and `/get-started`.
 
+### Definitions and guides
+
+`/definitions` (`src/data/definitions.ts`) is the reference layer: one page
+per term, each mapped to exactly one primary query (see `SEO-PLAN.md`).
+`/guides` (`src/data/guides.ts`) holds long-form explainers and how-tos with
+the same section/callout/related shape, plus optional comparison tables
+rendered with `TableScroll` + `table-gov`.
+
+- Same rules as Insights: evergreen, no statistics or market-size figures,
+  no personas, attribution "Identity.org.au editorial".
+- One primary query per page — never two pages targeting the same query;
+  related queries ride as secondary keywords in the summary.
+- Each page ends with a visible `faq` block rendered as native `<details>` —
+  FAQPage JSON-LD is emitted from it, and Google requires marked-up questions
+  to be visible on the page.
+- Government-adjacent content (AGDIS, the Australian landscape) states
+  non-affiliation and non-accreditation explicitly, and uses "aligns with the
+  principles of" as the ceiling for any comparison with accredited systems.
+
 ## 9. Motion
 
 Near zero. The only scripted behaviour on the site is the mobile menu toggle;

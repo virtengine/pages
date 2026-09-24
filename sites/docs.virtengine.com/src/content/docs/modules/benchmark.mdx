@@ -1,0 +1,119 @@
+---
+title: x/benchmark — Benchmark module
+description: The x/benchmark module records on-chain hardware measurements and lets contested results be flagged, challenged and resolved on-chain.
+---
+
+The `x/benchmark` module is the marketplace's measurement layer. Standard
+performance tests run against an operator's actual machines, and the results
+land as published **benchmark records** tied to the provider's on-chain
+identity — so tenants compare providers on measured capability rather than
+marketing copy.
+
+Measurement alone is not enough, so results are contestable on chain. A flag
+raised against a provider triggers a challenge the provider must respond to,
+and anomalies are resolved through the module's own messages, keeping
+published benchmarks accountable after the fact.
+
+## What it does
+
+The module stores hardware performance measurements tied to provider
+records — compute throughput, memory bandwidth, storage and network
+performance — so that tenants can compare providers on measured capability
+rather than marketing copy.
+
+Published benchmarks make the marketplace's abstract resource units
+concrete: the same "unit" of compute can be qualified by what the underlying
+hardware actually measures.
+
+Benchmarks can also be contested. `MsgFlagProvider` raises a flag against a
+provider, which triggers a challenge the provider answers through
+`MsgRequestChallenge` and `MsgRespondChallenge`. Anomalies surfaced by a
+flag are resolved on chain with `MsgResolveAnomalyFlag`, and
+`MsgUnflagProvider` lifts a flag once it no longer stands.
+
+## Why it exists
+
+Price-per-unit is meaningless if units hide wildly different hardware.
+Benchmarks are the marketplace's answer to performance information
+asymmetry — the data that lets price competition operate on real value.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Benchmark record | A published measurement of provider hardware performance, tied to its record. |
+
+## Core flow
+
+1. **Run — Hardware is benchmarked.** Standard performance tests run against
+   the operator's actual machines.
+2. **Publish — Records go on-chain.** Measurements attach to the provider's
+   on-chain identity, visible to every tenant.
+3. **Qualify — Units gain meaning.** Shared resource units are grounded in
+   measured hardware — same unit, verifiable capability.
+4. **Select — Bids compete on data.** Tenants weigh benchmark records when
+   choosing between competing offers.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgSubmitBenchmarks` | Publish hardware performance measurements against a provider record. |
+| `MsgFlagProvider` | Raise a flag against a provider's benchmark results. |
+| `MsgUnflagProvider` | Lift a previously raised flag. |
+| `MsgRequestChallenge` | Open a challenge in response to a flag. |
+| `MsgRespondChallenge` | The provider answers the open challenge. |
+| `MsgResolveAnomalyFlag` | Resolve an anomaly surfaced by a flag, on chain. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Benchmark` | A single benchmark record. |
+| `BenchmarksByProvider` | Published benchmark records for one provider. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/provider](/modules/provider/) | Benchmark records attach to the provider's on-chain identity. |
+| [x/resources](/modules/resources/) | Measurements ground the shared resource-unit vocabulary. |
+| [x/market](/modules/market/) | Tenants weigh benchmark data when selecting bids. |
+
+## Related documentation
+
+- [Benchmarks & Audits](/providers/benchmarks-audits/) — the provider-side
+  view of running and publishing benchmarks.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
+  measured capability when picking a bid.
+- [Marketplace](/concepts/marketplace/) — where benchmark records inform
+  bid selection.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a benchmark record?
+
+A published measurement of provider hardware performance, tied to its
+on-chain record — the marketplace's answer to performance information
+asymmetry.
+
+### Why do benchmarks matter for pricing?
+
+Price-per-unit is meaningless if units hide wildly different hardware.
+Benchmarks let price competition operate on measured value instead of
+spec-sheet theater. See the [x/resources module](/modules/resources/).
+
+### How do tenants use benchmark data?
+
+As a selection signal: when comparing bids, measured performance qualifies
+the abstract resource units each offer proposes. See
+[How the marketplace works](/concepts/marketplace/).
+
+:::note
+Message and query types are defined in `x/benchmark/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

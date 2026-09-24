@@ -1,0 +1,110 @@
+---
+title: x/cert — Certificates module
+description: The x/cert module anchors TLS certificates in consensus, giving providers and tenants a self-service PKI rooted in the ledger for mutual authentication.
+---
+
+The `x/cert` module is the protocol's on-chain public key infrastructure. It
+anchors TLS certificates so that providers and tenants can mutually
+authenticate off-chain connections, with the ledger as the root of trust
+rather than a commercial certificate authority.
+
+Certificates are issued and revoked by their owning accounts, giving every
+marketplace participant a self-service PKI. Both sides of a connection
+verify the peer's certificate against chain state before workload data
+moves.
+
+## What it does
+
+When a tenant's client connects to a provider daemon endpoint — to send a
+manifest, fetch logs, or reach a deployed service — both sides verify the
+peer's certificate against chain state.
+
+Certificates are issued and revoked by their owning accounts, giving every
+marketplace participant a self-service PKI whose root of trust is the ledger
+rather than a commercial certificate authority. Revocation is recorded
+on-chain, so it takes effect for all future connection checks and is visible
+to every counterparty.
+
+## Why it exists
+
+Leases are agreed on-chain but workloads are served off-chain. Without a
+shared PKI, the off-chain hop would be the weakest link — either
+unauthenticated or dependent on external CAs. Anchoring certificates in
+consensus lets any lease counterparty verify exactly who they are talking
+to.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| mTLS | Mutual TLS — both client and server authenticate, each verified against on-chain certificate state. |
+| Revocation | On-chain invalidation of a certificate, effective for all future connection checks. |
+
+## Core flow
+
+1. **Issue — Accounts issue certificates.** Owning accounts create
+   certificates for their endpoints and clients — self-service PKI.
+2. **Present — Peers present on connect.** Provider endpoints and tenant
+   clients present chain-anchored certificates when connections open.
+3. **Verify — Both sides check chain state.** Mutual verification against
+   on-chain records before any workload data moves.
+4. **Revoke — Revocation is on-chain.** Invalidation takes effect for all
+   future connection checks, visible to every counterparty.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgCreateCertificate` | An owning account issues a certificate for its endpoint or client. |
+| `MsgRevokeCertificate` | The owning account revokes a certificate on-chain. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Certificates` | Chain-anchored certificates recorded for lookup during connection checks. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/provider](/modules/provider/) | Provider endpoints present chain-anchored certificates to tenants. |
+| [x/deployment](/modules/deployment/) | Tenant clients authenticate with certificates when delivering manifests. |
+| [x/market](/modules/market/) | Lease counterparties are the identities certificates authenticate. |
+
+## Related documentation
+
+- [Provider Daemon](/providers/provider-daemon/) — the daemon endpoints
+  certificates authenticate.
+- [Deploying Workloads](/tenants/deploying-workloads/) — tenant clients
+  delivering manifests over verified channels.
+- [Security](/providers/security/) — the provider-side security posture
+  around endpoints.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why not just use public certificate authorities?
+
+Leases are agreed on-chain but workloads are served off-chain. Anchoring
+certificates in consensus lets any lease counterparty verify exactly who
+they are talking to, without depending on external authorities for the
+protocol's most sensitive hop.
+
+### What is mTLS in this context?
+
+Mutual TLS: both client and server authenticate, each verified against
+on-chain certificate state — the lease counterparties are the identities the
+certificates authenticate.
+
+### What happens on key compromise?
+
+The owning account revokes the certificate on-chain, and revocation is
+effective for all future connection checks across the marketplace.
+
+:::note
+Message and query types are defined in `x/cert/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

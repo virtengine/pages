@@ -5,7 +5,7 @@ import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
 import ServiceFigure from "@components/ServiceFigure.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
-import { HELP_ARTICLES, RELATED_EXTERNAL, getArticle } from "@data/help";
+import { HELP_ARTICLES, RELATED_RESOURCES, getArticle } from "@data/help";
 import { SITE } from "@data/site";
 import { articleNode } from "@lib/schema";
 
@@ -28,7 +28,7 @@ const related = article.related
     if (internal) {
       return { title: internal.title, href: `/help/${internal.slug}`, summary: internal.summary };
     }
-    const external = RELATED_EXTERNAL[r];
+    const external = RELATED_RESOURCES[r];
     return external ? { title: external.title, href: external.href, summary: undefined } : null;
   })
   .filter((r) => r !== null);

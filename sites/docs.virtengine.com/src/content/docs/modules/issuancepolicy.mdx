@@ -1,0 +1,122 @@
+---
+title: x/issuancepolicy — Issuance Policy module
+description: x/issuancepolicy encodes the governed rules for minting new tokens — schedules, safeguards, and policy parameters that allocations must respect.
+---
+
+The `x/issuancepolicy` module encodes the rules under which new tokens may
+be minted: schedules, safeguards and policy parameters that staking and
+identity allocations must respect. The proposed issuance model uses VEID-led
+15-token issuance batches: 14 tokens to eligible active verified humans and
+1 token to the Foundation-controlled genesis account. All policy lives in
+chain state and can be changed through consensus.
+
+Because policy is a module, changing issuance rules is a governance act with
+a public proposal trail, not a quiet parameter edit.
+
+## What it does
+
+The module holds issuance policy as first-class on-chain state. Policies are
+created and updated, activated as the active policy, and lifecycle-managed
+through pause, resume, and deprecation — all as messages rather than
+off-chain configuration.
+
+Policy is enforced through bounded mechanics: BME mint schedules and staking
+rewards execute within the policy's schedules and safeguards. The module also
+exposes its own accounting — `Counters` tracks issuance against policy, and
+`ProofMintRecord`/`ProofMintRecords` exposes proof-of-mint records so the
+issuance trail can be audited. Under the proposed model, VEID-led batches
+issue 15 tokens: 14 to eligible active verified humans and 1 to the
+Foundation-controlled genesis account.
+
+## Why it exists
+
+Monetary credibility requires that issuance be rule-bound and visible.
+Separating the policy (what may be minted) from the mechanics (how minting
+executes) means the rules can be audited and governed independently of the
+machinery.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Issuance schedule | The governed timetable and limits under which new supply may be minted. |
+| Max supply | No fixed maximum or hard cap. Initial supply is zero; new tokens are issued only through verified human identities, with continued issuance as new identities are verified and the human population grows. |
+
+## Core flow
+
+1. **Encode — Policy becomes state.** Issuance rules live in chain state,
+   auditable by anyone, changeable only through consensus.
+2. **Constrain — Mechanics obey bounds.** BME mint schedules and staking
+   rewards execute within the policy's schedules and safeguards.
+3. **Propose — Changes go public.** New schedules arrive as governance
+   proposals with open debate and stakeholder vote.
+4. **Enact — Consensus adopts.** Approved policy activates through the normal
+   upgrade path, with the trail preserved on-chain.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgUpsertPolicy` | Creates or updates an issuance policy. |
+| `MsgSetActivePolicy` | Makes a policy the active issuance policy. |
+| `MsgPausePolicy` | Pauses a policy. |
+| `MsgResumePolicy` | Resumes a paused policy. |
+| `MsgDeprecatePolicy` | Deprecates a policy. |
+| `MsgPauseIssuancePolicy` | Pauses issuance under policy control. |
+| `MsgResumeIssuancePolicy` | Resumes previously paused issuance. |
+| `MsgUpdateIssuanceParams` | Updates issuance-specific parameters. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Policy` / `Policies` | One issuance policy, or all policies. |
+| `ActivePolicy` | The currently active issuance policy. |
+| `Counters` | Running counters tracking issuance against policy. |
+| `ProofMintRecord` / `ProofMintRecords` | Proof-of-mint records, individually and as a list. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/bme](/modules/bme/) | Mint schedules execute within policy bounds. |
+| [x/staking](/modules/staking/) | Reward issuance is constrained by governed policy. |
+| [x/config](/modules/config/) | Policy parameters are part of governed chain configuration. |
+
+## Related documentation
+
+- [Tokenomics](/concepts/tokenomics/) — supply, issuance, and the economics
+  policy protects.
+- [BME](/modules/bme/) — the minting mechanics policy constrains.
+- [Staking](/modules/staking/) — reward issuance governed by this policy.
+- [Governance & Staking](/concepts/governance-staking/) — how policy changes
+  become proposals.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is an issuance schedule?
+
+The governed timetable and limits under which new supply may be minted — the
+temporal bounds every minting path must respect.
+
+### Is there a maximum supply?
+
+No fixed maximum or hard cap. Initial supply is zero, and new tokens issue
+only through verified human identities as the verified population grows. See
+[Tokenomics explained](/concepts/tokenomics/).
+
+### Why separate policy from mechanics?
+
+So the rules can be audited and governed independently of the minting
+machinery — monetary credibility requires issuance to be rule-bound and
+visible. See the [x/bme module](/modules/bme/).
+
+:::note
+Message and query types are defined in `x/issuancepolicy/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

@@ -1,0 +1,124 @@
+---
+title: x/mfa — MFA module
+description: The x/mfa module enforces multi-factor authentication in the state machine, requiring enrolled factors before designated sensitive operations execute.
+---
+
+The `x/mfa` module is the protocol's on-chain multi-factor authentication
+layer. Accounts can enroll additional factors, and designated sensitive
+operations — account recovery among them — must satisfy an on-chain MFA
+policy before they execute.
+
+Because the policy check happens in the state machine rather than in a
+client app, MFA cannot be stripped by a malicious interface: a transaction
+that doesn't carry the required factors simply fails validation.
+
+## What it does
+
+The module brings multi-factor authentication into consensus:
+
+- **Factors are chain state.** Accounts enroll additional authentication
+  factors against the on-chain account, and the record lives in consensus —
+  not in any single app's settings.
+- **Policy names the operations.** Chain configuration designates which
+  operations demand MFA, so higher-risk actions such as account recovery
+  require satisfying the on-chain policy before they execute.
+- **Clients cannot strip it.** Because the check happens in the state
+  machine rather than in a client app, MFA cannot be stripped by a malicious
+  interface: a transaction that doesn't carry the required factors simply
+  fails validation.
+
+## Why it exists
+
+Key compromise is the dominant failure mode of blockchain accounts. For a
+chain that carries identity records and payment streams, single-signature
+security is not enough — MFA enforced by the protocol itself closes the gap
+between wallet security and account security.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Factor enrollment | Registering an additional authentication factor against an on-chain account. |
+| Step-up authentication | Requiring stronger factors for higher-risk operations like recovery. |
+
+## Core flow
+
+1. **Enroll — Register factors.** Additional authentication factors are
+   enrolled against the on-chain account.
+2. **Govern — Policy names operations.** Chain configuration designates
+   which operations demand MFA — recovery, privileged roles, and their kin.
+3. **Step up — Sensitive flows challenge.** High-risk operations require
+   satisfying the on-chain policy before they execute.
+4. **Fail closed — Missing factors fail.** Non-compliant transactions fail
+   validation regardless of which client submitted them.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgEnrollFactor` | Enrolls an additional authentication factor for an account. |
+| `MsgRevokeFactor` | Revokes a previously enrolled factor. |
+| `MsgCreateChallenge` | Creates an MFA challenge for a sensitive operation. |
+| `MsgVerifyChallenge` | Submits the response that satisfies a challenge. |
+| `MsgIssueSession` | Issues an authorization session after successful verification. |
+| `MsgRefreshSession` | Refreshes an existing authorization session. |
+| `MsgRevokeSession` | Revokes an authorization session. |
+| `MsgAddTrustedDevice` | Registers a trusted device for an account. |
+| `MsgRemoveTrustedDevice` | Removes a trusted device from an account. |
+| `MsgSetMFAPolicy` | Sets which operations demand MFA under the on-chain policy. |
+| `MsgUpdateSensitiveTxConfig` | Updates configuration for designated sensitive transactions. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `FactorEnrollment` / `FactorEnrollments` | One factor enrollment, or all enrollments for lookup. |
+| `Challenge` / `PendingChallenges` | One MFA challenge, or challenges still awaiting verification. |
+| `AuthorizationSession` / `AuthorizationSessions` | One authorization session, or active sessions as a list. |
+| `TrustedDevice` / `TrustedDevices` | One trusted device, or the trusted device set. |
+| `MFAPolicy` | The current on-chain MFA policy. |
+| `MFARequired` | Whether a given operation currently requires MFA. |
+| `SensitiveTxConfig` / `AllSensitiveTxConfigs` | Sensitive transaction configuration, individually and as a list. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veid](/modules/veid/) | MFA layers on VEID identity for step-up verification on sensitive flows. |
+| [x/roles](/modules/roles/) | Role-holding accounts can be required to authenticate with additional factors. |
+| [x/config](/modules/config/) | Which operations demand MFA is governed chain configuration. |
+
+## Related documentation
+
+- [VEID Overview](/veid/overview/) — the identity layer MFA steps up over.
+- [Governance](/validators/governance/) — how governed chain configuration
+  such as MFA policy is decided.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why put MFA on-chain instead of in wallets?
+
+Key compromise is the dominant account failure mode, and for a chain
+carrying identity records and payment streams, single-signature security is
+not enough. Protocol-enforced factors close the gap between wallet security
+and account security.
+
+### What is step-up authentication?
+
+Requiring stronger factors for higher-risk operations like account recovery
+— the policy escalates with the stakes of the action.
+
+### How does MFA relate to VEID?
+
+MFA layers on VEID identity for step-up verification on sensitive flows, and
+privileged role-holding accounts can be required to carry stronger
+authentication. See the [x/veid module](/modules/veid/).
+
+:::note
+Message and query types are defined in `x/mfa/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

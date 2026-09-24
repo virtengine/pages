@@ -1,0 +1,187 @@
+---
+title: x/veid — VEID module
+description: The x/veid module captures identity evidence on-device, seals it into encrypted scopes, scores by validator consensus, and offers ZK proof tiers.
+---
+
+The `x/veid` module is the protocol's identity layer. Users capture identity
+evidence on-device — documents with OCR, a selfie with active liveness,
+biometric hardware attestation, and device integrity attestation — then seal
+it into encrypted, signed identity scopes and submit it on-chain.
+
+Validators — the same set that secures consensus — decrypt submitted scopes
+with their keys, score them with shared machine-learning models, and commit
+an identity trust score to the ledger by consensus. The module's
+zero-knowledge subsystem (`x/veid/zk`) then lets users prove facts about
+that identity without revealing documents, biometrics, or the score itself.
+
+## What it does
+
+The module turns identity verification into a protocol function, covering
+evidence capture, sealing, scoring, and disclosure:
+
+- **Capture stays on-device.** Documents with OCR, a selfie with active
+  liveness, biometric hardware attestation (fingerprint or iris), and device
+  integrity attestation via Play Integrity or App Attest are captured on the
+  handset rather than uploaded raw.
+- **Scopes are sealed and signed.** Evidence is packed into encrypted
+  identity scopes, signed by both an approved client and the user, and
+  submitted on-chain.
+- **Validators score by consensus.** The validator set decrypts submitted
+  scopes with their keys, scores them with shared machine-learning models,
+  and commits an identity trust score to the ledger. This validator-run
+  identity verification network is the method protected by patent
+  [AU2024203136B2](https://patents.google.com/patent/AU2024203136B2/).
+- **Proof without disclosure.** The zero-knowledge subsystem (`x/veid/zk`)
+  lets users prove facts about their verified identity — that a score clears
+  a threshold, that an attribute holds — without revealing documents,
+  biometrics, or the score itself.
+
+## Why it exists
+
+An open compute marketplace without identity is an invitation to fraud and
+abuse: providers need to know a tenant is real before workloads land on
+their hardware, and tenants need to know a provider is accountable. `x/veid`
+makes verification a protocol function — decentralized like the chain
+itself, private by construction — rather than an outsourced KYC checkbox.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Identity scope | An encrypted, signed bundle of identity evidence for one verification dimension. |
+| Trust score | The consensus-committed score validators assign after ML evaluation of submitted scopes. |
+| ZK verification tier | A zero-knowledge proof surface that reveals only a threshold or attribute fact — never the data. |
+| Active liveness | A challenge–response selfie flow proving a live human, resistant to photos, replays, and injection. |
+
+## Core flow
+
+1. **Capture — Evidence on-device.** Document OCR, liveness challenge,
+   biometric and device attestation — all captured on the handset.
+2. **Seal — Scopes are sealed.** Evidence bundles are encrypted to validator
+   keys and signed by both an approved client and the user.
+3. **Score — Validators score.** Decryption, shared-model scoring, and a
+   consensus-committed trust score recorded through the registry.
+4. **Gate — Scores gate the market.** Marketplace participation, provider
+   registration, and deployment creation all check VEID standing.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| **Verification & scopes** | |
+| `MsgRequestVerification` | Requests verification for a submitted identity scope. |
+| `MsgUpdateVerificationStatus` | Updates the status of a pending verification. |
+| `MsgUpdateScore` | Records an updated identity trust score. |
+| `MsgUploadScope` / `MsgRevokeScope` | Uploads or revokes a sealed identity scope. |
+| `MsgUpdateConsentSettings` | Updates the account's recorded consent settings. |
+| `MsgUpdateDerivedFeatures` | Updates derived features computed from identity data. |
+| `MsgCompleteBorderlineFallback` | Completes the fallback path for borderline scoring outcomes. |
+| `MsgUpdateBorderlineParams` | Updates parameters governing the borderline fallback. |
+| **Appeals** | |
+| `MsgSubmitAppeal` | Submits an appeal against a verification outcome. |
+| `MsgClaimAppeal` | Claims a pending appeal for handling. |
+| `MsgResolveAppeal` | Records the resolution of an appeal. |
+| `MsgWithdrawAppeal` | Withdraws a previously submitted appeal. |
+| **Identity wallets** | |
+| `MsgCreateIdentityWallet` | Creates an on-chain identity wallet. |
+| `MsgAddScopeToWallet` / `MsgRevokeScopeFromWallet` | Adds or removes a verified scope held by a wallet. |
+| `MsgRebindWallet` | Rebinds a wallet's identity binding. |
+| **Scoring models** | |
+| `MsgRegisterModel` / `MsgActivateModel` / `MsgDeprecateModel` / `MsgRevokeModel` | Manages the lifecycle of a scoring model version. |
+| `MsgProposeModelUpdate` | Proposes an update to a registered model. |
+| `MsgReportModelVersion` | Reports the model version used during scoring. |
+| **Compliance** | |
+| `MsgSubmitComplianceCheck` | Submits a compliance check for evaluation. |
+| `MsgAttestCompliance` | Attests the outcome of a compliance check. |
+| `MsgUpdateComplianceParams` | Updates compliance parameters. |
+| `MsgRegisterProvider` / `MsgDeactivateProvider` | Registers or deactivates a provider tracked by the module. |
+| **Proofs & linkages** | |
+| `MsgSubmitEmailVerificationProof` | Submits an email verification proof. |
+| `MsgSubmitSMSVerificationProof` | Submits an SMS verification proof. |
+| `MsgSubmitSocialMediaScope` | Submits a social media identity scope. |
+| `MsgSubmitSSOVerificationProof` | Submits a single sign-on verification proof. |
+| `MsgCreateSSOLinkage` / `MsgUpdateSSOLinkage` / `MsgRevokeSSOLinkage` | Creates, updates, or revokes an SSO linkage. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| **Verification & scopes** | |
+| `Scope` / `ScopesByType` | One stored identity scope, or scopes filtered by type. |
+| `IdentityRecord` | The identity record bound to an account. |
+| `VerificationHistory` | Past verification outcomes for an account. |
+| `ConsentSettings` | The account's recorded consent settings. |
+| **Appeals** | |
+| `Appeal` / `AppealsByAccount` | One appeal, or all appeals filed by an account. |
+| `PendingAppeals` | Appeals awaiting resolution. |
+| `AppealParams` | Current appeal configuration parameters. |
+| **Identity wallets** | |
+| `IdentityWallet` / `WalletScopes` | A wallet record, and the scopes it holds. |
+| **Scoring models** | |
+| `ModelVersion` / `ActiveModels` / `ModelHistory` | A specific model version, the active set, and version history. |
+| `ModelParams` | Current scoring model parameters. |
+| `ValidatorModelSync` | Validator synchronization state for shared scoring models. |
+| **Derived features** | |
+| `DerivedFeatures` / `DerivedFeatureHashes` | Derived feature values, and their hashes. |
+| **Compliance** | |
+| `ComplianceStatus` | The compliance status recorded for a subject. |
+| `ComplianceProvider` / `ComplianceProviders` | One registered compliance provider, or all of them. |
+| `ComplianceParams` | Current compliance parameters. |
+| `ApprovedClients` | Clients approved to submit identity data. |
+| **Proofs & linkages** | |
+| `EmailVerification` | A stored email verification proof. |
+| `SMSVerification` | A stored SMS verification proof. |
+| `SocialMediaScope` / `SocialMediaScopes` | One social media scope, or all of them. |
+| `SSOLinkage` | A stored single sign-on linkage. |
+| **General** | |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veidregistry](/modules/veidregistry/) | Scores and scope records are registered and resolved through the registry. |
+| [x/encryption](/modules/encryption/) | Identity scopes are sealed with validator-targeted public-key encryption. |
+| [x/config](/modules/config/) | Only governance-approved clients may submit identity data. |
+| [x/market](/modules/market/) | Marketplace access is gated on VEID trust scores in both directions. |
+| [x/mfa](/modules/mfa/) | Sensitive account operations layer on-chain MFA over identity. |
+
+## Related documentation
+
+- [VEID Overview](/veid/overview/) — what a VEID is and where identity sits in
+  the protocol.
+- [Enrollment](/veid/enrollment/) — the capture-to-submission path for
+  identity evidence.
+- [Hardware Attestation](/veid/hardware-attestation/) — device and biometric
+  attestation at capture time.
+- [Privacy](/veid/privacy/) — how scopes and zero-knowledge tiers keep
+  identity data private.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is an identity scope?
+
+An encrypted, signed bundle of identity evidence for one verification
+dimension — the unit validators decrypt, score, and commit outcomes for. See
+the [x/veidregistry module](/modules/veidregistry/).
+
+### Who sees my documents and biometrics?
+
+Nobody on the public ledger. Scopes are encrypted to validator recipients
+for scoring, and the verification surfaces expose only zero-knowledge proofs
+— never raw documents, biometrics, or scores. See
+[What is VEID?](/veid/overview/).
+
+### What is active liveness?
+
+A challenge–response selfie flow proving a live human is present — resistant
+to photos, replays, and injection — performed on-device before anything is
+sealed.
+
+:::note
+Message and query types are defined in `x/veid/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

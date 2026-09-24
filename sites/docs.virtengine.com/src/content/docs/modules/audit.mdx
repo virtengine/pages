@@ -1,0 +1,127 @@
+---
+title: x/audit — Audit module
+description: The x/audit module lets recognized auditors sign provider attributes on-chain, so tenants can require audited capacity and weight attestations over self-claims.
+---
+
+The `x/audit` module is the marketplace's attestation layer. Independent,
+identity-verified auditors sign provider attributes directly on-chain, turning
+what would be a self-asserted claim — region, datacenter tier, compliance
+posture — into an **attestation** a tenant can verify and require.
+
+## What it does
+
+A provider may claim any attribute on its provider record. An auditor who
+holds the on-chain auditor role inspects the claim against reality and signs
+it. That signature lands as an on-chain object attached to the provider's
+attribute record, where three things become possible:
+
+- **Orders can require signed attributes.** Placement constraints can demand
+  attributes signed by specific auditors, so only verified claims match a
+  tenant's workload.
+- **Trust is traceable.** Auditor status is itself a role granted through
+  [x/roles](/modules/roles/), held by VEID-verified participants — an
+  attestation names an accountable party, not an anonymous badge.
+- **Standing can be withdrawn.** Attestations are revocable and superseded on
+  chain, so audit trust reflects current reality rather than a one-time
+  certification.
+
+The module also maintains an audit log of its own operations
+(`LogEntry`/`LogEntries` queries) and supports bulk export jobs
+(`MsgCreateExportJob`) for reviewers who want the full attestation history
+off-chain.
+
+## Why it exists
+
+Self-reported quality is worth little in an anonymous marketplace. Real
+procurement solves this with independent verification — but a centralized
+gatekeeper would simply recreate the trust problem the protocol exists to
+dissolve. `x/audit` imports the assurance model of procurement (a second,
+accountable party checks the claim) without importing a gatekeeper: auditors
+are on-chain roles, attestations are public objects, and both are revocable.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Attestation | An auditor's on-chain signature over a provider's claimed attribute. |
+| Audited placement | An order constraint requiring attributes signed by trusted auditors. |
+| Auditor role | The `x/roles` capability that authorizes signing provider attributes. |
+| Export job | A recorded request for a bulk export of attestation history. |
+
+## Core flow
+
+1. **Claim — Provider claims attributes.** Region, datacenter tier, and
+   compliance posture go on-chain as part of the provider record via
+   [x/provider](/modules/provider/).
+2. **Inspect — An auditor verifies.** A recognized, identity-verified auditor
+   checks the claim against reality.
+3. **Sign — The attestation lands.** `MsgSignProviderAttributes` records the
+   signature, upgrading the claim into an attestation tenants can require.
+4. **Revoke — Standing is withdrawn.** `MsgDeleteProviderAttributes` removes a
+   signature; attestations stay auditable and traceable to their signers
+   throughout.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgSignProviderAttributes` | An auditor signs (attests to) a provider's claimed attributes. |
+| `MsgDeleteProviderAttributes` | The auditor withdraws a previously signed attestation. |
+| `MsgCreateExportJob` | Requests a bulk export of audit records for off-chain review. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `ProviderAttributes` | Attested attributes for one provider. |
+| `AllProvidersAttributes` | Attested attributes across every registered provider. |
+| `AuditorAttributes` | What a given auditor has signed. |
+| `ProviderAuditor` | The auditor relationship for a provider. |
+| `ExportJob` / `ExportJobs` | Status of export jobs, individually and as a list. |
+| `LogEntry` / `LogEntries` | The module's own audit log, individually and as a list. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/provider](/modules/provider/) | Attestations attach to provider attribute records. |
+| [x/market](/modules/market/) | Orders can require auditor-signed attributes for placement. |
+| [x/roles](/modules/roles/) | Auditor status is an on-chain role with defined capabilities. |
+| [x/veid](/modules/veid/) | Auditors are identity-verified participants with accountable standing. |
+
+## Related documentation
+
+- [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/) — where audits sit in
+  the wider trust fabric.
+- [Benchmarks & Audits](/providers/benchmarks-audits/) — the provider-side view
+  of getting audited.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
+  attested claims when picking a bid.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is an attestation?
+
+An auditor's on-chain signature over a provider's claimed attribute — the
+difference between "trust us" and "a verified party checked".
+
+### Who can be an auditor?
+
+Holders of the auditor role — an on-chain role with defined capabilities, held
+by VEID-verified participants with accountable standing. See the
+[x/roles module](/modules/roles/).
+
+### How do tenants use attestations?
+
+Through audited placement constraints: orders can require specific attributes
+signed by trusted auditors, so only verified claims match.
+
+:::note
+Message and query types are defined in `x/audit/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

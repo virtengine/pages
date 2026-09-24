@@ -1,0 +1,122 @@
+---
+title: x/encryption — Encryption module
+description: The x/encryption module seals sensitive on-chain payloads to recipient public keys, so ciphertext replicates while plaintext stays at authorized endpoints.
+---
+
+The `x/encryption` module is the chain's native envelope-encryption layer.
+Data written into transactions can be sealed to specific recipients' public
+keys, so it transits the mempool, lives in blocks, and replicates to every
+node while remaining readable only where intended.
+
+Its most important client is `x/veid` — identity scopes are encrypted to
+validator recipients so the identity network can score them while the
+public ledger never exposes raw documents or biometrics.
+
+## What it does
+
+Before anything is sealed, recipients publish their public keys on-chain —
+validators, dispute parties, enclave targets — each carrying a verifiable
+fingerprint. Senders discover and pin those keys (`RecipientKey`,
+`KeyByFingerprint`) so they seal to exactly the key they intend, and the
+module publishes the algorithms it accepts (`Algorithms`) alongside them.
+
+Sealing itself is envelope encryption: a symmetric key protects the payload,
+and that key is encrypted to each recipient's public key before submission.
+An envelope can be checked against the module's rules (`ValidateEnvelope`)
+before it goes on chain. What lands in the block is ciphertext plus the
+chain's integrity and ordering guarantees — plaintext exists only at
+authorized endpoints.
+
+Registered keys stay maintainable: `MsgRotateKey` rotates a key,
+`MsgUpdateKeyLabel` refreshes its label, and `MsgRevokeRecipientKey`
+withdraws a registered key from service.
+
+## Why it exists
+
+Public ledgers and personal data are structurally at odds: everything
+on-chain is replicated everywhere, forever. Making recipient-targeted
+encryption a first-class module resolves the tension — the chain carries
+ciphertext and its integrity guarantees, while plaintext exists only at
+authorized endpoints.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Envelope encryption | Sealing a payload with a symmetric key that is itself encrypted to each recipient's public key. |
+| Key fingerprint | A compact, verifiable digest of a registered public key used to pin recipients. |
+
+## Core flow
+
+1. **Register — Recipients register keys.** Public keys with verifiable
+   fingerprints go on-chain — validators, dispute parties, enclave targets.
+2. **Seal — Senders envelope-encrypt.** A symmetric key seals the payload;
+   the key itself is encrypted to each recipient's public key.
+3. **Transit — Ciphertext rides the chain.** Blocks carry ciphertext plus the
+   chain's integrity and ordering guarantees — plaintext exists only at
+   authorized endpoints.
+4. **Open — Recipients decrypt.** Validators open identity scopes for
+   scoring; entitled parties open sealed dispute evidence.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgRegisterRecipientKey` | Registers a recipient's public key for sealed payloads. |
+| `MsgRevokeRecipientKey` | Withdraws a previously registered recipient key. |
+| `MsgRotateKey` | Rotates a registered key to a new one. |
+| `MsgUpdateKeyLabel` | Updates the label attached to a registered key. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `RecipientKey` | Registered recipient keys for a given recipient. |
+| `KeyByFingerprint` | The registered key matching a fingerprint digest. |
+| `Algorithms` | The encryption algorithms the module supports. |
+| `ValidateEnvelope` | Checks an envelope against the module's validation rules. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veid](/modules/veid/) | Identity scopes are sealed to validator keys for consensus scoring. |
+| [x/enclave](/modules/enclave/) | Enclave workflows combine attestation with encrypted payload delivery. |
+| [x/support](/modules/support/) | Dispute evidence can be sealed to the parties entitled to read it. |
+
+## Related documentation
+
+- [Encryption & Enclaves](/concepts/encryption-enclaves/) — where sealed
+  delivery and attested execution meet.
+- [VEID Overview](/veid/overview/) — the identity system that runs on sealed
+  scopes.
+- [x/enclave module](/modules/enclave/) — attestation before secrets move.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is envelope encryption?
+
+Sealing a payload with a symmetric key that is itself encrypted to each
+recipient's public key — efficient for large payloads, precise about who
+may open them.
+
+### What is a key fingerprint?
+
+A compact, verifiable digest of a registered public key, used to pin
+recipients so senders seal to exactly the key they intend.
+
+### Why not keep sensitive data off-chain entirely?
+
+Because the protocol needs integrity and ordering guarantees for that data
+too. Sealed envelopes give both — the chain carries ciphertext and its
+guarantees, while plaintext exists only at authorized endpoints. See the
+[x/veid module](/modules/veid/).
+
+:::note
+Message and query types are defined in `x/encryption/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

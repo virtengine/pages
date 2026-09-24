@@ -28,6 +28,7 @@ export const NAV: NavItem[] = [
   { label: "Get started", href: "/get-started" },
   { label: "How it works", href: "/how-it-works" },
   { label: "Insights", href: "/insights" },
+  { label: "Guides", href: "/guides" },
   { label: "Help", href: "/help" },
   { label: "For services", href: "/for-services" },
   { label: "About", href: "/about" },
@@ -62,6 +63,17 @@ export const FOOTER_COLUMNS: { heading: string; links: NavItem[] }[] = [
       { label: "Verification levels", href: "/get-started/verification-levels" },
       { label: "If verification fails", href: "/get-started/if-verification-fails" },
       { label: "Lost or new device", href: "/get-started/lost-or-new-device" },
+    ],
+  },
+  {
+    heading: "Guides and terms",
+    links: [
+      { label: "All guides", href: "/guides" },
+      { label: "Digital identity definitions", href: "/definitions" },
+      { label: "How to protect your identity for free", href: "/guides/how-to-protect-your-identity-for-free" },
+      { label: "Age verification explained", href: "/guides/age-verification-explained" },
+      { label: "Identity verification solutions compared", href: "/guides/identity-verification-solutions-compared" },
+      { label: "The Australian Government Digital ID System", href: "/guides/australian-government-digital-id-system" },
     ],
   },
   {

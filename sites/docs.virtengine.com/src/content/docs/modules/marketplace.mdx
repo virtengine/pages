@@ -1,0 +1,119 @@
+---
+title: x/marketplace — Marketplace module
+description: The x/marketplace module carries the offering, listing, and allocation surfaces layered over the x/market matching engine.
+---
+
+Where `x/market` implements the raw order–match–lease state machine, the
+`x/marketplace` module carries the coordination surfaces around it: how
+offerings are presented, how marketplace-level rules are applied, and how
+the exchange is exposed to client interfaces as a coherent product rather
+than a bag of primitives.
+
+It gives the protocol a place to evolve marketplace behavior — listing
+rules, offering metadata, cross-module orchestration — without overloading
+the core matching engine.
+
+## What it does
+
+Marketplace coordination lives here: offerings are presented to tenants
+with shared resource units and attributes, marketplace-level rules shape
+what tenants see and how offers compete, and the exchange reaches client
+interfaces as one integrated surface instead of raw primitives.
+
+In the code the Go package lives at `x/market/types/marketplace` (keeper and
+types), while the registered Cosmos module wrapper is `x/marketplace`.
+Genesis covers offerings, orders, bids, allocations, provider identity
+settings, MFA action configs, event sequence, and the canonical lifecycle
+flag.
+
+## Why it exists
+
+Separating the matching engine from marketplace presentation is a deliberate
+design split: the core exchange must stay minimal and stable, while the
+marketplace surface can grow with the network. The two-module split keeps
+consensus-critical logic isolated from product-level iteration.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Offering | A provider-facing presentation of leasable capacity, described with shared resource units and attributes. |
+| Approved client | A client interface permitted to interact with identity-sensitive marketplace flows, governed via x/config. |
+
+## Core flow
+
+1. **Present — Offerings are presented.** Provider capacity surfaces through
+   offering metadata that tenants can browse, filter, and compare.
+2. **Rule — Marketplace rules apply.** Listing rules and marketplace-level
+   behavior shape what tenants see and how offers compete.
+3. **Expose — Clients get a coherent product.** The exchange reaches client
+   interfaces as one integrated surface instead of raw primitives.
+4. **Evolve — Behavior grows without core risk.** New marketplace behavior
+   lands in this module; the `x/market` state machine stays small and
+   verifiable.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgAcceptBid` | Accepts a provider's bid on an order. |
+| `MsgCreateOffering` | Creates an offering presented to tenants. |
+| `MsgUpdateOffering` | Updates an existing offering. |
+| `MsgDeactivateOffering` | Removes an offering from active presentation. |
+| `MsgPauseAllocation` | Pauses an active allocation. |
+| `MsgResizeAllocation` | Resizes an active allocation. |
+| `MsgTerminateAllocation` | Terminates an allocation. |
+| `MsgWaldurCallback` | Processes a callback from the Waldur integration. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `AllocationsByCustomer` / `AllocationsByProvider` | Allocations listed from the customer or provider side. |
+| `OfferingPrice` | The price recorded for an offering. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | Builds directly on the order, match, and lease primitives. |
+| [x/provider](/modules/provider/) | Surfaces provider offerings and attributes to tenants. |
+| [x/resources](/modules/resources/) | Uses shared resource definitions to describe offerings consistently. |
+| [x/review](/modules/review/) | Reputation signals feed offer presentation and tenant choice. |
+
+## Related documentation
+
+- [Marketplace](/concepts/marketplace/) — the exchange this surface
+  presents.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
+  offerings when deciding.
+- [Waldur](/cloud-platform/waldur/) — the billing integration behind
+  allocation callbacks.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why two modules instead of one?
+
+Separating the matching engine from marketplace presentation keeps
+consensus-critical logic isolated from product-level iteration — the core
+exchange stays minimal and stable while the surface grows with the network.
+
+### What lives here versus x/market?
+
+Coordination surfaces — offerings, listing rules, cross-module
+orchestration — live here. Order–match–lease state transitions live in
+`x/market`. See the [x/market module](/modules/market/).
+
+### How do reputation signals reach tenants?
+
+Review and standing signals feed offer presentation and tenant choice
+through this surface, so track records influence discovery where decisions
+happen. See the [x/review module](/modules/review/).
+
+:::note
+Message and query types are defined in `x/market/types/marketplace/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

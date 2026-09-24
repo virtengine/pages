@@ -1,0 +1,121 @@
+---
+title: x/deployment — Deployment module
+description: The x/deployment module stores tenant workload specifications and their groups, and emits the orders the marketplace opens for bidding.
+---
+
+The `x/deployment` module holds what a tenant wants to run: a deployment
+specification enumerating one or more groups of services, each with resource
+requirements (CPU, memory, storage), placement constraints, and pricing
+bounds. When a tenant creates a deployment, the module emits the orders that
+the market module opens for bidding.
+
+Deployments are versioned, updatable state. Group-level granularity means a
+single deployment can fan out to multiple orders placed with different
+providers in different regions.
+
+## What it does
+
+The module stores declarative workload descriptions and translates them into
+marketplace primitives:
+
+- A deployment spec enumerates groups of services with CPU, memory, and
+  storage requirements, placement constraints, and pricing bounds.
+- Each group fans out to an independently biddable order with its own
+  placement rules, opened for competitive bidding by
+  [x/market](/modules/market/).
+- The deployment funds the escrow account that backs its resulting leases,
+  so demand arrives with budget attached.
+
+Deployments are versioned and updatable: tenants can update specs as needs
+change or close the deployment, with unspent escrow returning to the tenant.
+
+## Why it exists
+
+Tenants think in terms of workloads, not individual orders. The deployment
+module translates a declarative workload description into marketplace
+primitives, the same way a Kubernetes Deployment translates a desired state
+into pods — but with the exchange, not a scheduler, deciding who runs it.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Deployment | A tenant's declarative description of the services they want the marketplace to run. |
+| Group | A subdivision of a deployment that becomes an independently-biddable order with its own placement rules. |
+| SDL | The stack definition language in which workloads are described — services, resources, and placement. |
+
+## Core flow
+
+1. **Describe — Write the spec.** Services, resources, placement, and
+   pricing bounds declared in the stack definition language.
+2. **Emit — Groups become orders.** Each group fans out to an order that the
+   market module opens for competitive bidding.
+3. **Fund — Fund the escrow.** The deployment funds the escrow account
+   backing its resulting leases — demand arrives with budget attached.
+4. **Run — Update or close.** Deployments are versioned: update specs as
+   needs change or close out, with unspent escrow returning to the tenant.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgCreateDeployment` | Creates a deployment from a tenant's workload specification. |
+| `MsgUpdateDeployment` | Updates a deployment's versioned specification. |
+| `MsgCloseDeployment` | Closes a deployment; unspent escrow returns to the tenant. |
+| `MsgStartGroup` | Starts a group within a deployment. |
+| `MsgPauseGroup` | Pauses a running group. |
+| `MsgCloseGroup` | Closes a group within a deployment. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Deployment` / `Deployments` | A single deployment, or the deployment list. |
+| `Group` | A single deployment group. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | Deployment groups generate the orders the market opens for bidding. |
+| [x/escrow](/modules/escrow/) | A deployment funds the escrow that backs its resulting leases. |
+| [x/cert](/modules/cert/) | Tenant certificates authenticate the deployment owner to providers. |
+| [x/veid](/modules/veid/) | Deployment creation is gated by the tenant's verified identity. |
+
+## Related documentation
+
+- [Deploying Workloads](/tenants/deploying-workloads/) — the tenant guide
+  to declaring and running deployments.
+- [Marketplace](/concepts/marketplace/) — where emitted orders are
+  presented and matched.
+- [Leases & Escrow](/tenants/leases-and-escrow/) — how the funded escrow
+  backs the resulting leases.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a deployment group?
+
+A subdivision of a deployment that becomes an independently-biddable order
+with its own placement rules — the unit providers actually compete for.
+
+### What is SDL?
+
+The stack definition language: how services, resources, and placement are
+described for the marketplace. Think of it as the desired-state document the
+exchange acts on.
+
+### How is the deployment owner authenticated?
+
+Tenant certificates (`x/cert`) authenticate the owner to providers when
+delivering manifests, and deployment creation itself is gated by the
+tenant's VEID identity. See the [x/cert module](/modules/cert/).
+
+:::note
+Message and query types are defined in `x/deployment/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

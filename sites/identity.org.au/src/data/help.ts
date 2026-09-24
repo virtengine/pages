@@ -186,7 +186,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         },
       },
     ],
-    related: ["revoking-consent", "data-breach-response", "deleting-your-identity"],
+    related: ["revoking-consent", "data-breach-response", "deleting-your-identity", "biometric-verification-definition"],
   },
   {
     slug: "who-can-see-your-data",
@@ -336,7 +336,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
       },
     ],
-    related: ["using-your-wallet-with-a-service", "who-can-see-your-data", "how-your-biometrics-are-protected"],
+    related: ["using-your-wallet-with-a-service", "who-can-see-your-data", "how-your-biometrics-are-protected", "age-verification-guide"],
   },
   {
     slug: "device-security-checklist",
@@ -380,7 +380,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         },
       },
     ],
-    related: ["recognising-scams-and-phishing", "lost-or-new-device-summary", "how-your-biometrics-are-protected"],
+    related: ["recognising-scams-and-phishing", "lost-or-new-device-summary", "how-your-biometrics-are-protected", "protect-identity-free"],
   },
   {
     slug: "recognising-scams-and-phishing",
@@ -428,7 +428,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
       },
     ],
-    related: ["device-security-checklist", "using-your-wallet-with-a-service", "data-breach-response"],
+    related: ["device-security-checklist", "using-your-wallet-with-a-service", "data-breach-response", "protect-identity-free"],
   },
   {
     slug: "children-and-digital-identity",
@@ -469,7 +469,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
       },
     ],
-    related: ["proving-your-age-without-your-documents", "deleting-your-identity", "who-can-see-your-data"],
+    related: ["proving-your-age-without-your-documents", "deleting-your-identity", "who-can-see-your-data", "age-verification-guide"],
   },
   {
     slug: "accessibility-support",
@@ -561,7 +561,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         },
       },
     ],
-    related: ["how-your-biometrics-are-protected", "recognising-scams-and-phishing", "revoking-consent"],
+    related: ["how-your-biometrics-are-protected", "recognising-scams-and-phishing", "revoking-consent", "protect-identity-free"],
   },
   {
     slug: "deleting-your-identity",
@@ -795,10 +795,26 @@ export const HELP_ARTICLES: HelpArticle[] = [
 ];
 
 /** Article referenced by slug in `related` that lives outside /help. */
-export const RELATED_EXTERNAL: Record<string, { title: string; href: string }> = {
+export const RELATED_RESOURCES: Record<string, { title: string; href: string }> = {
   "lost-or-new-device-summary": {
     title: "Lost or new device (get-started guide)",
     href: "/get-started/lost-or-new-device",
+  },
+  "age-verification-guide": {
+    title: "Age verification explained",
+    href: "/guides/age-verification-explained",
+  },
+  "protect-identity-free": {
+    title: "How to protect your identity for free",
+    href: "/guides/how-to-protect-your-identity-for-free",
+  },
+  "biometric-verification-definition": {
+    title: "What is biometric identity verification?",
+    href: "/definitions/what-is-biometric-identity-verification",
+  },
+  "digital-identity-wallet-definition": {
+    title: "What is a digital identity wallet?",
+    href: "/definitions/what-is-a-digital-identity-wallet",
   },
 };
 

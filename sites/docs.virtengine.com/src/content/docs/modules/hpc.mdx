@@ -1,0 +1,152 @@
+---
+title: x/hpc — HPC module
+description: The x/hpc module extends the marketplace to batch supercomputing — HPC jobs submitted on-chain and executed on cluster schedulers.
+---
+
+The `x/hpc` module extends the marketplace to batch supercomputing. Instead
+of leasing long-running services, tenants submit HPC jobs — batch workloads
+with resource, walltime, and partition requirements — that execute on
+providers' existing cluster schedulers: SLURM, MOAB, or Open OnDemand.
+
+On the provider side, the daemon's HPC integration polls on-chain jobs,
+dispatches them through native scheduler adapters, tracks lifecycle with
+configurable concurrency limits and timeouts, and recovers state
+crash-safely. Usage batches flow into the same settlement pipeline as cloud
+workloads.
+
+## What it does
+
+The module carries the batch model natively on chain:
+
+- **Jobs, not containers.** On-chain jobs record resource, walltime, and
+  partition requirements — the batch model rather than a container shim.
+- **Clusters and offerings.** Operators register clusters, expose partitions
+  and job classes as offerings, and update node metadata as the cluster
+  changes.
+- **Templates.** Workload templates can be created, approved, rejected,
+  deprecated, and revoked, with approved templates searchable by publisher
+  and type.
+- **Disputes and audit.** Job events, security events, and usage feed a
+  dedicated audit log in the daemon, and job disputes are flagged and
+  resolved on chain.
+
+## Why it exists
+
+University and national-lab clusters run some of the world's most valuable
+capacity at partial utilization, but their operating model — batch
+schedulers, allocations, walltime — doesn't map onto container leases. A
+dedicated HPC module lets that capacity join the marketplace without
+re-platforming the cluster.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| HPC job | A batch workload with resource, walltime, and partition requirements, executed via a cluster scheduler. |
+| Scheduler adapter | The daemon component that speaks natively to SLURM, MOAB, or Open OnDemand. |
+| Partition | A scheduler-level subdivision of a cluster that can be exposed to the marketplace with its own configuration. |
+
+## Core flow
+
+1. **Submit — A job goes on-chain.** Resource, walltime, and partition
+   requirements are recorded as an HPC job through the same exchange
+   economics.
+2. **Dispatch — The adapter dispatches.** The daemon polls on-chain jobs and
+   dispatches through the native scheduler with configurable limits and
+   timeouts.
+3. **Track — Lifecycle is tracked.** Polling, dispatch, tracking, and
+   crash-safe recovery — with job, security, and usage events in a
+   dedicated audit log.
+4. **Settle — Usage batches settle.** Metered batches flow into the standard
+   usage-settlement pipeline from tenant escrow.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgRegisterCluster` | Registers a cluster with the marketplace. |
+| `MsgUpdateCluster` | Updates a registered cluster's configuration. |
+| `MsgDeregisterCluster` | Removes a cluster from the marketplace. |
+| `MsgCreateOffering` | Creates an offering for exposed cluster capacity. |
+| `MsgUpdateOffering` | Updates an existing HPC offering. |
+| `MsgSubmitJob` | Submits an HPC job with resource, walltime, and partition requirements. |
+| `MsgSubmitJobFromTemplate` | Submits a job derived from a workload template. |
+| `MsgReportJobStatus` | Reports scheduler status for a job. |
+| `MsgCancelJob` | Cancels a submitted job. |
+| `MsgFlagDispute` | Raises a dispute over a job. |
+| `MsgResolveDispute` | Resolves a flagged job dispute. |
+| `MsgUpdateNodeMetadata` | Updates metadata for a cluster's nodes. |
+| `MsgCreateWorkloadTemplate` | Publishes a workload template. |
+| `MsgUpdateWorkloadTemplate` | Updates a published workload template. |
+| `MsgApproveWorkloadTemplate` | Approves a submitted workload template. |
+| `MsgRejectWorkloadTemplate` | Rejects a submitted workload template. |
+| `MsgDeprecateWorkloadTemplate` | Marks a workload template as deprecated. |
+| `MsgRevokeWorkloadTemplate` | Revokes a previously approved workload template. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Cluster` / `Clusters` / `ClustersByProvider` | Clusters individually, as a list, or filtered by provider. |
+| `NodesByCluster` | The node inventory of one cluster. |
+| `Offering` / `Offerings` / `OfferingsByCluster` | Offerings individually, as a list, or filtered by cluster. |
+| `Job` / `Jobs` | A single job, or the job list. |
+| `JobsByCustomer` / `JobsByProvider` | Jobs filtered to the customer or provider side. |
+| `JobAccounting` | Accounting records for a job's resource usage. |
+| `SchedulingDecision` / `SchedulingDecisionByJob` | The recorded scheduling decision, by ID or by job. |
+| `SchedulingMetrics` | Aggregate scheduling metrics. |
+| `NodeMetadata` | Metadata recorded for a cluster's nodes. |
+| `WorkloadTemplate` / `WorkloadTemplates` | A single workload template, or the template list. |
+| `WorkloadTemplatesByPublisher` / `WorkloadTemplatesByType` | Templates filtered by publisher or by type. |
+| `WorkloadTemplateUsage` | Where a workload template has been used. |
+| `ApprovedWorkloadTemplates` | Workload templates currently approved for use. |
+| `SearchWorkloadTemplates` | Workload templates matching a search. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | HPC capacity is offered and priced through the same exchange economics. |
+| [x/settlement](/modules/settlement/) | HPC job usage settles through the standard usage-settlement pipeline. |
+| [x/provider](/modules/provider/) | Cluster operators register as providers with HPC-specific attributes. |
+| [x/audit](/modules/audit/) | Scheduler-level audit logging complements on-chain audit attestations. |
+
+## Related documentation
+
+- [HPC](/concepts/hpc/) — where batch supercomputing sits in the protocol.
+- [HPC Jobs](/tenants/hpc-jobs/) — the tenant view of submitting and
+  tracking jobs.
+- [HPC Operations](/providers/hpc-operations/) — running clusters for the
+  marketplace.
+- [HPC Workload Templates](/providers/hpc-workload-templates/) — publishing
+  and approving reusable job definitions.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Do clusters need re-platforming?
+
+No. The scheduler, partitions, and auth stay as they are — only the
+partitions and job classes a facility exposes become schedulable from the
+market.
+
+### How is HPC usage priced?
+
+Through the same exchange economics as the rest of the marketplace.
+Facilities set pricing per partition and job class, and jobs are paid from
+tenant escrow under the governed settlement fee policy.
+
+### What audit trail does a job leave?
+
+Two layers: the daemon's dedicated audit log for job, security, and usage
+events, plus the on-chain record — job, usage batches, settlement —
+validated by consensus.
+
+:::note
+Message and query types are defined in `x/hpc/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::
