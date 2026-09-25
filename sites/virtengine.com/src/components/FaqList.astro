@@ -17,7 +17,7 @@ interface Props {
 const { items, class: className } = Astro.props;
 ---
 
-<div class:list={["max-w-3xl space-y-4", className]}>
+<div class:list={["space-y-4", className]}>
   {
     items.map((f) => (
       <details class="reveal clip-corner group rounded-card border border-line bg-panel">

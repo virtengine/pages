@@ -449,8 +449,6 @@ h2,
   overflow: visible;
   min-height: 0;
   padding: clamp(1rem, 3vw, 2rem) clamp(1rem, 4vw, 3rem);
-  background-image: linear-gradient(to right, color-mix(in srgb, var(--color-rule) 42%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-rule) 42%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
 }
 .program-figure .plate-art svg { width: min(100%, 1000px); max-height: none; margin-inline: auto; }
 .program-figure figcaption {
@@ -471,7 +469,7 @@ h2,
 }
 .program-copy .program-meta { grid-column: 1 / -1; width: 100%; justify-content: space-between; gap: 1rem; letter-spacing: 0.06em; }
 .program-status { color: var(--color-spot); text-align: right; }
-.program-copy h3 { grid-column: 1; grid-row: 2 / span 3; align-self: center; margin: 1rem 0; font-size: clamp(2.25rem, 4vw, 3.4rem); font-weight: 600; letter-spacing: -0.045em; line-height: 1.05; }
+.program-copy h3 { grid-column: 1; grid-row: 2 / span 3; align-self: center; margin: 1rem 0; font-size: clamp(2.25rem, 4vw, 3.4rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; }
 .program-copy .program-description { max-width: 39rem; color: var(--color-ink-70); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.7; }
 .program-copy .program-description,
 .program-copy .program-action { grid-column: 2; }

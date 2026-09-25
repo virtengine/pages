@@ -195,7 +195,7 @@ h3, h4 {
 
 .prose-body {
   color: var(--color-slate);
-  max-width: 46rem;
+  max-width: none;
 }
 .prose-body a {
   color: var(--color-green-deep);

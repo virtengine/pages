@@ -129,7 +129,7 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 /* Learn editorial: reading-focused, distinct from marketing. */
 .learn-progress{position:sticky;top:0;height:3px;background:transparent;z-index:30}
 .learn-progress i{display:block;height:100%;background:#1c6838;transform:scaleX(0);transform-origin:left}
-.learn-editorial{max-width:840px;padding-top:36px}
+.learn-editorial{padding-top:36px}
 .learn-crumbs{font-size:13px;color:#4a5a4e;margin-bottom:14px}
 .learn-crumbs a{color:#1c5632}
 .learn-kicker{font:12px var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:#54725d}
@@ -139,16 +139,16 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .learn-keypoints p{font-weight:700;margin-bottom:8px}
 .learn-keypoints ul{margin:0;padding-left:18px;display:grid;gap:6px;line-height:1.6}
 .learn-figure{margin-top:32px}
-.learn-figure figure,.learn-figure .mk-visual-stack{max-width:1100px}
-.learn-layout{display:grid;grid-template-columns:220px minmax(0,760px);gap:40px;justify-content:center;margin-top:36px;padding-bottom:64px}
+.learn-figure figure,.learn-figure .mk-visual-stack{max-width:none}
+.learn-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;margin-top:36px;padding-bottom:64px}
 .learn-toc{position:sticky;top:24px;align-self:start;font-size:13.5px;border-left:1px solid var(--line,#dfe7e0);padding-left:16px}
 .learn-toc p{font-weight:700;margin-bottom:10px}
 .learn-toc ul{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:7px}
 .learn-toc a{color:#1c5632}
 .learn-body{min-width:0;font-size:17px;line-height:1.65}
 .learn-body h2{font-size:1.6rem;line-height:1.25;margin:40px 0 12px;letter-spacing:-.01em}
-.learn-body p{margin:0 0 14px;max-width:65ch}
-.learn-body ul,.learn-body ol{margin:0 0 16px;padding-left:22px;display:grid;gap:8px;max-width:65ch}
+.learn-body p{margin:0 0 14px}
+.learn-body ul,.learn-body ol{margin:0 0 16px;padding-left:22px;display:grid;gap:8px}
 .learn-body table{width:100%;border-collapse:collapse;font-size:15px;margin:18px 0}
 .learn-body th,.learn-body td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line,#dfe7e0);vertical-align:top}
 .learn-body code{font-family:ui-monospace,monospace;font-size:.88em}
@@ -156,8 +156,8 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .learn-shot img{width:100%;height:auto;border:1px solid var(--line,#dfe7e0);border-radius:10px}
 .learn-shot figcaption{font-size:13.5px;color:#4a5a4e;margin-top:8px}
 .learn-journey-inline{margin-top:16px;border:1px solid var(--line,#dfe7e0);border-radius:10px;padding:12px 16px}
-/* Guide intro: copy left, brand photography right — every guide opens with a visual. */
-.learn-editorial{max-width:1100px}
+/* Guide intro: copy left, brand photography right — every guide opens with a visual.
+   The intro keeps the site container cap (container-site); only the grid inside it. */
 .learn-intro-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.5rem,4vw,3rem);align-items:start;margin-top:6px}
 .learn-intro-media{margin:0;position:sticky;top:24px}
 @media(max-width:1000px){.learn-layout{grid-template-columns:1fr}.learn-toc{position:static;border-left:none;padding-left:0;border-bottom:1px solid var(--line,#dfe7e0);padding-bottom:14px}}
