@@ -4,3 +4,6 @@
 /learn/waldur-and-virtengine  /waldur  301
 /learn/who-controls-what  /waldur#responsibilities  301
 /learn/from-listing-to-running-resource  /learn/how-the-marketplace-works#fulfilment  301
+
+# Archived 2018 Waldur documentation: root PDF is canonical, the old repo path redirects to it.
+/new/VirtEngine_Waldur_Documentation.pdf  /VirtEngine_Waldur_Documentation.pdf  301
