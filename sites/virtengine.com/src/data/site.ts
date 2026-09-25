@@ -40,35 +40,27 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
     heading: "Protocol",
     items: [
       { label: "Architecture", href: "/protocol" },
-      { label: "Module reference", href: "/modules" },
+      { label: "Identity (VEID)", href: "/veid" },
       { label: "Network status", href: "/network" },
       { label: "Open source", href: "/open-source" },
-      { label: "Waldur integration", href: "/waldur" },
-      { label: "VEID identity", href: "/veid" },
-      { label: "Trusted processing", href: "/trusted-processing" },
     ],
   },
   {
     heading: "Marketplace",
     items: [
       { label: "Marketplace overview", href: "/marketplace" },
-      { label: "IaaS", href: "/marketplace/iaas" },
-      { label: "PaaS", href: "/marketplace/paas" },
-      { label: "SaaS", href: "/marketplace/saas" },
-      { label: "HPC & batch", href: "/marketplace/hpc" },
-      { label: "Custom listings", href: "/marketplace/custom-listings" },
+      { label: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+      { label: "Ways to buy", href: "/learn/three-ways-to-buy" },
       { label: "For tenants & buyers", href: "/tenants" },
     ],
   },
   {
     heading: "Participate",
     items: [
-      { label: "Prepare to provide", href: "/providers" },
-      { label: "Contact the Foundation", href: "/contact" },
-      { label: "Our activities", href: "/activities" },
+      { label: "Become a provider", href: "/providers" },
       { label: "Staking & validators", href: "/staking" },
-      { label: "Solutions by audience", href: "/solutions" },
-      { label: "About the foundation", href: "/about" },
+      { label: "Solutions", href: "/solutions" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -76,10 +68,8 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
     items: [
       { label: "Guides & explainers", href: "/learn" },
       { label: "Definitions", href: "/definitions" },
-      { label: "Journal & historic blog", href: "/blog" },
+      { label: "Journal", href: "/blog" },
       { label: "FAQ", href: "/faq" },
-      { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
-      { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
     ],
   },
 ];
