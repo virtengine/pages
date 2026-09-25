@@ -1,0 +1,48 @@
+---
+/**
+ * Build-time hypotrochoid rosette. Seeded so no two records share a ground.
+ * Decorative. Never carries meaning.
+ */
+interface Props {
+  seed?: string;
+  class?: string;
+}
+
+const { seed = "IDAU", class: className } = Astro.props;
+
+function hash(value: string) {
+  let h = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    h ^= value.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function ring(id: string, n: number) {
+  const h = hash(`${id}:${n}`);
+  const R = 46 + (h % 20);
+  const r = 7 + ((h >>> 5) % 9);
+  const d = 5 + ((h >>> 9) % 12);
+  const steps = 520;
+  const pts: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = (i / steps) * Math.PI * 2 * r;
+    const k = (R - r) / r;
+    const x = (R - r) * Math.cos(t) + d * Math.cos(k * t);
+    const y = (R - r) * Math.sin(t) - d * Math.sin(k * t);
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+  return pts.join(" ");
+}
+
+const rings = [0, 1, 2].map((n) => ring(seed, n));
+---
+
+<svg class={className} viewBox="-80 -80 160 160" fill="none" aria-hidden="true" focusable="false">
+  {
+    rings.map((points) => (
+      <polyline points={points} fill="none" stroke="currentColor" stroke-width="0.55" />
+    ))
+  }
+</svg>

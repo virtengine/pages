@@ -75,6 +75,7 @@ export const FOOTER_COLUMNS: { heading: string; items: NavItem[] }[] = [
     heading: "Learn",
     items: [
       { label: "Guides & explainers", href: "/learn" },
+      { label: "Definitions", href: "/definitions" },
       { label: "Journal & historic blog", href: "/blog" },
       { label: "FAQ", href: "/faq" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },

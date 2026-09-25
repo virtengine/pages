@@ -148,6 +148,13 @@ jobs:
       - name: Syntax, config and build-script checks
         run: node scripts/check-static.mjs
 
+      - name: Design guardrail (DESIGN-DIRECTION §7)
+        run: |
+          set -o pipefail
+          node scripts/check-design.mjs | tee design.log
+          # Guard against a checker that silently checks nothing.
+          grep -q '^check-design: OK' design.log
+
   worker:
     name: worker blog-redirect
     runs-on: ubuntu-latest

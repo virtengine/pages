@@ -1,5 +1,6 @@
 ---
 import Breadcrumbs, { type Crumb } from "./Breadcrumbs.astro";
+import Guilloche from "./Guilloche.astro";
 import StatusTag from "./StatusTag.astro";
 
 /**
@@ -13,6 +14,8 @@ interface Props {
   lede?: string;
   statusTone?: "neutral" | "info" | "success" | "warning";
   statusLabel?: string;
+  /** Seed for the hero rosette. Omit to keep the hero plain. */
+  guilloche?: string;
   class?: string;
 }
 
@@ -23,12 +26,18 @@ const {
   lede,
   statusTone = "info",
   statusLabel,
+  guilloche,
   class: className,
 } = Astro.props;
 const hasMedia = Astro.slots.has("media");
 ---
 
 <div class:list={["service-hero", hasMedia && "service-hero--media", className]}>
+  {guilloche && (
+    <div class="hero-ground" aria-hidden="true">
+      <Guilloche seed={guilloche} />
+    </div>
+  )}
   <div class="container-site service-hero-inner">
     {crumbs && crumbs.length > 0 && <Breadcrumbs crumbs={crumbs} />}
     <div class="service-hero-grid">

@@ -1,5 +1,16 @@
 # DESIGN — identity.org.au
 
+> **Amendment B (2026-09-25) is normative for the credential layer.**
+> Service UI stays Public Sans. Editorial headlines (H1, section H2, vault
+> band) use Newsreader, roman, not italic display. Record fields, MRZ, and
+> the honesty stamp use IBM Plex Mono. One vault band per page
+> (`ClosingBand`, `#17293a`). Guilloché grounds are seeded and decorative.
+> The Proof Card is the only foil. `scripts/og.mjs` uses `#17293a`, never
+> indigo. The honesty lock is a stamped notice above the footer, not only a
+> paragraph inside it.
+
+
+
 Government-service-grade design for a service that is emphatically **not** a
 government service. The design DNA is the digitalid.gov.au / my.identity.gov.au
 class of sites: white surfaces, near-black ink, one action colour used with

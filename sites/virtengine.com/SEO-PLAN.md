@@ -49,7 +49,30 @@ Definitions link out to docs for depth; docs pages do not target category querie
 
 ## Keyword → page map
 
-### Tier A — win first (Phase 2): winnable SERPs, high funnel value
+### Tier 0 - GSC data (shipped first): queries already earning impressions
+
+Real Google Search Console data (28-day window, provided by the owner). These
+are not hypotheses - they already produce impressions with near-zero clicks,
+mostly surfacing the legacy blog archive. Each cluster now has a dedicated,
+honest target page; the legacy posts stay and keep serving tutorial intent.
+
+| Primary query (impr / clicks) | Folded-in variants (impr) | URL | Funnel target |
+|---|---|---|---|
+| private cloud software (494 / 0) | private cloud software open source (43) | `/definitions/what-is-private-cloud-software` | `/marketplace/iaas` |
+| hybrid cloud open source (372 / 0) | open source hybrid cloud (42), hybrid cloud storage open source (34) | `/definitions/what-is-an-open-source-hybrid-cloud` | `/waldur` |
+| open source cloud platform (266 / 0) | open source cloud software (42), open source cloud hosting (47), opensource cloud (18) | `/definitions/what-is-an-open-source-cloud-platform` | `/solutions/datacenter-operators` |
+| openstack hybrid cloud (198 / 0) | kvm openstack (39) | `/definitions/what-is-openstack` (KVM + hybrid sections) | `/waldur` |
+| open source cloud management platform (95 / 3) | open source cloud management software (35), cloud management platform open source (11) | `/definitions/what-is-an-open-source-cloud-management-platform` | `/waldur` |
+
+- Intent split justifies two adjacent pages: "cloud platform" = software you
+  run to *have* a cloud; "cloud management platform" = control plane that
+  *operates* clouds. Different jobs, different SERPs, cross-linked both ways.
+- `ceph storage cluster`, `opennebula` and other tool-level long-tails keep
+  being served by the legacy blog archive (tutorial intent); no new pages.
+- Branded queries (virtengine, waldur, veid) are retained by existing pages;
+  `localhost:9869` and `det-io` are noise/other property - no action.
+
+### Tier A - win first (Phase 2): winnable SERPs, high funnel value
 
 | Primary query | URL | Funnel target | Why winnable |
 |---|---|---|---|
@@ -72,7 +95,7 @@ Definitions link out to docs for depth; docs pages do not target category querie
 | what is hpc | `/definitions/what-is-hpc` | `/marketplace/hpc` | NVIDIA/IBM own it (the reference query) — target snippet + "hpc cloud" variants |
 | what is cloud computing | `/definitions/what-is-cloud-computing` | `/marketplace` | Parent term; include for cluster completeness, rank expectations low |
 | what is cloud storage | `/definitions/what-is-cloud-storage` | `/marketplace/storage` | Long-tail viable |
-| what is private cloud | `/definitions/what-is-private-cloud` | `/marketplace/iaas` | Winnable with marketplace angle |
+| private cloud - **merged** into Tier 0 `what-is-private-cloud-software` (identical intent, 494-impr query wins the primary slot) | - | - | no second page on one query |
 | what is a virtual machine | `/definitions/what-is-a-virtual-machine` | `/marketplace/iaas` | Head very hard; long-tail "VM in cloud" is the realistic win |
 | what is containerization | `/definitions/what-is-containerization` | `/marketplace/paas` | Moderate; PaaS funnel |
 | what is serverless | `/definitions/what-is-serverless` | `/marketplace/paas` | Optional; last in Phase 3 |
@@ -109,14 +132,18 @@ figures only if genuinely illustrative.
 
 ## Internal linking
 
-- `/definitions/` hub groups pages under the five category sections the brief
-  names: **Service models · Infrastructure · AI & GPU compute · HPC ·
-  Marketplace & protocol** — the hub is the glossary-style index.
+- `/definitions/` hub groups pages under six category sections: **Open source
+  & hybrid cloud (Tier 0) · Service models · Infrastructure · AI & GPU compute
+  · HPC · Marketplace & protocol** – the hub is the glossary-style index.
 - Each definition: ≥3 links out (siblings + money page + docs or learn).
-- Existing pages gain inbound links in Phase 4: `/marketplace/*` → its
-  definition ("What is X?"), `/learn/marketplace-glossary` → definitions,
-  the IaaS/PaaS/SaaS learn guide ↔ definition trio.
-- Nav: add the hub under the Learn/footer area only — top nav stays as is.
+- Existing pages gain inbound links in Phase 4: `/marketplace/*` (all 7
+  category pages) → its definition ("What is X?"),
+  `/learn/marketplace-glossary` + `IaaS vs PaaS vs SaaS` guide → the hub,
+  `/waldur` → the three Tier 0 definitions that funnel into it, and
+  `solutions/datacenter-operators` + `solutions/ai-ml-workloads` → their
+  definition funnels (reciprocal links).
+- Nav: `navigation.ts` Learn > Reference category, footer Learn column and
+  the Learn index reference section link into the hub – top nav stays as is.
 
 ## Phases
 
@@ -142,3 +169,36 @@ figures only if genuinely illustrative.
   first; Tier B judged on long-tail impressions and snippet presence, not head
   position. Pages with impressions but no clicks get a title/description pass.
 - Funnel check: which `/marketplace/*` pages gained sessions from definitions.
+
+## Execution record (2026-09-25)
+
+Phases 0-5 executed. The owner supplied real GSC query data mid-Phase 0; it was
+folded in as Tier 0 above and the map adjusted (private-cloud merged into
+private-cloud-software; open-source/hybrid/OpenStack cluster added).
+
+- **Phase 0** - baseline `audit:seo`: 161 pages, 0 issues.
+- **Phase 1** - hub shipped: `src/data/definitions.ts` (types, six groups,
+  registry), `src/pages/definitions/index.astro`, `src/pages/definitions/
+  [slug].astro` (TechArticle + FAQPage JSON-LD via `Base` `schema` prop, all
+  FAQ questions rendered visibly). Data split by tier for clean ownership:
+  `definitions-gsc.ts` / `definitions-tier-a.ts` / `definitions-tier-b.ts`.
+- **Phase 2** - Tier 0 (5) + Tier A (7) written.
+- **Phase 3** - Tier B (10) written. Total: 22 entries + hub = 23 new URLs;
+  every entry's body lands at 697-860 section words (784-899 incl. FAQ).
+- **Phase 4** - inbound links: nav (Learn > Reference), footer Learn column,
+  Learn index reference section, all 7 marketplace category pages ("What is
+  X?"), marketplace glossary + IaaS/PaaS/SaaS guide related rails, `/waldur`
+  (3 Tier 0 reciprocal links), `solutions/datacenter-operators` +
+  `solutions/ai-ml-workloads` reciprocal links.
+- **Phase 5** - all gates green on 184 pages (was 161):
+  `audit:seo` 0 issues (titles/descs unique, within limits);
+  `check:schema` 0 errors (2 warnings on untouched index/404);
+  `check:links` LINKCHECK-OK - 21,305 refs, 0 dead;
+  `check:a11y` A11Y-OK; `check:markdown` MARKDOWN-OK;
+  `check:duplication` no definition page flagged (the 41 flagged sequences
+  all pre-date this work: legacy blog archive, about, solutions/validators).
+- sitemap: hub + 22 definition entry URLs present.
+
+Owner steps not performed here: deploy, then GSC URL inspection to request
+indexing for the hub and the five Tier 0 URLs; re-check query tables at
+30/90 days per Measurement above.
