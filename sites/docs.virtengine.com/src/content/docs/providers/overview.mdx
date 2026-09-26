@@ -18,7 +18,7 @@ As a provider you will:
 - bid on tenant orders (or publish HPC offerings and queues),
 - deploy and operate tenant workloads,
 - submit **signed usage reports** on a schedule, and
-- receive the agreed escrow payouts with 0% marketplace commission.
+- receive the full agreed escrow payout in ACT, with no settlement take-rate.
 
 Your reputation — audits, benchmarks, reviews — accumulates on-chain and
 directly affects which orders you can win.
@@ -37,8 +37,11 @@ directly affects which orders you can win.
 
 <Steps>
 
-1. **Verify your identity.** Enroll through VEID. Provider registration is
-   identity-gated to keep the marketplace free of throwaway operators.
+1. **Review provider eligibility.** Provider registration may have role or
+   identity checks in the current protocol. These checks apply to operating a
+   provider account and do not require tenants to pass VEID to browse or use
+   every marketplace offer. A provider's buyer proof requirements belong on
+   the individual offer and depend on deployed protocol and client support.
 
 2. **Register on-chain.** Create your provider record (`x/provider`) with
    attributes — region, capabilities, contact endpoint. For HPC capacity,
@@ -78,7 +81,7 @@ directly affects which orders you can win.
 ## Revenue model at a glance
 
 ```text
-payout = settled_usage_value                         # marketplace commission: 0%
+payout = settled_usage_value                         # full agreed amount
 ```
 
 Payment arrives when usage records settle (hourly settlement cycles, 24-hour

@@ -78,7 +78,7 @@ const tiers = [
     lede="Verification strength usually comes at privacy's expense: stronger checks, bigger central databases. VEID's pipeline is engineered to break that trade — evidence is captured and encrypted on-device, validators score it under consensus, and only the score becomes ledger state."
   >
     <DiagramFrame
-      label="VEID verification pipeline diagram. Stage one, on the user's device: four evidence factors are captured — identity document front and back with guided framing and OCR; a selfie with active liveness challenges (blink, head turn, smile); fingerprint or iris via the platform's secure biometric hardware; and device integrity attestation through Play Integrity or App Attest. Stage two: the evidence is processed and encrypted on-device into consent-gated, per-scope identity payloads using the protocol encryption envelope — only ciphertext is uploaded. Stage three: on the VirtEngine chain, validators decrypt with their keys, score the evidence with machine-learning models, and vote under consensus; the modules involved are x/veid, x/veidregistry, x/mfa, and x/veid/zk. The score, never the raw evidence, becomes ledger state. Stage four, two outcomes: a verification tier from unverified through basic and standard to trusted, and zero-knowledge presentation — proving an attribute to a relying service while revealing nothing else."
+      label="VEID verification pipeline diagram. Original identity document images remain on the user's device and are never uploaded. OCR and document checks run locally; the user reviews the result. Only minimum derived fields or verification features may be included in a separately approved encrypted scope. Other evidence, such as biometrics, is handled under its own consent and notice. Validators process only submitted scope data. The chain records verification results and required references, not source document images. A relying service can receive a selective proof for an approved purpose."
       caption="fig 01 — the VEID pipeline: capture, encrypt, score by consensus, present in zero knowledge"
       class="reveal"
     >
@@ -90,7 +90,9 @@ const tiers = [
         <h3 class="text-lg font-bold">Multi-factor capture</h3>
         <p class="prose-inst text-[0.95rem]">
           The reference capture flow combines document capture with guided framing and OCR
-          field extraction; selfie capture with active liveness challenges — blink, head
+          performed locally; original document images remain on the user's device and are
+          never uploaded. The user reviews minimum derived fields before any separately
+          approved scope submission. Selfie capture with active liveness challenges — blink, head
           turn, smile — and anti-spoofing signals; fingerprint or iris capture through the
           platform's secure biometric APIs; and device integrity attestation via Google
           Play Integrity or Apple App Attest, with SafetyNet and DeviceCheck fallbacks for
@@ -100,7 +102,10 @@ const tiers = [
       <article class="reveal grid gap-2 rounded-card border border-hairline bg-surface p-6">
         <h3 class="text-lg font-bold">On-device processing, encrypted scopes</h3>
         <p class="prose-inst text-[0.95rem]">
-          Biometric templates and attestation payloads are encrypted into the VEID envelope
+          Only minimum user-approved document-derived fields or features may be sent in a
+          separately consented scope; the source scan never leaves the device. Biometric
+          templates and attestation payloads follow their separate notices and, if approved,
+          are encrypted into the VEID envelope
           before anything leaves the device, and stored as consent-gated identity
           <em>scopes</em> — including dedicated scope types for biometric hardware and
           device attestation. Data minimisation is a design rule: only the templates and

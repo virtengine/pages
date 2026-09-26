@@ -47,8 +47,10 @@ brand plays, using records anyone can verify.
 
 ## Core flow
 
-1. **Verify — VEID verification first.** Registration is identity-gated
-   through VEID verification — accountability starts before the first bid.
+1. **Check provider eligibility.** The current protocol may apply identity
+   checks to provider registration. This provider-role requirement is distinct
+   from tenant marketplace access and does not create a universal VEID gate
+   for buyers.
 2. **Register — Create the record.** Address, endpoint, and attributes go
    on-chain as the provider record tenants will filter against.
 3. **Attest — Get attributes signed.** Auditor signatures upgrade self-claims
@@ -87,7 +89,7 @@ brand plays, using records anyone can verify.
 | [x/market](/modules/market/) | Bids are placed by registered providers; orders filter on provider attributes. |
 | [x/audit](/modules/audit/) | Auditors sign provider attributes to upgrade self-claims into attestations. |
 | [x/benchmark](/modules/benchmark/) | Published hardware benchmarks are tied to the provider record. |
-| [x/veid](/modules/veid/) | Provider registration is identity-gated through VEID verification. |
+| [x/veid](/modules/veid/) | May support identity checks for provider registration; this is distinct from a universal buyer gate. |
 
 ## Related documentation
 

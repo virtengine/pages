@@ -18,8 +18,9 @@ nothing leaves the device unencrypted.
    no capture can begin without it. See the
    [Consent Framework](/veid/consent-framework/).
 
-2. **Document capture.** Front and back of the identity document are
-   photographed; OCR extracts the text fields.
+2. **Local document capture.** The wallet captures the front and back on the
+   user's device. OCR and document checks run locally; the original images never
+   leave the device. The user reviews extracted fields.
 
 3. **Selfie + liveness.** The user takes a selfie and completes **active
    liveness challenges** with anti-spoofing checks, defeating printed
@@ -36,8 +37,9 @@ nothing leaves the device unencrypted.
    server-side. Details in
    [Hardware & Device Attestation](/veid/hardware-attestation/).
 
-6. **Encrypted payload.** Biometric templates and attestation payloads are
-   encrypted into the vault using the VEID envelope
+6. **Encrypted payload.** Only the minimum derived fields or features the user
+   approved, plus any separately consented biometric or attestation data, are
+   encrypted into a VEID scope using the protocol envelope
    (see [Encryption & Enclaves](/concepts/encryption-enclaves/)).
 
 7. **On-chain scope creation.** New identity scopes are created on-chain

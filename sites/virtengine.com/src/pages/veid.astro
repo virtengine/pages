@@ -14,7 +14,7 @@ const stages = [
   {
     step: "01",
     title: "Capture",
-    body: "The VEID mobile wallet captures identity documents with OCR and a selfie, entirely on the user's device.",
+    body: "The VEID wallet captures identity documents on-device and runs OCR/checks locally. Original images stay on the user's device; the user reviews any derived data.",
   },
   {
     step: "02",
@@ -29,7 +29,7 @@ const stages = [
   {
     step: "04",
     title: "Encrypted submission",
-    body: "Identity scopes are sealed with public-key encryption and signed by both an approved client and the user before upload — only validator recipients can decrypt.",
+    body: "Only minimum derived fields or features separately approved by the user may enter an encrypted VEID scope. Original document images are never uploaded.",
   },
   {
     step: "05",
@@ -94,11 +94,11 @@ const scenarios = [
     ],
     hidden: [
       ["The score value", "hidden even from the counterparty"],
-      ["Identity documents", "encrypted to validators only"],
-      ["Biometrics and selfie", "never leave the capture device"],
+      ["Original identity document images", "remain on the user's device and are never uploaded"],
+      ["Biometrics and selfie", "covered by their separate consent scope and notice"],
       ["Location history", "outside the scope of this proof"],
     ],
-    foot: "Providers verify tenants and tenants verify providers — both directions ask the same question and learn nothing more.",
+    foot: "VEID can help assess counterparty risk. Providers may set a disclosed requirement for an individual offer; the marketplace does not require VEID for everyone.",
   },
   {
     id: "scn-residency",
@@ -114,7 +114,7 @@ const scenarios = [
     hidden: [
       ["Exact address", "sealed on the device"],
       ["Tax identifiers", "never part of an attribute proof"],
-      ["Document images", "decrypted only inside the validator network"],
+      ["Original document images", "remain on the user's device; only separately approved derived data may be processed by VEID"],
       ["Other scopes", "a proof covers exactly one question"],
     ],
     foot: "Attribute proofs generalise the idea: any scope the network can verify can be proven without being shown.",
@@ -183,7 +183,7 @@ const scenarios = [
     <PlateFigure
       rail="Fig. 02 — the verification pipeline"
       railRight="Six stages"
-      label="VEID verification pipeline diagram. On device, the VEID capture wallet performs four stages: capture (document OCR and selfie), liveness (active liveness challenge), attestation (fingerprint or iris biometric attestation and device integrity), and encrypt (identity scopes sealed with public-key encryption). The submission, signed by an approved client and the user, flows on-chain to the validator identity network, where validators decrypt with their keys, score identity with shared machine-learning models, and commit the trust score by consensus, using the veid, veidregistry, encryption, and mfa modules. Outputs feed three zero-knowledge verification surfaces: score threshold proofs that prove a score meets a threshold and reveal nothing else, attribute proofs for scopes like age or residency, and marketplace gating where providers and tenants verify each other."
+      label="VEID verification pipeline. The wallet captures identity documents locally and performs OCR and checks on-device; original images never leave the device. The user reviews the minimum derived fields or features, and only separately approved data may be encrypted and submitted in a VEID scope. Other evidence follows its own consent notice. Validators process approved scope data and record verification results; users can later present selective zero-knowledge proofs."
       caption="fig 02 — capture → liveness → attestation → encryption → consensus scoring → zk tiers"
       class="reveal"
     >
@@ -194,9 +194,9 @@ const scenarios = [
       {stages.map((stage, i) => (
         <input type="radio" name="veid-stage" id={`veid-${i}`} checked={i === 0} class="sr-only" />
       ))}
-      <div class="veid-stages" role="tablist" aria-label="VEID pipeline stages">
+      <div class="veid-stages" role="group" aria-label="VEID pipeline stages">
         {stages.map((stage, i) => (
-          <label class="veid-stage" role="tab" for={`veid-${i}`}><strong>{stage.step}</strong> {stage.title}</label>
+          <label class="veid-stage" for={`veid-${i}`}><strong>{stage.step}</strong> {stage.title}</label>
         ))}
       </div>
       {stages.map((stage, i) => (
@@ -235,9 +235,10 @@ const scenarios = [
           <p>
             The three properties compound: there is no access path into the vault, the code inside
             is measured and attested before data arrives, and the key that opens a scope is sealed
-            to that exact hardware. Raw documents and biometrics exist in readable form only on the
-            user's device and inside the enclosure — the chain carries ciphertext, attestation
-            records, and results.
+            to that exact hardware. Original identity document images and full OCR output remain
+            on the user's device. Only separately approved minimum derived fields/features and
+            other consented evidence may be submitted for protected processing; the chain carries
+            results and required references, never source document images.
           </p>
           <p>
             The same machinery serves confidential workloads in the marketplace: attested enclave
@@ -261,7 +262,7 @@ const scenarios = [
         </div>
         <div class="tp-boundary-row tp-boundary-row--sealed">
           <span class="tp-boundary-key">Stays sealed</span>
-          <p>Documents, selfies, biometric templates, raw scopes, and the hardware-sealed keys that open them. Working copies are destroyed when scoring ends.</p>
+          <p>Only data separately submitted under an approved scope, and the hardware-sealed keys that protect it. Original document images and full OCR output remain on the user's device and never enter the enclave.</p>
         </div>
         <p class="tp-boundary-note">
           Attestation proves genuine hardware running exactly the approved code — nothing more.
@@ -375,9 +376,13 @@ const scenarios = [
   <Section eyebrow="In the marketplace" title="Why a cloud marketplace needs identity">
     <div class="prose-body reveal max-w-3xl space-y-4 text-base">
       <p>
-        Marketplace access is identity-dependent by design: providers verify tenants
-        before workloads land on their hardware, and tenants verify providers before
-        trusting them with workloads — cutting fraud in both directions. Sensitive
+        VEID is an optional, privacy-preserving trust signal in the marketplace.
+        Where the deployed protocol and client support it, providers may choose
+        whether a particular listing requires a defined VEID proof, and that
+        requirement should be visible before an order. Tenants can choose listings
+        that do not require VEID. Verification can help assess risk, but it
+        does not guarantee that a provider, listing, hardware, or service is genuine.
+        Sensitive
         transactions, including account recovery, are additionally protected by on-chain
         multi-factor authentication (<code>x/mfa</code>). Validators are compensated for
         identity work through governance-controlled, conservative network incentives.

@@ -23,7 +23,7 @@ const rows: { layer: string; iaas: "you" | "provider"; paas: "you" | "provider";
 const label = (owner: "you" | "provider") => (owner === "you" ? "You" : "Provider");
 ---
 
-<div class:list={["mk-resp", className]}>
+<div class:list={["mk-resp", className]} tabindex="0" role="group" aria-label="Service comparison, scrollable">
   <table class="mk-matrix mk-resp-table">
     <caption class="sr-only">Who manages each layer under IaaS, PaaS and SaaS</caption>
     <thead>

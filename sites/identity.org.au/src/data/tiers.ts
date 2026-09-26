@@ -29,30 +29,30 @@ export const TIERS: Tier[] = [
     name: "Basic",
     level: 1,
     plain:
-      "Early checks have passed. Enough for low-risk activity where a service just needs some confidence you are a real person.",
+      "Early checks have passed. This level can support a limited claim when a specific service asks for it and you choose to present it.",
     evidence: [
       "Basic identity details you enter yourself",
       "A verification session that passes the network's early checks",
     ],
     unlocks: [
-      "Low-risk services and small transactions",
-      "Services that only need a real-person signal, not a strong identity",
+      "A specific offer's disclosed proof request, when the current service supports it",
+      "Other services that do not require VEID remain available",
     ],
   },
   {
     name: "Standard",
     level: 2,
     plain:
-      "Your identity document and your face have been checked and verified by the network. This is the level most services ask for.",
+      "A verification scope has been completed. Original identity document images and full OCR output stay on your device; only separately approved derived data may be submitted.",
     evidence: [
-      "A government-issued identity document, scanned front and back",
-      "A selfie with active liveness checks (blink, head turn, smile)",
-      "Automated document reading (OCR) that matches the document to your details",
+      "Local document capture and OCR; the source images stay on your device",
+      "User-reviewed, minimum derived fields only if separately approved for submission",
+      "Any separately requested biometric scope follows its own consent notice",
     ],
     unlocks: [
-      "Most participating services",
       "Age and attribute proofs (for example, proving you are over 18)",
-      "Marketplace activity that requires a verified identity",
+      "An individual marketplace offer's disclosed proof request, where supported",
+      "Listings that do not require VEID remain available",
     ],
   },
   {
@@ -67,8 +67,8 @@ export const TIERS: Tier[] = [
       "A history of successful verification over time",
     ],
     unlocks: [
-      "Sensitive, high-trust roles — for example validator onboarding on the VirtEngine network",
-      "High-value transactions where the counterparty requires the strongest assurance",
+      "Protocol roles or services with separately disclosed, supported proof requirements",
+      "A specific offer's disclosed higher-assurance proof request; not a universal marketplace gate",
     ],
   },
 ];

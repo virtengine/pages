@@ -1,60 +1,61 @@
 ---
 title: x/fraud — Fraud module
-description: The x/fraud module receives and adjudicates marketplace fraud reports, then enforces flags, holds, and penalties that other modules honor across market flows.
+description: The x/fraud module stores encrypted-evidence fraud reports and moderator decisions; report outcomes do not themselves impose a universal account lock.
 ---
 
-The `x/fraud` module receives and adjudicates reports of marketplace
-misconduct — falsified usage, identity abuse, malicious workloads — and
-carries the enforcement hooks that other modules honor: flags, holds, and
-penalties that alter what a flagged account may do.
+The `x/fraud` module stores marketplace fraud reports, routes them for
+moderator review, and records report status and resolution. The current
+on-chain submission path accepts registered provider reporters; it does not
+provide a consumer report transaction. It is distinct from settlement and
+account-state controls, and a recorded report resolution does not by itself
+suspend or terminate an account.
 
-It complements consensus-level slashing: where slashing punishes validator
-protocol violations, `x/fraud` addresses marketplace-level misconduct by
-tenants and providers.
+The current report record includes public chain fields such as reporter and
+reported-party addresses, category, description, order references, status, and
+moderator notes. Evidence attachments are encrypted for their listed
+recipients. Do not put identity documents or sensitive personal information
+in plaintext report fields.
 
 ## What it does
 
-- **Reports land on-chain.** A report files an allegation of misconduct with
-  supporting evidence, opening a case anyone can follow through its
-  lifecycle (`FraudReport`, `FraudReports`).
+- **Reports are recorded on-chain.** The provider report transaction files an
+  allegation with supporting evidence. Public report fields are visible to
+  network observers; attachments use the encrypted-evidence structure
+  (`FraudReport`, `FraudReports`).
 - **Adjudication is rule-bound.** Cases escalate
   (`MsgEscalateFraudReport`), moderators get assigned
   (`MsgAssignModerator`, `ModeratorQueue`), and each report is resolved or
   rejected with its status tracked (`MsgResolveFraudReport`,
   `MsgRejectFraudReport`, `MsgUpdateReportStatus`) — leaving an auditable
   trail (`AuditLog`).
-- **Enforcement propagates.** Flags and holds propagate as enforcement hooks
-  other modules honor: market participation can be restricted, disputed or
-  fraudulent usage is intercepted before it settles, and support disputes
-  escalate here where misconduct is alleged.
-- **Standing updates.** Outcomes feed trust standing in
-  [x/veid](/modules/veid/), participation rights, and the auditable record.
+- **Financial cases remain separate.** Where a report links to an active
+  canonical financial case, settlement owns the financial outcome. A report
+  resolution is not itself a payment instruction or account-state change.
 
 ## Why it exists
 
-Open participation means adversarial participation. A marketplace that
-cannot expel or penalize bad actors decays into one; putting fraud
-handling on-chain makes enforcement transparent, rule-bound, and
-reviewable instead of arbitrary platform moderation.
+The module provides an auditable report and moderator-status record. Its
+current role checks and report fields have important limits: on-chain reports
+are not private, consumers cannot submit through this transaction, and report
+resolution does not provide an appeal process or automatically enact a global
+sanction. These limits should not be represented as broader protections than
+the current implementation supplies.
 
 ## Primary objects
 
 | Concept | Definition |
 | --- | --- |
 | Fraud report | An on-chain allegation of misconduct with supporting evidence, subject to adjudication. |
-| Enforcement hook | A module-level check that honors fraud flags before permitting an action. |
+| Encrypted evidence | An attachment encrypted for listed reviewer recipients; other report fields remain public chain data. |
 
 ## Core flow
 
-1. **Allege — A report is filed.** An on-chain allegation of misconduct with
-   supporting evidence opens the case.
-2. **Judge — The report is adjudicated.** Transparent, rule-bound
-   adjudication — enforcement by protocol, not arbitrary platform
-   moderation.
-3. **Enforce — Hooks engage.** Flags and holds propagate to market
-   participation, settlement, and support flows.
-4. **Resolve — Standing updates.** Outcomes feed trust standing,
-   participation rights, and the auditable record.
+1. **Allege — A provider files a report.** The current on-chain route checks
+   that the reporter is a registered provider.
+2. **Review — A moderator handles the report.** Status changes are role-gated
+   and recorded in the audit trail.
+3. **Resolve — A decision is recorded.** Resolution text and notes are stored
+   on-chain; related financial cases are handled through settlement.
 
 ## Messages
 
@@ -82,10 +83,10 @@ reviewable instead of arbitrary platform moderation.
 
 | Module | How they interact |
 | --- | --- |
-| [x/veid](/modules/veid/) | Identity abuse reports feed back into trust standing. |
-| [x/market](/modules/market/) | Enforcement outcomes can restrict marketplace participation. |
-| [x/settlement](/modules/settlement/) | Disputed or fraudulent usage is intercepted before it settles. |
-| [x/support](/modules/support/) | Dispute intake escalates to fraud handling where misconduct is alleged. |
+| [x/veid](/modules/veid/) | VEID status is separate from a fraud report; the report does not itself lock an identity. |
+| [x/market](/modules/market/) | Reports may reference marketplace orders; a report does not itself apply a universal market gate. |
+| [x/settlement](/modules/settlement/) | Active canonical financial cases control financial resolution. |
+| [x/support](/modules/support/) | Support is a separate service channel; the current fraud transaction itself is provider-only. |
 
 ## Related documentation
 
@@ -107,14 +108,16 @@ the marketplace layer rather than the consensus layer.
 ### How is this different from slashing?
 
 Slashing punishes validator protocol violations like double-signing. The
-fraud module addresses tenant and provider misconduct — the two systems
-complement, never overlap. See [Slashing](/validators/slashing/).
+fraud module records marketplace allegations and moderator decisions. A fraud
+report resolution is not itself a settlement instruction or account-state
+change. See [Slashing](/validators/slashing/).
 
-### Can enforcement stop a payout?
+### Does a fraud report automatically stop payment or lock an account?
 
-Yes. Disputed or fraudulent usage is intercepted before it settles, and
-enforcement outcomes can restrict marketplace participation until
-resolved. See the [x/settlement module](/modules/settlement/).
+No. A report is an allegation and its status or resolution is recorded
+separately. Financial cases and escrow outcomes use the settlement module;
+account-wide role-state changes are a separate administrative operation. See
+the [x/settlement module](/modules/settlement/) and [x/roles](/modules/roles/).
 
 :::note
 Message and query types are defined in `x/fraud/types/` in the

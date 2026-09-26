@@ -39,15 +39,15 @@ const cloudContrast = {
   virtengine: [
     {
       title: "An open marketplace",
-      body: "Any verified provider can list capacity; any verified tenant can order it. Orders, bids, and leases are on-chain state transitions on a public order book — not a private sales pipeline.",
+      body: "Providers can list capacity and tenants can browse an open marketplace without a universal VEID requirement. Where supported, a provider may disclose a specific identity-proof requirement on an individual offer before an order is placed. Orders, bids, and leases are on-chain state transitions on a public order book — not a private sales pipeline.",
     },
     {
       title: "On-chain escrow & settlement",
       body: "Funds are locked in escrow when a lease is matched and released against signed, metered usage records through a dispute-windowed settlement pipeline. The bill is a verifiable data structure.",
     },
     {
-      title: "Identity-gated participation",
-      body: "VEID scores every participant through privacy-preserving verification — accountability comes from cryptography and consensus, not from a platform's discretion.",
+      title: "Optional, offer-specific identity proof",
+      body: "VEID is an optional, privacy-preserving identity signal. It can help a user share selected verification evidence for a stated purpose, but it does not guarantee a counterparty's conduct or replace marketplace safeguards.",
     },
     {
       title: "Verified, not promised",
@@ -59,7 +59,7 @@ const cloudContrast = {
 const lifecycle = [
   {
     title: "Order placed",
-    body: "A tenant publishes a deployment order on-chain: resource specification, pricing bounds, and a deposit. Sensitive order details are stored encrypted so only intended recipients can decrypt them, and participation is gated by VEID trust-score thresholds.",
+    body: "A tenant publishes a deployment order on-chain: resource specification, pricing bounds, and a deposit. Sensitive order details are stored encrypted so only intended recipients can decrypt them. VEID is not a universal participation gate; any supported proof requirement should be disclosed on the individual offer before ordering.",
     modules: "x/deployment · x/market · x/veid",
   },
   {
@@ -84,8 +84,8 @@ const lifecycle = [
   },
   {
     title: "Settlement",
-    body: "Usage enters a time-windowed dispute workflow (24 hours by default): disputed records cannot settle until resolved or corrected. Clean records are converted to billable line items, escrow pays the agreed amount to the provider with 0% marketplace commission, and unused deposit returns to the tenant. Low validator transaction fees apply separately to on-chain actions.",
-    modules: "x/settlement · x/escrow · x/take · x/fraud",
+    body: "Usage enters a time-windowed dispute workflow (24 hours by default): disputed records cannot settle until resolved or corrected. Clean records are converted to billable line items, escrow pays the agreed amount to the provider in full in ACT, and unused deposit returns to the tenant. Low validator transaction fees apply separately to on-chain actions.",
+    modules: "x/settlement · x/escrow · x/fraud",
   },
 ];
 
@@ -103,7 +103,7 @@ const edges = [
   {
     title: "Escrow and dispute-windowed settlement",
     body: "Payment flows are protocol machinery, not invoices: funds lock at lease time, release against signed usage records, and every record survives a dispute window before it can settle. Corrections and disputes are first-class on-chain workflows.",
-    ref: "x/escrow · x/settlement · x/take",
+    ref: "x/escrow · x/settlement",
   },
   {
     title: "HPC as a marketplace lane",
@@ -227,7 +227,7 @@ const audiences = [
   >
     <div data-lifecycle class="grid gap-6">
       <DiagramFrame
-        label="The VirtEngine marketplace lifecycle as one map. A VEID-verified tenant at top left and a VEID-verified provider at top right sit above the VirtEngine chain — CometBFT consensus, Cosmos SDK, single binary — which contains the order book (x/market, x/deployment), the identity gate (x/veid, x/mfa with trust-score thresholds), escrow (x/escrow, funds locked per lease), and settlement (x/settlement, x/take, x/fraud). Below the chain, the provider daemon watches the chain and runs workloads on Kubernetes and SLURM clusters. Six numbered stages connect them: one, order placed — encrypted specs and a deposit flow from tenant to chain; two, providers bid — priced, identity-gated offers flow from provider to chain; three, lease matched — price locked and an escrow account opens; four, deploy — the manifest flows to the provider daemon and onto Kubernetes or SLURM; five, usage reported — signed usage records flow hourly from the daemon back to the chain; six, settlement — after a dispute window, escrow pays the agreed amount with 0% marketplace commission."
+        label="Illustrative VirtEngine marketplace lifecycle. Providers and tenants participate without a universal VEID requirement. Where supported, a provider may disclose an identity-proof requirement on an individual offer. The chain contains the order book, identity, escrow, and settlement modules; the provider daemon runs workloads on Kubernetes and SLURM clusters. Stages include order placement, provider bids, lease matching, deployment, usage reporting, and settlement."
         caption="fig 01 — the marketplace lifecycle: order → bid → lease → deploy → usage → settlement"
         class="reveal"
       >
@@ -315,7 +315,7 @@ const audiences = [
     lede="A single binary runs a CometBFT-powered blockchain node implementing the decentralized exchange. Orders, bids, leases, identity verification, escrow, and settlement are all on-chain state transitions, not trusted intermediaries."
   >
     <DiagramFrame
-      label="VirtEngine stack diagram: tenants and deployers place orders with deposits, providers place bids with attestations. Both meet at the VirtEngine chain — a single binary with CometBFT consensus and Cosmos SDK — whose module domains cover the marketplace (x/market, x/deployment, x/provider, x/hpc), VEID identity (x/veid, x/mfa, zero-knowledge proofs, x/encryption, x/cert), value flow (x/escrow, x/settlement, x/take, x/oracle) and integrity (x/staking, x/audit, x/fraud, x/review). Leases won flow to the provider daemon, which deploys workloads on Kubernetes or SLURM clusters and reports usage records back for on-chain settlement. Validators secure consensus and run the identity network."
+      label="VirtEngine stack diagram: tenants and deployers place orders with deposits, providers place bids with attestations. Both meet at the VirtEngine chain — a single binary with CometBFT consensus and Cosmos SDK — whose module domains cover the marketplace (x/market, x/deployment, x/provider, x/hpc), VEID identity (x/veid, x/mfa, zero-knowledge proofs, x/encryption, x/cert), value flow (x/escrow, x/settlement, x/oracle) and integrity (x/staking, x/audit, x/fraud, x/review). Leases won flow to the provider daemon, which deploys workloads on Kubernetes or SLURM clusters and reports usage records back for on-chain settlement. Validators secure consensus and run the identity network."
       caption="fig 02 — the VirtEngine protocol stack, from marketplace actors to real clusters"
       class="reveal"
     >
@@ -376,7 +376,7 @@ const audiences = [
     lede="The most sensitive computation in the protocol — scoring identity evidence — runs inside hardware trusted-execution environments. Not policy-protected: physics-and-cryptography protected."
   >
     <DiagramFrame
-      label="Trusted processing in VirtEngine, drawn as a lock-and-key flow. On the left, encrypted identity scopes — documents, liveness checks, biometric hardware attestation — are encrypted in the wallet before upload. They reach an attestation gate: the enclave produces a signed measurement of its exact code, verified on-chain by the x/enclave module using SGX, SEV-SNP and Nitro verifiers, including the AMD KDS certificate chain from VCEK through ASK to ARK with TCB checks. No proof, no data. Only after proof does data enter the trusted processing unit — a confidential VM on AMD SEV-SNP, Intel SGX or AWS Nitro, drawn as a night-navy vault with a lock — where the VEID scoring service and its machine-learning models run as measured code, with keys derived and sealed in hardware via vTPM and memory encrypted by the CPU. Below the vault, three blocked access paths marked with crosses: host operator, provider, and foundation — no inspection path into the enclave for anyone. Out of the vault, only results leave: a trust score and pass or fail written to chain state — never raw biometric data."
+      label="Trusted processing in VirtEngine. Original identity document images remain on the user's device and are never uploaded. OCR and checks run locally; only minimum derived fields or features may enter a separately approved encrypted VEID scope. Separately consented biometric or liveness data may be processed under the relevant notice. If submitted, approved scope data reaches an attested processing environment; the chain records verification results and required references, never source document images."
       caption="fig 03 — attested enclaves: data sealed in, keys sealed in hardware, only results out"
       class="reveal"
     >
@@ -424,10 +424,10 @@ const audiences = [
       <div class="reveal rounded-card border border-hairline bg-surface p-7">
         <h3 class="text-xl font-bold">How verification works</h3>
         <p class="prose-inst mt-3 text-[0.98rem]">
-          Users capture identity evidence — documents, selfie with active liveness,
-          fingerprint or iris with biometric hardware attestation, device integrity
-          attestation — in the mobile wallet. Payloads are encrypted and uploaded as
-          identity <em>scopes</em>. Block-proposing validators decrypt with their private
+          Users check identity documents locally; the source images never leave their
+          device. Only minimum derived fields or verification features may be submitted
+          after separate approval. Separately consented selfie, biometric or device integrity
+          data may be encrypted and uploaded as identity <em>scopes</em>. Block-proposing validators decrypt with their private
           keys, score the evidence with machine-learning models, and write the resulting
           identity trust score into the proposed block; consensus validators repeat the
           computation and vote. The score, never the raw evidence, becomes ledger state.

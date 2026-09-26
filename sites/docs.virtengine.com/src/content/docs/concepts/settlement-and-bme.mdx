@@ -1,0 +1,67 @@
+---
+title: Settlement & Issuance
+description: ACT provider payouts, validator transaction fees, and VEID-led issuance mechanics.
+---
+
+Lease settlements pay providers the full agreed amount in ACT from escrow.
+There is no take-rate or platform deduction on those payouts. Network
+transaction fees are separate costs of submitting on-chain actions and do not
+come out of lease settlement amounts.
+
+## Burn-mint equilibrium (`x/bme`)
+
+The BME module implements token burn and mint operations. Its keeper exposes:
+
+- **`BurnTokens`** — burns tokens from an account, used for token
+  destruction and collateral burning; burn amounts must be positive and the
+  module tracks cumulative `TotalBurned` state in genesis and exports.
+- **`MsgBurnMint`** — a message-level burn/mint operation processed by the
+  module's message server.
+
+Together with issuance controls in `x/issuancepolicy` (governance-managed
+policies with pause support), BME supports the supply rules. The proposed
+issuance path is VEID-led: every 15-token batch allocates 14 tokens to
+eligible active verified humans and 1 token to the Foundation-controlled
+genesis account. The Foundation allocation is part of the 15 tokens, not an
+additional mint. Initial supply is **0 tokens** and there is **no maximum
+supply cap**. New tokens are issued only when unique human identities are
+verified; issuance can continue with new verified identities and human
+population growth. Staking does not independently authorize new issuance.
+
+:::note
+Transaction-fee and issuance parameters are defined by governance and genesis
+configuration. Consult `x/bme` and `x/issuancepolicy` in the repository for
+the authoritative current behavior.
+:::
+
+## Why it matters per audience
+
+| Audience | Relevance |
+| --- | --- |
+| Providers | The full agreed lease amount settles from escrow in ACT. |
+| Tenants | Settlement pays the agreed amount; transaction fees apply only to chain actions. |
+| Token holders | VEID-led issuance splits each 15-token batch: 14 to eligible humans and 1 to the Foundation genesis account. |
+| Validators | Transaction fees compensate validators and support spam resistance; fee parameters are governance-controlled. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Params` | Current module parameters. |
+| `Status` | The module's current issuance status. |
+| `VaultState` | The state of the module's token vault. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/settlement](/modules/settlement/) | Settles the full agreed payout from escrow. |
+| [x/issuancepolicy](/modules/issuancepolicy/) | Mint schedules operate under governed issuance policy. |
+| [x/staking](/modules/staking/) | Issuance funds staking rewards alongside the inflation mechanism. |
+
+## Related documentation
+
+- [Tokenomics](/concepts/tokenomics/) — the supply design explained in
+  context.
+- [Governance Staking](/concepts/governance-staking/) — how issuance funds
+  security and network participation.

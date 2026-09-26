@@ -2,7 +2,7 @@
 /**
  * "What happens to your data" lifecycle strip.
  * Five stages: captured → encrypted on device → attested enclave processing →
- * raw data destroyed → result only. Optionally renders the companion
+ * local source document → consented encrypted derived data → result. Optionally renders the companion
  * .table-gov table (stage / where / who can access / what remains).
  * Grounded in BIOMETRIC_DATA_ADDENDUM + pkg/enclave_runtime facts.
  */
@@ -21,23 +21,23 @@ const stages = [
   },
   {
     key: "encrypted",
-    title: "Encrypted on your device",
-    note: "Sealed before anything moves. Keys stay in your phone.",
+    title: "Original stays local",
+    note: "The document image never leaves your device. OCR and checks run locally.",
   },
   {
     key: "processed",
-    title: "Processed in a sealed enclave",
-    note: "Hardware-attested. No operator can look inside.",
+    title: "Derived data, if approved",
+    note: "Only minimum user-approved fields may leave, encrypted for VEID processing.",
   },
   {
     key: "destroyed",
-    title: "Raw data destroyed",
-    note: "The enclave keeps nothing after scoring ends.",
+    title: "Transient data cleared",
+    note: "Temporary processing data is cleared under the scope lifecycle; source images remain local.",
   },
   {
     key: "result",
-    title: "Only the result remains",
-    note: "A score and tier — never documents or biometrics.",
+    title: "Selective result",
+    note: "The network records the verification result and required encrypted references, never source images.",
   },
 ];
 ---
@@ -45,7 +45,7 @@ const stages = [
 <div class:list={["lifecycle-strip", className]}>
   <ol
     class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-5"
-    aria-label="The life of your identity data in five stages: captured on your phone, encrypted on your device, processed inside a sealed hardware enclave, raw data destroyed, and only the verification result remains."
+    aria-label="The life of your identity data in five stages: original document images stay on the user's device, the client processes them locally, only minimum approved derived data may leave encrypted, transient processing data is cleared, and the network records verification results rather than source images."
   >
     {
       stages.map((stage, i) => (
@@ -121,33 +121,27 @@ const stages = [
             </tr>
             <tr>
               <th scope="row">2 · Encryption</th>
-              <td>Your phone, before transmission</td>
-              <td>Only your device holds the keys</td>
-              <td>Ciphertext ready to travel — unreadable to every carrier</td>
+              <td>Your phone</td>
+              <td>Only you and your local wallet client</td>
+              <td>Original document image stays local; no scan is transmitted</td>
             </tr>
             <tr>
               <th scope="row">3 · Attested processing</th>
-              <td>A hardware-sealed enclave (trusted processing unit)</td>
-              <td>
-                No person — not operators, not providers, not the foundation. The chain admits
-                data only after verifying the enclave's measurement
-              </td>
-              <td>A signed verification result</td>
+              <td>VEID processing, only for approved derived data</td>
+              <td>As stated in the relevant scope and trusted-processing design</td>
+              <td>Only the approved derived fields/features are submitted; never the source scan</td>
             </tr>
             <tr>
               <th scope="row">4 · Destruction</th>
-              <td>Inside the enclave, then retention systems</td>
-              <td>Automatic — no human handles raw data</td>
-              <td>
-                Working copies destroyed when scoring ends; retained encrypted evidence destroyed
-                automatically at the end of its legal retention period (maximum 7 years, KYC/AML)
-              </td>
+              <td>Transient VEID processing data</td>
+              <td>According to the approved scope lifecycle</td>
+              <td>Transient processing data is cleared under that lifecycle; source document images never entered the network</td>
             </tr>
             <tr>
               <th scope="row">5 · Result</th>
               <td>The VirtEngine chain</td>
               <td>Services you consent to, per request</td>
-              <td>Your score and tier, pass/fail outcomes — never documents or biometrics</td>
+              <td>Verification result and required encrypted references — never source document images</td>
             </tr>
           </tbody>
         </table>

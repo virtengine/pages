@@ -1,6 +1,6 @@
 ---
 title: x/escrow — Escrow module
-description: The x/escrow module holds tenant funds against active leases on-chain, releasing them only under governed settlement rules.
+description: The x/escrow module holds tenant funds against active leases on-chain, releasing the full agreed ACT amount after settlement validation.
 ---
 
 The `x/escrow` module is the marketplace's payment-custody layer. A tenant's
@@ -80,7 +80,6 @@ outside; its page carries the full lifecycle table.
 | --- | --- |
 | [x/market](/modules/market/) | Every lease is backed by a funded escrow account from creation. |
 | [x/settlement](/modules/settlement/) | Settled usage line items draw down escrow into provider payouts. |
-| [x/take](/modules/take/) | Applies the governed settlement-fee policy as escrow releases to providers. |
 | [x/deployment](/modules/deployment/) | Deployments fund and reclaim the escrow behind their leases. |
 
 ## Related documentation

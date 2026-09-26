@@ -15,7 +15,7 @@ const { class: className } = Astro.props;
 <svg
   viewBox="0 0 960 648"
   role="img"
-  aria-label="Diagram of the lock and the key: your documents and biometrics are sealed with encryption on your own device, where the keys stay. The encrypted parcel travels unreadable to everyone. Before it can enter the trusted processing unit — a hardware-sealed vault — the chain checks the vault's measurement at an attestation gate. Inside, keys are forged in hardware and never exist outside, verification runs, and the raw data is destroyed. Only the result — a score and tier — leaves for the chain. Operators, providers and the foundation stand outside the vault with no access path: there is no operator door."
+  aria-label="Diagram of the VEID privacy boundary: original identity document images remain on the user's device and are never transmitted. The wallet processes them locally. Only minimum derived data the user approves may be encrypted for VEID processing; the network records verification results and required encrypted references, not source document images."
   class:list={["block w-full h-auto", className]}
   font-family="Public Sans, sans-serif"
 >
@@ -148,14 +148,14 @@ const { class: className } = Astro.props;
       <text x="504" y="255" fill="var(--color-navy-muted)">Document checks, face match,</text>
       <text x="504" y="270" fill="var(--color-navy-muted)">liveness — scored in isolation</text>
 
-      <!-- step: raw data destroyed -->
+      <!-- step: transient derived processing data follows the scope lifecycle -->
       <rect x="428" y="288" width="276" height="86" rx="6" fill="var(--color-navy-panel)" stroke="var(--color-warn-rule)" stroke-width="1.4" />
       <g transform="translate(450 306)">
         <rect x="0" y="0" width="30" height="13" rx="2.5" fill="none" stroke="var(--color-warn-rule)" stroke-width="2" />
         <path d="M5 13v14M11.5 13v18M18.5 13v14M25 13v18" stroke="var(--color-warn-rule)" stroke-width="2" stroke-linecap="round" />
         <path d="M7 6.5h16" stroke="var(--color-warn-rule)" stroke-width="2" stroke-linecap="round" />
       </g>
-      <text x="504" y="314" font-weight="700" fill="#ffffff">Raw data is destroyed</text>
+      <text x="504" y="314" font-weight="700" fill="#ffffff">Source scans stay local</text>
       <text x="504" y="331" fill="var(--color-navy-muted)">The vault keeps nothing: your</text>
       <text x="504" y="346" fill="var(--color-navy-muted)">documents and biometrics are</text>
       <text x="504" y="361" fill="var(--color-navy-muted)">destroyed when scoring ends</text>
@@ -167,7 +167,7 @@ const { class: className } = Astro.props;
     </text>
   </g>
 
-  <!-- ================= zone D: only the result leaves ================= -->
+  <!-- ================= zone D: only the result and approved encrypted derived data leave ================= -->
   <g>
     <path d="M732 196 H798" stroke="var(--color-success-rule)" stroke-width="2.5" fill="none" />
     <path d="m792 190 8 6-8 6" fill="none" stroke="var(--color-success-rule)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -226,7 +226,7 @@ const { class: className } = Astro.props;
   </g>
 
   <!-- caption -->
-  <text x="480" y="634" text-anchor="middle" font-size="11.5" fill="var(--color-muted)">The lock seals on your device · the gate checks the vault before data enters · the key never exists outside the hardware · only the result leaves</text>
+  <text x="480" y="634" text-anchor="middle" font-size="11.5" fill="var(--color-muted)">Original scans stay on your device · only approved derived data may leave encrypted · results, not document images, are recorded</text>
 </svg>
 
 <style>

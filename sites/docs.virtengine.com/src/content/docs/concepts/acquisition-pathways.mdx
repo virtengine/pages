@@ -74,8 +74,11 @@ matching deadline closes. Orders can be resolved across multiple providers when
 partial fills are enabled, otherwise they are all-or-nothing. Ties always break
 the same way on every node, so the result is reproducible and auditable.
 
-Participation on both sides is [VEID](/veid/overview/) identity-gated, and
-offerings carry their own identity and MFA requirements.
+VEID is not required for every marketplace participant. A provider may set a
+specific, disclosed VEID proof requirement for an individual offer. Any such
+requirement should be visible before ordering; users can select offers without
+one. This describes the policy model, and support depends on the deployed
+protocol and client version.
 
 ## Fulfilment backends
 

@@ -26,7 +26,7 @@ const architectureLayers = [
     stack: "market · VEID · escrow",
     input: "Orders, bids, identity scopes and funded escrow.",
     output: "Matches, leases and settlement state.",
-    guarantee: "Matching, identity gating and funds follow protocol rules — not a private operator's discretion.",
+    guarantee: "Matching and escrow follow protocol rules; VEID is an optional, scoped trust signal, not a universal marketplace gate.",
   },
   {
     id: "consensus",
@@ -91,7 +91,7 @@ const architectureLayers = [
           <input type="radio" name="arch-layer" id={`arch-${layer.id}`} checked={i === 0} class="sr-only" />
         ))
       }
-      <div class="arch-nodes" role="tablist" aria-label="Protocol architecture layers">
+      <div class="arch-nodes" role="group" aria-label="Protocol architecture layers">
         {
           architectureLayers.map((layer) => (
             <label class="arch-node" for={`arch-${layer.id}`}>

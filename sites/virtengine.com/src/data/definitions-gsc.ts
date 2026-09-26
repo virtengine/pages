@@ -266,7 +266,7 @@ export const DEFINITIONS_GSC: DefinitionEntry[] = [
       {
         heading: "Where identity fits",
         paragraphs: [
-          "Private infrastructure narrows the trust boundary but does not remove the need to know who is inside it. On VirtEngine, both sides of a private-capacity order are VEID-verified before matching, and payment runs through escrow - so the software question and the counterparty question are answered together rather than one being left to a contract.",
+          "Private infrastructure narrows the trust boundary but does not remove the need to assess who operates it. On VirtEngine, buyers can review provider evidence and offer terms; a specific offer may disclose a VEID proof requirement. Escrow addresses payment risk, while neither identity checks nor escrow alone guarantee service quality.",
           "The same discipline applies inside the boundary: provider technicians and tenant administrators hold distinct roles, and a private cloud worth operating treats those roles as platform objects with their own permissions - not as shared credentials on a jump host.",
         ],
       },

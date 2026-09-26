@@ -24,12 +24,12 @@
   <g>
     <rect x="80" y="60" width="220" height="66" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.5"></rect>
     <text x="190" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Tenant</text>
-    <text x="190" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">needs compute · VEID-verified</text>
+    <text x="190" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">needs compute · VEID optional</text>
   </g>
   <g>
     <rect x="580" y="60" width="220" height="66" rx="8" fill="var(--color-surface)" stroke="var(--color-hairline-strong)" stroke-width="1.5"></rect>
     <text x="690" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="13.5" font-weight="600" fill="var(--color-ink)">Provider</text>
-    <text x="690" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">leases capacity · VEID-verified</text>
+    <text x="690" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">leases capacity · VEID optional</text>
   </g>
 
   <g>
@@ -42,9 +42,9 @@
       <text x="166" y="344" text-anchor="middle" fill="var(--color-text-soft)">x/deployment</text>
 
       <rect x="268" y="286" width="168" height="74" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
-      <text x="352" y="310" text-anchor="middle" fill="var(--color-ink)">identity gate</text>
+      <text x="352" y="310" text-anchor="middle" fill="var(--color-ink)">identity proofs</text>
       <text x="352" y="328" text-anchor="middle" fill="var(--color-text-soft)">x/veid · x/mfa</text>
-      <text x="352" y="344" text-anchor="middle" fill="var(--color-text-soft)">trust-score thresholds</text>
+      <text x="352" y="344" text-anchor="middle" fill="var(--color-text-soft)">optional · scoped</text>
 
       <rect x="454" y="286" width="168" height="74" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
       <text x="538" y="310" text-anchor="middle" fill="var(--color-ink)">escrow</text>
@@ -54,7 +54,7 @@
       <rect x="640" y="286" width="160" height="74" rx="6" fill="var(--color-surface)" stroke="var(--color-blue-mid)" stroke-width="1.3"></rect>
       <text x="720" y="310" text-anchor="middle" fill="var(--color-ink)">settlement</text>
       <text x="720" y="328" text-anchor="middle" fill="var(--color-text-soft)">x/settlement</text>
-      <text x="720" y="344" text-anchor="middle" fill="var(--color-text-soft)">x/take · x/fraud</text>
+      <text x="720" y="344" text-anchor="middle" fill="var(--color-text-soft)">x/settlement · x/fraud</text>
     </g>
   </g>
 
@@ -84,7 +84,7 @@
     <circle cx="566" cy="181" r="11" fill="var(--color-blue-deep)"></circle>
     <text x="566" y="185.5" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="#ffffff">2</text>
     <text x="584" y="177" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Providers bid</text>
-    <text x="584" y="195" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">priced offers · identity-gated</text>
+    <text x="584" y="195" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">priced offers · proof if disclosed</text>
   </g>
 
   <!-- 03 · lease -->
@@ -129,6 +129,6 @@
     <circle cx="82" cy="573" r="11" fill="var(--color-blue-deep)"></circle>
     <text x="82" y="577.5" text-anchor="middle" font-family="var(--font-mono)" font-size="10.5" fill="#ffffff">6</text>
     <text x="100" y="567" font-family="var(--font-display)" font-size="12" font-weight="600" fill="var(--color-ink)">Settlement</text>
-    <text x="100" y="585" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">dispute window → escrow pays provider · take fee</text>
+    <text x="100" y="585" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">dispute window → escrow pays full agreed amount in ACT</text>
   </g>
 </svg>

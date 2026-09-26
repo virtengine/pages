@@ -12,7 +12,7 @@ payment finalizes while you have an open dispute against it.
 - **Deposit** — you fund the escrow account (`x/escrow`) attached to your
   deployment. This backs every lease under it.
 - **Draw-down** — settled usage transfers the agreed funds to the provider
-  with 0% marketplace commission inside settlement. Validator transaction fees
+  in full inside settlement. Validator transaction fees
   apply only to the relevant chain actions.
 - **Top-up** — deposit more at any time to keep long-running leases alive.
 - **Exhaustion** — an empty escrow account closes the lease. There is no
@@ -27,7 +27,7 @@ payment finalizes while you have an open dispute against it.
 | Usage record submitted | Hourly batches, on the reporting schedule |
 | Dispute window | 24 hours from submission — your challenge period |
 | Settlement | Next settlement cycle after the window closes (hourly cycles; daily cycle at 00:00 UTC) |
-| Provider payout | At settlement, the agreed amount with 0% marketplace commission |
+| Provider payout | At settlement, the full agreed amount in ACT |
 
 Practical implication: charges hit escrow roughly a day behind consumption.
 Reconcile against that lag, not against wall-clock usage.

@@ -78,12 +78,19 @@ it wants to consume (see [Submitting HPC Jobs](/tenants/hpc-jobs/)). Kubernetes
 and HPC schedulers are fulfilment targets for applicable listings, not the only
 things a provider can list.
 
-## Identity gating
+## Identity and offer requirements
 
-Marketplace participation is tied to VEID identity verification. Providers
-and tenants operate from verified accounts, which raises the cost of Sybil
-identities and gives dispute and fraud workflows a real counterparty. The
-verification tiers and privacy model are described in the
+VEID is not a universal prerequisite for marketplace participation. A provider
+may choose to require a specific VEID proof for an individual offer; that
+requirement should state its purpose and requested proof before a tenant places
+an order. Tenants can choose offers that do not require VEID. Provider
+verification signals, when available, are one input to a buyer's risk decision;
+they do not prove advertised hardware ownership, delivery, or service quality.
+
+This is the marketplace policy model. Availability and enforcement of
+offer-specific controls depend on the deployed protocol and client version, so
+users should rely only on requirements that the current offer clearly displays.
+The verification tiers and privacy model are described in the
 [VEID section](/veid/overview/).
 
 ## Lifecycle summary
@@ -96,4 +103,4 @@ verification tiers and privacy model are described in the
 | Match | `x/market` | Lease | Winning bid selected |
 | Deliver | provider daemon | Workload | Lease observed |
 | Bill | `x/settlement` | Line items | Signed usage records |
-| Pay | `x/escrow` + `x/take` | Transfer | Settlement complete |
+| Pay | `x/escrow` + `x/settlement` | Transfer | Settlement complete |

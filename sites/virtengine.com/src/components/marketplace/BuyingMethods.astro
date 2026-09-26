@@ -146,7 +146,7 @@ const FILTERS = [
 
 // The provider record: what each module contributes and how a buyer uses it.
 const RECORD = [
-  { key: "veid", module: "veid", title: "Identity", desc: "Verified operator behind the listing", use: "Required to register" },
+  { key: "veid", module: "veid", title: "Identity signal", desc: "Optional, privacy-preserving provider evidence", use: "Offer-specific when disclosed" },
   { key: "attr", module: "provider", title: "Attributes", desc: "Region, hardware, claimed tier", use: "Filtered at match" },
   { key: "audit", module: "audit", title: "Audit", desc: "Auditor-signed claims, not self-assertion", use: "Orders can require it" },
   { key: "bench", module: "benchmark", title: "Benchmark", desc: "Measured performance — proves hardware matches its class", use: "Filter or compare" },
@@ -307,7 +307,7 @@ const payload = JSON.stringify({ modes: MODES, providers: PROVIDERS, listings: L
           <div class="mr-card mr-order" data-order>
             <p class="mr-label">Order</p>
             <strong>Listing #<span data-bind="order-id">{LISTINGS[0].id}</span></strong>
-            <span class="mr-meta">Exact provider + plan · identity-gated</span>
+            <span class="mr-meta">Exact provider + plan · check offer requirements</span>
           </div>
           <p class="mr-annot" data-order-note>Availability confirmed · no bidding required</p>
         </div>

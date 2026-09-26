@@ -9,7 +9,7 @@ Payments on VirtEngine are **usage-driven**: tenants fund an escrow account
 up front, but money only moves to providers after signed usage records
 survive a dispute window and settle on-chain.
 
-<EscrowSequence caption="The settlement sequence. Funds rest in escrow until usage is reported, the dispute window passes, and x/settlement authorizes transfer of the agreed amount with no marketplace commission." />
+<EscrowSequence caption="The settlement sequence. Funds rest in escrow until usage is reported, the dispute window passes, and x/settlement authorizes transfer of the agreed amount in full in ACT." />
 
 ## Escrow accounts
 
@@ -72,14 +72,12 @@ platform-side component usage). Discrepancies escalate by size:
 | 10–25% | High | Alert + review |
 | \>25% | Critical | Settlement blocked |
 
-## Zero marketplace commission
+## Provider payout
 
-At payout, the proposed `x/take` settlement policy is **0% marketplace
-commission**, so `x/escrow` transfers the agreed amount to the provider.
-Validator transaction fees apply separately to on-chain messages and are
-proposed at approximately 90% below standard network transaction fees. The
-issuance and fee-policy model is covered in
-[Settlement Policy & Issuance](/concepts/take-and-bme/).
+At payout, `x/escrow` transfers the full agreed lease amount to the provider
+in ACT. There is no settlement take-rate or platform deduction. Network
+transaction fees apply separately to on-chain messages. The issuance model is
+covered in [Settlement & BME](/concepts/settlement-and-bme/).
 
 ## Operator commands
 

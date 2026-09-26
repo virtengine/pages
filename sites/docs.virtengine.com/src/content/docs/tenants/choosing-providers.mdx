@@ -50,10 +50,16 @@ recurring specifics (billing disputes, network instability) matter most.
 
 ### 4. Identity & fraud history
 
-Providers operate from VEID-verified accounts. Fraud reports (`x/fraud`)
-and dispute history are part of the public record. A provider with repeated
-reconciliation blocks or accepted disputes against them has told you what
-working with them is like.
+Review any provider identity claims and disclosures as one part of your
+decision; VEID is not a universal marketplace prerequisite. On-chain fraud
+reports can expose reporter and reported-party addresses, order references,
+descriptions, status, and moderation notes publicly. The report attachment is
+encrypted for its listed recipients, but the other report fields are not
+private. Avoid including identity documents or other sensitive personal
+information in an on-chain report. The current `x/fraud` report transaction
+accepts provider accounts only; it does not provide a consumer on-chain
+reporting route. For an interim report, contact the service operator using the
+contact details published on VirtEngine.com.
 
 ## Weighing price against evidence
 

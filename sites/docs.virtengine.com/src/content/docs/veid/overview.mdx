@@ -24,11 +24,11 @@ the verification data itself private.
 
 | Capability | What it does |
 | --- | --- |
-| Document capture | Front/back identity document photos with OCR extraction |
+| Document capture | Front/back photos processed locally; original images remain on the user's device; OCR extracts reviewable fields |
 | Selfie + active liveness | Anti-spoofing challenges that defeat photos, replays, and masks |
 | Biometric hardware capture | Fingerprint/iris templates via platform-secure APIs |
 | Device integrity attestation | Play Integrity (Android) / App Attest (iOS) verdicts |
-| Encrypted vault | All templates and payloads encrypted via the VEID envelope |
+| Encrypted scopes | Only minimum, user-approved derived fields/features are encrypted for VEID submission; original document photos are excluded |
 | On-chain scopes | `x/veid` records referencing encrypted vault payloads |
 | Zero-knowledge proofs | `x/veid/zk` — prove properties of identity data without revealing it |
 | Verifier registry | `x/veidregistry` — governance-approved verifier versions |
@@ -40,7 +40,7 @@ Identity data is partitioned into consent-scoped categories:
 | Scope ID | Data included | GDPR special category |
 | --- | --- | --- |
 | `veid.biometric` | Facial templates, liveness scores | Yes (Art. 9) |
-| `veid.document` | OCR-extracted text, document scans | No |
+| `veid.document` | Minimum user-reviewed OCR-derived fields/features, if approved; never document scans | No |
 | `veid.basic` | Name, date of birth, address | No |
 | `veid.verification_history` | Timestamps, scores, ML versions | No |
 | `veid.trust_score` | Score, factors, confidence | No |

@@ -77,7 +77,7 @@ export const MODULE_DOMAINS: { domain: ModuleDomain; blurb: string }[] = [
   {
     domain: "Economics & settlement",
     blurb:
-      "Escrow-backed payments, governed settlement fees, validator transaction fees, VEID-led issuance, staking, delegation, and oracles.",
+      "Escrow-backed payments, full agreed provider payouts, validator transaction fees, VEID-led issuance, staking, delegation, and oracles.",
   },
   {
     domain: "Quality & governance",
@@ -104,7 +104,7 @@ export const MODULES: ModuleEntry[] = [
       { slug: "deployment", label: "x/deployment", how: "Orders are derived from tenant deployment specifications and groups." },
       { slug: "escrow", label: "x/escrow", how: "Every lease is backed by an escrow account funded before the workload starts." },
       { slug: "provider", label: "x/provider", how: "Bids reference registered providers and their on-chain attributes." },
-      { slug: "veid", label: "x/veid", how: "Marketplace participation is identity-gated by VEID trust scores." },
+      { slug: "veid", label: "x/veid", how: "VEID is an optional, offer-specific trust signal; marketplace participation is not universally gated." },
       { slug: "settlement", label: "x/settlement", how: "Usage recorded against a lease settles into payments from lease escrow." },
     ],
     concepts: [
@@ -272,7 +272,7 @@ export const MODULES: ModuleEntry[] = [
       { slug: "market", label: "x/market", how: "Deployment groups generate the orders the market opens for bidding." },
       { slug: "escrow", label: "x/escrow", how: "A deployment funds the escrow that backs its resulting leases." },
       { slug: "cert", label: "x/cert", how: "Tenant certificates authenticate the deployment owner to providers." },
-      { slug: "veid", label: "x/veid", how: "Deployment creation is gated by the tenant's verified identity." },
+      { slug: "veid", label: "x/veid", how: "The current implementation includes tenant identity checks; this is not the intended universal marketplace access policy." },
     ],
     concepts: [
       { term: "Deployment", def: "A tenant's declarative description of the services they want the marketplace to run." },
@@ -295,7 +295,7 @@ export const MODULES: ModuleEntry[] = [
       {
         kicker: "Gating",
         title: "Identity and escrow up front",
-        body: "Creation is VEID-gated to verified tenants, and the deployment funds the escrow behind its leases.",
+        body: "The current implementation includes VEID checks in deployment creation. The intended marketplace policy is not a universal tenant gate; supported offer-specific proof controls must be disclosed before ordering.",
       },
     ],
     flow: [
@@ -385,7 +385,7 @@ export const MODULES: ModuleEntry[] = [
       {
         label: "Verify",
         title: "VEID verification first",
-        body: "Registration is identity-gated through VEID verification — accountability starts before the first bid.",
+        body: "Provider onboarding follows its stated protocol requirements. VEID is not a universal requirement for customers using the marketplace.",
       },
       {
         label: "Register",
@@ -577,7 +577,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "How is HPC usage priced?",
         answer:
-          "Through the same exchange economics as the rest of the marketplace. Facilities set pricing per partition and job class, and jobs are paid from tenant escrow under the governed settlement fee policy.",
+          "Through the same exchange economics as the rest of the marketplace. Facilities set pricing per partition and job class, and jobs are paid from tenant escrow at the full agreed amount.",
       },
       {
         question: "What audit trail does a job leave?",
@@ -600,16 +600,16 @@ export const MODULES: ModuleEntry[] = [
       "The module's zero-knowledge subsystem (x/veid/zk) lets users then prove facts about their verified identity — that a score clears a threshold, that an attribute holds — without revealing documents, biometrics, or the score itself.",
     ],
     whyItExists:
-      "An open compute marketplace without identity is an invitation to fraud and abuse: providers need to know a tenant is real before workloads land on their hardware, and tenants need to know a provider is accountable. VEID makes verification a protocol function — decentralized like the chain itself, private by construction — rather than an outsourced KYC checkbox.",
+      "An open compute marketplace needs ways to assess risk without forcing every customer through one identity gate. VEID provides privacy-preserving verification signals that a provider may require for a specific offer; tenants can also consider escrow, provider evidence, terms, and history. Verification does not prove hardware ownership, delivery, or service quality.",
     interactions: [
       { slug: "veidregistry", label: "x/veidregistry", how: "Scores and scope records are registered and resolved through the registry." },
       { slug: "encryption", label: "x/encryption", how: "Identity scopes are sealed with validator-targeted public-key encryption." },
       { slug: "config", label: "x/config", how: "Only governance-approved clients may submit identity data." },
-      { slug: "market", label: "x/market", how: "Marketplace access is gated on VEID trust scores in both directions." },
+      { slug: "market", label: "x/market", how: "VEID is optional for general marketplace access; a provider may disclose a proof requirement for an individual offer." },
       { slug: "mfa", label: "x/mfa", how: "Sensitive account operations layer on-chain MFA over identity." },
     ],
     concepts: [
-      { term: "Identity scope", def: "An encrypted, signed bundle of identity evidence for one verification dimension." },
+      { term: "Identity scope", def: "A separately approved, purpose-specific bundle of minimum derived identity data for one verification dimension; it excludes original document images and full OCR output." },
       { term: "Trust score", def: "The consensus-committed score validators assign after ML evaluation of submitted scopes." },
       { term: "ZK verification tier", def: "A zero-knowledge proof surface that reveals only a threshold or attribute fact — never the data." },
       { term: "Active liveness", def: "A challenge–response selfie flow proving a live human, resistant to photos, replays, and injection." },
@@ -620,7 +620,7 @@ export const MODULES: ModuleEntry[] = [
       {
         kicker: "Capture",
         title: "Evidence stays on-device",
-        body: "Documents with OCR, active-liveness selfie, biometric and device attestation — sealed into encrypted scopes, never uploaded raw.",
+        body: "Original document images and full OCR stay on the user's device. Only minimum derived fields or features may be submitted in an encrypted scope after separate approval; other evidence follows its own scope notice.",
       },
       {
         kicker: "Score",
@@ -651,8 +651,8 @@ export const MODULES: ModuleEntry[] = [
       },
       {
         label: "Gate",
-        title: "Scores gate the market",
-        body: "Marketplace participation, provider registration, and deployment creation all check VEID standing.",
+        title: "Proofs inform specific choices",
+        body: "VEID is not a universal marketplace or deployment prerequisite. Any supported requirement is scoped to a service or individual offer and disclosed before use.",
       },
     ],
     faqs: [
@@ -686,10 +686,10 @@ export const MODULES: ModuleEntry[] = [
       "Splitting the registry from the scoring engine keeps long-lived identity records cleanly separated from the verification workflow — scoring logic can evolve while the record-of-record interface other modules depend on stays stable.",
     ],
     whyItExists:
-      "Every identity-gated action on the chain — registering a provider, creating a deployment, casting an identity-weighted vote — needs a fast, canonical answer to \"what is this account's verified identity state?\". The registry is that answer, kept apart from the machinery that produces it.",
+      "A protocol action that explicitly requires an identity proof needs a canonical way to resolve the requested claim. The registry provides identity state for those scoped checks without making VEID a prerequisite for every marketplace action.",
     interactions: [
       { slug: "veid", label: "x/veid", how: "Consensus-committed scores and scope outcomes are recorded into the registry." },
-      { slug: "market", label: "x/market", how: "Marketplace identity gates resolve accounts through the registry." },
+      { slug: "market", label: "x/market", how: "When a supported offer requests VEID, the registry can resolve the relevant proof; it does not impose a universal marketplace gate." },
       { slug: "provider", label: "x/provider", how: "Provider registration checks registry state before admitting operators." },
       { slug: "roles", label: "x/roles", how: "Role assignments can be conditioned on registry-verified identity." },
     ],
@@ -1263,7 +1263,6 @@ export const MODULES: ModuleEntry[] = [
     interactions: [
       { slug: "market", label: "x/market", how: "Every lease is backed by a funded escrow account from creation." },
       { slug: "settlement", label: "x/settlement", how: "Settled usage line items draw down escrow into provider payouts." },
-      { slug: "take", label: "x/take", how: "Applies the governed settlement-fee policy as escrow releases to providers." },
       { slug: "deployment", label: "x/deployment", how: "Deployments fund and reclaim the escrow behind their leases." },
     ],
     concepts: [
@@ -1338,13 +1337,12 @@ export const MODULES: ModuleEntry[] = [
     summary: "Converts signed usage records into billable line items and provider payouts.",
     whatItDoes: [
       "The settlement module turns metered usage into money. Provider daemons collect per-workload resource metrics on an hourly cadence, batch them into signed usage records, and submit them on-chain (MsgRecordUsage). The module validates records against their leases and converts them into billable line items priced by the lease terms.",
-      "Every reported record sits in a 24-hour dispute window during which either party can raise corrections — anomaly detection on the provider side flags outliers before they ever reach the chain. After the window closes, line items settle against lease escrow and the agreed funds transfer to the provider under the governed fee policy. Reconciliation against platform metrics (default every 6 hours) cross-checks reported usage.",
+      "Every reported record sits in a 24-hour dispute window during which either party can raise corrections — anomaly detection on the provider side flags outliers before they ever reach the chain. After the window closes, line items settle against lease escrow and the agreed funds transfer to the provider at the full agreed amount. Reconciliation against platform metrics (default every 6 hours) cross-checks reported usage.",
     ],
     whyItExists:
       "Metering and billing are where cloud customers get hurt and providers get stiffed. Making settlement a consensus function — signed records, public dispute window, automatic escrow release — replaces invoice trust with protocol guarantees for both sides.",
     interactions: [
       { slug: "escrow", label: "x/escrow", how: "Settled line items draw provider payouts from lease escrow." },
-      { slug: "take", label: "x/take", how: "The governed settlement-fee policy is applied at payout time." },
       { slug: "market", label: "x/market", how: "Usage records are validated against the lease they bill." },
       { slug: "fraud", label: "x/fraud", how: "Disputed or anomalous usage escalates before settlement completes." },
       { slug: "oracle", label: "x/oracle", how: "Price feeds inform fiat-referenced pricing where leases use it." },
@@ -1369,8 +1367,8 @@ export const MODULES: ModuleEntry[] = [
       },
       {
         kicker: "Pay",
-        title: "Escrow releases under governed fees",
-        body: "Cleared line items settle from escrow under the governed fee policy — the agreed amount, minus protocol parameters set by governance.",
+        title: "Escrow releases full payment",
+        body: "Cleared line items settle from escrow at the full agreed amount, without a settlement deduction.",
       },
     ],
     flow: [
@@ -1415,85 +1413,6 @@ export const MODULES: ModuleEntry[] = [
     ],
   },
   {
-    slug: "take",
-    path: "x/take",
-    name: "Take",
-    domain: "Economics & settlement",
-    summary: "Governed marketplace settlement policy; validator transaction fees remain separate.",
-    whatItDoes: [
-      "The take module governs marketplace-settlement policy. The proposed policy sets the marketplace commission at 0%, so settlement would move the agreed lease amount to the provider without a platform deduction — but the rate is governed state, not a permanent guarantee.",
-      "This does not remove transaction fees: low validator fees apply to on-chain messages and compensate the validating network. They are proposed at approximately 90% below standard network transaction fees.",
-    ],
-    whyItExists:
-      "A protocol needs sustainable revenue tied to genuine usage. A transparent, governed take on settled payments is the cleanest such mechanism: visible to every participant, proportional to real economic activity, and changeable only by stakeholder vote.",
-    interactions: [
-      { slug: "settlement", label: "x/settlement", how: "The governed settlement policy is honoured at payout." },
-      { slug: "escrow", label: "x/escrow", how: "The agreed lease amount is released at the escrow boundary." },
-      { slug: "bme", label: "x/bme", how: "VEID-led issuance policy interacts with supply mechanics." },
-    ],
-    concepts: [
-      { term: "Marketplace commission", def: "The governed platform deduction from marketplace payments — proposed at 0% in the current design." },
-    ],
-    media: "settlement-ledger",
-    mediaCaption: "Settlement policy, governed by vote.",
-    glance: [
-      {
-        kicker: "Rate",
-        title: "Marketplace commission: 0% proposed",
-        body: "Under the proposed policy, escrow settles the agreed lease amount to the provider without a platform deduction — changeable only by vote.",
-      },
-      {
-        kicker: "Fees",
-        title: "Validators still get paid",
-        body: "Low transaction fees on on-chain messages compensate the validating network — proposed around 90% below standard network fees.",
-      },
-      {
-        kicker: "Govern",
-        title: "Changeable only by vote",
-        body: "Settlement policy is governed state, not a dashboard setting anyone can quietly edit.",
-      },
-    ],
-    flow: [
-      {
-        label: "Clear",
-        title: "Usage clears",
-        body: "Line items clear the dispute window against funded lease escrow.",
-      },
-      {
-        label: "Apply",
-        title: "Policy applies at payout",
-        body: "The governed settlement policy is honoured as funds release to the provider.",
-      },
-      {
-        label: "Compensate",
-        title: "Validators earn fees",
-        body: "Message-level transaction fees flow to the validating network for operating consensus.",
-      },
-      {
-        label: "Govern",
-        title: "Stakeholders can change it",
-        body: "Any future rate change requires stakeholder vote — visible, proportional, governed.",
-      },
-    ],
-    faqs: [
-      {
-        question: "What is the marketplace commission?",
-        answer:
-          "The governed platform deduction from marketplace payments — proposed at 0%, so under the current proposal settlement moves the agreed lease amount in full.",
-      },
-      {
-        question: "Does the proposed 0% rate mean running the chain is free?",
-        answer:
-          "No. Low validator transaction fees apply to on-chain messages and compensate the validating network. The proposed 0% applies to the settled lease payment itself.",
-      },
-      {
-        question: "Why have a take module at a 0% rate?",
-        answer:
-          "A protocol needs sustainable revenue tied to genuine usage. A transparent, governed take on settled payments is the cleanest such mechanism — visible to every participant, proportional to real activity, and changeable only by stakeholder vote.",
-      },
-    ],
-  },
-  {
     slug: "bme",
     path: "x/bme",
     name: "BME",
@@ -1506,8 +1425,7 @@ export const MODULES: ModuleEntry[] = [
     whyItExists:
       "A pure fixed-supply token disconnects the asset from the service it prices; unconstrained inflation destroys holder trust. BME ties supply mechanics to real consumption of compute, aligning the token's monetary dynamics with the marketplace it exists to serve.",
     interactions: [
-      { slug: "take", label: "x/take", how: "Applies the governed marketplace settlement policy." },
-      { slug: "settlement", label: "x/settlement", how: "Settles escrow under the governed policy." },
+      { slug: "settlement", label: "x/settlement", how: "Pays the full agreed amount in ACT from escrow." },
       { slug: "issuancepolicy", label: "x/issuancepolicy", how: "Mint schedules operate under governed issuance policy." },
       { slug: "staking", label: "x/staking", how: "Issuance funds staking rewards alongside the inflation mechanism." },
     ],
@@ -2075,13 +1993,13 @@ export const MODULES: ModuleEntry[] = [
     summary: "Tenant–provider reviews building portable, tamper-evident reputation.",
     whatItDoes: [
       "The review module records reviews between lease counterparties: tenants review providers on delivery quality, and provider-side standing accumulates into a reputation that is portable across the whole marketplace and tamper-evident by construction — reviews are chain state tied to real leases.",
-      "Because a review requires an underlying lease, reputation cannot be fabricated by sockpuppet accounts at scale; combined with VEID identity gating, review farming is structurally expensive.",
+      "Requiring an underlying lease ties reviews to marketplace activity and raises the cost of fabricated ratings. VEID may add an optional signal where a specific offer requests it, but no single control prevents review abuse.",
     ],
     whyItExists:
       "Repeat-game trust is what makes marketplaces work, and centralized platforms hold that trust hostage — leave the platform, lose your reputation. On-chain reviews make track records a public good owned by the participant who earned them.",
     interactions: [
       { slug: "market", label: "x/market", how: "Reviews attach to completed leases between real counterparties." },
-      { slug: "veid", label: "x/veid", how: "Identity gating makes review manipulation costly." },
+      { slug: "veid", label: "x/veid", how: "Offer-specific VEID proofs may inform counterparty risk; lease-linked reviews remain the basis for marketplace feedback." },
       { slug: "marketplace", label: "x/marketplace", how: "Reputation signals inform offer presentation and choice." },
     ],
     concepts: [
@@ -2138,7 +2056,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "Can reputation be faked?",
         answer:
-          "Not at scale. Reviews require an underlying lease, and VEID identity gating makes review farming structurally expensive — repeat-game trust, protocol-enforced.",
+          "Lease-linked reviews make feedback traceable to marketplace activity, but do not eliminate coordinated abuse. VEID is an optional signal for specific offers, not a universal anti-fraud guarantee.",
       },
       {
         question: "What does portable reputation mean?",

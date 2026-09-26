@@ -37,7 +37,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
     title: "Decentralized identity",
     question: "Can a person prove who they are — strongly enough for finance-grade infrastructure — without surrendering their documents, biometrics, or behaviour to a central database?",
     summary:
-      "The VEID research stream: privacy-preserving identity verification combining document capture, active liveness, biometric hardware attestation, zero-knowledge proofs, and device integrity attestation — with verification results, not personal data, recorded on-chain.",
+      "The VEID research stream explores privacy-preserving identity verification and selective disclosure. Source identity-document images and full OCR output remain on the user's device; only minimum derived data may be submitted for a separately approved scope. This identity signal is optional for general marketplace participation.",
     programs: ["VirtEngine"],
     sections: [
       {
@@ -50,8 +50,8 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       {
         heading: "Approach",
         body: [
-          "VEID, the VirtEngine identity layer, is the working testbed. The pipeline under research combines document capture and OCR, selfie capture with active liveness challenges, biometric hardware attestation (fingerprint and iris, attested by the device's secure hardware rather than uploaded), device integrity attestation via Play Integrity and App Attest, and encrypted payloads throughout.",
-          "The critical architectural move is what reaches the chain: verification outcomes and cryptographic commitments, not source biometrics or documents. The x/veid module tree in the open repository includes a dedicated zero-knowledge proof package (x/veid/zk) for proving properties of an identity — validity, uniqueness, tier — without revealing the underlying attributes.",
+          "VEID, the VirtEngine identity layer, is the working testbed. The privacy-preserving design keeps source document images and full OCR output on the user's device. Any minimum derived fields or features submitted for verification require separate, purpose-specific approval; other evidence follows its own scope notice.",
+          "The intended disclosure model is to share a verification result or selected proof rather than source documents. The x/veid module tree in the open repository includes a zero-knowledge proof package (x/veid/zk); capabilities described in repository designs should not be read as a guarantee that every proof flow is deployed or available.",
         ],
       },
       {
@@ -203,7 +203,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       {
         heading: "Marketplace mechanisms in VirtEngine",
         body: [
-          "The open repository implements the full loop as chain modules: x/market and x/marketplace (orders, bids, leases), x/escrow (funds locked while workloads run), x/settlement and the usage-reporting pipeline (verified usage before payment), x/bme (token supply operations), x/take (zero-commission marketplace settlement policy), and x/fraud, x/review, x/benchmark (misbehaviour detection and provider quality signals). The proposed model uses VEID-led 15-token issuance batches: 14 tokens to eligible active verified humans and 1 token to the Foundation-controlled genesis account; validator transaction fees are separate from settlement and proposed at approximately 90% below standard network transaction fees.",
+          "The open repository implements the full loop as chain modules: x/market and x/marketplace (orders, bids, leases), x/escrow (funds locked while workloads run), x/settlement and the usage-reporting pipeline (verified usage before payment), x/bme (token supply operations), and x/fraud, x/review, x/benchmark (misbehaviour detection and provider quality signals). The proposed model uses VEID-led 15-token issuance batches: 14 tokens to eligible active verified humans and 1 token to the Foundation-controlled genesis account; validator transaction fees are separate from settlement and proposed at approximately 90% below standard network transaction fees.",
         ],
       },
       {
@@ -238,7 +238,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       {
         heading: "Identity: prove the property, not the person",
         body: [
-          "In the VEID stream, the x/veid/zk package verifies proofs about identity attributes — validity, tier, uniqueness — without placing the attributes themselves on-chain. Verification results and commitments are recorded; documents and biometrics are not. Hardware attestation (secure-element biometrics, Play Integrity, App Attest) shifts trust from uploaded evidence to device-anchored cryptographic statements, and the consent framework and biometric data addendum in the repository document the data-handling boundaries.",
+          "The VEID design aims to verify selected identity attributes without exposing source documents. Original document images and full OCR output remain local and are not upload payloads; a user may approve submission of minimum derived data for a named purpose. Repository modules and design documents describe intended capabilities and do not establish that every proof, device-attestation, or selective-disclosure flow is deployed.",
         ],
       },
       {

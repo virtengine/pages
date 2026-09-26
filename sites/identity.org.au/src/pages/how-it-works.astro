@@ -35,7 +35,7 @@ const onDevice = [
 const onNetwork = [
   {
     title: "Verification runs inside trusted processing units",
-    body: "Your encrypted submission is opened only inside hardware-sealed enclaves — trusted processing units the chain checks by fingerprint before any data enters. Machine-learning models assess document authenticity, face match and liveness in an environment no operator can look into; raw data is destroyed when scoring ends.",
+    body: "Original document images stay on your device. The wallet performs document OCR and checks locally; only minimum derived data that you approve may be sent encrypted for VEID processing under the relevant scope.",
   },
   {
     title: "Results are recorded, evidence is not",
@@ -113,7 +113,7 @@ const onNetwork = [
         rail="Trusted processing"
         railRight="Lock and key"
         scroll
-        caption="The lock and the key: sealed on your device, admitted through the attestation gate, processed and destroyed inside the vault — only the result reaches the chain."
+        caption="Original document images stay on your device. Only minimum, user-approved derived data may leave encrypted for VEID verification."
       >
         <LockAndKey />
       </ServiceFigure>

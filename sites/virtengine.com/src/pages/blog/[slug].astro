@@ -1,6 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
-import { repairArchiveLinks } from "../../lib/archive-links";
+import { makeCodeBlocksFocusable, repairArchiveLinks } from "../../lib/archive-links";
 import PageHero from "@components/PageHero.astro";
 import BlogCard from "@components/BlogCard.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
@@ -105,7 +105,7 @@ const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt
             </aside>
           )
         }
-        <div class="blog-prose" set:html={article.kind === "legacy" ? repairArchiveLinks(article.html) : article.html} />
+        <div class="blog-prose" set:html={makeCodeBlocksFocusable(article.kind === "legacy" ? repairArchiveLinks(article.html) : article.html)} />
       </div>
     </div>
   </article>

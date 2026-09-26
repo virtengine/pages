@@ -65,7 +65,7 @@ export const FAQ: FaqEntry[] = [
     category: "Providers",
     question: "What do I need to become a provider?",
     answer:
-      "Infrastructure (a Kubernetes cluster, or an HPC cluster behind SLURM, MOAB, or Open OnDemand), a Linux or macOS host for the virtengine binary and provider daemon, a funded chain account and provider key, VEID identity verification (marketplace participation is identity-gated), and network reachability for the services you host.",
+      "Infrastructure (a Kubernetes cluster, or an HPC cluster behind SLURM, MOAB, or Open OnDemand), a Linux or macOS host for the virtengine binary and provider daemon, a funded chain account and provider key, and network reachability for the services you host. VEID is not a general marketplace prerequisite; providers may disclose an offer-specific verification requirement.",
     links: [{ label: "Provider onboarding", href: "/providers" }],
   },
   {
@@ -132,7 +132,7 @@ export const FAQ: FaqEntry[] = [
     category: "Developers & identity",
     question: "How does VEID protect my identity documents?",
     answer:
-      "Capture happens entirely on your device — documents, selfie with active liveness, biometric hardware attestation. Evidence is sealed into identity scopes with public-key encryption targeted to validator recipients before anything leaves the phone, and submissions must be signed by both you and a governance-approved client. Validators score the encrypted evidence by consensus; raw documents and biometrics never appear on the public ledger. Afterwards, zero-knowledge proofs let you prove facts (a score threshold, an age range) without revealing the underlying data.",
+      "Original identity document images stay on your device. OCR and checks run locally, and you review results before sharing anything. Only minimum derived fields or features may be submitted in an encrypted scope after separate approval; other evidence follows its own consent notice. The chain records verification results and required references, never source document images. Zero-knowledge proofs can then let you prove a fact, such as an age threshold, without revealing the underlying data.",
     links: [{ label: "What is VEID?", href: "/learn/what-is-veid" }],
   },
   {

@@ -162,7 +162,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: "Where verification actually runs",
         paragraphs: [
-          "Scoring runs inside trusted processing units — hardware-sealed enclaves (AMD SEV-SNP, Intel SGX, AWS Nitro) that the chain checks by cryptographic fingerprint before any data enters. The decryption key is derived inside the hardware and never exists outside it, so no operator, provider or foundation staff member can look in. Raw data is destroyed when scoring ends; only the result — a score and tier — remains. The full explainer is at identity.org.au/privacy/trusted-processing.",
+          "Original identity document images stay on your device and are not sent to an enclave or the network. The wallet processes them locally. If you approve a VEID scope, only its minimum derived data may be sent encrypted; that scope notice explains where it is processed and its lifecycle. See identity.org.au/privacy/trusted-processing.",
         ],
         embed: "lifecycle",
       },
@@ -171,7 +171,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         list: [
           "While your account is active — used only for verification and fraud prevention.",
           "After you close your account — up to 3 years, to prevent fraudulent re-registration.",
-          "Absolute maximum — 7 years from last use, driven by know-your-customer laws.",
+            "Absolute maximum — 7 years from last use, as stated in the Biometric Data Addendum.",
           "On deletion — removed from active systems within 30 days of your request, then from backups within the backup rotation period (typically 90 days). Encryption keys are destroyed, which makes any remaining encrypted copies permanently unreadable.",
         ],
       },
@@ -216,19 +216,19 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
         callout: {
           tone: "success",
-          text: "Services never receive your document scans, your photos, your biometric templates, or data from any scope you did not consent to. This is enforced in the protocol, not just in policy.",
+          text: "Services never receive your original document scans or data from any scope you did not consent to. Original scans stay on your device; any separately approved derived identity data is handled under its scope notice.",
         },
       },
       {
         heading: "What the network (validators) can see",
         paragraphs: [
-          "Validators — the independent computers that run the network — process encrypted payloads and record encrypted references and verification results. They can see that a verification event happened and its outcome, but the underlying documents and biometrics are encrypted with keys they do not hold for browsing. Machine-learning verification runs in controlled environments, and results, not raw inputs, are what get recorded.",
+          "Validators process only separately approved scope data. Original document images and full OCR output never leave your device. Validators can process approved derived fields or separately consented biometric data in the protected verification flow; the chain records results and required references, not source document images.",
         ],
       },
       {
         heading: "What is public",
         paragraphs: [
-          "Like any blockchain, the VirtEngine chain has public, permanent records: wallet addresses, transaction history, and encrypted scope references. None of your personal details, documents or biometrics are ever public. Someone looking at the chain sees that an address holds verified scopes — not who you are.",
+          "Like any blockchain, the VirtEngine chain has public, potentially permanent records: wallet addresses, transaction history, and scope references/results. Original document images are never uploaded or written to the chain. Review each scope notice to understand what derived data or metadata may be recorded.",
         ],
       },
       {
@@ -529,7 +529,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: "Why a breach here is different",
         paragraphs: [
-          "There is no central vault of readable documents. Identity material is encrypted on your device before transmission; the network stores encrypted payloads and verification results. An attacker who compromised network storage would obtain ciphertext — unreadable without keys that are held separately and rotated. Services you shared with hold only verification answers, not documents.",
+          "There is no network copy of your original document images: they stay on your device. Only minimum derived data that you approve may be sent encrypted for VEID processing. Services receive only the claim or verification result you approve, not the source document image.",
         ],
       },
       {
@@ -599,7 +599,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
         callout: {
           tone: "warning",
-          text: "Some data has legally mandated retention: identity documents fall under 7-year know-your-customer rules, and biometric data may be retained up to 3 years after account closure to prevent fraudulent re-registration. These clocks run regardless of deletion requests; destruction is automatic when they expire.",
+          text: "Original document images are not received or retained by VirtEngine. Any derived data you approve follows the lifecycle in its scope notice. Biometric data has a separate retention schedule in the Biometric Data Addendum; on-chain records may have limits on deletion.",
         },
       },
       {

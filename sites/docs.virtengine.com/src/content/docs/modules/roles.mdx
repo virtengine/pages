@@ -9,6 +9,13 @@ before privileged operations execute. Auditor rights, administrative
 operations, and specialized marketplace capabilities all resolve through
 role checks.
 
+Role authority is not itself a privacy or due-process guarantee. In the
+current implementation, Genesis accounts and administrators can change an
+account's protocol-wide state. A suspension can be reversed by an authorized
+administrator, but a terminated account cannot transition back to active; the
+account-state record has no expiry or appeal field. These controls are separate
+from VEID verification and from a moderator's recorded fraud-report outcome.
+
 Centralizing authorization means access decisions are consistent,
 queryable, and governable — a role grant is a transaction, not a
 configuration file on someone's server.
@@ -111,6 +118,14 @@ The authorization gate a module runs before executing a privileged message
 Yes. Auditor status authorizes signing provider attributes, with grants
 that can carry identity conditions and MFA requirements. See the
 [x/audit module](/modules/audit/).
+
+### Can a fraud moderator permanently terminate an account?
+
+The current fraud-report resolution message records a resolution; it does not
+itself apply an account-state transition. Separate account-state changes are
+available to administrators and Genesis accounts. Termination is permanent in
+the current state machine, so it must not be described as an automatic result
+of a report or as an offer-specific restriction.
 
 :::note
 Message and query types are defined in `x/roles/types/` in the
