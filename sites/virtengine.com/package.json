@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "virtengine.com — home of the VirtEngine Protocol open-source project",
+  "description": "virtengine.com \u2014 home of the VirtEngine Protocol open-source project",
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/og.mjs && astro build",
@@ -15,7 +15,8 @@
     "astro": "astro",
     "check:schema": "node ./scripts/check-structured-data.mjs dist",
     "check:duplication": "node ./scripts/check-duplication.mjs dist",
-    "audit:seo": "node ./scripts/audit-seo-meta.mjs ."
+    "audit:seo": "node ./scripts/audit-seo-meta.mjs .",
+    "check:types": "node ../../scripts/check-types.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.0",
@@ -29,5 +30,9 @@
   },
   "engines": {
     "node": ">=20.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
   }
 }

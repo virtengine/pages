@@ -77,7 +77,7 @@ for (const file of walk(".")) {
   }
 }
 
-const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y"];
+const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y", "check:types"];
 const sitesDir = "sites";
 const siteNames = new Set();
 if (!existsSync(sitesDir)) {
