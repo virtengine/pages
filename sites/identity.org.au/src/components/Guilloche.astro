@@ -2,13 +2,23 @@
 /**
  * Build-time hypotrochoid rosette. Seeded so no two records share a ground.
  * Decorative. Never carries meaning.
+ *
+ * `ink` controls how the line work is laid down, the way a guilloche engine
+ * varies line density across a plate. 0 is an even ground. 1 concentrates the
+ * ink under the optical centre and lets it fall off to nothing at the corners,
+ * which is what a watermark needs: full strength where there is no type, and
+ * out of the way of the fields printed over it.
  */
 interface Props {
   seed?: string;
   class?: string;
+  /** 0 = even ground, 1 = full radial falloff from the focal point. */
+  ink?: number;
+  /** Focal point as SVG percentages of the viewBox. Defaults right of centre. */
+  focus?: string;
 }
 
-const { seed = "IDAU", class: className } = Astro.props;
+const { seed = "IDAU", class: className, ink = 0, focus = "70% 50%" } = Astro.props;
 
 function hash(value: string) {
   let h = 2166136261;
@@ -37,12 +47,32 @@ function ring(id: string, n: number) {
 }
 
 const rings = [0, 1, 2].map((n) => ring(seed, n));
+/** Only emitted when the falloff is actually in use, so plain grounds stay
+ *  free of ids and two components on one page cannot collide. */
+const uid = hash(`${seed}:${ink}`).toString(36);
+const fade = ink > 0;
 ---
 
 <svg class={className} viewBox="-80 -80 160 160" fill="none" aria-hidden="true" focusable="false">
   {
-    rings.map((points) => (
-      <polyline points={points} fill="none" stroke="currentColor" stroke-width="0.55" />
-    ))
+    fade && (
+      <defs>
+        <radialGradient id={`ink-${uid}`} cx={focus.split(" ")[0]} cy={focus.split(" ")[1]} r="66%">
+          <stop offset="0%" stop-color="#fff" />
+          <stop offset="45%" stop-color="#fff" stop-opacity={0.9 - 0.35 * ink} />
+          <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+        </radialGradient>
+        <mask id={`ink-mask-${uid}`}>
+          <rect x="-80" y="-80" width="160" height="160" fill={`url(#ink-${uid})`} />
+        </mask>
+      </defs>
+    )
   }
+  <g mask={fade ? `url(#ink-mask-${uid})` : undefined}>
+    {
+      rings.map((points) => (
+        <polyline points={points} fill="none" stroke="currentColor" stroke-width="0.55" />
+      ))
+    }
+  </g>
 </svg>
