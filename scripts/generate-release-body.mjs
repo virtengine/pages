@@ -104,28 +104,47 @@ for (const line of lines) {
   groups[type].push({ description, scope, author, hash });
 }
 
-// Print the release body
-const siteNames = [
-  "sites/virtengine.com",
-  "sites/docs.virtengine.com",
-  "sites/det.io",
-  "sites/identity.org.au",
+// Production deploy targets.
+//
+// The Cloudflare Pages project name is the deployment identity; the custom
+// domain is what users actually visit. Both are listed so the release body is
+// a complete rollback reference.
+//
+// These project names MUST match each site's wrangler.jsonc "name". They were
+// corrected in PR #6 — the older virtengine-com / det-io / identity-org-au
+// projects are dead (522 / NXDOMAIN), so never derive this map from stale docs.
+const sites = [
+  { dir: "virtengine.com", project: "virtengine-web", domain: "virtengine.com" },
+  { dir: "docs.virtengine.com", project: "docs-virtengine-com", domain: "docs.virtengine.com" },
+  { dir: "det.io", project: "det-web", domain: "det.io" },
+  { dir: "identity.org.au", project: "veid-network", domain: "identity.org.au" },
 ];
 
 function pluralize(n, s) {
   return n === 1 ? s : `${s}s`;
 }
 
-// Detect which sites changed
+// Detect which sites changed.
+//
+// With no previous tag, `git diff --name-only HEAD` compares HEAD against the
+// working tree (empty in CI), so the naive range would report zero affected
+// sites on the very first release. Fall back to treating every site as
+// affected, and say so, rather than emitting a misleading empty list.
+const firstRelease = previousTag === "";
 const changedSites = [];
-for (const site of siteNames) {
+
+for (const site of sites) {
+  if (firstRelease) {
+    changedSites.push(site.dir);
+    continue;
+  }
   try {
     const count = execSync(
-      `git diff --name-only ${range} -- "${site}" 2>/dev/null | wc -l`,
+      `git diff --name-only ${range} -- "sites/${site.dir}" 2>/dev/null | wc -l`,
       { encoding: "utf8" }
     ).trim();
     if (parseInt(count, 10) > 0) {
-      changedSites.push(site.replace("sites/", ""));
+      changedSites.push(site.dir);
     }
   } catch {
     // skip
@@ -145,17 +164,41 @@ linesBuf.push(
     ? `**Date:** ${changelogDate()}`
     : ""
 );
+const fullSha = sha || "";
 linesBuf.push(
   sha ? `**Commit:** \`${sha.slice(0, 10)}\`` : ""
 );
+linesBuf.push(`**Full commit SHA:** \`${fullSha}\``);
 linesBuf.push(`**Commits since last release:** ${totalCommits} ${pluralize(totalCommits, "commit")}`);
 linesBuf.push("");
 
 // What's in this release
 if (changedSites.length > 0) {
-  linesBuf.push(`**Affected sites:** ${changedSites.join(", ")}`);
+  const suffix = firstRelease ? " (first release — all sites)" : "";
+  linesBuf.push(`**Affected sites:** ${changedSites.join(", ")}${suffix}`);
   linesBuf.push("");
 }
+
+// DONE WHEN requires the release to carry the deploy URL alongside the commit,
+// so the snapshot can be found in Cloudflare and rolled back to. These are the
+// production targets; queue/watch URLs are per-deployment and not knowable here.
+linesBuf.push("## Production deploys");
+linesBuf.push("");
+linesBuf.push("| Site | Cloudflare Pages project | Production URL | Deploy preview |");
+linesBuf.push("| --- | --- | --- | --- |");
+for (const site of sites) {
+  linesBuf.push(
+    `| ${site.domain} | \`${site.project}\` | https://${site.domain} | https://${site.project}.pages.dev |`
+  );
+}
+linesBuf.push("");
+linesBuf.push(
+  `All four Pages projects deploy from this commit \`${fullSha}\` once it is on \`main\`.`
+);
+linesBuf.push(
+  "Site-specific deployments run through the existing Cloudflare Pages build, not this workflow."
+);
+linesBuf.push("");
 
 const groupLabels = {
   feat: "Features",
