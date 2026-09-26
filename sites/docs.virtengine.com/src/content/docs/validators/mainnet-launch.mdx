@@ -95,14 +95,12 @@ applies:
 3. Confirm the verification and support posture in `VERIFICATION.md` and
    `docs/COMPATIBILITY.md` matches your intended deployment.
 
-```sh
-# Installation paths exist for published tags:
-brew tap virtengine/tap
-brew install virtengine
-
-# or
-curl -sSfL https://raw.githubusercontent.com/virtengine/virtengine/main/install.sh | sh
-```
+As of 2026-09-26 there is **no release-based install path**: the repository has
+no published releases (the only release record is `0.1.0`, a draft from 2021),
+the Homebrew tap the site previously named (`virtengine/tap`) does not exist,
+and `install.sh` on `main` points at a different `OWNER`/`REPO`. Build from
+source — see [Building from Source](/developers/building-from-source/) — until
+a release is published.
 
 Operators should verify the target tag, network posture, and launch status
 before treating any release artifact as production-approved.
