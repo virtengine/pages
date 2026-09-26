@@ -165,6 +165,7 @@ export const NAV_GROUPS: NavGroup[] = [
         label: "Reference",
         description: "Lookup material",
         links: [
+          link("Definitions", "/definitions", "Cloud and marketplace terms, defined."),
           findLearn("anatomy-of-a-marketplace-listing"),
           findLearn("marketplace-glossary"),
           link("FAQ", "/faq", "Answers about the project and its design."),

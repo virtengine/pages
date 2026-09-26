@@ -46,9 +46,6 @@
   line-height: 1.55;
   color: var(--color-slate);
 }
-.media-figure--night .media-figure-caption {
-  color: var(--color-night-muted);
-}
 .media-credit {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -137,20 +134,20 @@
   box-shadow: 0 18px 40px rgba(14, 41, 31, 0.18);
 }
 
-/* night bands (inside .band-night): copy inverts, captions lighten */
-.band-night .media-band-copy h2,
-.media-band--night .media-band-copy h2 {
+/* Invert copy only when its containing section has a dark background.
+   The --night modifier describes the image treatment, not the copy surface. */
+.band-night .media-band-copy h2 {
   color: var(--color-night-text);
 }
-.band-night .media-band-lede,
-.media-band--night .media-band-lede {
+.band-night .media-band-lede {
+  color: var(--color-night-muted);
+}
+.band-night .media-band-caption,
+.band-night .media-figure-caption {
   color: var(--color-night-muted);
 }
 .media-band--night .media-band-media img {
   border-color: var(--color-night-line-strong);
-}
-.media-band--night .media-band-caption {
-  color: var(--color-night-muted);
 }
 
 /* ------------------------------------------------------------- media grid -- */

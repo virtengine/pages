@@ -75,6 +75,7 @@ export const MARKETPLACE_LEARN: LearnEntry[] = [
       },
     ],
     related: [
+      { label: "IaaS, PaaS & SaaS defined", href: "/definitions" },
       { label: "IaaS on VirtEngine", href: "/marketplace/iaas" },
       { label: "PaaS on VirtEngine", href: "/marketplace/paas" },
       { label: "SaaS on VirtEngine", href: "/marketplace/saas" },
@@ -308,6 +309,7 @@ export const MARKETPLACE_LEARN: LearnEntry[] = [
       },
     ],
     related: [
+      { label: "Cloud & marketplace definitions", href: "/definitions" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
       { label: "Marketplace overview", href: "/marketplace" },
       { label: "Module reference", href: "/modules" },

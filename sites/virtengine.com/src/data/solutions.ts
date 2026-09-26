@@ -243,6 +243,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       { step: "Compound reputation", detail: "Served leases accrue reviews and standing that win better-priced leases over time." },
     ],
     related: [
+      { label: "What is an open source cloud platform?", href: "/definitions/what-is-an-open-source-cloud-platform" },
       { label: "Provider overview", href: "/providers" },
       { label: "x/audit module", href: "/modules/audit" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
@@ -1134,6 +1135,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       { step: "Monitor usage and settlement", detail: "Metered records and settlement state are queryable chain data." },
     ],
     related: [
+      { label: "What is AI training?", href: "/definitions/what-is-ai-training" },
       { label: "GPU compute providers", href: "/solutions/gpu-compute-providers" },
       { label: "HPC on VirtEngine", href: "/learn/hpc-on-virtengine" },
       { label: "Confidential computing", href: "/learn/confidential-computing-on-virtengine" },

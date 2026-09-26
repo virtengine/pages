@@ -26,6 +26,9 @@
   --color-accent: #0f7a5c;
 
   /* structural navy (header rule, footer, mark) */
+  --color-vault: #17293a;
+  --color-verified: #0f7a5c;
+  --color-guilloche: #14558f;
   --color-navy: #17293a;
   --color-navy-panel: #22374c;
   --color-navy-hairline: #33485d;
@@ -44,6 +47,8 @@
   --color-focus: #9e5f00;
 
   --font-sans: "Public Sans", "Segoe UI", -apple-system, sans-serif;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   --radius-tile: 0.375rem;
 }
@@ -90,7 +95,19 @@
     text-wrap: balance;
     font-weight: 700;
   }
-  h1 { font-weight: 800; }
+  h1,
+  .section-service-head h2,
+  .closing-band h2,
+  .page-header-band h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+  }
+  h3, h4, button, .btn-primary, .btn-secondary, nav {
+    font-family: var(--font-sans);
+  }
 
   :focus-visible {
     outline: 3px solid var(--color-focus);
@@ -427,57 +444,15 @@
   border-bottom: 1px solid var(--color-hairline);
   background: var(--color-paper);
 }
-/* fingerprint-ridge motif drawn from the Ridgemark — ambient, brand-owned */
-.service-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-radial-gradient(
-    circle at 96% 12%,
-    transparent 0 30px,
-    rgb(23 41 58 / 0.05) 30px 31.5px
-  );
-  -webkit-mask-image: radial-gradient(44% 62% at 96% 16%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(44% 62% at 96% 16%, #000 0%, transparent 74%);
-}
-.service-hero--media::before {
-  background: repeating-radial-gradient(
-    circle at 84% 44%,
-    transparent 0 30px,
-    rgb(23 41 58 / 0.055) 30px 31.5px
-  );
-  -webkit-mask-image: radial-gradient(58% 78% at 84% 46%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(58% 78% at 84% 46%, #000 0%, transparent 72%);
-}
-
-/* the same ridge motif, quieter, on standard page headers */
+/* The ridge-arc motif was removed with the Amendment B sweep: guilloche
+   (Guilloche.astro) now carries the brand mark, and gradients are banned
+   outside .foil. See DESIGN.md "The Credential". */
 .page-header-band {
   position: relative;
   overflow: hidden;
 }
 .page-header-band .container-site {
   position: relative;
-}
-.page-header-band::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-radial-gradient(
-    circle at 97% 6%,
-    transparent 0 30px,
-    rgb(23 41 58 / 0.045) 30px 31.5px
-  );
-  -webkit-mask-image: radial-gradient(38% 82% at 97% 10%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(38% 82% at 97% 10%, #000 0%, transparent 74%);
-}
-@media (max-width: 63.99rem) {
-  .service-hero::before,
-  .service-hero--media::before,
-  .page-header-band::before {
-    display: none;
-  }
 }
 .service-hero-inner {
   position: relative;
@@ -599,19 +574,6 @@ a.fact-strip-value:hover {
   overflow: hidden;
   background: var(--color-navy);
   color: var(--color-navy-muted);
-}
-.closing-band::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-radial-gradient(
-    circle at 88% 30%,
-    transparent 0 34px,
-    rgb(255 255 255 / 0.05) 34px 35.5px
-  );
-  -webkit-mask-image: radial-gradient(60% 90% at 88% 34%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(60% 90% at 88% 34%, #000 0%, transparent 74%);
 }
 .closing-band-inner {
   position: relative;

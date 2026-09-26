@@ -1,5 +1,19 @@
 # DET.io Brand & Design Guide
 
+> **Amendment B (2026-09-25) is normative for surface and type.**
+> The page is a two-colour research record, not a sticker sheet and not a 3D
+> render. **The logo is brand, not a design surface:** `Lockup` renders
+> `public/images/detio-logo.png` exactly as it is and it is never redrawn,
+> flattened or replaced. Display is Instrument Serif (sentence case, weight
+> 400). Text is Archivo. Evidence is IBM Plex Mono.
+> Stock `#f1efe9`, ink `#14171c`, spot `#1a6f97`, annotation red `#b4341f`
+> for status only. One shadow: `3px 3px 0` on `.plate`. No lattice, grain,
+> marquees, gradient text, uppercase H1, or backdrop blur.
+> Sections below that specify cream paper, Space Grotesk, Inter, or JetBrains
+> Mono are historical.
+
+
+
 Design system for **det.io**, the institutional home of DETIO FOUNDATION LTD.
 This document is normative: logo construction, tokens, type, spacing, diagram
 style, and motion are defined here and implemented in `src/styles/global.css`
@@ -31,7 +45,8 @@ Sampled brand colors: sky blue `#5DBADB`, steel `#4C7094`, navy shadow
 a reconstructed vector; the flat 2D variant
 (`_agent-context/brand/detio/detio-logo-flat.png`) and the hand-built
 `CloudMark`/`Wordmark` geometry below remain for historical reference and
-single-color/favicon-style uses only.
+single-color/favicon-style uses only. **Amendment B: this asset is not part of
+the design sweep — the sweep changes what the page is made of, never the mark.**
 
 The design language is **institutional paper**: cool blue-tinted light
 surfaces, editorial double keylines, numbered folio sections, mono "evidence

@@ -36,7 +36,7 @@ const { foot, class: className } = Astro.props;
       ACQUISITION_PATHS.map((p) => (
         <article class={`buy-panel buy-panel--${p.id}`} data-for={`buy-${p.id}`}>
           <div class="buy-copy">
-            <p class="eyebrow">{p.tag} <span class="mk-flag">Illustrative example</span></p>
+            <p class="eyebrow">{p.tag}</p>
             <h3 class="mt-4 text-xl font-semibold">{p.title}</h3>
             <p class="mt-3 text-sm leading-relaxed text-slate">{p.body}</p>
             <ol class="buy-steps">

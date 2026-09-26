@@ -1,0 +1,1270 @@
+---
+/**
+ * BuyingMethods — homepage "Three ways in. One market rail out." section.
+ *
+ * One interactive market diagram with three persistent layers:
+ *   1. three entry routes (direct, bid, selector) converging on one MATCH node;
+ *   2. the provider record — the evidence every provider carries
+ *      (x/veid identity, x/provider attributes, x/audit signatures,
+ *      x/benchmark measurements, x/review reputation);
+ *   3. the shared rail: match → lease → usage → settlement → review, where the
+ *      lease-bound review feeds back into the provider record.
+ *
+ * Switching route only swaps the request + mechanism stage. Each mode is
+ * configuration for one engine: the script runs an explicit state sequence
+ * per mode (idle → … → matched → lease_created → usage_active → settled →
+ * reviewed, or a failure that stops before match). Provider requirements
+ * (audited, benchmark floor, rating floor) change which providers can win, so
+ * evidence visibly changes outcomes. Audit and benchmark constraints are
+ * protocol match filters; the rating floor is presented as a client-side
+ * screen over on-chain review data, matching how x/review is described.
+ *
+ * All providers, listings, bids and prices are sample data.
+ */
+
+interface Mode {
+  id: "direct" | "bid" | "selector";
+  n: string;
+  name: string;
+  hint: string;
+  mechanism: string;
+  claim: string;
+  best: string;
+  flow: string;
+  idle: string;
+}
+
+interface Provider {
+  name: string;
+  region: string;
+  hw: string;
+  tier: string;
+  audited: boolean;
+  auditor: string | null;
+  bench: number;
+  rating: number;
+  reviews: number;
+}
+
+const MODES: Mode[] = [
+  {
+    id: "direct",
+    n: "01",
+    name: "Direct order",
+    hint: "Choose the exact listing",
+    mechanism: "Fixed listing",
+    claim: "You choose the listing.",
+    best: "Best when you already know the provider or listing you want.",
+    flow: "choose listing",
+    idle: "Compare the two listings and their provider records, then choose one.",
+  },
+  {
+    id: "bid",
+    n: "02",
+    name: "Open bid",
+    hint: "Let providers compete",
+    mechanism: "Price discovery",
+    claim: "The market discovers the price.",
+    best: "Best when capacity is interchangeable and providers should compete on price.",
+    flow: "open to providers",
+    idle: "Set a maximum and provider requirements, then open bidding.",
+  },
+  {
+    id: "selector",
+    n: "03",
+    name: "Selector",
+    hint: "Describe the outcome",
+    mechanism: "Attribute matching",
+    claim: "The market chooses the match.",
+    best: "Best when requirements matter more than which provider fulfils them.",
+    flow: "submit requirements",
+    idle: "Describe what you need, then find eligible capacity.",
+  },
+];
+
+const PROVIDERS: Record<string, Provider> = {
+  A: { name: "Provider A", region: "ap-southeast", hw: "AMD EPYC 7763", tier: "III", audited: true, auditor: "Auditor North", bench: 1.05, rating: 4.6, reviews: 148 },
+  B: { name: "Provider B", region: "ap-southeast", hw: "AMD EPYC 9654", tier: "III", audited: true, auditor: "Auditor North", bench: 1.18, rating: 4.8, reviews: 212 },
+  C: { name: "Provider C", region: "ap-southeast", hw: "Intel Xeon 8480+", tier: "IV", audited: true, auditor: "Meridian Assurance", bench: 1.22, rating: 4.9, reviews: 96 },
+  D: { name: "Provider D", region: "ap-southeast", hw: "Undisclosed", tier: "III", audited: false, auditor: null, bench: 0.71, rating: 3.2, reviews: 41 },
+  E: { name: "Provider E", region: "eu-central", hw: "AMD EPYC 9554", tier: "III", audited: true, auditor: "Auditor North", bench: 1.1, rating: 4.7, reviews: 180 },
+  F: { name: "Provider F", region: "eu-central", hw: "Intel Xeon 8468", tier: "IV", audited: true, auditor: "Meridian Assurance", bench: 1.3, rating: 4.4, reviews: 57 },
+};
+
+// Same spec, same region: one verified provider, one cheaper unverified one.
+const LISTINGS = [
+  { id: "GP-0421", provider: "B", name: "General Purpose VM", spec: "4 vCPU · 16 GB", region: "ap-southeast", price: 0.061 },
+  { id: "GP-0388", provider: "D", name: "General Purpose VM", spec: "4 vCPU · 16 GB", region: "ap-southeast", price: 0.052 },
+];
+
+const BIDS = [
+  { provider: "A", price: 0.072 },
+  { provider: "B", price: 0.061 },
+  { provider: "C", price: 0.085 },
+  { provider: "D", price: 0.049 },
+];
+const BID_CAPS = [0.05, 0.07, 0.1];
+
+// 18 sample listings. ap-southeast → 11; VM 4+ vCPU → 6; evidence → 5; ≤ $0.07 → 3.
+const INVENTORY = [
+  { name: "General Purpose VM", provider: "B", kind: "vm", vcpu: 4, mem: 16, region: "ap-southeast", price: 0.061 },
+  { name: "General Purpose VM", provider: "A", kind: "vm", vcpu: 8, mem: 32, region: "ap-southeast", price: 0.066 },
+  { name: "Compute Optimised VM", provider: "C", kind: "vm", vcpu: 8, mem: 16, region: "ap-southeast", price: 0.069 },
+  { name: "Memory Optimised VM", provider: "A", kind: "vm", vcpu: 4, mem: 32, region: "ap-southeast", price: 0.078 },
+  { name: "Burstable VM", provider: "D", kind: "vm", vcpu: 2, mem: 4, region: "ap-southeast", price: 0.041 },
+  { name: "General Purpose VM", provider: "D", kind: "vm", vcpu: 4, mem: 16, region: "ap-southeast", price: 0.052 },
+  { name: "Dense Compute VM", provider: "C", kind: "vm", vcpu: 16, mem: 64, region: "ap-southeast", price: 0.092 },
+  { name: "GPU Instance", provider: "C", kind: "gpu", model: "A100", region: "ap-southeast", price: 2.1 },
+  { name: "GPU Instance", provider: "B", kind: "gpu", model: "L4", region: "ap-southeast", price: 0.74 },
+  { name: "Object Storage", provider: "D", kind: "storage", region: "ap-southeast", price: 0.021 },
+  { name: "Managed Postgres", provider: "A", kind: "paas", region: "ap-southeast", price: 0.19 },
+  { name: "General Purpose VM", provider: "E", kind: "vm", vcpu: 4, mem: 16, region: "eu-central", price: 0.058 },
+  { name: "General Purpose VM", provider: "E", kind: "vm", vcpu: 8, mem: 32, region: "eu-central", price: 0.064 },
+  { name: "Compute Optimised VM", provider: "F", kind: "vm", vcpu: 16, mem: 32, region: "eu-central", price: 0.081 },
+  { name: "Burstable VM", provider: "F", kind: "vm", vcpu: 2, mem: 4, region: "eu-central", price: 0.039 },
+  { name: "GPU Instance", provider: "F", kind: "gpu", model: "A100", region: "eu-central", price: 1.95 },
+  { name: "Block Storage", provider: "E", kind: "storage", region: "eu-central", price: 0.018 },
+  { name: "Managed Kubernetes", provider: "F", kind: "paas", region: "eu-central", price: 0.11 },
+];
+
+const SELECTOR_FIELDS = [
+  { param: "kind", label: "Workload", options: [["vm", "VM · 4+ vCPU"], ["gpu", "GPU · A100"]] },
+  { param: "region", label: "Region", options: [["ap-southeast", "ap-southeast"], ["eu-central", "eu-central"]] },
+  { param: "scap", label: "Price cap", options: [["0.07", "≤ $0.07"], ["0.1", "≤ $0.10"]] },
+];
+const REQS = [
+  { key: "audit", label: "Audited" },
+  { key: "bench", label: "Bench ≥ 1.0×" },
+  { key: "rating", label: "★ ≥ 4.5" },
+];
+const FILTERS = [
+  { id: "region", label: "region" },
+  { id: "compute", label: "compute" },
+  { id: "evidence", label: "provider evidence" },
+  { id: "cap", label: "price cap" },
+];
+
+// The provider record: what each module contributes and how a buyer uses it.
+const RECORD = [
+  { key: "veid", module: "veid", title: "Identity", desc: "Verified operator behind the listing", use: "Required to register" },
+  { key: "attr", module: "provider", title: "Attributes", desc: "Region, hardware, claimed tier", use: "Filtered at match" },
+  { key: "audit", module: "audit", title: "Audit", desc: "Auditor-signed claims, not self-assertion", use: "Orders can require it" },
+  { key: "bench", module: "benchmark", title: "Benchmark", desc: "Measured performance — proves hardware matches its class", use: "Filter or compare" },
+  { key: "rating", module: "review", title: "Reviews", desc: "Lease-bound reputation", use: "Screen & rank in your client" },
+];
+
+const RAIL = [
+  { id: "match", name: "Match", note: "awaiting a route" },
+  { id: "lease", name: "Lease", note: "escrow funded" },
+  { id: "usage", name: "Usage", note: "metered runtime" },
+  { id: "settle", name: "Settlement", note: "provider paid" },
+  { id: "review", name: "Review", note: "feeds the provider record" },
+];
+
+const COMPARE = [
+  ["Provider selected by", "Buyer", "Bid result", "Matching engine"],
+  ["Price", "Listed", "Competitive", "Eligible listing"],
+  ["Provider evidence", "You weigh it", "Requirements screen bids", "Requirements filter listings"],
+  ["Negotiation", "None", "Bid window", "None"],
+  ["Best for", "Known listing", "Commodity capacity", "Requirement-driven buying"],
+];
+
+const fmt = (p: number) => `$${p.toFixed(p < 1 ? 3 : 2)}`;
+const chips = (p: Provider) => [
+  { ev: "audit", text: p.audited ? `◆ Tier ${p.tier}` : "◇ Unaudited", weak: !p.audited },
+  { ev: "bench", text: `${p.bench >= 1 ? "▲" : "▽"} ${p.bench.toFixed(2)}×`, weak: p.bench < 1 },
+  { ev: "rating", text: `★ ${p.rating.toFixed(1)}`, weak: p.rating < 4.5 },
+];
+const first = MODES[0];
+const payload = JSON.stringify({ modes: MODES, providers: PROVIDERS, listings: LISTINGS, inventory: INVENTORY, record: RECORD }).replace(/</g, "\\u003c");
+---
+
+<div class="bm-head folio-head folio-head--split">
+  <div>
+    <div class="folio-coord"><span>Buying</span></div>
+    <h2>Three ways in. One market rail out.</h2>
+  </div>
+  <div>
+    <p>Choose a listing, invite providers to compete, or describe what you need. Every provider carries a verifiable record — identity, audited claims, measured benchmarks and lease-bound reviews — and every successful match becomes the same lease.</p>
+    <p class="bm-legend" aria-label="Lifecycle: order, match, lease, usage, settlement, review">Order <i>→</i> Match <i>→</i> Lease <i>→</i> Usage <i>→</i> Settlement <i>→</i> Review</p>
+  </div>
+</div>
+
+<div class="mr" data-market-rail data-mode="direct" data-state="idle">
+  <script type="application/json" set:html={payload} />
+
+  <svg class="mr-wires" aria-hidden="true">
+    {MODES.map((m) => <path class="mr-wire" data-wire={m.id} />)}
+  </svg>
+
+  <!-- entry routes -->
+  <div class="mr-routes">
+    <p class="mr-kicker">Entry route</p>
+    <div class="mr-route-list" role="group" aria-label="Buying method">
+      {
+        MODES.map((m) => (
+          <button type="button" class="mr-route" data-route={m.id} aria-pressed={m.id === first.id ? "true" : "false"}>
+            <span class="mr-route-name"><span class="mr-route-n">{m.n}</span> — {m.name}</span>
+            <span class="mr-route-hint">{m.hint}</span>
+            <i class="mr-route-live" aria-hidden="true"></i>
+          </button>
+        ))
+      }
+    </div>
+    <p class="mr-best" data-bind="best">{first.best}</p>
+  </div>
+
+  <!-- route-specific stage: request → mechanism -->
+  <div class="mr-stage">
+    <div class="mr-stage-head">
+      <span class="mr-mech" data-bind="mechanism">{first.mechanism}</span>
+      <span class="mr-claim" data-bind="claim">{first.claim}</span>
+      <span class="mr-sample">Interactive example · sample data</span>
+      <button type="button" class="mr-run" data-run>Run demo</button>
+    </div>
+
+    <div class="mr-stage-body">
+      <div class="mr-request">
+        <div data-panel="direct">
+          <p class="mr-label">Catalogue</p>
+          <div class="mr-listings">
+            {
+              LISTINGS.map((l, i) => {
+                const p = PROVIDERS[l.provider];
+                return (
+                  <button type="button" class="mr-card mr-listing" data-param="listing" data-value={l.id} data-provider={l.provider} aria-pressed={i === 0 ? "true" : "false"}>
+                    <span class="mr-label">{l.name}</span>
+                    <strong>{l.spec}</strong>
+                    <span class="mr-meta">{p.name}</span>
+                    <span class="evs">{chips(p).map((c) => <span class="ev" data-ev={c.ev} data-weak={String(c.weak)}>{c.text}</span>)}</span>
+                    <span class="mr-price">{fmt(l.price)} <small>/ vCPU-hr</small></span>
+                  </button>
+                );
+              })
+            }
+          </div>
+          <button type="button" class="mr-act" data-run>Choose listing</button>
+        </div>
+
+        <div data-panel="bid" hidden>
+          <div class="mr-card">
+            <p class="mr-label">Open order</p>
+            <dl class="mr-fields">
+              <div><dt>Compute</dt><dd>16 vCPU · ap-southeast</dd></div>
+              <div>
+                <dt>Maximum</dt>
+                <dd class="mr-seg" role="group" aria-label="Maximum price per vCPU-hour">
+                  {BID_CAPS.map((c) => (
+                    <button type="button" class="mr-seg-btn" data-param="cap" data-value={String(c)} aria-pressed={c === 0.07 ? "true" : "false"}>{fmt(c).replace(/0$/, "")}</button>
+                  ))}
+                </dd>
+              </div>
+              <div>
+                <dt>Provider</dt>
+                <dd class="mr-seg" role="group" aria-label="Provider requirements">
+                  {REQS.map((r) => <button type="button" class="mr-seg-btn mr-req" data-req={r.key} aria-pressed="true">{r.label}</button>)}
+                </dd>
+              </div>
+              <div><dt>Bid window</dt><dd>30 min</dd></div>
+            </dl>
+          </div>
+          <button type="button" class="mr-act" data-run>Open bidding</button>
+        </div>
+
+        <div data-panel="selector" hidden>
+          <div class="mr-card">
+            <p class="mr-label">What you need</p>
+            <dl class="mr-fields">
+              {
+                SELECTOR_FIELDS.map((f) => (
+                  <div>
+                    <dt>{f.label}</dt>
+                    <dd class="mr-seg" role="group" aria-label={f.label}>
+                      {f.options.map(([value, text], i) => (
+                        <button type="button" class="mr-seg-btn" data-param={f.param} data-value={value} aria-pressed={i === 0 ? "true" : "false"}>{text}</button>
+                      ))}
+                    </dd>
+                  </div>
+                ))
+              }
+              <div>
+                <dt>Provider</dt>
+                <dd class="mr-seg" role="group" aria-label="Provider requirements">
+                  {REQS.map((r) => <button type="button" class="mr-seg-btn mr-req" data-req={r.key} aria-pressed="true">{r.label}</button>)}
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <button type="button" class="mr-act" data-run>Find eligible capacity</button>
+        </div>
+      </div>
+
+      <div class="mr-flow" aria-hidden="true"><span data-bind="flow">{first.flow}</span></div>
+
+      <div class="mr-mechanism">
+        <div data-panel="direct">
+          <div class="mr-ghost" data-ghost>Order appears here</div>
+          <div class="mr-card mr-order" data-order>
+            <p class="mr-label">Order</p>
+            <strong>Listing #<span data-bind="order-id">{LISTINGS[0].id}</span></strong>
+            <span class="mr-meta">Exact provider + plan · identity-gated</span>
+          </div>
+          <p class="mr-annot" data-order-note>Availability confirmed · no bidding required</p>
+        </div>
+
+        <div data-panel="bid" hidden>
+          <div class="mr-ghost" data-ghost>Bids arrive here · 30 min window</div>
+          <ul class="mr-bids">
+            {
+              BIDS.map((b) => {
+                const p = PROVIDERS[b.provider];
+                return (
+                  <li class="mr-bid" data-price={b.price} data-provider={b.provider} tabindex="0">
+                    <span class="mr-bid-name">{p.name}</span>
+                    <span class="evs">{chips(p).map((c) => <span class="ev" data-ev={c.ev} data-weak={String(c.weak)}>{c.text}</span>)}</span>
+                    <b>{fmt(b.price)}</b>
+                    <em class="mr-bid-tag"></em>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+
+        <div data-panel="selector" hidden>
+          <div class="mr-filterbox">
+            <div class="mr-stack" data-level="0">
+              <i></i><i></i><i></i>
+              <span class="mr-stack-face"><b data-bind="count">{INVENTORY.length}</b> <small data-bind="count-label">listings</small></span>
+            </div>
+            <ol class="mr-filters">
+              {FILTERS.map((f) => (
+                <li class="mr-filter" data-filter={f.id}><span>{f.label}</span><b>—</b></li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div class="mr-result" data-result hidden>
+          <p class="mr-label" data-bind="result-label"></p>
+          <strong data-bind="result-title"></strong>
+          <span class="mr-meta" data-bind="result-meta"></span>
+          <p class="mr-warn" data-bind="result-warn"></p>
+        </div>
+      </div>
+    </div>
+
+    <p class="mr-status" role="status" data-bind="status">{first.idle}</p>
+  </div>
+
+  <!-- the provider record: the evidence buyers use to tell providers apart -->
+  <div class="mr-record">
+    <p class="mr-record-head">
+      <span>Provider record</span>
+      <strong data-bind="rec-name">{PROVIDERS[LISTINGS[0].provider].name}</strong>
+      <span class="mr-record-hint">Hover or focus any provider to inspect it</span>
+    </p>
+    <ol class="mr-cells">
+      {
+        RECORD.map((c) => (
+          <li class="mr-cell" data-cell={c.key}>
+            <a class="mr-cell-mod" href={`/modules/${c.module}`}>x/{c.module}</a>
+            <strong><i class="mr-mark" aria-hidden="true"></i>{c.title}</strong>
+            <span class="mr-cell-val" data-val>{c.desc}</span>
+            <small>{c.use}</small>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <!-- the shared rail: rendered once, identical for every route -->
+  <div class="mr-rail">
+    <p class="mr-rail-head"><span>Shared market rail</span><span>Identical after every match</span></p>
+    <ol class="mr-track">
+      {
+        RAIL.map((s) => (
+          <li class="mr-node" data-node={s.id}>
+            <span class="mr-dot" aria-hidden="true"></span>
+            <strong>{s.name}</strong>
+            <small data-note>{s.note}</small>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</div>
+
+<div class="bm-foot">
+  <details class="bm-compare">
+    <summary>Compare the three methods</summary>
+    <div class="bm-compare-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col"><span class="sr-only">Attribute</span></th>{MODES.map((m) => <th scope="col">{m.name}</th>)}</tr>
+        </thead>
+        <tbody>
+          {COMPARE.map(([k, ...v]) => (
+            <tr><th scope="row">{k}</th>{v.map((c) => <td>{c}</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+  <a class="btn-quiet bm-guide" href="/learn/three-ways-to-buy">Full buying guide <span aria-hidden="true">→</span></a>
+</div>
+
+<script>
+  type Step = [number, () => void];
+  type Provider = { name: string; region: string; hw: string; tier: string; audited: boolean; auditor: string | null; bench: number; rating: number; reviews: number };
+  type Listing = { name: string; provider: string; kind: string; vcpu?: number; mem?: number; model?: string; region: string; price: number };
+  type Check = "audit" | "bench" | "rating";
+
+  const root = document.querySelector<HTMLElement>("[data-market-rail]");
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const data = JSON.parse(root.querySelector("script[type='application/json']")!.textContent || "{}");
+    const P: Record<string, Provider> = data.providers;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(root.querySelectorAll<T>(s));
+    const bind = (key: string, text: string) => $$(`[data-bind="${key}"]`).forEach((el) => (el.textContent = text));
+    const fmt = (p: number) => `$${p.toFixed(p < 1 ? 3 : 2)}`;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    const params: Record<string, string> = { listing: data.listings[0].id, cap: "0.07", kind: "vm", region: "ap-southeast", scap: "0.07" };
+    const req: Record<Check, boolean> = { audit: true, bench: true, rating: true };
+    let mode = "direct";
+    let token = 0;
+    let running = false;
+    let finished = false;
+    let pinned: string | null = data.listings[0].provider;
+    let bumped: string | null = null;
+
+    const nodes = $$(".mr-node");
+    const matchNote = nodes[0].querySelector<HTMLElement>("[data-note]")!;
+    const result = $("[data-result]");
+    const modeOf = (id: string) => data.modes.find((m: { id: string }) => m.id === id);
+
+    // ---- provider evidence ----
+    const CHECKS: Record<Check, { ok: (p: Provider) => boolean; why: (p: Provider) => string; short: (p: Provider) => string }> = {
+      audit: { ok: (p) => p.audited, why: () => "no audit signature", short: () => "unaudited" },
+      bench: { ok: (p) => p.bench >= 1, why: (p) => `bench ${p.bench.toFixed(2)}× < 1.0×`, short: (p) => `${p.bench.toFixed(2)}× baseline` },
+      rating: { ok: (p) => p.rating >= 4.5, why: (p) => `★ ${p.rating.toFixed(1)} < 4.5`, short: (p) => `★ ${p.rating.toFixed(1)}` },
+    };
+    const keys = Object.keys(CHECKS) as Check[];
+    const failing = (p: Provider) => keys.filter((k) => req[k] && !CHECKS[k].ok(p));
+    const weakness = (p: Provider) => keys.filter((k) => !CHECKS[k].ok(p)).map((k) => CHECKS[k].short(p)).join(" · ");
+    const screened = () => mode !== "direct";
+
+    function cell(key: string, value: string, state: string) {
+      const el = $(`[data-cell="${key}"]`);
+      el.dataset.state = state;
+      el.querySelector("[data-val]")!.textContent = value;
+    }
+
+    /** Show one provider's record in the persistent strip (null = explain the fields). */
+    function inspect(id: string | null) {
+      const rec = $(".mr-record");
+      rec.dataset.inspect = id || "";
+      $('[data-cell="rating"]').classList.toggle("is-bump", Boolean(id) && id === bumped);
+      if (!id) {
+        bind("rec-name", "Every provider carries one");
+        data.record.forEach((c: { key: string; desc: string }) => cell(c.key, c.desc, ""));
+        return;
+      }
+      const p = P[id];
+      const flag = (k: Check) => (CHECKS[k].ok(p) ? "ok" : screened() && req[k] ? "fail" : "weak");
+      bind("rec-name", p.name);
+      cell("veid", "Identity verified", "ok");
+      cell("attr", `${p.hw} · ${p.region} · Tier ${p.tier} claimed`, "info");
+      cell("audit", p.audited ? `Tier ${p.tier} signed · ${p.auditor}` : "Unsigned — tier is self-claimed", flag("audit"));
+      cell("bench", `${p.bench.toFixed(2)}× network baseline`, flag("bench"));
+      cell("rating", `★ ${p.rating.toFixed(1)} · ${p.reviews + (bumped === id ? 1 : 0)} lease-bound reviews`, flag("rating"));
+    }
+
+    function state(name: string, msg?: string) {
+      root.dataset.state = name;
+      if (msg) bind("status", msg);
+    }
+
+    /** Light the rail up to (and including) stage n; n = 0 clears it. */
+    function reach(n: number) {
+      nodes.forEach((node, i) => node.classList.toggle("is-on", i < n));
+    }
+
+    function showResult(kind: "ok" | "fail", label: string, title: string, meta: string, warn = "", provider = "") {
+      result.hidden = false;
+      result.dataset.kind = kind;
+      result.dataset.warn = String(Boolean(warn));
+      if (provider) result.dataset.provider = provider;
+      else delete result.dataset.provider;
+      bind("result-label", label);
+      bind("result-title", title);
+      bind("result-meta", meta);
+      bind("result-warn", warn);
+    }
+
+    function matched(id: string, label: string, title: string, meta: string, note: string, warn: string, status: string) {
+      pinned = id;
+      inspect(id);
+      showResult("ok", label, title, meta, warn, id);
+      matchNote.textContent = note;
+      reach(1);
+      state("matched", status);
+    }
+
+    function fail(label: string, hint: string, status: string) {
+      showResult("fail", label, "Stopped before match", hint);
+      nodes[0].classList.add("is-fail");
+      matchNote.textContent = "no match";
+      state("no_match", status);
+    }
+
+    const lifecycle = (): Step[] => [
+      [450, () => { reach(2); state("lease_created", "Lease created · escrow funded"); }],
+      [450, () => { reach(3); state("usage_active", "Usage metered against the lease"); }],
+      [450, () => { reach(4); state("settled", "Escrow settles · provider paid"); }],
+      [450, () => {
+        reach(5);
+        bumped = pinned;
+        inspect(pinned);
+        state("reviewed", `Lease-bound review recorded · feeds ${pinned ? P[pinned].name : "the provider"}'s record`);
+      }],
+    ];
+
+    const plans: Record<string, () => Step[]> = {
+      direct() {
+        const l = data.listings.find((x: { id: string }) => x.id === params.listing);
+        const p = P[l.provider];
+        const weak = weakness(p);
+        return [
+          [300, () => state("listing_selected", `Listing ${l.id} selected · ${p.name}`)],
+          [400, () => { bind("order-id", l.id); state("order_created", "Order created · exact provider + plan"); }],
+          [350, () => matched(
+            l.provider,
+            "Matched",
+            `${l.name} · ${p.name}`,
+            `${fmt(l.price)} / vCPU-hr · listed price`,
+            `${fmt(l.price)} · listed price`,
+            weak ? `Direct orders aren't screened: ${weak}. The record is there for you to weigh.` : "",
+            "Match confirmed — no bidding required",
+          )],
+          ...lifecycle(),
+        ];
+      },
+
+      bid() {
+        const cap = Number(params.cap);
+        const rows = $$<HTMLElement>(".mr-bid");
+        const price = (r: HTMLElement) => Number(r.dataset.price);
+        const reasons = (r: HTMLElement) => {
+          const p = P[r.dataset.provider!];
+          return [...(price(r) > cap ? ["over cap"] : []), ...failing(p).map((k) => CHECKS[k].why(p))];
+        };
+        const win = rows.filter((r) => reasons(r).length === 0).sort((a, b) => price(a) - price(b))[0];
+
+        const steps: Step[] = [[300, () => state("order_open", `Order open · maximum ${fmt(cap)} / vCPU-hr`)]];
+        rows.forEach((row, i) => {
+          steps.push([i === 0 ? 300 : 240, () => {
+            row.classList.add("is-in");
+            state("receiving_bids", `Bid received · ${P[row.dataset.provider!].name} at ${fmt(price(row))}`);
+          }]);
+        });
+        steps.push([350, () => {
+          rows.forEach((row) => {
+            const why = reasons(row);
+            const p = P[row.dataset.provider!];
+            row.classList.toggle("is-out", why.length > 0);
+            row.classList.toggle("is-over", price(row) > cap);
+            row.querySelector(".mr-bid-tag")!.textContent = why.join(" · ");
+            row.querySelectorAll<HTMLElement>(".ev").forEach((ev) => ev.classList.toggle("is-fail", failing(p).includes(ev.dataset.ev as Check)));
+          });
+          state("evaluating_bids", "Bids checked against price cap and provider requirements");
+        }]);
+        if (!win) {
+          steps.push([300, () => fail("No eligible bids", "Raise the maximum price, relax a provider requirement, or widen the bid window.", "No bid meets the cap and provider requirements")]);
+          return steps;
+        }
+        const p = P[win.dataset.provider!];
+        const weak = weakness(p);
+        steps.push([300, () => {
+          win.classList.add("is-win");
+          win.querySelector(".mr-bid-tag")!.textContent = "lowest eligible offer";
+          matched(
+            win.dataset.provider!,
+            "Matched",
+            p.name,
+            `${fmt(price(win))} / vCPU-hr · winning bid`,
+            `${fmt(price(win))} · winning bid`,
+            weak ? `Won on price with weak evidence: ${weak}. Turn provider requirements on to screen it out.` : "",
+            `Lowest eligible offer wins · ${p.name}`,
+          );
+        }]);
+        return [...steps, ...lifecycle()];
+      },
+
+      selector() {
+        const cap = Number(params.scap);
+        const inv: Listing[] = data.inventory;
+        const byRegion = inv.filter((l) => l.region === params.region);
+        const byCompute = byRegion.filter((l) => (params.kind === "vm" ? l.kind === "vm" && (l.vcpu || 0) >= 4 : l.kind === "gpu" && l.model === "A100"));
+        const byEvidence = byCompute.filter((l) => failing(P[l.provider]).length === 0);
+        const byCap = byEvidence.filter((l) => l.price <= cap);
+        const best = [...byCap].sort((a, b) => a.price - b.price)[0];
+        const counts = [byRegion.length, byCompute.length, byEvidence.length, byCap.length];
+        const dropped = [...new Set(byCompute.filter((l) => !byEvidence.includes(l)).map((l) => P[l.provider].name))];
+        const notes = [
+          `Region · ${counts[0]} listings in ${params.region}`,
+          `Compute · ${counts[1]} match the workload`,
+          keys.some((k) => req[k])
+            ? dropped.length ? `Provider evidence · screened out ${dropped.join(", ")}` : "Provider evidence · every provider passes"
+            : "Provider evidence · no requirements set",
+          `Price cap · ${counts[3]} eligible at ${fmt(cap)} or less`,
+        ];
+        const filters = $$(".mr-filter");
+        const stack = $(".mr-stack");
+
+        const steps: Step[] = [[300, () => state("requirements_submitted", `Requirements submitted · ${inv.length} listings in market`)]];
+        filters.forEach((f, i) => {
+          steps.push([250, () => {
+            f.classList.add("is-on");
+            f.querySelector("b")!.textContent = String(counts[i]);
+            stack.dataset.level = String(i + 1);
+            bind("count", String(counts[i]));
+            bind("count-label", i === filters.length - 1 ? "eligible" : "listings");
+            state("filtering", notes[i]);
+          }]);
+        });
+        if (!best) {
+          steps.push([300, () => fail("No eligible listing", "Increase the price cap or change a requirement.", "No listing meets every requirement")]);
+          return steps;
+        }
+        const p = P[best.provider];
+        const spec = best.kind === "vm" ? `${best.vcpu} vCPU · ${best.mem} GB` : `${best.model}`;
+        const unit = best.kind === "vm" ? "vCPU-hr" : "GPU-hr";
+        const weak = weakness(p);
+        steps.push([300, () => state("ranking", `Ranking ${byCap.length} eligible listings by price`)]);
+        steps.push([300, () => matched(
+          best.provider,
+          "Best eligible match",
+          `${best.name} · ${p.name}`,
+          `${spec} · ${best.region} · ${fmt(best.price)} / ${unit}`,
+          `${fmt(best.price)} · best eligible`,
+          weak ? `Matched with weak evidence: ${weak}. Add provider requirements to exclude it.` : "",
+          "Engine selected the best eligible listing",
+        )]);
+        return [...steps, ...lifecycle()];
+      },
+    };
+
+    /** Return the active mode to its idle state and cancel any running demo. */
+    function reset() {
+      token++;
+      running = false;
+      finished = false;
+      bumped = null;
+      root.dataset.running = "false";
+      reach(0);
+      nodes[0].classList.remove("is-fail");
+      matchNote.textContent = "awaiting a route";
+      result.hidden = true;
+      $$(".mr-bid").forEach((r) => {
+        r.classList.remove("is-in", "is-out", "is-over", "is-win");
+        r.querySelector(".mr-bid-tag")!.textContent = "";
+      });
+      $$(".mr-bid .ev").forEach((ev) => ev.classList.remove("is-fail"));
+      $$(".mr-filter").forEach((f) => {
+        f.classList.remove("is-on");
+        f.querySelector("b")!.textContent = "—";
+      });
+      $(".mr-stack").dataset.level = "0";
+      bind("count", String(data.inventory.length));
+      bind("count-label", "listings");
+      bind("order-id", params.listing);
+      $(".mr-run").textContent = "Run demo";
+      pinned = mode === "direct" ? data.listings.find((l: { id: string }) => l.id === params.listing).provider : null;
+      inspect(pinned);
+      state("idle", modeOf(mode).idle);
+    }
+
+    async function run() {
+      reset();
+      const mine = token;
+      running = true;
+      root.dataset.running = "true";
+      for (const [ms, fn] of plans[mode]()) {
+        if (!reduce.matches) await wait(ms);
+        if (mine !== token) return;
+        fn();
+      }
+      running = false;
+      finished = true;
+      root.dataset.running = "false";
+      $(".mr-run").textContent = "Replay";
+    }
+
+    /** Inputs changed: a completed (or running) demo replays with the new input. */
+    function changed() {
+      if (finished || running) run();
+      else reset();
+    }
+
+    function setMode(id: string) {
+      if (id === mode) return;
+      mode = id;
+      const m = modeOf(id);
+      root.dataset.mode = id;
+      $$(".mr-route").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.route === id)));
+      $$("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== id));
+      bind("best", m.best);
+      bind("mechanism", m.mechanism);
+      bind("claim", m.claim);
+      bind("flow", m.flow);
+      reset();
+      drawWires();
+    }
+
+    root.addEventListener("click", (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>("button");
+      if (!t || !root.contains(t)) return;
+      if (t.dataset.route) {
+        setMode(t.dataset.route);
+        t.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduce.matches ? "auto" : "smooth" });
+      } else if (t.dataset.param) {
+        params[t.dataset.param] = t.dataset.value!;
+        $$(`[data-param="${t.dataset.param}"]`).forEach((b) => b.setAttribute("aria-pressed", String(b === t)));
+        changed();
+      } else if (t.dataset.req) {
+        const k = t.dataset.req as Check;
+        req[k] = !req[k];
+        $$(`[data-req="${k}"]`).forEach((b) => b.setAttribute("aria-pressed", String(req[k])));
+        changed();
+      } else if (t.hasAttribute("data-run")) run();
+    });
+
+    // Inspecting: any element carrying a provider shows that provider's record.
+    const inspectFrom = (e: Event) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>("[data-provider]");
+      inspect(el && root.contains(el) ? el.dataset.provider! : pinned);
+    };
+    root.addEventListener("pointerover", inspectFrom);
+    root.addEventListener("focusin", inspectFrom);
+    root.addEventListener("pointerleave", () => inspect(pinned));
+    root.addEventListener("focusout", (e) => {
+      if (!root.contains(e.relatedTarget as Node)) inspect(pinned);
+    });
+
+    // Convergence wires: each route button → the shared MATCH node.
+    const svg = $<SVGSVGElement>(".mr-wires");
+    function drawWires() {
+      if (getComputedStyle(svg).display === "none") return;
+      const box = root.getBoundingClientRect();
+      const dot = nodes[0].querySelector(".mr-dot")!.getBoundingClientRect();
+      const ex = dot.left - box.left;
+      const ey = dot.top + dot.height / 2 - box.top;
+      svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+      $$(".mr-route").forEach((b) => {
+        const r = b.getBoundingClientRect();
+        const sx = r.right - box.left;
+        const sy = r.top + r.height / 2 - box.top;
+        const mid = sx + (ex - sx) * 0.55;
+        const path = svg.querySelector<SVGPathElement>(`[data-wire="${b.dataset.route}"]`)!;
+        path.setAttribute("d", `M${sx} ${sy} C${mid} ${sy} ${mid} ${ey} ${ex} ${ey}`);
+        path.classList.toggle("is-active", b.dataset.route === mode);
+      });
+    }
+    new ResizeObserver(drawWires).observe(root);
+    drawWires();
+    inspect(pinned);
+  }
+</script>
+
+<style>
+  /* ---------- header ---------- */
+  .bm-legend {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    line-height: 1.5;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+  .bm-legend i { font-style: normal; color: var(--color-green-deep); padding-inline: 0.2rem; }
+
+  /* ---------- canvas ---------- */
+  .mr {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(13rem, 15rem) 4.5rem minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto;
+    grid-template-areas:
+      "routes . stage"
+      "routes . record"
+      "routes . rail";
+    padding: clamp(1.25rem, 2.4vw, 2rem);
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background-color: var(--color-paper);
+    background-image:
+      linear-gradient(rgba(20, 41, 31, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 41, 31, 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .mr-label, .mr-kicker, .mr-mech, .mr-sample, .mr-rail-head, .mr-record-head, .mr-status {
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .mr-label { margin: 0; font-size: 0.62rem; color: var(--color-faint); }
+  .mr-meta { display: block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-muted); }
+
+  /* wires */
+  .mr-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .mr-wire {
+    fill: none;
+    stroke: var(--color-line-strong);
+    stroke-width: 1;
+    opacity: 0.55;
+    transition: stroke 250ms ease, opacity 250ms ease;
+  }
+  .mr-wire.is-active { stroke: var(--color-green-deep); stroke-width: 1.5; opacity: 1; }
+  .mr[data-running="true"] .mr-wire.is-active { stroke-dasharray: 5 5; animation: mr-dash 0.9s linear infinite; }
+
+  /* routes */
+  .mr-routes { grid-area: routes; display: flex; flex-direction: column; justify-content: center; gap: 0.8rem; position: relative; z-index: 1; }
+  .mr-kicker { margin: 0; font-size: 0.62rem; color: var(--color-faint); }
+  .mr-route-list { display: grid; gap: 0.7rem; }
+  .mr-route {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+    padding: 0.9rem 2rem 0.9rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: var(--color-paper);
+    color: var(--color-muted);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 250ms ease, background-color 250ms ease, color 250ms ease;
+  }
+  .mr-route:hover { border-color: var(--color-line-strong); color: var(--color-ink); }
+  .mr-route:focus-visible { outline: 2px solid var(--color-green-deep); outline-offset: 2px; }
+  .mr-route-name { font-size: 0.95rem; font-weight: 600; }
+  .mr-route-n { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; }
+  .mr-route-hint { font-size: 0.82rem; line-height: 1.4; }
+  .mr-route[aria-pressed="true"] { border-color: var(--color-green-deep); background: var(--color-green-wash); color: var(--color-ink); }
+  .mr-route[aria-pressed="true"] .mr-route-n { color: var(--color-green-deep); }
+  .mr-route-live {
+    position: absolute;
+    top: 1.05rem;
+    right: 0.9rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .mr-route[aria-pressed="true"] .mr-route-live { background: var(--color-green-deep); animation: mr-ping 2.2s ease-out infinite; }
+  .mr-best { margin: 0.3rem 0 0; min-height: 3.6em; font-size: 0.86rem; line-height: 1.5; color: var(--color-slate); }
+
+  /* stage */
+  .mr-stage { grid-area: stage; display: grid; grid-template-rows: auto 1fr auto; gap: 1rem; position: relative; z-index: 1; min-width: 0; }
+  .mr-stage-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; }
+  .mr-mech {
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--color-green-deep);
+    border-radius: 999px;
+    font-size: 0.62rem;
+    color: var(--color-green-deep);
+  }
+  .mr-claim { font-size: 0.98rem; font-weight: 600; color: var(--color-ink); }
+  .mr-sample { margin-left: auto; font-size: 0.58rem; color: var(--color-faint); }
+  .mr-run, .mr-act {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 8px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+  }
+  .mr-run:hover, .mr-act:hover { background: var(--color-green-ink); }
+  .mr-run:focus-visible, .mr-act:focus-visible, .mr-seg-btn:focus-visible, .mr-listing:focus-visible, .mr-bid:focus-visible, .mr-cell-mod:focus-visible {
+    outline: 2px solid var(--color-green-deep);
+    outline-offset: 2px;
+  }
+  .mr-act { margin-top: 0.8rem; background: transparent; color: var(--color-ink); }
+  .mr-act:hover { background: var(--color-green-wash); }
+
+  .mr-stage-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 6rem minmax(0, 1.15fr);
+    align-items: center;
+    min-height: 21rem;
+  }
+  [data-panel]:not([hidden]) { animation: mr-in 250ms ease both; }
+
+  .mr-card {
+    display: block;
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 10px;
+    background: var(--color-paper);
+    text-align: left;
+  }
+  .mr-card strong { display: block; margin-top: 0.3rem; font-size: 0.95rem; color: var(--color-ink); }
+
+  /* evidence chips — shared by listings and bids */
+  .evs { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .ev {
+    padding: 0.1rem 0.35rem;
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    color: var(--color-green-deep);
+    transition: border-color 250ms ease, background-color 250ms ease;
+  }
+  .ev[data-weak="true"] { color: var(--color-amber); border-style: dashed; }
+  .ev.is-fail { border-color: var(--color-amber); border-style: solid; background: var(--color-amber-soft); }
+
+  /* direct: catalogue */
+  .mr-listings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin-top: 0.5rem; }
+  .mr-listing { cursor: pointer; color: inherit; font: inherit; transition: border-color 250ms ease, box-shadow 250ms ease; }
+  .mr-listing:hover { border-color: var(--color-ink); }
+  .mr-listing[aria-pressed="true"] { border-color: var(--color-green-deep); box-shadow: inset 0 0 0 1px var(--color-green-deep); }
+  .mr-listing .evs { margin-top: 0.55rem; }
+  .mr-price { display: block; margin-top: 0.55rem; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; color: var(--color-ink); }
+  .mr-price small { font-size: 0.66rem; color: var(--color-muted); }
+  .mr:not([data-state="idle"]) .mr-listing[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--color-green-deep), 0 10px 24px -18px rgba(20, 41, 31, 0.5); }
+
+  /* fields + segmented controls */
+  .mr-fields { display: grid; gap: 0.5rem; margin: 0.7rem 0 0; }
+  .mr-fields > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.35rem 0.8rem; padding-top: 0.5rem; border-top: 1px solid var(--color-line); }
+  .mr-fields dt { font-size: 0.78rem; color: var(--color-muted); }
+  .mr-fields dd { margin: 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-ink); }
+  .mr-seg { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; }
+  .mr-seg-btn {
+    padding: 0.22rem 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .mr-seg-btn:hover { border-color: var(--color-line-strong); color: var(--color-ink); }
+  .mr-seg-btn[aria-pressed="true"] { border-color: var(--color-green-deep); background: var(--color-green-wash); color: var(--color-green-ink); }
+  .mr-req[aria-pressed="false"] { text-decoration: line-through; }
+
+  /* request → mechanism connector */
+  .mr-flow { position: relative; height: 1px; margin-inline: 0.6rem; background: var(--color-line-strong); transition: background-color 250ms ease; }
+  .mr-flow::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    color: var(--color-line-strong);
+    transform: rotate(45deg);
+  }
+  .mr-flow span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: var(--color-faint);
+  }
+  .mr:not([data-state="idle"]) .mr-flow { background: var(--color-green-deep); }
+  .mr:not([data-state="idle"]) .mr-flow::after { color: var(--color-green-deep); }
+  .mr:not([data-state="idle"]) .mr-flow span { color: var(--color-green-deep); }
+
+  /* mechanism */
+  .mr-mechanism { display: grid; gap: 0.8rem; align-content: center; min-width: 0; }
+  .mr-ghost {
+    padding: 1.1rem;
+    border: 1px dashed var(--color-line-strong);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-align: center;
+    color: var(--color-faint);
+  }
+  .mr:not([data-state="idle"]) .mr-ghost { display: none; }
+
+  .mr-order, .mr-order + .mr-annot { opacity: 0; transform: translateX(-18px); transition: opacity 400ms ease, transform 400ms ease; }
+  .mr:not([data-state="idle"]):not([data-state="listing_selected"]) .mr-order,
+  .mr:not([data-state="idle"]):not([data-state="listing_selected"]) .mr-order + .mr-annot { opacity: 1; transform: none; }
+  .mr[data-state="idle"] .mr-order, .mr[data-state="idle"] .mr-order + .mr-annot { position: absolute; visibility: hidden; }
+  .mr-annot { margin: 0; font-family: var(--font-mono); font-size: 0.68rem; color: var(--color-green-deep); }
+
+  /* bid rows */
+  .mr-bids { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+  .mr[data-state="idle"] .mr-bids { display: none; }
+  .mr-bid {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.25rem 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    font-size: 0.84rem;
+    color: var(--color-ink);
+    opacity: 0;
+    transform: translateX(22px);
+    transition: opacity 300ms ease, transform 300ms ease, border-color 300ms ease, background-color 300ms ease;
+  }
+  .mr-bid:nth-child(2) { transform: translate(22px, -8px); }
+  .mr-bid:nth-child(3) { transform: translate(22px, 8px); }
+  .mr-bid:nth-child(4) { transform: translate(22px, 14px); }
+  .mr-bid.is-in { opacity: 1; transform: none; }
+  .mr-bid b { font-family: var(--font-mono); font-size: 0.8rem; }
+  .mr-bid-tag { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 0.62rem; font-style: normal; color: var(--color-amber); }
+  .mr-bid-tag:empty { display: none; }
+  .mr-bid.is-out .mr-bid-name { color: var(--color-faint); }
+  .mr-bid.is-over b { color: var(--color-faint); text-decoration: line-through; }
+  .mr-bid.is-win { border-color: var(--color-green-deep); background: var(--color-green-wash); box-shadow: 0 10px 24px -20px rgba(20, 41, 31, 0.6); }
+  .mr-bid.is-win .mr-bid-tag { color: var(--color-green-deep); }
+
+  /* selector: filter stack */
+  .mr-filterbox { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 1.1rem; align-items: center; }
+  .mr-stack { position: relative; height: 6.2rem; }
+  .mr-stack i, .mr-stack-face {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 10px;
+    background: var(--color-paper);
+    transition: transform 250ms ease, opacity 250ms ease;
+  }
+  .mr-stack i:nth-child(1) { transform: translate(12px, -12px); }
+  .mr-stack i:nth-child(2) { transform: translate(8px, -8px); }
+  .mr-stack i:nth-child(3) { transform: translate(4px, -4px); }
+  .mr-stack[data-level="1"] i:nth-child(1),
+  .mr-stack[data-level="2"] i:nth-child(-n + 2),
+  .mr-stack[data-level="3"] i,
+  .mr-stack[data-level="4"] i { opacity: 0; transform: none; }
+  .mr-stack-face { display: grid; place-content: center; text-align: center; }
+  .mr-stack-face b { font-family: var(--font-mono); font-size: 1.7rem; font-weight: 500; color: var(--color-ink); }
+  .mr-stack-face small { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+  .mr-stack[data-level="4"] .mr-stack-face { border-color: var(--color-green-deep); }
+  .mr[data-state="no_match"] .mr-stack-face { border-color: var(--color-amber); border-style: dashed; }
+  .mr-filters { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+  .mr-filter {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-faint);
+    transition: border-color 250ms ease, color 250ms ease, background-color 250ms ease;
+  }
+  .mr-filter span::before { content: "↓ "; }
+  .mr-filter.is-on { border-color: var(--color-green-deep); background: var(--color-green-wash); color: var(--color-green-ink); }
+
+  /* shared result object */
+  .mr-result { padding: 0.9rem 1rem; border: 1px solid var(--color-green-deep); border-radius: 10px; background: var(--color-paper); animation: mr-in 300ms ease both; }
+  .mr-result .mr-label { color: var(--color-green-deep); }
+  .mr-result strong { display: block; margin-top: 0.25rem; font-size: 0.95rem; color: var(--color-ink); }
+  .mr-warn { margin: 0.5rem 0 0; font-size: 0.78rem; line-height: 1.45; color: var(--color-amber); }
+  .mr-warn:empty { display: none; }
+  .mr-result[data-warn="true"] { border-color: var(--color-amber); }
+  .mr-result[data-warn="true"] .mr-label { color: var(--color-amber); }
+  .mr-result[data-kind="fail"] { border-color: var(--color-amber); border-style: dashed; }
+  .mr-result[data-kind="fail"] .mr-label { color: var(--color-amber); }
+  .mr-result[data-kind="fail"] .mr-meta { font-family: var(--font-sans); font-size: 0.8rem; color: var(--color-slate); }
+
+  .mr-status { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.62rem; color: var(--color-muted); }
+  .mr-status::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--color-line-strong); }
+  .mr[data-running="true"] .mr-status::before,
+  .mr[data-state="reviewed"] .mr-status::before { background: var(--color-green-deep); }
+  .mr[data-state="no_match"] .mr-status::before { background: var(--color-amber); }
+
+  /* ---------- provider record ---------- */
+  .mr-record { grid-area: record; position: relative; z-index: 1; margin-top: 1.3rem; }
+  .mr-record-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.8rem; margin: 0 0 0.6rem; font-size: 0.6rem; color: var(--color-faint); }
+  .mr-record-head span:first-child { color: var(--color-ink); }
+  .mr-record-head strong { font-weight: 500; color: var(--color-green-deep); }
+  .mr-record-hint { margin-left: auto; }
+  .mr-cells {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: var(--color-paper);
+  }
+  .mr-cell { display: grid; align-content: start; gap: 0.2rem; padding: 0.7rem 0.8rem; border-left: 1px solid var(--color-line); transition: background-color 250ms ease; }
+  .mr-cell:first-child { border-left: 0; }
+  .mr-cell-mod { justify-self: start; font-family: var(--font-mono); font-size: 0.6rem; color: var(--color-green-deep); text-decoration: none; }
+  .mr-cell-mod:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .mr-cell strong { display: flex; align-items: center; gap: 0.35rem; font-size: 0.86rem; color: var(--color-ink); }
+  .mr-cell-val { font-size: 0.76rem; line-height: 1.4; color: var(--color-slate); }
+  .mr-cell small { font-family: var(--font-mono); font-size: 0.6rem; color: var(--color-faint); }
+  .mr-mark { display: none; width: 0.9rem; font-style: normal; font-size: 0.72rem; line-height: 1; text-align: center; }
+  .mr-cell[data-state="ok"] .mr-mark { display: inline-block; color: var(--color-green-deep); }
+  .mr-cell[data-state="ok"] .mr-mark::before { content: "✓"; }
+  .mr-cell[data-state="weak"] .mr-mark,
+  .mr-cell[data-state="fail"] .mr-mark { display: inline-block; color: var(--color-amber); }
+  .mr-cell[data-state="weak"] .mr-mark::before { content: "!"; }
+  .mr-cell[data-state="fail"] .mr-mark::before { content: "×"; }
+  .mr-cell[data-state="weak"] .mr-cell-val,
+  .mr-cell[data-state="fail"] .mr-cell-val { color: var(--color-amber); }
+  .mr-cell[data-state="fail"] { background: var(--color-amber-soft); }
+  .mr-cell.is-bump { background: var(--color-green-wash); }
+
+  /* ---------- shared rail ---------- */
+  .mr-rail { grid-area: rail; position: relative; z-index: 1; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--color-line); }
+  .mr-rail-head { display: flex; justify-content: space-between; gap: 1rem; margin: 0 0 1rem; font-size: 0.6rem; color: var(--color-faint); }
+  .mr-rail-head span:first-child { color: var(--color-ink); }
+  .mr-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+  .mr-node { position: relative; padding: 1.6rem 1rem 0 0; }
+  .mr-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: 50%;
+    background: var(--color-paper);
+    transition: background-color 300ms ease, border-color 300ms ease;
+  }
+  .mr-node[data-node="match"] .mr-dot { width: 17px; height: 17px; top: -2px; left: -2px; box-shadow: 0 0 0 4px var(--color-paper); }
+  /* segment from this node's dot to the next node's dot */
+  .mr-node:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 13px;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(var(--color-green-deep), var(--color-green-deep)) no-repeat left / 0% 100%, var(--color-line-strong);
+    transition: background-size 450ms ease;
+  }
+  .mr-node:has(+ .mr-node.is-on)::after { background-size: 100% 100%, auto; }
+  .mr-node strong { display: block; font-size: 0.95rem; font-weight: 600; color: var(--color-muted); transition: color 300ms ease; }
+  .mr-node small { display: block; margin-top: 0.2rem; font-family: var(--font-mono); font-size: 0.68rem; color: var(--color-faint); }
+  .mr-node.is-on .mr-dot { border-color: var(--color-green-deep); background: var(--color-green-deep); }
+  .mr-node.is-on strong { color: var(--color-ink); }
+  .mr-node.is-on small { color: var(--color-green-deep); }
+  .mr-node.is-fail .mr-dot { border-color: var(--color-amber); background: var(--color-amber-soft); }
+  .mr-node.is-fail small { color: var(--color-amber); }
+  .mr-node[data-node="review"] .mr-dot { border-style: dashed; }
+  .mr-node[data-node="review"].is-on .mr-dot { border-style: solid; }
+
+  /* ---------- compare drawer ---------- */
+  .bm-foot { position: relative; margin-top: 1.2rem; }
+  .bm-compare summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .bm-compare summary::-webkit-details-marker { display: none; }
+  .bm-compare summary::before { content: "+"; font-family: var(--font-mono); color: var(--color-green-deep); }
+  .bm-compare[open] summary::before { content: "−"; }
+  .bm-guide { position: absolute; top: 0; right: 0; }
+  .bm-compare-scroll { overflow-x: auto; margin-top: 0.8rem; border-top: 1px solid var(--color-line); }
+  .bm-compare table { width: 100%; min-width: 36rem; border-collapse: collapse; font-size: 0.85rem; }
+  .bm-compare th, .bm-compare td { padding: 0.6rem 0.8rem 0.6rem 0; border-bottom: 1px solid var(--color-line); text-align: left; vertical-align: top; }
+  .bm-compare thead th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-faint); }
+  .bm-compare tbody th { font-weight: 500; color: var(--color-muted); }
+  .bm-compare td { color: var(--color-ink); }
+
+  @keyframes mr-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes mr-dash { to { stroke-dashoffset: -10; } }
+  @keyframes mr-ping {
+    0% { box-shadow: 0 0 0 0 rgba(35, 104, 63, 0.35); }
+    70%, 100% { box-shadow: 0 0 0 7px rgba(35, 104, 63, 0); }
+  }
+
+  /* ---------- tablet / mobile: vertical narrative ---------- */
+  @media (max-width: 1180px) {
+    .mr-stage-body { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
+    .mr-flow { width: 1px; height: 2.6rem; margin: 0 0 0 1.2rem; }
+    .mr-flow::after { top: auto; bottom: 0; right: -3px; transform: rotate(135deg); }
+    .mr-flow span { left: 0.9rem; right: auto; bottom: auto; top: 50%; transform: translateY(-50%); white-space: nowrap; }
+    .mr-cells { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mr-cell { border-left: 0; border-top: 1px solid var(--color-line); }
+    .mr-cell:nth-child(-n + 3) { border-top: 0; }
+    .mr-cell:not(:nth-child(3n + 1)) { border-left: 1px solid var(--color-line); }
+  }
+  @media (max-width: 860px) {
+    .mr {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto;
+      grid-template-areas: "routes" "stage" "record" "rail";
+    }
+    .mr-wires { display: none; }
+    .mr-routes { margin-bottom: 1.2rem; }
+    .mr-route-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; }
+    .mr-route { padding: 0.7rem 0.6rem; }
+    .mr-route-name { font-size: 0.82rem; }
+    .mr-route-hint { font-size: 0.72rem; }
+    .mr-route-live { top: 0.6rem; right: 0.55rem; }
+    .mr-best { min-height: 0; }
+    .mr-sample { order: 5; margin-left: 0; width: 100%; }
+    .mr-listings { grid-template-columns: minmax(0, 1fr); }
+    .mr-filterbox { grid-template-columns: 7rem minmax(0, 1fr); }
+    .mr-record-hint { display: none; }
+    .mr-cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mr-cell, .mr-cell:not(:nth-child(3n + 1)) { border-left: 0; border-top: 1px solid var(--color-line); }
+    .mr-cell:nth-child(-n + 3) { border-top: 1px solid var(--color-line); }
+    .mr-cell:nth-child(-n + 2) { border-top: 0; }
+    .mr-cell:nth-child(2n) { border-left: 1px solid var(--color-line); }
+
+    .mr-rail-head span:last-child { display: none; }
+    .mr-track { grid-template-columns: minmax(0, 1fr); }
+    .mr-node { padding: 0 0 1.3rem 1.9rem; }
+    .mr-node:last-child { padding-bottom: 0; }
+    .mr-node:not(:last-child)::after {
+      top: 13px;
+      left: 6px;
+      bottom: 0;
+      right: auto;
+      width: 1px;
+      height: auto;
+      background: linear-gradient(var(--color-green-deep), var(--color-green-deep)) no-repeat top / 100% 0%, var(--color-line-strong);
+    }
+    .mr-node:has(+ .mr-node.is-on)::after { background-size: 100% 100%, auto; }
+    .mr-node[data-node="match"]::after { top: 15px; }
+  }
+  @media (max-width: 520px) {
+    .mr-route-list { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(9.5rem, 1fr); overflow-x: auto; padding-bottom: 0.3rem; scrollbar-width: thin; scroll-snap-type: x proximity; }
+    .mr-route { scroll-snap-align: start; }
+    .mr-cells { grid-template-columns: minmax(0, 1fr); }
+    .mr-cell, .mr-cell:nth-child(2n) { border-left: 0; }
+    .mr-cell:nth-child(2) { border-top: 1px solid var(--color-line); }
+    .bm-guide { position: static; display: inline-flex; margin-top: 0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mr *, .mr *::before, .mr *::after { transition: none !important; animation: none !important; }
+  }
+</style>

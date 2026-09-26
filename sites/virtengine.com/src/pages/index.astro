@@ -2,25 +2,15 @@
 import Base from "@layouts/Base.astro";
 import FieldBackdrop from "@components/art/FieldBackdrop.astro";
 import SurfaceWash from "@components/art/SurfaceWash.astro";
-import BuyPaths from "@components/BuyPaths.astro";
 import InfrastructureMarket from "@components/marketplace/InfrastructureMarket.astro";
 import ServiceModelShowcase from "@components/marketplace/ServiceModelShowcase.astro";
-import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
-import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import BuyingMethods from "@components/marketplace/BuyingMethods.astro";
 import { CURRENT_POSTS } from "@data/blog";
 import { SITE, foundationDetails } from "@data/site";
 import { NETWORK_STATUS } from "@data/status";
-import { SERVICE_MODEL_BY_ID } from "@data/market";
 import { SUPPORT } from "@data/partners";
 
 const journalPair = CURRENT_POSTS.slice(0, 2);
-const featuredListing = SERVICE_MODEL_BY_ID.gpu.listing;
-
-const breadthTags = [
-  { label: "Managed Kubernetes", tag: "PaaS", href: "/marketplace/paas" },
-  { label: "GPU Batch Queue", tag: "HPC", href: "/marketplace/hpc" },
-  { label: "Analytics Workspace", tag: "SaaS", href: "/marketplace/saas" },
-];
 ---
 <Base
   title="Open Cloud & Services Marketplace | VirtEngine"
@@ -40,52 +30,32 @@ const breadthTags = [
             Explore the marketplace
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path></svg>
           </a>
-          <a class="btn-quiet btn-quiet--night" href="/learn/how-the-marketplace-works">How it works</a>
-          <a class="btn-quiet btn-quiet--night" href={SITE.github} target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
+          <a class="btn-outline-night" href="/providers">For providers <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="home-hero-status"><a href="/network"><i class="rail-lamp" aria-hidden="true"></i>{NETWORK_STATUS.posture}</a></p>
+        <p class="home-hero-how"><a href="/learn/how-the-marketplace-works">See how the marketplace works <span aria-hidden="true">→</span></a></p>
       </div>
-      <div class="home-hero-visual" aria-label="Illustrative market board">
-        <p class="home-board-label">Market board · illustrative listings</p>
-        <MarketplaceListingCard
-          serviceType={featuredListing.serviceType}
-          title={featuredListing.title}
-          provider={featuredListing.provider}
-          region={featuredListing.region}
-          specs={featuredListing.specs.slice(0, 3)}
-          components={featuredListing.components}
-          priceLabel={featuredListing.priceLabel}
-          badges={featuredListing.badges}
-          href="/marketplace/gpu-compute"
-          cta="Explore GPU & AI compute"
-          compact
-          titleTag="p"
-        />
-        <ul class="home-board-tags">
-          {breadthTags.map((item) => (
-            <li>
-              <a href={item.href}>{item.label} <span>{item.tag}</span></a>
-            </li>
-          ))}
-        </ul>
+      <div class="home-hero-visual">
+        <figure class="market-overview" aria-labelledby="market-overview-title">
+          <div class="market-overview-head"><span>MARKETPLACE OVERVIEW</span><span>01 — 04</span></div>
+          <figcaption id="market-overview-title">One clear path from need to verified service.</figcaption>
+          <div class="market-overview-flow" role="img" aria-label="A buyer sets requirements, VirtEngine records an escrow-backed lease, a provider delivers capacity, and verified usage settles payment.">
+            <div class="market-overview-node"><span class="market-overview-icon" aria-hidden="true">⌕</span><strong>Set requirements</strong><small>Choose, bid or match</small></div>
+            <span class="market-overview-connector" aria-hidden="true"></span>
+            <div class="market-overview-node market-overview-node--core"><span class="market-overview-icon" aria-hidden="true">◇</span><strong>Record a lease</strong><small>Identity · escrow · terms</small></div>
+            <span class="market-overview-connector" aria-hidden="true"></span>
+            <div class="market-overview-node"><span class="market-overview-icon" aria-hidden="true">↗</span><strong>Deliver service</strong><small>Provider fulfils the order</small></div>
+          </div>
+          <div class="market-overview-settlement"><span class="market-overview-check" aria-hidden="true">✓</span><p><strong>Verify usage</strong><span>Settlement follows recorded service.</span></p><span class="market-overview-arrow" aria-hidden="true">→</span></div>
+          <div class="market-overview-foot"><span>Protocol in development</span><a href="/learn/how-the-marketplace-works">Explore the flow <span aria-hidden="true">↗</span></a></div>
+        </figure>
       </div>
     </div>
   </section>
 
   <!-- 2 — THREE WAYS IN, ONE RAIL OUT -->
   <section class="home-buy" id="buy">
-    <SurfaceWash />
     <div class="container-site">
-      <div class="folio-head folio-head--split">
-        <div>
-          <div class="folio-coord"><span>Buying</span><span>Three paths · one rail</span></div>
-          <h2>Three ways in. One market rail out.</h2>
-        </div>
-        <p>Pick a listing, open demand to bids, or describe requirements. The match becomes a lease under escrow — the rail below never changes.</p>
-      </div>
-      <BuyPaths foot="Compact overview. Full comparison lives in the buying guide." />
-      <LifecycleRail class="mt-6" />
-      <p class="home-stages-link"><a class="btn-quiet" href="/learn/three-ways-to-buy">Explore all three buying methods <span aria-hidden="true">→</span></a></p>
+      <BuyingMethods />
     </div>
   </section>
 

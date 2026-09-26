@@ -44,7 +44,7 @@ const catId = (category: string) =>
   {
     FAQ_CATEGORIES.map((cat) => (
       <Section eyebrow="FAQ" title={cat} id={catId(cat)}>
-        <div class="max-w-3xl space-y-4">
+        <div class="space-y-4">
           {FAQ.filter((f) => f.category === cat).map((f) => (
             <details class="reveal clip-corner group rounded-card border border-line bg-panel">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">

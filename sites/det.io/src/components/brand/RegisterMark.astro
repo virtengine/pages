@@ -1,0 +1,24 @@
+---
+/**
+ * Printer's register mark. Section openers only. Decorative.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg
+  class={className}
+  width="16"
+  height="16"
+  viewBox="0 0 16 16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle cx="8" cy="8" r="3.25"></circle>
+  <path d="M8 1.25v3.1M8 11.65v3.1M1.25 8h3.1M11.65 8h3.1"></path>
+</svg>

@@ -5,11 +5,11 @@ import "../styles/navigation.css";
 const current=Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
 const active=(href:string)=>href.split('#')[0]===current;
 ---
-<div class="trust-strip"><div class="container-site"><span>Australian not-for-profit<span class="t-acn"> <span class="t-dot">●</span> ACN 699 651 771</span></span><span class="t-hide">Open research <span class="t-dot">●</span> Open software <span class="t-dot">●</span> Public benefit</span><a href="/transparency">Public record →</a></div></div>
+<div class="trust-strip"><div class="container-site"><span>Australian not-for-profit<span class="t-acn"> · ACN 699 651 771</span></span><span class="t-hide">Open research · Open software · Public benefit</span><a href="/transparency">Public record</a></div></div>
 <header class="site-header mega-header" id="site-navigation">
 <div class="container-site header-row">
 <a class="nav-brand" href="/" aria-label="DET.io Foundation home"><Lockup size={32} foundation /></a>
-<button id="nav-toggle" class="mega-mobile-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">Menu <span aria-hidden="true">☰</span></button>
+<button id="nav-toggle" class="mega-mobile-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">Menu <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
 <nav id="primary-navigation" class="mega-navigation" aria-label="Primary">
 {NAV_GROUPS.map(group=><details class="mega-group" data-nav-group={group.id}>
 <summary id={`trigger-${group.id}`} aria-controls={`menu-${group.id}`} class:list={["mega-trigger",{'contains-current':group.categories.some(c=>c.links.some(l=>active(l.href)))}]}>{group.label}<svg viewBox="0 0 12 12" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m2 4 4 4 4-4"/></svg></summary>
