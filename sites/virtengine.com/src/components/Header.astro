@@ -9,7 +9,7 @@ const active=(href:string)=>href.split('#')[0]===current;
 ---
 <header class="site-header mega-header" id="site-navigation">
 <div class="container-site header-row">
-<a class="nav-brand" href="/" aria-label="VirtEngine home"><Lockup size={52} /></a>
+<a class="nav-brand" href="/" aria-label="VirtEngine home"><Lockup size={44} onDark={current === "/"} /></a>
 <button id="nav-toggle" class="mega-mobile-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">Menu <span aria-hidden="true">☰</span></button>
 <nav id="primary-navigation" class="mega-navigation" aria-label="Primary">
 {NAV_GROUPS.map(group=><details class="mega-group" data-nav-group={group.id}>

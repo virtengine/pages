@@ -2716,9 +2716,6 @@ body.is-home .mega-mobile-toggle {
   color: var(--color-night-text);
   border-color: rgba(233, 240, 234, 0.28);
 }
-body.is-home .nav-brand .font-display {
-  color: var(--color-night-text);
-}
 body.is-home .mega-header:has(.mega-group[open]) {
   background: var(--color-night);
   border-bottom-color: var(--color-night-line);
