@@ -1,0 +1,246 @@
+---
+/**
+ * ServiceModelShowcase — "IaaS, PaaS, SaaS — and custom listings."
+ *
+ * Four illustrated catalogue cards (IaaS, PaaS, SaaS, custom) converging into
+ * a single catalogue, followed by the five-step order flow. All figures are
+ * original inline SVG drawn from the brand geometry; they are decorative and
+ * every card's meaning is carried by its heading, tagline and chips.
+ *
+ * Interactive: each card is a single stretched link to its dedicated
+ * /marketplace/* page; the rail steps link to the canonical guides; the
+ * "One catalogue" pill links to the marketplace service atlas.
+ */
+import { SERVICE_CATEGORIES, SERVICE_MODEL_BY_ID } from "@data/market";
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  introTitle?: string;
+  intro?: string;
+  footnote?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  class?: string;
+}
+
+const {
+  eyebrow = "Catalogue",
+  title = "IaaS, PaaS, SaaS — and custom listings.",
+  introTitle = "One catalogue. Multiple service models.",
+  intro = "Infrastructure, managed platforms, software plans and provider-defined services — all in one place, with the same ordering and settlement flow.",
+  footnote = "Infrastructure depth stays first-class: GPU fleets, HPC schedulers and confidential enclaves sit alongside general cloud.",
+  ctaHref = "/marketplace",
+  ctaLabel = "Explore the catalogue",
+  class: className,
+} = Astro.props;
+
+const figures: Record<string, string> = {
+  iaas: `<svg viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M72 46 a15 15 0 0 1 3-29.7 A19 19 0 0 1 110 9 a20 20 0 0 1 37 11 a14 14 0 0 1-5 26 Z" fill="#eef7ee" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M110 46 v10 M53 56 h56 M53 56 v6 M109 56 v6" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <rect x="29" y="62" width="48" height="70" rx="6" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <rect x="35" y="72" width="30" height="12" rx="2" fill="#14291f"/>
+    <rect x="35" y="90" width="30" height="12" rx="2" fill="#23683f"/>
+    <rect x="35" y="108" width="30" height="12" rx="2" fill="#14291f"/>
+    <circle cx="70.5" cy="78" r="1.8" fill="#60cc5d"/>
+    <circle cx="70.5" cy="96" r="1.8" fill="#7ddd7a"/>
+    <circle cx="70.5" cy="114" r="1.8" fill="#60cc5d"/>
+    <rect x="85" y="62" width="48" height="70" rx="6" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <rect x="91" y="72" width="30" height="12" rx="2" fill="#23683f"/>
+    <rect x="91" y="90" width="30" height="12" rx="2" fill="#14291f"/>
+    <rect x="91" y="108" width="30" height="12" rx="2" fill="#23683f"/>
+    <circle cx="126.5" cy="78" r="1.8" fill="#7ddd7a"/>
+    <circle cx="126.5" cy="96" r="1.8" fill="#60cc5d"/>
+    <circle cx="126.5" cy="114" r="1.8" fill="#7ddd7a"/>
+    <path d="M133 110 h8" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <rect x="141" y="84" width="50" height="48" rx="8" fill="#ffffff" stroke="#23683f" stroke-width="1.4"/>
+    <rect x="155" y="94" width="22" height="16" rx="3" fill="#d9efdc" stroke="#23683f" stroke-width="1.2"/>
+    <path d="M160 94v-3M166 94v-3M172 94v-3M160 110v3M166 110v3M172 110v3M155 99h-3M155 105h-3M177 99h3M177 105h3" stroke="#23683f" stroke-width="1.2"/>
+    <text x="166" y="126" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#23683f">GPU</text>
+  </svg>`,
+  paas: `<svg viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="52" y="62" width="64" height="26" rx="6" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <circle cx="61" cy="70" r="1.8" fill="#60cc5d"/>
+    <circle cx="67.5" cy="70" r="1.8" fill="#c6d0c8"/>
+    <circle cx="74" cy="70" r="1.8" fill="#c6d0c8"/>
+    <path d="M60 79h30M60 84h44" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="44" y="94" width="80" height="16" rx="5" fill="#eef7ee" stroke="#23683f" stroke-width="1.4"/>
+    <rect x="36" y="114" width="96" height="16" rx="5" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M176 24 l14 8 v16 l-14 8 -14-8 V32 z" fill="#ffffff" stroke="#23683f" stroke-width="1.5"/>
+    <path d="M178 31 l-7 11 h5 l-2 8 7-11 h-5 z" fill="#23683f"/>
+    <ellipse cx="176" cy="70" rx="20" ry="6.5" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M156 70v20c0 3.6 9 6.5 20 6.5s20-2.9 20-6.5V70" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M156 80c0 3.6 9 6.5 20 6.5s20-2.9 20-6.5" stroke="#c6d0c8" stroke-width="1.4"/>
+    <rect x="150" y="112" width="56" height="24" rx="6" fill="#ffffff" stroke="#23683f" stroke-width="1.4"/>
+    <text x="178" y="128" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#23683f">&lt;/&gt;</text>
+    <path d="M124 102 h22 c6 0 10-4 10-10 v-8" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <path d="M176 56 v7" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <path d="M176 97 v15" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+  </svg>`,
+  saas: `<svg viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="24" y="26" width="130" height="94" rx="8" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M24 42 H154" stroke="#c6d0c8" stroke-width="1.4"/>
+    <circle cx="34" cy="34" r="2" fill="#60cc5d"/>
+    <circle cx="41" cy="34" r="2" fill="#c6d0c8"/>
+    <circle cx="48" cy="34" r="2" fill="#c6d0c8"/>
+    <rect x="58" y="30" width="76" height="8" rx="4" fill="#eef7ee"/>
+    <rect x="32" y="50" width="30" height="62" rx="5" fill="#eef7ee"/>
+    <rect x="37" y="56" width="20" height="7" rx="3.5" fill="#23683f"/>
+    <path d="M37 71h20M37 81h16M37 91h18" stroke="#a9c2ae" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="70" y="50" width="36" height="26" rx="5" fill="#eef7ee" stroke="#23683f" stroke-width="1.2"/>
+    <path d="M76 60h16M76 66h10" stroke="#23683f" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="112" y="50" width="36" height="26" rx="5" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M118 60h24M118 66h14" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="70" y="84" width="78" height="7" rx="3.5" fill="#eef7ee"/>
+    <rect x="70" y="96" width="78" height="7" rx="3.5" fill="#eef7ee" opacity="0.6"/>
+    <rect x="164" y="38" width="44" height="62" rx="8" fill="#ffffff" stroke="#23683f" stroke-width="1.4"/>
+    <rect x="172" y="47" width="28" height="6" rx="3" fill="#23683f"/>
+    <path d="M172 62h28M172 71h18" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="174" cy="88" r="5" fill="#eef7ee" stroke="#23683f" stroke-width="1.2"/>
+    <circle cx="187" cy="88" r="5" fill="#eef7ee" stroke="#23683f" stroke-width="1.2"/>
+    <circle cx="200" cy="88" r="5" fill="#ffffff" stroke="#23683f" stroke-width="1.2" stroke-dasharray="2.4 2.4"/>
+    <path d="M154 64 h10" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <path d="M146 98 l16 7 -6.5 2 -2.5 6.5 z" fill="#14291f" stroke="#ffffff" stroke-width="1"/>
+  </svg>`,
+  custom: `<svg viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="24" y="32" width="104" height="88" rx="8" fill="#23683f"/>
+    <text x="38" y="56" font-family="ui-monospace, monospace" font-size="12" fill="#e9f0ea">&gt;_</text>
+    <rect x="38" y="66" width="70" height="5" rx="2.5" fill="#7ddd7a"/>
+    <rect x="38" y="78" width="54" height="5" rx="2.5" fill="#60cc5d" opacity="0.75"/>
+    <rect x="38" y="90" width="62" height="5" rx="2.5" fill="#60cc5d" opacity="0.5"/>
+    <path d="M39 106 l4 4 8-9" stroke="#7ddd7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="140" y="26" width="56" height="66" rx="8" fill="#ffffff" stroke="#c6d0c8" stroke-width="1.4"/>
+    <path d="M148 44 l3.5 3.5 6-7" stroke="#60cc5d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M164 45 h22" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M148 61 l3.5 3.5 6-7" stroke="#60cc5d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M164 62 h22" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M148 78 l3.5 3.5 6-7" stroke="#60cc5d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M164 79 h16" stroke="#c6d0c8" stroke-width="1.4" stroke-linecap="round"/>
+    <rect x="150" y="104" width="46" height="30" rx="8" fill="#eef7ee" stroke="#23683f" stroke-width="1.4"/>
+    <path d="M158 114 h30 M158 124 h30" stroke="#23683f" stroke-width="1.4" stroke-linecap="round"/>
+    <circle cx="168" cy="114" r="3.5" fill="#ffffff" stroke="#23683f" stroke-width="1.5"/>
+    <circle cx="178" cy="124" r="3.5" fill="#ffffff" stroke="#23683f" stroke-width="1.5"/>
+    <path d="M128 76 h12" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <path d="M168 92 v12" stroke="#c6d0c8" stroke-width="1.4" stroke-dasharray="4 4"/>
+  </svg>`,
+};
+
+const stepIcons: string[] = [
+  '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5h5a3 3 0 0 1 3 3V17a2 2 0 0 0-2-2H3z"/><path d="M17 4.5h-5a3 3 0 0 0-3 3V17a2 2 0 0 1 2-2h6z"/></svg>',
+  '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 3.5h2l1.6 8.2h8.6l1.8-6.2H5.4"/><circle cx="7" cy="15.5" r="1.3"/><circle cx="14" cy="15.5" r="1.3"/></svg>',
+  '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="2.6"/><path d="M10 2.5v2.2M10 15.3v2.2M2.5 10h2.2M15.3 10h2.2M4.7 4.7l1.6 1.6M13.7 13.7l1.6 1.6M15.3 4.7l-1.6 1.6M6.3 13.7l-1.6 1.6"/></svg>',
+  '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 16.5V11M10 16.5V5M16 16.5V8.5"/><path d="M2.5 16.5h15"/></svg>',
+  '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5h10v15l-2.5-1.6-2.5 1.6-2.5-1.6L5 17.5z"/><path d="M8 7.5h4M8 10.5h4"/></svg>',
+];
+
+const steps = [
+  { title: "Browse", note: "Explore the catalogue", href: "/marketplace#service-types" },
+  { title: "Order", note: "Self-serve or assisted", href: "/learn/three-ways-to-buy" },
+  { title: "Provision", note: "Automated delivery", href: "/learn/how-the-marketplace-works" },
+  { title: "Use", note: "Track usage and limits", href: "/learn/escrow-and-settlement-explained" },
+  { title: "Settle", note: "One consistent model", href: "/learn/escrow-and-settlement-explained" },
+];
+
+function categoryRoute(id: string): string {
+  return SERVICE_MODEL_BY_ID[id as keyof typeof SERVICE_MODEL_BY_ID]?.route ?? "/marketplace";
+}
+
+function categoryCta(id: string, label: string): string {
+  return SERVICE_MODEL_BY_ID[id as keyof typeof SERVICE_MODEL_BY_ID]?.cta ?? `Explore ${label}`;
+}
+---
+
+<section class:list={["sms", className]}>
+  <header class="sms-head">
+    <div>
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 class="sms-title">{title}</h2>
+    </div>
+    <div class="sms-intro">
+      <p class="sms-intro-title">{introTitle}</p>
+      <p>{intro}</p>
+    </div>
+  </header>
+
+  <div class="sms-grid">
+    {
+      SERVICE_CATEGORIES.map((category, index) => {
+        const route = categoryRoute(category.id);
+        const cta = categoryCta(category.id, category.label);
+        return (
+          <article class="sms-card">
+            <a
+              class="sms-card-cover"
+              href={route}
+              aria-label={`${category.name} — ${category.tagline} (${cta})`}
+            />
+            <div class="sms-card-top">
+              <span class="sms-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span class="sms-tag">{category.label}</span>
+            </div>
+            <div class="sms-figure" set:html={figures[category.id]} aria-hidden="true" />
+            <h3>{category.name}</h3>
+            <p class="sms-tagline">{category.tagline}</p>
+            <ul class="sms-chips">
+              {category.examples.slice(0, 4).map((example) => <li>{example}</li>)}
+            </ul>
+            <p class="sms-card-cta" aria-hidden="true">
+              {cta} <span>→</span>
+            </p>
+          </article>
+        );
+      })
+    }
+  </div>
+
+  <div class="sms-converge" aria-hidden="true">
+    <svg viewBox="0 0 1200 92" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <marker id="sms-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 Z" fill="#23683f"></path>
+        </marker>
+      </defs>
+      <path d="M150 2 C150 58 470 30 596 76" stroke="#c6d0c8" stroke-width="1.2" marker-end="url(#sms-arrow)"></path>
+      <path d="M450 2 C450 58 520 30 597 76" stroke="#c6d0c8" stroke-width="1.2" marker-end="url(#sms-arrow)"></path>
+      <path d="M750 2 C750 58 680 30 603 76" stroke="#c6d0c8" stroke-width="1.2" marker-end="url(#sms-arrow)"></path>
+      <path d="M1050 2 C1050 58 730 30 604 76" stroke="#c6d0c8" stroke-width="1.2" marker-end="url(#sms-arrow)"></path>
+    </svg>
+  </div>
+
+  <a class="sms-pill" href="/marketplace#service-types" aria-label="One catalogue — all service models, one marketplace. Explore service types.">
+    <span class="sms-pill-icon" aria-hidden="true">
+      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5h5a3 3 0 0 1 3 3V17a2 2 0 0 0-2-2H3z"/><path d="M17 4.5h-5a3 3 0 0 0-3 3V17a2 2 0 0 1 2-2h6z"/></svg>
+    </span>
+    <strong>One catalogue</strong>
+    <i aria-hidden="true" />
+    <span>All service models, one marketplace</span>
+  </a>
+
+  <ol class="sms-rail" aria-label="From catalogue to settlement">
+    {
+      steps.map((step, index) => (
+        <li class="sms-step">
+          <a class="sms-step-link" href={step.href} aria-label={`${step.title} — ${step.note}`}>
+            <span class="sms-step-icon" set:html={stepIcons[index]} aria-hidden="true" />
+            <span class="sms-step-copy">
+              <strong>{step.title}</strong>
+              <small>{step.note}</small>
+            </span>
+          </a>
+          {index < steps.length - 1 && <i class="sms-step-arrow" aria-hidden="true">→</i>}
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="sms-foot">
+    <p>
+      <span class="sms-foot-icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2.5 18 7l-8 4.5L2 7z"/><path d="M2.5 12 10 16.2 17.5 12"/></svg>
+      </span>
+      {footnote}
+    </p>
+    <a class="sms-cta" href={ctaHref}>{ctaLabel} <span aria-hidden="true">→</span></a>
+  </div>
+</section>

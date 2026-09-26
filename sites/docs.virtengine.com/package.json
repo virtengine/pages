@@ -3,15 +3,18 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Canonical documentation for the VirtEngine Protocol — docs.virtengine.com",
+  "description": "Canonical documentation for the VirtEngine Protocol \u2014 docs.virtengine.com",
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/build.mjs",
     "check:links": "node ../../scripts/check-links.mjs dist",
+    "check:a11y": "node ../../scripts/check-a11y.mjs dist",
     "deploy": "pnpm run build && wrangler pages deploy dist --project-name docs-virtengine-com --branch main",
     "preview": "astro preview",
     "astro": "astro",
-    "check:types": "astro check"
+    "check:schema": "node ./scripts/check-structured-data.mjs dist https://docs.virtengine.com",
+    "audit:seo": "node ./scripts/audit-seo-meta.mjs .",
+    "check:types": "node ../../scripts/check-types.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.0",

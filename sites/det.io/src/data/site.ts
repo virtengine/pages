@@ -2,7 +2,7 @@ export const SITE = {
   name: "DET.io Foundation",
   legalName: "DETIO FOUNDATION LTD",
   url: "https://det.io",
-  title: "DET.io Foundation — technology research and decentralized systems | det.io",
+  title: "DET.io Foundation — Open technology for public benefit",
   description:
     "DETIO FOUNDATION LTD is an Australian technology research organisation (ACN 699 651 771) developing decentralized systems. Its work includes the VirtEngine protocol, DSEMA multi-agent architecture, open-source Bosun agent orchestrator, and VEID (Verifiable Electronic Identity) program.",
   email: "hello@det.io",
@@ -23,6 +23,8 @@ export interface NavItem {
 
 export const NAV: NavItem[] = [
   { label: "Mission", href: "/mission" },
+  { label: "Our activities", href: "/activities" },
+  { label: "Get involved", href: "/participate" },
   { label: "Constitution", href: "/constitution" },
   { label: "Research", href: "/research" },
   { label: "Governance", href: "/governance" },

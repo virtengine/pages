@@ -5,6 +5,7 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import { SITE } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
 
 const artifacts = [
   {
@@ -27,9 +28,10 @@ const artifacts = [
 ---
 
 <Base
-  title="Network — VirtEngine"
-  description="VirtEngine network status: TestNet is planned for January 2027 and MainNet for March 2027, with separate validation and production approval gates."
+  title="Network Status: TestNet & MainNet Roadmap | VirtEngine"
+  description="VirtEngine network status: TestNet planned January 2027, MainNet March 2027. Follow validation gates, launch criteria and production approval."
   path="/network"
+  image="/media/network-earth-1440.webp"
   breadcrumbs={[
     { name: "Home", href: "/" },
     { name: "Network", href: "/network" },
@@ -39,27 +41,31 @@ const artifacts = [
     eyebrow="Network status"
     title="A two-stage path to production"
     lede="This page reports exactly what the repository records — no more, no less. The repository is the source of truth for network status."
+    media="network-earth"
+    mediaCaption="Operations, watched closely before launch."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Network", href: "/network" },
     ]}
-  />
+  >
+  </PageHero>
 
   <Section eyebrow="Launch posture" title="TestNet in January; MainNet in March">
+    <p class="text-sm text-muted">Last updated {NETWORK_STATUS.lastUpdated}. All dates and statuses come from this page — other pages link here.</p>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <div class="reveal rounded-card border border-green-soft bg-green-wash p-6">
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">Current status</p>
         <p class="mt-2 font-display text-3xl text-green-deep">Preparing</p>
-        <p class="mt-1.5 font-mono text-xs text-muted">not live</p>
+        <p class="mt-1.5 font-mono text-xs text-muted">{NETWORK_STATUS.short}</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">{NETWORK_STATUS.testnet.label}</p>
+        <p class="mt-2 font-display text-2xl text-ink">{NETWORK_STATUS.testnet.timing.replace("Planned ", "")}</p>
         <p class="mt-1.5 font-mono text-xs text-muted">public pre-production</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">March 2027</p>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">{NETWORK_STATUS.mainnet.label}</p>
+        <p class="mt-2 font-display text-2xl text-ink">{NETWORK_STATUS.mainnet.timing.replace("Planned ", "").replace(", subject to approval", "")}</p>
         <p class="mt-1.5 font-mono text-xs text-muted">production, after approval</p>
       </div>
       <div class="reveal rounded-card border border-line bg-panel p-6">
@@ -125,7 +131,7 @@ const artifacts = [
         rate, unbonding period, approved clients — are defined by the protocol's default
         parameters and governed on-chain thereafter. The defaults are documented on the
         <a href="/protocol">protocol page</a> and in
-        <a href={SITE.docs}>the documentation</a>; live values on a running network
+        <a href={SITE.docs} target="_blank" rel="noopener">the documentation</a>; live values on a running network
         always take precedence and are queryable from any node.
       </p>
     </div>

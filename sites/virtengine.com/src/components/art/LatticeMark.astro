@@ -1,0 +1,45 @@
+---
+/**
+ * LatticeMark — the brand's nested-V geometry as a large ambient mark.
+ *
+ * Drawn as nested downward-V outlines (the brand direction: down = deploy /
+ * settle) with a dashed orbit and vertex nodes. Rendered in currentColor so it
+ * can tint any surface. Decorative only.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+/* nested inverted-V outlines, apexes on the vertical centreline */
+const vs = [
+  { y0: 132, half: 272, stroke: 1.6, opacity: 0.9 },
+  { y0: 228, half: 180, stroke: 1.2, opacity: 0.55 },
+  { y0: 320, half: 92, stroke: 1, opacity: 0.32 },
+].map((v) => ({
+  ...v,
+  apex: { x: 400, y: +(v.y0 + v.half * 1.732).toFixed(1) },
+}));
+---
+
+<svg viewBox="0 0 800 800" class:list={["h-auto w-full", className]} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- orbit -->
+  <circle cx="400" cy="400" r="352" stroke="currentColor" stroke-width="1" stroke-dasharray="2 14" opacity="0.5" />
+  <circle cx="400" cy="400" r="248" stroke="currentColor" stroke-width="1" opacity="0.3" />
+
+  <!-- nested V lattice, apexes down -->
+  {
+    vs.map((v) => (
+      <g stroke="currentColor" stroke-width={v.stroke} opacity={v.opacity} stroke-linejoin="round">
+        <path d={`M${400 - v.half},${v.y0} H${400 + v.half}`} />
+        <path d={`M${400 - v.half},${v.y0} L${v.apex.x},${v.apex.y}`} />
+        <path d={`M${400 + v.half},${v.y0} L${v.apex.x},${v.apex.y}`} />
+      </g>
+    ))
+  }
+
+  <!-- vertex nodes on the outer V -->
+  <circle cx="128" cy="132" r="4.5" fill="currentColor" opacity="0.85" />
+  <circle cx="672" cy="132" r="4.5" fill="currentColor" opacity="0.85" />
+  <circle cx="400" cy="603" r="4.5" fill="currentColor" opacity="0.85" />
+</svg>

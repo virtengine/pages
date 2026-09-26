@@ -1,0 +1,166 @@
+---
+/**
+ * IdentityPrism — the VEID hero artwork (vertical edition).
+ *
+ * Reads top to bottom in three movements: what happens on the device, the
+ * boundary raw identity never crosses, what the validator network commits, and
+ * the proofs a verifier receives. Deliberately sparse — eight annotations,
+ * all sized to read at the width the plate actually renders.
+ * Decorative — the surrounding PlateFigure carries the text alternative.
+ */
+import VImage from "@components/brand/VImage.astro";
+
+const HX = 300; // validator ring centre
+const HY = 406;
+const HR = 62;
+const rad = Math.PI / 180;
+const pt = (r: number, deg: number) => ({
+  x: +(HX + r * Math.cos(deg * rad)).toFixed(1),
+  y: +(HY + r * Math.sin(deg * rad)).toFixed(1),
+});
+const hexPts = [270, 330, 30, 90, 150, 210].map((a) => pt(HR, a));
+const hexPath = hexPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+
+const chips = [
+  { x: 48, title: "score ≥ T", note: "threshold proved" },
+  { x: 268, title: "attribute", note: "age · residency" },
+  { x: 488, title: "gating", note: "marketplace access" },
+];
+---
+
+<svg viewBox="0 0 720 640" class="h-auto w-full" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="ip-ring-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.26" />
+      <stop offset="100%" stop-color="#7ddd7a" stop-opacity="0" />
+    </radialGradient>
+    <marker id="ip-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#60cc5d" />
+    </marker>
+  </defs>
+
+  <!-- ============ 1 · on device ============ -->
+  <text x="48" y="42" class="art-mono-sm" fill="var(--color-night-muted)">01 — on device</text>
+
+  <rect x="48" y="58" width="104" height="210" rx="15" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+  <rect x="56" y="66" width="88" height="194" rx="10" fill="var(--color-night-deep)" stroke="var(--color-night-line)" />
+  <rect x="64" y="78" width="72" height="42" rx="5" fill="none" stroke="var(--color-night-line-strong)" />
+  <line x1="72" y1="92" x2="112" y2="92" stroke="var(--color-night-line-strong)" stroke-width="3" />
+  <line x1="72" y1="102" x2="100" y2="102" stroke="var(--color-night-line-strong)" stroke-width="3" />
+  <circle cx="100" cy="150" r="15" stroke="var(--color-night-line-strong)" />
+  <path d="M92,150 a8,8 0 0 1 16,0" stroke="var(--color-green)" stroke-width="1.4" />
+  {
+    [0, 1, 2].map((i) => (
+      <circle cx={80 + i * 22} cy="186" r="3.6" fill={i < 2 ? "var(--color-green)" : "var(--color-night-line-strong)"} />
+    ))
+  }
+  <rect x="64" y="208" width="72" height="26" rx="6" fill="var(--color-green)" fill-opacity="0.16" stroke="var(--color-green)" stroke-opacity="0.55" />
+  <text x="100" y="225" text-anchor="middle" class="art-mono-xs" fill="var(--color-green)">sealed</text>
+
+  <!-- the three on-device steps -->
+  <g>
+    {
+      ["capture", "liveness", "hardware attestation"].map((step, i) => (
+        <g>
+          <path
+            d={`M176,${88 + i * 38} l5,5 9,-10`}
+            stroke="var(--color-green)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <text x="200" y={94 + i * 38} font-family="var(--font-sans)" font-size="15" fill="var(--color-night-text)">
+            {step}
+          </text>
+        </g>
+      ))
+    }
+    <text x="176" y="222" class="art-mono-xs" fill="var(--color-night-muted)">the wallet does all of this on the handset</text>
+  </g>
+
+  <!-- ============ the boundary ============ -->
+  <line x1="48" y1="310" x2="672" y2="310" stroke="var(--color-night-line-strong)" stroke-width="1" stroke-dasharray="3 8" />
+  <rect x="196" y="298" width="328" height="24" fill="var(--color-night)" />
+  <text x="360" y="315" text-anchor="middle" class="art-mono-sm" fill="var(--color-green)">
+    raw identity never crosses this line
+  </text>
+
+  <!-- ============ 2 · on chain ============ -->
+  <text x="48" y="358" class="art-mono-sm" fill="var(--color-night-muted)">02 — on chain</text>
+
+  <!-- the sealed scope: a document with a lock, crossing to the network -->
+  <g transform="translate(48,376)">
+    <rect width="64" height="60" rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" stroke-width="1.4" />
+    <line x1="14" y1="20" x2="50" y2="20" stroke="var(--color-night-line-strong)" stroke-width="3" />
+    <line x1="14" y1="32" x2="42" y2="32" stroke="var(--color-night-line-strong)" stroke-width="3" />
+    <line x1="14" y1="44" x2="34" y2="44" stroke="var(--color-night-line-strong)" stroke-width="3" />
+    <circle cx="64" cy="60" r="17" fill="var(--color-night-deep)" stroke="var(--color-green)" stroke-width="1.6" />
+    <path d="M59,60 v-3.4 a5,5 0 0 1 10,0 V60" stroke="var(--color-green)" stroke-width="1.8" />
+    <rect x="56.5" y="60" width="15" height="11" rx="2.4" fill="var(--color-green)" fill-opacity="0.9" />
+  </g>
+  <text x="80" y="474" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">sealed scope</text>
+
+  <path class="dash-march" d="M142,406 H 224" stroke="var(--color-green)" stroke-width="1.5" marker-end="url(#ip-arrow)" />
+
+  <circle cx={HX} cy={HY} r="84" fill="url(#ip-ring-glow)" />
+  <path d={hexPath} stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.85" />
+  {
+    hexPts.map((p, i) => (
+      <circle
+        cx={p.x}
+        cy={p.y}
+        r="4.5"
+        fill="var(--color-night-panel)"
+        stroke="var(--color-green-bright)"
+        stroke-width="1.4"
+        class="breathe"
+        style={`animation-delay:-${i * 0.8}s`}
+      />
+    ))
+  }
+  <circle cx={HX} cy={HY} r="30" stroke="var(--color-green)" stroke-width="1.3" class="pulse-ring" />
+  <VImage x={HX - 23} y={HY - 22} h={44} />
+
+  <g>
+    {
+      ["validators decrypt the scope", "shared models score identity", "consensus commits the result"].map((line, i) => (
+        <g>
+          <path d={`M376,${324 + i * 30} h11 l-5.5,9 Z`} fill="var(--color-green)" fill-opacity="0.85" />
+          <text x="400" y={332 + i * 30} font-family="var(--font-sans)" font-size="15" fill="var(--color-night-muted)">
+            {line}
+          </text>
+        </g>
+      ))
+    }
+  </g>
+
+  <!-- ============ 3 · proofs ============ -->
+  <path class="dash-march" d="M300,468 V 506" stroke="var(--color-green)" stroke-width="1.5" marker-end="url(#ip-arrow)" />
+  <text x="48" y="530" class="art-mono-sm" fill="var(--color-night-muted)">03 — proofs, what a verifier receives</text>
+
+  {
+    chips.map((c) => (
+      <g transform={`translate(${c.x},552)`}>
+        <rect width="196" height="62" rx="10" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="18" y="27" class="art-mono-sm" fill="var(--color-green)">
+          {c.title}
+        </text>
+        <text x="18" y="46" class="art-mono-xs" fill="var(--color-night-muted)">
+          {c.note}
+        </text>
+        <path d="M170,24 l4,4 l7,-8" stroke="var(--color-green)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  /* Tuned for the plate's rendered width (≈508px from a 720 viewBox). */
+  .art-mono-sm {
+    font-size: 17px;
+  }
+  .art-mono-xs {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+</style>

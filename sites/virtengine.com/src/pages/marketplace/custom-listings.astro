@@ -1,0 +1,237 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "Custom Listings & Managed Services | VirtEngine";
+const description =
+  "Provider-defined offerings on VirtEngine: consultancy hours, support desks, implementation packages, scripted services, remote catalogue items and managed services with order forms and approvals.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "Custom listings", href: "/marketplace/custom-listings" },
+];
+
+const examples = [
+  "consultancy hours",
+  "support desk",
+  "implementation package",
+  "training credit",
+  "data-processing job",
+  "software licence",
+  "remote catalogue item",
+  "scripted automation",
+  "specialised managed service",
+];
+
+const anatomy = [
+  ["Title", "the product name the provider defines"],
+  ["Category", "where the offering sits — custom, or a category the provider maps it to"],
+  ["Provider", "the organisation that fulfils and supports it"],
+  ["Description", "what is delivered, in the provider's own terms"],
+  ["Plan", "the purchasable variant and its pricing basis"],
+  ["Components", "how the engagement is measured or billed"],
+  ["Order fields", "extra information collected before fulfilment"],
+  ["Limits", "caps on components or scope"],
+  ["Approval rules", "whether a provider sign-off precedes fulfilment"],
+  ["Backend", "the script, plugin, entitlement system or team that delivers"],
+  ["Lifecycle actions", "what can be changed, paused or ended"],
+  ["Usage model", "metered, fixed or mixed"],
+];
+
+const patterns = [
+  {
+    title: "Automated",
+    flow: ["Order", "script / plugin", "service created"],
+    body: "The order triggers provider automation and the service appears without manual intervention.",
+  },
+  {
+    title: "Provider-approved",
+    flow: ["Order", "approval", "service fulfilment"],
+    body: "A provider review step precedes fulfilment — useful for scoped or high-touch work.",
+  },
+  {
+    title: "Entitlement",
+    flow: ["Order", "account / seat / licence", "access activated"],
+    body: "Fulfilment changes an entitlement rather than deploying infrastructure.",
+  },
+  {
+    title: "Metered service",
+    flow: ["Order", "usage component", "settlement"],
+    body: "Consumption is measured and settles per component against the lease.",
+  },
+  {
+    title: "Human service",
+    flow: ["Order", "approved work allocation", "billable component"],
+    body: "People deliver the work; the catalogue and settlement rail keep the engagement accountable.",
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/custom-listings"
+  image="/media/provider-technician-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · Custom"
+    title="If a provider can describe the service, the catalogue does not have to stop at servers."
+    lede="Custom listings are provider-defined offerings: order forms, approvals, provider-defined components and the same lease and settlement guarantees as any other product."
+    crumbs={crumbs}
+  >
+    <CTA href="#fulfilment">Fulfilment patterns</CTA>
+    <CTA href="/marketplace" variant="secondary">Marketplace overview</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <FulfilmentFlow
+        nodes={["Custom offering", "Order form", "Provider approval / automation", "Fulfilment", "Metered or fixed component", "Settlement"]}
+        kinds={{ "Custom offering": "protocol", "Metered or fixed component": "protocol", Settlement: "protocol", "Provider approval / automation": "provider", Fulfilment: "provider" }}
+        caption="Fulfilment follows the provider's mechanism. The agreement and the money stay verifiable."
+      />
+    </div>
+  </PageHero>
+
+  <Section eyebrow="Range" title="What providers list as custom offerings">
+    <ul class="mk-chip-row">
+      {examples.map((example) => <li>{example}</li>)}
+    </ul>
+    <div class="mk-cards-3 mt-8">
+      <MarketplaceListingCard
+        serviceType="Custom"
+        title="Infrastructure Migration Package"
+        region="Remote delivery"
+        specs={["20 engineering hours", "Project approval required", "Fixed scope"]}
+        components={["engineering-hour"]}
+        priceLabel="Fixed-fee package"
+        compact
+      />
+      <MarketplaceListingCard
+        serviceType="Custom"
+        title="Scripted Data Processing Run"
+        region="Provider-defined"
+        specs={["Custom order form", "Output to object storage"]}
+        components={["job-run", "storage GB-month"]}
+        priceLabel="Provider quote"
+        compact
+      />
+      <MarketplaceListingCard
+        serviceType="Managed"
+        title="Training Credits"
+        region="Remote or on-site"
+        specs={["Credit block", "Scheduled sessions"]}
+        components={["training-hour"]}
+        priceLabel="Prepaid block"
+        compact
+      />
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Anatomy"
+    title="Anatomy of a custom offering"
+    lede="Twelve fields a provider defines. Not every field is required for every listing — but each one has a place."
+    class="border-y border-line bg-paper-soft"
+  >
+    <ol class="mk-cards-2">
+      {
+        anatomy.map(([term, definition], index) => (
+          <li class="mk-anatomy-note">
+            <span class="mk-anatomy-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <strong>{term}</strong>
+              <p>{definition}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <Section eyebrow="Fulfilment" title="Fulfilment patterns" id="fulfilment">
+    <div class="mk-cards-3">
+      {
+        patterns.map((pattern) => (
+          <article class="mk-order-col">
+            <h3>{pattern.title}</h3>
+            <p>{pattern.body}</p>
+            <ol class="mk-flow-nodes mt-4" aria-label={`${pattern.title} flow`}>
+              {pattern.flow.map((node, index) => (
+                <>
+                  {index > 0 && <li class="mk-flow-arrow" aria-hidden="true">→</li>}
+                  <li class="mk-flow-node">
+                    <span>{node}</span>
+                  </li>
+                </>
+              ))}
+            </ol>
+          </article>
+        ))
+      }
+    </div>
+    <div class="mk-rb-note">
+      <strong>Verify before you rely on a mechanism.</strong> The offering model supports these patterns, but
+      what a given provider deployment can actually fulfil depends on its Waldur configuration, plugins,
+      credentials and deployment certification. An integration present in upstream Waldur is not automatically a
+      certified VirtEngine adapter.
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Managed services"
+    title="Managed & professional services"
+    lede="Human and managed services sold through the same catalogue: consultancy, implementation, support, managed operations and training."
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-2">
+      <article class="mk-order-col">
+        <h3>Why list professional services here?</h3>
+        <p>
+          The same problems apply as for infrastructure: who is the counterparty, what was agreed, what was
+          delivered, and when does money move. The catalogue and settlement rail answer them without a separate
+          procurement system.
+        </p>
+      </article>
+      <article class="mk-order-col">
+        <h3>What stays with the provider</h3>
+        <p>
+          Scoping, delivery, quality and support. The protocol makes the engagement orderable and the payment
+          conditional on agreed components — it does not perform the work.
+        </p>
+      </article>
+    </div>
+  </Section>
+
+  <Section eyebrow="Technical detail" title="Under the hood">
+    <div class="mk-tech-note">
+      <p>
+        <strong>Verify it:</strong> <a href="#fulfilment">fulfilment patterns above</a> for
+        the fulfilment patterns, <a href="/waldur">Waldur integration</a> for custom offering types and approval
+        workflows, and <a href="https://docs.waldur.com/latest/about/concepts/marketplace/" rel="noopener" target="_blank">Waldur's
+        marketplace model</a> for the upstream offering structure.
+      </p>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "What is a compute marketplace?", href: "/definitions/what-is-a-compute-marketplace" },
+        { label: "SaaS", href: "/marketplace/saas" },
+        { label: "Marketplace overview", href: "/marketplace" },
+        { label: "Waldur integration", href: "/waldur" },
+      ]}
+    />
+  </Section>
+</Base>

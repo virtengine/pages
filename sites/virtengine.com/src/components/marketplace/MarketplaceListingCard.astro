@@ -1,0 +1,95 @@
+---
+/**
+ * MarketplaceListingCard — one catalogue card.
+ *
+ * Used by the marketplace hub hero, the service-model atlas, the listing
+ * anatomy article and the homepage breadth section. Every fictional listing
+ * renders the "Illustrative example" flag by default; pass `example={false}`
+ * only when the card is explicitly presenting a protocol object, never a
+ * plausible live listing.
+ */
+interface Props {
+  serviceType: string;
+  title: string;
+  provider?: string;
+  region?: string;
+  specs?: string[];
+  components?: string[];
+  priceLabel?: string;
+  badges?: string[];
+  /** Where the card links (optional — cards are often illustrative). */
+  href?: string;
+  cta?: string;
+  /** Show the illustrative-example flag. */
+  example?: boolean;
+  compact?: boolean;
+  /** Heading level for the title. Use "p" when the card sits inside a hero. */
+  titleTag?: "h2" | "h3" | "h4" | "p" | "div";
+  class?: string;
+}
+
+const {
+  serviceType,
+  title,
+  provider = "Example Provider",
+  region,
+  specs = [],
+  components = [],
+  priceLabel,
+  badges = [],
+  href,
+  cta,
+  example = true,
+  compact = false,
+  titleTag = "h3",
+  class: className,
+} = Astro.props;
+
+const Tag = href ? "a" : "div";
+const Title = titleTag;
+---
+
+<Tag
+  href={href}
+  class:list={["mk-listing", compact && "mk-listing--compact", className]}
+>
+  <div class="mk-listing-top">
+    <p class="mk-listing-type">{serviceType}</p>
+    {example && <span class="mk-flag">Illustrative example</span>}
+  </div>
+  <Title class="mk-listing-title">{title}</Title>
+  {provider && <p class="mk-listing-provider">{provider}</p>}
+  {region && <p class="mk-listing-region">{region}</p>}
+  {
+    specs.length > 0 && (
+      <ul class="mk-listing-specs">
+        {specs.map((spec) => <li>{spec}</li>)}
+      </ul>
+    )
+  }
+  {
+    components.length > 0 && (
+      <div class="mk-listing-meta">
+        <p class="mk-listing-meta-label">Billing components</p>
+        <ul class="mk-listing-components">
+          {components.map((component) => <li>{component}</li>)}
+        </ul>
+      </div>
+    )
+  }
+  {
+    badges.length > 0 && (
+      <ul class="mk-listing-badges">
+        {badges.map((badge) => <li>{badge}</li>)}
+      </ul>
+    )
+  }
+  {
+    (priceLabel || cta) && (
+      <div class="mk-listing-foot">
+        {priceLabel && <p class="mk-listing-price">{priceLabel}</p>}
+        {cta && <span class="mk-listing-cta">{cta} <span aria-hidden="true">→</span></span>}
+      </div>
+    )
+  }
+</Tag>

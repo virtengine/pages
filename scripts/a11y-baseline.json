@@ -1,0 +1,26 @@
+{
+  "det.io": {
+    "img-missing-alt": 0,
+    "document-missing-lang": 0,
+    "duplicate-id": 0,
+    "heading-level-skip": 0
+  },
+  "docs.virtengine.com": {
+    "img-missing-alt": 0,
+    "document-missing-lang": 0,
+    "duplicate-id": 0,
+    "heading-level-skip": 0
+  },
+  "identity.org.au": {
+    "img-missing-alt": 0,
+    "document-missing-lang": 0,
+    "duplicate-id": 0,
+    "heading-level-skip": 0
+  },
+  "virtengine.com": {
+    "img-missing-alt": 0,
+    "document-missing-lang": 0,
+    "duplicate-id": 0,
+    "heading-level-skip": 53
+  }
+}

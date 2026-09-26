@@ -1,13 +1,25 @@
 ---
 import { ECOSYSTEM, FOOTER_COLUMNS, SITE } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
 import Lockup from "@components/brand/Lockup.astro";
+import LatticeMark from "@components/art/LatticeMark.astro";
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="night-scope mt-24">
+<footer class="night-scope site-footer">
   <div aria-hidden="true" class="delta-divider"></div>
-  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]">
+  <div class="footer-lattice" aria-hidden="true">
+    <LatticeMark class="text-green" />
+  </div>
+
+  <div class="container-site footer-status">
+    <span><i class="lamp" aria-hidden="true"></i><b>In development</b> — the network is not live</span>
+    <span>{NETWORK_STATUS.testnet.label} · {NETWORK_STATUS.testnet.timing.toLowerCase()}</span>
+    <span>{NETWORK_STATUS.mainnet.label} · {NETWORK_STATUS.mainnet.timing.toLowerCase()}</span>
+  </div>
+
+  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_1fr]">
     <div class="max-w-sm md:col-span-2 lg:col-span-1">
       <a href="/" class="inline-flex" aria-label="VirtEngine by DET.io home">
         <Lockup size={64} byline onDark />
@@ -44,7 +56,7 @@ const year = new Date().getFullYear();
         {
           ECOSYSTEM.map((item) => (
             <li>
-              <a href={item.href} rel="noopener" class="text-sm text-night-muted transition-colors hover:text-green">
+              <a href={item.href} target="_blank" rel="noopener" class="text-sm text-night-muted transition-colors hover:text-green">
                 {item.label}
               </a>
             </li>
@@ -56,10 +68,15 @@ const year = new Date().getFullYear();
 
   <div class="border-t border-night-line">
     <div class="container-site flex flex-col gap-2 py-6 text-xs text-night-faint sm:flex-row sm:items-center sm:justify-between">
-      <p>&copy; {year} DETIO FOUNDATION LTD (ACN 699 651 771). VirtEngine is Apache 2.0 licensed open source.</p>
+      <p>
+        &copy; {year} DETIO FOUNDATION LTD (ACN 699 651 771). VirtEngine is Apache 2.0 licensed open source.{" "}
+        <a href="/media-credits" class="underline underline-offset-2 transition-colors hover:text-green">
+          Media credits
+        </a>.
+      </p>
       <p>
         Certain methods are protected by
-        <a href={SITE.patentUrl} rel="noopener" class="underline underline-offset-2 transition-colors hover:text-green">
+        <a href={SITE.patentUrl} target="_blank" rel="noopener" class="underline underline-offset-2 transition-colors hover:text-green">
           patent {SITE.patentId}</a>.
       </p>
     </div>

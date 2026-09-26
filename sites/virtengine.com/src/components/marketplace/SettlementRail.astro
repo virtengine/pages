@@ -1,0 +1,44 @@
+---
+/**
+ * SettlementRail — one rail under many service types.
+ *
+ * Shows several different products feeding a single usage/agreed-component →
+ * settlement path. The point is the marketplace abstraction: the rail is the
+ * same whether the underlying delivery is a VM, a cluster, a licence or a
+ * service engagement.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const feeds = [
+  "GPU VM",
+  "Managed Kubernetes",
+  "Managed database",
+  "HPC job",
+  "Software plan",
+  "Support service",
+  "Custom listing",
+];
+---
+
+<div class:list={["mk-rail", className]}>
+  <ul class="mk-rail-list" aria-label="Service types">
+    {feeds.map((feed) => <li>{feed}</li>)}
+  </ul>
+  <div class="mk-rail-out">
+    <div class="mk-rail-node">
+      <small>Usage or agreed component</small>
+      <strong>Signed records, validated against the lease</strong>
+      <p>Metered consumption where the service is metered; the agreed component where it is fixed.</p>
+    </div>
+    <i class="mk-rail-arrow" aria-hidden="true">↓</i>
+    <div class="mk-rail-node">
+      <small>Settlement</small>
+      <strong>Escrow releases to the provider</strong>
+      <p>After the dispute window, under the governed settlement fee policy. Unspent escrow returns to the tenant.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import CardLink from "@components/CardLink.astro";
+import { DEFINITIONS, DEFINITION_GROUPS } from "@data/definitions";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Definitions", href: "/definitions" },
+];
+
+const definitionsListSchema = itemListNode(
+  new URL("/definitions", SITE.url).href,
+  "identity.org.au definitions",
+  DEFINITIONS.map((entry) => ({
+    name: entry.term,
+    href: `/definitions/${entry.slug}`,
+    description: entry.summary,
+  })),
+);
+---
+
+<Base
+  title="Definitions: Digital Identity Terms Explained | identity.org.au"
+  description="Plain-English definitions of digital identity terms: identity documents, verification, proofing, document and biometric checks, wallets, cards and services."
+  breadcrumbs={crumbs}
+  pageType="CollectionPage"
+  schema={[definitionsListSchema]}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Definitions"
+    title="Digital identity terms, defined"
+    lede="Every technical term on this site, defined in plain English before it is used anywhere else. No jargon without an explanation."
+  />
+
+  <div class="container-site py-12">
+    {
+      DEFINITION_GROUPS.map((group) => {
+        const entries = DEFINITIONS.filter((entry) => entry.group === group);
+        if (entries.length === 0) return null;
+        return (
+          <section class="mb-12 last:mb-0">
+            <h2 class="mt-0 border-b-2 border-navy pb-3 text-[1.4rem]">{group}</h2>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              {entries.map((entry) => (
+                <CardLink
+                  href={`/definitions/${entry.slug}`}
+                  title={entry.term}
+                  description={entry.summary}
+                />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+
+    <section class="mt-14 border border-hairline rounded-tile bg-alt px-6 py-6">
+      <h2 class="mt-0 text-[1.25rem]">Looking for a longer answer?</h2>
+      <p class="text-body measure">
+        The <a href="/guides" class="link-plain">guides</a> go deeper on methods, age verification
+        and the Australian landscape. The <a href="/faq" class="link-plain">frequently asked
+        questions</a> cover the service itself, and the <a href="/insights" class="link-plain">insights</a>
+        section argues the architecture in full.
+      </p>
+    </section>
+  </div>
+</Base>

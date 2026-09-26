@@ -1,0 +1,81 @@
+---
+/**
+ * ListingAnatomy — the annotated listing card used by the Learn article.
+ *
+ * One example listing (fictional, labelled) with numbered annotations around
+ * it, then the identifier mapping that connects the catalogue card to the
+ * protocol object and the Waldur offering.
+ */
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+
+const annotations = [
+  ["Provider", "The independent operator that publishes and fulfils the listing. Identity, region and attributes are protocol state."],
+  ["Category", "Where the listing sits in the catalogue — IaaS, PaaS, SaaS, HPC, storage, managed or custom."],
+  ["Offering", "The product itself. On-chain it is the offering an order can name; in Waldur it is the catalogue item."],
+  ["Plan", "The purchasable variant: hourly, monthly, reserved or per-seat, with its own pricing and limits."],
+  ["Component", "A measurable billing dimension — GPU-hours, vCPU-hours, storage GB-months, seats, or a provider-defined unit."],
+  ["Limit", "The cap on a component. Limits keep exposure bounded and are visible before ordering."],
+  ["Attribute", "Machine-readable claims such as audited, benchmarked, attested or confidential — usable as match filters."],
+  ["Region", "Where the service is delivered. Region is a first-class selector input and a display property on the card."],
+  ["Backend", "The provider system that actually fulfils the listing — OpenStack, VMware, a scheduler, an entitlement service or a custom integration."],
+  ["Price", "The published price for direct orders; bids and selector results are priced by their own rules."],
+  ["Order field", "Extra information the provider needs at order time, such as a project code, public key or region preference."],
+  ["Audit / benchmark", "Independent evidence attached to the provider or the offering — auditor-signed attributes and measured hardware performance."],
+  ["Lifecycle", "Provision, resize, suspend, resume and terminate. The provider's control plane performs them; the lease stays correlated."],
+];
+
+const mapping = [
+  ["VirtEngine offering_id", "ve:offering:…"],
+  ["Provider daemon mapping", "persisted cross-reference"],
+  ["Waldur offering_uuid", "catalogue item users see"],
+];
+---
+
+<div class="mk-anatomy">
+  <div class="mk-anatomy-card">
+    <MarketplaceListingCard
+      serviceType="IaaS"
+      title="General Purpose VM"
+      provider="Example Provider"
+      region="Sydney · AU"
+      specs={["4 vCPU", "16 GB RAM", "200 GB NVMe"]}
+      components={["vCPU-hour", "storage GB-month"]}
+      priceLabel="$0.06 / vCPU-hour"
+      badges={["audited", "benchmarked"]}
+      cta="Order"
+    />
+    <div class="mk-demo-id mt-5">
+      <p class="mk-listing-meta-label">Identifier mapping</p>
+      <ul>
+        {
+          mapping.map(([label, value], index) => (
+            <li>
+              <code>{label}</code>
+              {index > 0 && <i aria-hidden="true">→</i>}
+              <span>{value}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+  <div>
+    <p class="mk-anatomy-lead">
+      Each numbered note maps to a part of the card. The listing is illustrative; the structure is what the
+      protocol and the catalogue agree on.
+    </p>
+    <ol>
+      {
+        annotations.map(([term, definition], index) => (
+          <li class="mk-anatomy-note">
+            <span class="mk-anatomy-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <strong>{term}</strong>
+              <p>{definition}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</div>

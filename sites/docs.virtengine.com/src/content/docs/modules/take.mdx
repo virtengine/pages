@@ -1,0 +1,104 @@
+---
+title: x/take — Take module
+description: The x/take module holds the governed marketplace settlement policy — a commission rate changeable only by stakeholder vote.
+---
+
+The `x/take` module is where marketplace-settlement policy lives. It moves no
+funds itself — settlement reads its governed parameters at payout time and
+honours them as escrow releases to the provider.
+
+## What it does
+
+The take module governs marketplace-settlement policy. The proposed policy
+sets the marketplace commission at 0%, so settlement would move the agreed
+lease amount to the provider without a platform deduction — but the rate is
+governed state, not a permanent guarantee.
+
+This does not remove transaction fees: low validator fees apply to on-chain
+messages and compensate the validating network. They are proposed at
+approximately 90% below standard network transaction fees.
+
+## Why it exists
+
+A protocol needs sustainable revenue tied to genuine usage. A transparent,
+governed take on settled payments is the cleanest such mechanism: visible to
+every participant, proportional to real economic activity, and changeable
+only by stakeholder vote.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Marketplace commission | The governed platform deduction from marketplace payments — proposed at 0% in the current design. |
+
+## Core flow
+
+1. **Clear — Usage clears.** Line items clear the dispute window against
+   funded lease escrow.
+2. **Apply — Policy applies at payout.** The governed settlement policy is
+   honoured as funds release to the provider.
+3. **Compensate — Validators earn fees.** Message-level transaction fees flow
+   to the validating network for operating consensus.
+4. **Govern — Stakeholders can change it.** Any future rate change requires
+   stakeholder vote — visible, proportional, governed.
+
+## Messages
+
+`x/take` exposes exactly one message, `MsgUpdateParams`, and that is the
+point: the module's entire surface **is** its governed policy. There is no
+user-facing transaction to submit here — the commission rate changes only
+through a stakeholder vote, and the module's simulation package ships
+governance proposals for exercising that path.
+
+## Queries
+
+`Params` is the module's only query: it reads back the current governed
+settlement policy, commission rate included. Nothing else is exposed,
+because the policy is the module — deliberate thinness rather than an
+unfinished API.
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/settlement](/modules/settlement/) | The governed settlement policy is honoured at payout. |
+| [x/escrow](/modules/escrow/) | The agreed lease amount is released at the escrow boundary. |
+| [x/bme](/modules/bme/) | VEID-led issuance policy interacts with supply mechanics. |
+
+## Related documentation
+
+- [Escrow & Settlement](/concepts/escrow-settlement/) — where the take is
+  applied, with verified CLI examples.
+- [Take & BME](/concepts/take-and-bme/) — settlement policy and supply
+  mechanics side by side.
+- [Tokenomics](/concepts/tokenomics/) — the protocol revenue model in context.
+- [Governance](/validators/governance/) — how stakeholders change parameters.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is the marketplace commission?
+
+The governed platform deduction from marketplace payments — proposed at 0%,
+so under the current proposal settlement moves the agreed lease amount in
+full.
+
+### Does the proposed 0% rate mean running the chain is free?
+
+No. Low validator transaction fees apply to on-chain messages and compensate
+the validating network. The proposed 0% applies to the settled lease payment
+itself.
+
+### Why have a take module at a 0% rate?
+
+A protocol needs sustainable revenue tied to genuine usage. A transparent,
+governed take on settled payments is the cleanest such mechanism — visible to
+every participant, proportional to real activity, and changeable only by
+stakeholder vote.
+
+:::note
+Message and query types are defined in `x/take/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

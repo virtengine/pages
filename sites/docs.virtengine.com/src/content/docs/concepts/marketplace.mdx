@@ -9,6 +9,20 @@ custom provider offerings; where an offering uses the protocol exchange,
 tenants publish what they need and providers compete to supply it. Three
 on-chain objects carry that process: **orders**, **bids**, and **leases**.
 
+## Two ways to acquire
+
+There are two acquisition styles, and they share the same settlement rails:
+
+- **Browse and buy** a public listing at its published price — resolved
+  immediately.
+- **Open an order** against your requirements and let providers bid — resolved
+  deterministically when the bidding window closes.
+
+A published listing behaves as a **standing ask** and a provider bid as a
+**standing bid**; the same resolution rule ranks both. The full picture —
+supply options, fulfilment backends, and where Waldur runs — is in
+[Acquisition Pathways](/concepts/acquisition-pathways/).
+
 ## Orders
 
 An order is opened by `x/market` against a tenant's deployment (from
@@ -51,15 +65,18 @@ down.
 
 ## Offerings and service catalogue
 
-Alongside the order-driven auction flow, `x/marketplace` maintains a catalog
-of **offerings** — published capacity listings created by providers. The
-Waldur integration makes that catalogue available as a self-service
-marketplace and supports private clouds, storage, VMs and provider-defined
-custom services as well as compute workloads. The HPC pipeline uses offerings
-directly: an HPC job submission names the `offering_id` it wants to consume
-(see [Submitting HPC Jobs](/tenants/hpc-jobs/)). Kubernetes and HPC schedulers
-are fulfilment targets for applicable listings, not the only things a provider
-can list.
+The **catalogue** is the supply side of the market. Offerings are capacity
+listings created by providers, and each one is a **standing ask**: a price and
+a capacity that any tenant can buy directly. A listing can originate natively
+in the protocol catalogue or be mirrored from a connected Waldur instance; both
+appear in the same catalogue with the same purchase flow.
+
+Waldur makes that catalogue a self-service marketplace for private clouds,
+storage, VMs, provider-defined custom services, and compute workloads. The HPC
+pipeline uses offerings directly: an HPC job submission names the `offering_id`
+it wants to consume (see [Submitting HPC Jobs](/tenants/hpc-jobs/)). Kubernetes
+and HPC schedulers are fulfilment targets for applicable listings, not the only
+things a provider can list.
 
 ## Identity gating
 

@@ -4,6 +4,8 @@ import PageHeader from "@components/PageHeader.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
 import { INSIGHT_ARTICLES, getInsight } from "@data/insights";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return INSIGHT_ARTICLES.map((article) => ({ params: { slug: article.slug } }));
@@ -28,18 +30,15 @@ const updatedDisplay = new Date(article.updated).toLocaleDateString("en-AU", {
   year: "numeric",
 });
 
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: article.title,
+const canonical = new URL(`/insights/${article.slug}`, SITE.url).href;
+const insightSchema = articleNode({
+  canonical,
+  title: article.title,
   description: article.summary,
   dateModified: article.updated,
-  inLanguage: "en-AU",
-  articleSection: article.topic,
-  author: { "@type": "Organization", name: "Identity.org.au editorial (DETIO FOUNDATION LTD)" },
-  publisher: { "@type": "Organization", name: "DETIO FOUNDATION LTD", url: "https://det.io" },
-  mainEntityOfPage: `https://identity.org.au/insights/${article.slug}`,
-};
+  section: article.topic,
+  about: ["Digital identity", article.topic],
+});
 ---
 
 <Base
@@ -47,9 +46,9 @@ const articleLd = {
   description={article.summary}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[insightSchema]}
+  modifiedTime={article.updated}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-
   <PageHeader crumbs={crumbs} eyebrow={`Insights · ${article.topic}`} title={article.title} lede={article.summary} />
 
   <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">

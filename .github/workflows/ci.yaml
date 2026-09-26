@@ -83,16 +83,16 @@ jobs:
       - name: Install from lockfile
         run: pnpm install --frozen-lockfile
 
-      - name: Type check (astro check)
+      - name: Type check (astro check, ratcheted against scripts/types-baseline.json)
         run: |
           set -o pipefail
           pnpm run check:types 2>&1 | tee typecheck.log
-          # @astrojs/check prints "Result (N files):" then the counts. Strip ANSI first so a
-          # colourising layer cannot break the guards, then require a real run (N > 0) AND
-          # zero errors — a checker that inspected nothing exits 0 and would look green.
-          sed -e 's/\x1b\[[0-9;]*m//g' typecheck.log > typecheck.plain
-          grep -qE '^Result \([1-9][0-9]* files\)' typecheck.plain
-          grep -qE '^- 0 errors' typecheck.plain
+          # scripts/check-types.mjs is a ratchet, the same shape as check-a11y.mjs: it fails when a
+          # site exceeds its budget in scripts/types-baseline.json AND when the baseline is looser
+          # than reality, so the budget can only move down. It hard-fails when astro check inspected
+          # nothing, and prints TYPECHECK-OK only after a real run — assert the marker so a checker
+          # that silently did nothing cannot look green.
+          grep -q '^TYPECHECK-OK' typecheck.log
 
       - name: Build
         run: pnpm run build
@@ -111,6 +111,42 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^LINKCHECK-OK' linkcheck.log
 
+      - name: Accessibility budget
+        run: |
+          set -o pipefail
+          pnpm run check:a11y | tee a11y.log
+          # Guard against a checker that silently checks nothing.
+          grep -q '^A11Y-OK' a11y.log
+
+      - name: Markdown negotiation check
+        run: |
+          set -o pipefail
+          # Sites without functions/_middleware.js (e.g. docs) skip gracefully.
+          if [ -f functions/_middleware.js ]; then
+            pnpm run check:markdown | tee markdown.log
+            # Guard against a checker that silently checks nothing.
+            grep -q '^MARKDOWN-OK' markdown.log
+          else
+            echo "no markdown middleware for this site - skipping"
+          fi
+
+  selftest:
+    name: checkers self-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Prove the checkers can fail
+        run: |
+          set -euo pipefail
+          node --test --test-reporter=tap scripts/*.test.mjs | tee selftest.log
+          # A glob that matches no file exits 0 having run nothing — require a real run.
+          grep -qE '^# tests [1-9][0-9]*' selftest.log
+          grep -qE '^# fail 0' selftest.log
+
   static:
     name: static checks
     runs-on: ubuntu-latest
@@ -122,6 +158,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Syntax, config and build-script checks
         run: node scripts/check-static.mjs
+
+      - name: Design guardrail (DESIGN-DIRECTION §7)
+        run: |
+          set -o pipefail
+          node scripts/check-design.mjs | tee design.log
+          # Guard against a checker that silently checks nothing.
+          grep -q '^check-design: OK' design.log
 
   worker:
     name: worker blog-redirect
@@ -143,7 +186,7 @@ jobs:
   ci:
     name: ci
     if: always()
-    needs: [discover, build, static, worker]
+    needs: [discover, build, selftest, static, worker]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -153,6 +196,7 @@ jobs:
           for result in \
             "discover=${{ needs.discover.result }}" \
             "build=${{ needs.build.result }}" \
+            "selftest=${{ needs.selftest.result }}" \
             "static=${{ needs.static.result }}" \
             "worker=${{ needs.worker.result }}"
           do

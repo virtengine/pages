@@ -1,0 +1,120 @@
+---
+title: x/roles — Roles module
+description: The x/roles module implements protocol-wide RBAC — named roles with defined capabilities, checked by every module before privileged operations execute.
+---
+
+The `x/roles` module implements protocol-wide RBAC: named roles with
+defined capabilities, assignable to accounts, checked by other modules
+before privileged operations execute. Auditor rights, administrative
+operations, and specialized marketplace capabilities all resolve through
+role checks.
+
+Centralizing authorization means access decisions are consistent,
+queryable, and governable — a role grant is a transaction, not a
+configuration file on someone's server.
+
+## What it does
+
+- **One permission model for every module.** Roles bundle capabilities once;
+  each module runs the same capability check before a privileged message
+  executes — no check, no execution.
+- **Grants are chain state.** `MsgAssignRole` and `MsgRevokeRole` move
+  grants on and off accounts, and the results are queryable by account
+  (`AccountRoles`), by role (`RoleMembers`), and per check (`HasRole`).
+- **Accounts carry recorded state.** `MsgSetAccountState` updates the state
+  tracked for an account (`AccountState`), alongside the accounts granted
+  roles at genesis (`GenesisAccounts`).
+- **Grants can be hardened.** Role grants can be conditioned on verified
+  identity through [x/veidregistry](/modules/veidregistry/) and on stronger
+  authentication through [x/mfa](/modules/mfa/).
+
+## Why it exists
+
+Two dozen modules each inventing its own permission model would be
+unauditable. One RBAC module gives the protocol a single, inspectable
+answer to "who may do what" — and one governance surface to change it.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Role | A named bundle of capabilities assignable to accounts and checked by modules. |
+| Capability check | The authorization gate a module runs before executing a privileged message. |
+
+## Core flow
+
+1. **Define — Capabilities bundle into roles.** Auditor rights,
+   administrative operations, marketplace capabilities — named, bounded,
+   documented.
+2. **Grant — Accounts receive roles.** Grants are transactions: public,
+   queryable, and optionally conditioned on verified identity.
+3. **Check — Modules gate on roles.** Privileged messages run capability
+   checks before executing — no check, no execution.
+4. **Harden — Identity and factors attach.** Sensitive grants can require
+   VEID-verified identity or stronger MFA authentication.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgAssignRole` | Grants a named role to an account. |
+| `MsgRevokeRole` | Removes a role from an account. |
+| `MsgNominateAdmin` | Nominates an account as an administrator. |
+| `MsgSetAccountState` | Sets the state tracked for an account. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `AccountRoles` | All roles held by an account. |
+| `RoleMembers` | The accounts holding a given role. |
+| `HasRole` | Whether an account holds a specific role. |
+| `AccountState` | The recorded state for an account. |
+| `GenesisAccounts` | Accounts granted roles at genesis. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/audit](/modules/audit/) | Auditor status is a role that authorizes signing provider attributes. |
+| [x/config](/modules/config/) | Configuration changes require appropriately-roled accounts. |
+| [x/mfa](/modules/mfa/) | Privileged roles can be required to carry stronger authentication. |
+| [x/veidregistry](/modules/veidregistry/) | Role grants can be conditioned on verified identity. |
+
+## Related documentation
+
+- [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/) — where
+  role-gated auditing sits in the trust fabric.
+- [Governance](/validators/governance/) — how role policy changes through
+  governance.
+- [VEID Overview](/veid/overview/) — verified identity behind conditioned
+  grants.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why not let each module manage permissions?
+
+Two dozen bespoke permission models would be unauditable. One RBAC module
+keeps authorization consistent, queryable, and governable across the
+protocol.
+
+### What is a capability check?
+
+The authorization gate a module runs before executing a privileged message
+— the runtime enforcement of the role model.
+
+### Is auditor status a role?
+
+Yes. Auditor status authorizes signing provider attributes, with grants
+that can carry identity conditions and MFA requirements. See the
+[x/audit module](/modules/audit/).
+
+:::note
+Message and query types are defined in `x/roles/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

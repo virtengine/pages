@@ -1,0 +1,87 @@
+---
+/**
+ * BuyPaths — the compact acquisition-path instrument used on the homepage.
+ *
+ * Zero-JS radio tabs over the canonical ACQUISITION_PATHS model. The detailed
+ * walkthrough lives in /learn/three-ways-to-buy; this figure is the summary.
+ */
+import { ACQUISITION_PATHS } from "@data/market";
+
+interface Props {
+  foot?: string;
+  class?: string;
+}
+
+const { foot, class: className } = Astro.props;
+---
+
+<div class:list={["buy-ex", className]}>
+  {
+    ACQUISITION_PATHS.map((p) => (
+      <input type="radio" name="buy-mode" id={`buy-${p.id}`} checked={p.id === "direct"} />
+    ))
+  }
+  <div class="buy-tabs" role="tablist" aria-label="Acquisition paths">
+    {
+      ACQUISITION_PATHS.map((p) => (
+        <label class="buy-tab" for={`buy-${p.id}`}>
+          <small>{p.n}</small>
+          <span>{p.tab}</span>
+        </label>
+      ))
+    }
+  </div>
+  <div class="buy-stage">
+    {
+      ACQUISITION_PATHS.map((p) => (
+        <article class={`buy-panel buy-panel--${p.id}`} data-for={`buy-${p.id}`}>
+          <div class="buy-copy">
+            <p class="eyebrow">{p.tag}</p>
+            <h3 class="mt-4 text-xl font-semibold">{p.title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate">{p.body}</p>
+            <ol class="buy-steps">
+              {p.steps.map(([k, v], i) => (
+                <li>
+                  <span class="buy-step-n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span><strong>{k}</strong><small>{v}</small></span>
+                </li>
+              ))}
+            </ol>
+            <p class="buy-when"><strong>When to use it — </strong>{p.when}</p>
+            <p class="buy-more"><a class="btn-quiet" href={p.href}>Compare in the buying guide <span aria-hidden="true">→</span></a></p>
+          </div>
+          <div class="buy-art" aria-hidden="true">
+            {p.id === "direct" && (
+              <div class="buy-flow">
+                <div class="buy-chip buy-chip--offer"><small>Catalogue</small><strong>General Purpose VM</strong><span>$0.06 / vCPU-hr</span></div>
+                <i class="buy-arrow">→</i>
+                <div class="buy-chip"><small>Order</small><strong>names that listing</strong><span>escrow funded</span></div>
+                <i class="buy-arrow">→</i>
+                <div class="buy-chip buy-chip--win"><small>Lease</small><strong>matched at list</strong><span>0 bids needed</span></div>
+              </div>
+            )}
+            {p.id === "bid" && (
+              <div class="buy-bids">
+                <div class="buy-chip"><small>Open order</small><strong>16 vCPU · ap-southeast</strong><span>max $0.07 · window open</span></div>
+                <ul>
+                  <li><span>Provider A</span><b>$0.072</b></li>
+                  <li class="buy-bid--win"><span>Provider B</span><b>$0.061 · accepted</b></li>
+                  <li><span>Provider C</span><b>$0.085</b></li>
+                </ul>
+                <div class="buy-chip buy-chip--win"><small>Lease</small><strong>Provider B · $0.061</strong><span>escrow funded</span></div>
+              </div>
+            )}
+            {p.id === "selector" && (
+              <div class="buy-flow">
+                <div class="buy-attrs"><span>vm</span><span>4+ vCPU</span><span>ap-southeast</span><span>≤ $0.07</span></div>
+                <i class="buy-arrow">→</i>
+                <div class="buy-chip buy-chip--win"><small>Matched listing</small><strong>General Purpose VM</strong><span>eligible · capped</span></div>
+              </div>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+  {foot && <p class="buy-foot">{foot}</p>}
+</div>

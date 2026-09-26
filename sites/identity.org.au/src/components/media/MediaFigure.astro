@@ -1,0 +1,62 @@
+---
+/**
+ * MediaFigure — brand photography in the same hairline frame as every other
+ * surface. Assets come from `@data/media`, which the harvest pipeline generates
+ * (see DESIGN.md §11), so srcset/alt/intrinsic size stay in one place.
+ */
+import { media, type MediaSlug } from "@data/media";
+
+interface Props {
+  slug: MediaSlug;
+  /** override the manifest alt when the surrounding copy carries the context */
+  alt?: string;
+  /** caption under the image */
+  caption?: string;
+  /** show the provenance line (default: off — credits live on /media-credits) */
+  credit?: boolean;
+  /** CSS aspect-ratio override, e.g. "4 / 3" */
+  ratio?: string;
+  /** eager-load for above-the-fold use */
+  priority?: boolean;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  slug,
+  alt,
+  caption,
+  credit = false,
+  ratio,
+  priority = false,
+  sizes = "(min-width: 1024px) 46vw, 100vw",
+  class: className,
+} = Astro.props;
+
+const asset = media[slug];
+const style = ratio ? `aspect-ratio:${ratio};` : `aspect-ratio:${asset.width} / ${asset.height};`;
+---
+
+<figure class:list={["media-figure", `media-figure--${asset.kind}`, className]}>
+  <div class="media-figure-frame" style={style}>
+    <img
+      src={asset.src}
+      srcset={asset.srcset}
+      sizes={sizes}
+      alt={alt ?? asset.alt}
+      width={asset.width}
+      height={asset.height}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={priority ? "high" : undefined}
+    />
+  </div>
+  {
+    (caption || credit) && (
+      <figcaption class="media-figure-caption">
+        {caption && <span>{caption}</span>}
+        {credit && <span class="media-credit">photo · {asset.credit} · cc0</span>}
+      </figcaption>
+    )
+  }
+</figure>

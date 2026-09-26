@@ -20,16 +20,19 @@ const crumbs = [
 ---
 
 <Base
-  title={`Historic blog archive — Page ${page} | VirtEngine`}
-  description={`Page ${page} of VirtEngine's preserved 2015–2016 blog archive.`}
+  title={page === 1 ? "Historic Blog Archive 2015–2016 | VirtEngine" : `Historic Blog Archive — Page ${page} | VirtEngine`}
+  description={page === 1 ? "Browse all 64 preserved VirtEngine blog posts from 2015–2016: cloud management, orchestration and deployment history. Original text intact." : `Page ${page} of VirtEngine's preserved 2015–2016 blog archive.`}
   path={pagePath}
   breadcrumbs={crumbs}
+  noindex={page > 1}
 >
   <PageHero
     eyebrow="2015–2016 archive"
     title="The historic VirtEngine blog"
     lede="The original articles are preserved verbatim in their original order. Commands, dependencies, links, product names, and security practices may now be obsolete."
     crumbs={crumbs}
+    media="learn-library"
+    mediaCaption="Preserved in original order."
   >
     <p class="mt-7 font-mono text-xs uppercase tracking-[0.12em] text-muted">
       Page {page} of {totalPages} · 64 preserved articles
@@ -38,7 +41,7 @@ const crumbs = [
 
   <section class="container-site py-14 md:py-20">
     <div class="grid gap-6 md:grid-cols-2">
-      {posts.map((article) => <BlogCard article={article} />)}
+      {posts.map((article, i) => <BlogCard article={article} mediaIndex={i} />)}
     </div>
 
     <nav class="mt-12 flex items-center justify-between border-t border-line pt-8" aria-label="Archive pagination">

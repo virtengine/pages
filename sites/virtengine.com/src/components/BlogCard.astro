@@ -1,13 +1,38 @@
 ---
 import type { BlogArticle } from "@data/blog";
 import { formatBlogDate } from "@data/blog";
+import MediaFigure from "@components/media/MediaFigure.astro";
+import type { MediaSlug } from "@data/media";
 
 interface Props {
   article: BlogArticle;
   featured?: boolean;
+  /** Position in the surrounding grid — keeps images unique across a page. */
+  mediaIndex?: number;
 }
 
-const { article, featured = false } = Astro.props;
+const { article, featured = false, mediaIndex } = Astro.props;
+
+/* One photograph per note, chosen from the brand library. The grid passes its
+   position so images never repeat within a page; otherwise the slug decides. */
+const CARD_MEDIA: MediaSlug[] = [
+  "provider-datacenter",
+  "marketplace-hardware",
+  "settlement-ledger",
+  "identity-document",
+  "learn-library",
+  "open-source-screen",
+  "network-earth",
+  "hpc-supercomputer",
+  "hero-infrastructure",
+  "identity-portrait",
+  "provider-technician",
+  "staking-security",
+];
+const mediaSlug =
+  mediaIndex !== undefined
+    ? CARD_MEDIA[mediaIndex % CARD_MEDIA.length]
+    : CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_MEDIA.length];
 ---
 
 <article
@@ -16,6 +41,12 @@ const { article, featured = false } = Astro.props;
     featured && "md:min-h-[23rem]",
   ]}
 >
+  <MediaFigure
+    slug={mediaSlug}
+    ratio="16 / 9"
+    sizes="(min-width: 1024px) 32vw, 100vw"
+    class="mb-6"
+  />
   <div class="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-muted">
     <span class:list={[article.kind === "current" ? "text-green-deep" : "text-amber"]}>
       {article.kind === "current" ? "Journal" : "Historic archive"}

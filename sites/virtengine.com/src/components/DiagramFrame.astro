@@ -2,6 +2,8 @@
 /**
  * Dark "engineering plate" frame for technical figures. The night-scope
  * class remaps the diagram components' color variables to green-on-night.
+ * Visually it is the same instrument language as PlateFigure: gridded night
+ * surface, corner registration ticks, mono caption rail.
  */
 interface Props {
   /** Full text alternative for the diagram (required for accessibility) */
@@ -15,7 +17,7 @@ const { label, caption, class: className } = Astro.props;
 
 <figure
   class:list={[
-    "diagram-frame night-scope clip-corner overflow-hidden rounded-frame border border-night-line p-3 sm:p-5 md:p-10",
+    "diagram-frame plate plate--night plate--grid corner-ticks night-scope overflow-hidden p-3 sm:p-5 md:p-10",
     className,
   ]}
 >

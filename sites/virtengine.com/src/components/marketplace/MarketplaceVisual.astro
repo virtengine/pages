@@ -1,0 +1,70 @@
+---
+/**
+ * MarketplaceVisual — renders one LearnVisual by kind.
+ *
+ * Keeps the article template free of component wiring and gives every figure
+ * one accessible wrapper: the visual is announced through its text
+ * alternative, and the underlying markup is real semantic HTML.
+ */
+import type { LearnVisual } from "@data/learn";
+import MarketplaceLifecycle from "@components/marketplace/MarketplaceLifecycle.astro";
+import AcquisitionPathSwitcher from "@components/marketplace/AcquisitionPathSwitcher.astro";
+import ServiceModelAtlas from "@components/marketplace/ServiceModelAtlas.astro";
+import ListingAnatomy from "@components/marketplace/ListingAnatomy.astro";
+import ServiceComparison from "@components/marketplace/ServiceComparison.astro";
+import SettlementRail from "@components/marketplace/SettlementRail.astro";
+import OrderAnatomy from "@components/marketplace/OrderAnatomy.astro";
+import ResponsibilityBoundary from "@components/marketplace/ResponsibilityBoundary.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
+
+interface Props {
+  visual: LearnVisual;
+  /** Unique suffix when a page renders several visuals of the same kind. */
+  id?: string;
+  class?: string;
+}
+
+const { visual, id, class: className } = Astro.props;
+const groupId = `visual-${visual.kind}${id ? `-${id}` : ""}`;
+---
+
+<figure class:list={["mk-visual reveal", className]} role="group" aria-label={visual.label}>
+  {
+    visual.kind === "lifecycle" && <MarketplaceLifecycle id={groupId} />
+  }
+  {
+    visual.kind === "acquisition" && <AcquisitionPathSwitcher id={groupId} />
+  }
+  {
+    visual.kind === "atlas" && <ServiceModelAtlas id={groupId} />
+  }
+  {
+    visual.kind === "listing-anatomy" && <ListingAnatomy />
+  }
+  {
+    visual.kind === "service-comparison" && <ServiceComparison />
+  }
+  {
+    visual.kind === "settlement-rail" && <SettlementRail />
+  }
+  {
+    visual.kind === "order-anatomy" && <OrderAnatomy />
+  }
+  {
+    visual.kind === "responsibility" && <ResponsibilityBoundary />
+  }
+  {
+    visual.kind === "fulfilment" && (
+      <FulfilmentFlow nodes={visual.nodes ?? []} kinds={visual.kinds} caption={visual.caption} />
+    )
+  }
+  {
+    visual.kind === "meters" && (
+      <MeterAnimation meters={visual.meters ?? []} note={visual.caption} />
+    )
+  }
+  {visual.caption && visual.kind !== "fulfilment" && visual.kind !== "meters" && (
+    <figcaption class="mk-visual-caption">{visual.caption}</figcaption>
+  )}
+</figure>

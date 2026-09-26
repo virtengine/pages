@@ -1,0 +1,45 @@
+name: Docs defect
+description: Report an error or gap in the VirtEngine documentation sites.
+title: "docs: "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: site
+    attributes:
+      label: Affected site
+      options:
+        - docs.virtengine.com
+        - virtengine.com
+        - det.io
+        - identity.org.au
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Affected page URL
+      placeholder: https://docs.virtengine.com/...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to find?
+      placeholder: The page should explain ...
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What did you find instead?
+      description: Quote the wrong or missing text if you can.
+      placeholder: The page says ... / the section is missing ...
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix (optional)
+      placeholder: Change ... to ...
+    validations:
+      required: false

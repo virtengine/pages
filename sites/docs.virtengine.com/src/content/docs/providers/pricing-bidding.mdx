@@ -1,11 +1,27 @@
 ---
 title: Pricing & Bidding Strategy
-description: How providers price bids and HPC queues on VirtEngine — cost floors, zero marketplace commission, validator transaction fees, reputation premiums, and common pricing mistakes.
+description: How providers price bids and HPC queues on VirtEngine — cost floors, zero marketplace commission, reputation premiums, and common pricing mistakes.
 ---
 
 Bidding on VirtEngine is open competition: every qualified provider sees the
 same orders. Sustainable pricing means knowing your cost floor, your
 reputation premium, and the protocol's cut.
+
+## Two ways to supply
+
+You can earn from capacity in two complementary ways, and they can run at the
+same time. The resolution engine treats both as supply (see
+[Acquisition Pathways](/concepts/acquisition-pathways/)).
+
+| Approach | How you publish | When it wins |
+| --- | --- | --- |
+| **Listing (standing ask)** | Publish a fixed-price offering natively or in Waldur; it is mirrored on-chain | Direct purchases and orders whose requirements it satisfies |
+| **Bid (standing bid)** | Respond to a specific open order with a priced quote | Contested orders, custom requirements, and price discovery |
+
+A listing is an always-on price; a bid is a targeted one. Because both are ranked
+with the same rule — price, then fit, then reputation — a well-priced listing
+can win without you watching the order book, and a sharp bid can win work your
+listing would not have matched.
 
 ## Know your net
 

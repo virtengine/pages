@@ -9,9 +9,12 @@ export interface StepData {
 }
 interface Props {
   steps: StepData[];
+  /** Heading level for step titles. Use 2 when steps follow an h1 directly. */
+  headingLevel?: 2 | 3;
   class?: string;
 }
-const { steps, class: className } = Astro.props;
+const { steps, headingLevel = 3, class: className } = Astro.props;
+const Heading = headingLevel === 2 ? "h2" : "h3";
 ---
 
 <ol class:list={["list-none m-0 p-0 grid", className]}>
@@ -31,7 +34,12 @@ const { steps, class: className } = Astro.props;
           {i + 1}
         </span>
         <div class="pt-1 measure">
-          <h3 class="m-0 text-[1.15rem]">{step.title}</h3>
+          <Heading class="step-title">
+            <span class="sr-only">
+              Step {i + 1} of {steps.length}:{" "}
+            </span>
+            {step.title}
+          </Heading>
           <p class="mt-1.5 mb-0 text-body">{step.body}</p>
           {step.detail && (
             <ul class="mt-2.5 mb-0 grid gap-1.5 pl-5 list-disc text-[0.97rem] text-body marker:text-steel">

@@ -1,21 +1,21 @@
 ---
-import { ECOSYSTEM, FOOTER_EXTRA, NAV, SITE } from "@data/site";
+import { ECOSYSTEM, SITE } from "@data/site";
 import Lockup from "@components/brand/Lockup.astro";
+const columns = [
+  { title: "Foundation", links: [{label:"Our mission",href:"/mission"},{label:"Who we are",href:"/foundation/who-we-are"},{label:"Governance",href:"/governance"},{label:"Transparency",href:"/transparency"},{label:"Contact us",href:"/contact"}] },
+  { title: "Explore", links: [{label:"Our activities",href:"/activities"},{label:"Research & programs",href:"/research"},{label:"Constitution explorer",href:"/constitution"},{label:"Get involved",href:"/participate"},{label:"Frequently asked questions",href:"/faq"},{label:"Launch updates",href:"/launch"}] },
+];
 ---
 
 <footer class="mt-20 bg-night text-night-text">
-  <div class="container-site grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
+  <div class="container-site grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
     <div class="max-w-sm">
       <a href="/" class="inline-flex items-center" aria-label="DET.io Foundation home">
         <Lockup size={40} foundation onDark />
       </a>
       <p class="mt-4 text-sm leading-relaxed text-night-muted">
-        {SITE.legalName} — Digital Elastic Technologies, Internet Organization. A
-        not-for-profit technical research organization developing decentralized systems,
-        including the VirtEngine protocol, the DSEMA multi-agent
-        architecture, the open-source Bosun agent orchestrator, and the VEID (Verifiable
-        Electronic Identity) program.
-        program.
+        {SITE.legalName} advances education, digital rights, secure infrastructure,
+        and technology safety through open research and software.
       </p>
       <p class="mt-4 font-mono text-sm">
         <a href={`mailto:${SITE.email}`} class="text-sky-bright underline decoration-night-hairline underline-offset-4 hover:decoration-sky-bright">
@@ -24,20 +24,10 @@ import Lockup from "@components/brand/Lockup.astro";
       </p>
     </div>
 
-    <nav aria-label="Site">
-      <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-night-muted uppercase">Site</h2>
-      <ul class="mt-4 grid gap-2.5">
-        {
-          [...NAV, ...FOOTER_EXTRA].map((item) => (
-            <li>
-              <a href={item.href} class="text-sm text-night-text transition-colors hover:text-sky-bright">
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    {columns.map(col => <nav aria-label={col.title}>
+      <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-night-muted uppercase">{col.title}</h2>
+      <ul class="mt-4 grid gap-2.5">{col.links.map(item => <li><a href={item.href} class="text-sm text-night-text transition-colors hover:text-sky-bright">{item.label}</a></li>)}</ul>
+    </nav>)}
 
     <nav aria-label="Ecosystem">
       <h2 class="font-mono text-xs font-medium tracking-[0.18em] text-night-muted uppercase">Ecosystem</h2>
@@ -65,6 +55,10 @@ import Lockup from "@components/brand/Lockup.astro";
         <a href={SITE.patentVeUrl} rel="noopener" class="underline underline-offset-4 hover:text-sky-bright">
           patent {SITE.patentVe}
         </a>
+      </p>
+      <p class="colophon colophon--night basis-full">
+        Type: Instrument Serif, Archivo, IBM Plex Mono. Stock #f1efe9, spot #1a6f97.
+        Mark: the DET.io logo, unchanged. Reviewed 2026-09-25.
       </p>
     </div>
   </div>

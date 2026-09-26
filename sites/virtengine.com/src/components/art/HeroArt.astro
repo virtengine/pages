@@ -1,0 +1,269 @@
+---
+/**
+ * HeroArt — compact instrument artworks for page heroes.
+ * Six kinds, one visual language: night instrument geometry + mono annotations.
+ * Decorative; the surrounding PlateFigure carries the text alternative.
+ */
+import VImage from "@components/brand/VImage.astro";
+
+interface Props {
+  kind: "protocol" | "providers" | "staking" | "network" | "learn" | "source";
+  class?: string;
+}
+const { kind, class: className } = Astro.props;
+
+const rad = Math.PI / 180;
+const ring = (cx: number, cy: number, r: number, angles: number[]) =>
+  angles.map((a) => ({
+    x: +(cx + r * Math.cos(a * rad)).toFixed(1),
+    y: +(cy + r * Math.sin(a * rad)).toFixed(1),
+  }));
+
+const stakeRing = ring(268, 170, 84, [270, 330, 30, 90, 150, 210]);
+const stakeHex = stakeRing.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") + " Z";
+---
+
+<svg viewBox="0 0 460 340" class:list={["h-auto w-full", className]} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id={`ha-glow-${kind}`} cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.26" />
+      <stop offset="100%" stop-color="#7ddd7a" stop-opacity="0" />
+    </radialGradient>
+    <marker id={`ha-arrow-${kind}`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#60cc5d" />
+    </marker>
+  </defs>
+
+  {kind === "protocol" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">one binary · four layers</text>
+      <g>
+        <rect x="24" y="46" width="412" height="52" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="40" y="68" class="art-mono-xs" fill="var(--color-green)">clients</text>
+        <text x="40" y="84" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">CLI · approved clients · VEID wallet</text>
+        <rect x="286" y="58" width="60" height="22" rx="5" fill="none" stroke="var(--color-night-line)" />
+        <text x="316" y="73" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" fill="var(--color-night-muted)">gRPC</text>
+        <rect x="356" y="58" width="64" height="22" rx="5" fill="none" stroke="var(--color-night-line)" />
+        <text x="388" y="73" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" fill="var(--color-night-muted)">REST</text>
+      </g>
+      <path class="dash-march" d="M230,98 V 112" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} />
+      <g>
+        <rect x="24" y="114" width="412" height="106" rx="9" fill="var(--color-green)" fill-opacity="0.08" stroke="var(--color-green)" stroke-opacity="0.55" />
+        <text x="40" y="136" class="art-mono-xs" fill="var(--color-green)">virtengine chain — one go binary</text>
+        <text x="40" y="150" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">CometBFT consensus · Cosmos SDK application</text>
+        {["marketplace", "identity", "economics", "quality"].map((name, i) => (
+          <g transform={`translate(${40 + i * 98}, 160)`}>
+            <rect width="88" height="48" rx="7" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+            <text x="10" y="20" class="art-mono-xs" fill={name === "identity" ? "var(--color-green)" : "var(--color-night-text)"}>{name}</text>
+            <text x="10" y="36" class="art-mono-xs" fill="var(--color-night-muted)">{["6 modules", "8 modules", "8 modules", "5 modules"][i]}</text>
+          </g>
+        ))}
+      </g>
+      <path class="dash-march" d="M230,220 V 234" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} style="animation-delay:-0.4s" />
+      <g>
+        <rect x="24" y="236" width="412" height="46" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="40" y="258" class="art-mono-xs" fill="var(--color-green)">provider daemon</text>
+        <text x="40" y="273" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">watches orders · bids · instantiates · meters usage</text>
+      </g>
+      <g>
+        <rect x="24" y="294" width="130" height="30" rx="7" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="89" y="313" text-anchor="middle" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">Kubernetes</text>
+        <rect x="164" y="294" width="130" height="30" rx="7" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="229" y="313" text-anchor="middle" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">HPC schedulers</text>
+        <rect x="304" y="294" width="132" height="30" rx="7" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="370" y="313" text-anchor="middle" font-family="var(--font-sans)" font-size="12" fill="var(--color-night-muted)">enclaves</text>
+      </g>
+    </g>
+  )}
+
+  {kind === "providers" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">capacity → orders → settlement</text>
+      <g>
+        <rect x="24" y="52" width="196" height="248" rx="11" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="40" y="78" class="art-mono-xs" fill="var(--color-green)">your infrastructure</text>
+        {[0, 1, 2, 3].map((i) => (
+          <g transform={`translate(40, ${96 + i * 50})`}>
+            <rect width="164" height="38" rx="6" fill="none" stroke="var(--color-night-line)" />
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => (
+              <circle cx={14 + k * 20} cy="19" r="3.4" fill={i === 1 && k < 5 ? "var(--color-green)" : "var(--color-night-line-strong)"} class={i === 1 && k < 5 ? "breathe" : undefined} style={i === 1 ? `animation-delay:-${k * 0.3}s` : undefined} />
+            ))}
+          </g>
+        ))}
+        <text x="106" y="298" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">slurm · moab · ood · k8s</text>
+      </g>
+
+      <path class="dash-march" d="M224,150 H 254" stroke="var(--color-green)" stroke-width="1.5" marker-end={`url(#ha-arrow-${kind})`} />
+      <circle cx="300" cy="150" r="70" fill={`url(#ha-glow-${kind})`} />
+      <path d="M300,102 L342,126 L342,174 L300,198 L258,174 L258,126 Z" stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.85" />
+      <VImage x={284} y={134} h={32} />
+      <text x="300" y="220" text-anchor="middle" class="art-mono-xs" fill="var(--color-green)">x/market</text>
+      <path class="dash-march" d="M342,150 H 360" stroke="var(--color-green)" stroke-width="1.5" style="animation-delay:-0.6s" />
+      <g>
+        <rect x="360" y="96" width="76" height="46" rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="398" y="116" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-text)">escrow</text>
+        <text x="398" y="131" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">funded</text>
+      </g>
+      <path class="dash-march" d="M398,142 V 176" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} style="animation-delay:-0.9s" />
+      <g>
+        <rect x="360" y="180" width="76" height="58" rx="8" fill="var(--color-night-raised)" stroke="var(--color-green)" stroke-opacity="0.6" />
+        <text x="398" y="202" text-anchor="middle" class="art-mono-xs" fill="var(--color-green)">usage</text>
+        <rect x="372" y="212" width="52" height="6" rx="3" fill="var(--color-night-line)" />
+        <rect x="372" y="212" width="38" height="6" rx="3" fill="var(--color-green)" class="breathe" />
+      </g>
+      <text x="398" y="262" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">settlement fees</text>
+      <text x="398" y="276" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">governed</text>
+    </g>
+  )}
+
+  {kind === "staking" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">delegated proof of stake · dual duties</text>
+      <g>
+        {[
+          ["delegators", "token holders"],
+          ["partners", "staking services"],
+        ].map(([t, s], i) => (
+          <g transform={`translate(24, ${104 + i * 74})`}>
+            <rect width="118" height="56" rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+            <text x="12" y="24" class="art-mono-xs" fill="var(--color-night-text)">{t}</text>
+            <text x="12" y="41" class="art-mono-xs" fill="var(--color-night-muted)">{s}</text>
+          </g>
+        ))}
+      </g>
+      <path class="dash-march" d="M142,132 C 168,132 172,150 180,162" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} />
+      <path class="dash-march" d="M142,206 C 168,206 172,190 180,176" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} style="animation-delay:-0.5s" />
+      <text x="150" y="92" class="art-mono-xs" fill="var(--color-night-muted)">delegate</text>
+
+      <circle cx="268" cy="170" r="104" fill={`url(#ha-glow-${kind})`} />
+      <path d={stakeHex} stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.85" />
+      {stakeRing.map((p, i) => (
+        <g>
+          <circle cx={p.x} cy={p.y} r="6" fill="var(--color-night-panel)" stroke="var(--color-green-bright)" stroke-width="1.5" class="breathe" style={`animation-delay:-${i * 0.7}s`} />
+        </g>
+      ))}
+      <VImage x={268 - 18} y={170 - 17} h={34} />
+      <text x="268" y="222" text-anchor="middle" class="art-mono-xs" fill="var(--color-green)">validator set</text>
+      <text x="268" y="238" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">consensus · veid · governance</text>
+
+      <path class="dash-march" d="M352,132 H 386" stroke="var(--color-green)" stroke-width="1.4" marker-end={`url(#ha-arrow-${kind})`} style="animation-delay:-0.3s" />
+      <g>
+        <rect x="386" y="106" width="50" height="52" rx="8" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="411" y="128" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-text)">rewards</text>
+        <path d="M403,140 l4,5 8,-10" stroke="var(--color-green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+      <path class="dash-march" d="M352,208 H 386" stroke="#d9a83c" stroke-width="1.4" stroke-dasharray="3 6" />
+      <g>
+        <rect x="386" y="182" width="50" height="52" rx="8" fill="none" stroke="#d9a83c" stroke-dasharray="4 4" />
+        <text x="411" y="204" text-anchor="middle" class="art-mono-xs" fill="#d9a83c">slash</text>
+        <text x="411" y="220" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">risk</text>
+      </g>
+      <text x="268" y="300" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">21-day unbonding · bonded stake can be slashed</text>
+    </g>
+  )}
+
+  {kind === "network" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">launch posture · not live</text>
+      <line x1="40" y1="140" x2="420" y2="140" stroke="var(--color-night-line-strong)" stroke-width="1" />
+      <line x1="40" y1="140" x2="420" y2="140" stroke="var(--color-green)" stroke-width="1.4" class="rail-cursor" />
+      {[
+        { x: 84, label: "now", sub: "research & development", state: "now" },
+        { x: 216, label: "jan 2027", sub: "public testnet", state: "plan" },
+        { x: 348, label: "mar 2027", sub: "mainnet · approval", state: "plan" },
+      ].map((m) => (
+        <g>
+          <circle cx={m.x} cy="140" r="8" fill="var(--color-night-deep)" stroke={m.state === "now" ? "var(--color-green)" : "var(--color-night-line-strong)"} stroke-width="1.6" />
+          {m.state === "now" && <circle cx={m.x} cy="140" r="8" stroke="var(--color-green)" stroke-width="1.4" class="pulse-ring" />}
+          <text x={m.x} y="176" text-anchor="middle" class="art-mono-xs" fill={m.state === "now" ? "var(--color-green)" : "var(--color-night-text)"}>{m.label}</text>
+          <text x={m.x} y="192" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">{m.sub}</text>
+        </g>
+      ))}
+      <g>
+        <rect x="24" y="220" width="184" height="96" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="40" y="244" class="art-mono-xs" fill="var(--color-green)">genesis bundle</text>
+        <text x="40" y="262" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">config/mainnet/ — allocations</text>
+        <text x="40" y="278" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">and the published genesis</text>
+      </g>
+      <g>
+        <rect x="220" y="220" width="200" height="96" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="236" y="244" class="art-mono-xs" fill="var(--color-green)">go / no-go record</text>
+        <text x="236" y="262" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">the formal launch decision is</text>
+        <text x="236" y="278" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">recorded in the repository</text>
+      </g>
+    </g>
+  )}
+
+  {kind === "learn" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">guides grounded in the repository</text>
+      {[0, 1, 2].map((i) => (
+        <g transform={`translate(${36 + i * 22}, ${64 + i * 18})`}>
+          <rect width="250" height="200" rx="10" fill={i === 2 ? "var(--color-night-raised)" : "none"} stroke="var(--color-night-line-strong)" opacity={i === 2 ? 1 : 0.5} />
+        </g>
+      ))}
+      <g transform="translate(80,118)">
+        <rect width="250" height="196" rx="10" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+        <text x="20" y="30" class="art-mono-xs" fill="var(--color-green)">guide 01</text>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <line x1="20" y1={52 + i * 20} x2={i % 3 === 2 ? 150 : 214} y2={52 + i * 20} stroke="var(--color-night-line-strong)" stroke-width={i === 0 ? 6 : 4} />
+        ))}
+        <path d="M214,20 l16,0 0,26 -8,-7 -8,7 Z" fill="var(--color-green)" fill-opacity="0.85" />
+      </g>
+      <g>
+        <path d="M344,96 h14 M344,130 h14 M344,164 h14" stroke="var(--color-night-line-strong)" stroke-width="1" stroke-dasharray="2 5" />
+        <rect x="366" y="80" width="70" height="32" rx="6" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="401" y="100" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">x/market</text>
+        <rect x="366" y="114" width="70" height="32" rx="6" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="401" y="134" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">x/veid</text>
+        <rect x="366" y="148" width="70" height="32" rx="6" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="401" y="168" text-anchor="middle" class="art-mono-xs" fill="var(--color-night-muted)">x/escrow</text>
+      </g>
+      <text x="80" y="330" class="art-mono-xs" fill="var(--color-night-muted)">module references · explainers · the journal</text>
+    </g>
+  )}
+
+  {kind === "source" && (
+    <g>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">apache 2.0 · one repository</text>
+      <g>
+        <rect x="24" y="52" width="212" height="122" rx="10" fill="var(--color-night-deep)" stroke="var(--color-night-line-strong)" />
+        <circle cx="44" cy="72" r="4" fill="var(--color-night-line-strong)" />
+        <circle cx="58" cy="72" r="4" fill="var(--color-night-line-strong)" />
+        <circle cx="72" cy="72" r="4" fill="var(--color-night-line-strong)" />
+        <text x="44" y="102" class="art-mono-xs" fill="var(--color-green)">$ make virtengine</text>
+        <text x="44" y="122" class="art-mono-xs" fill="var(--color-night-muted)">building .cache/bin/virtengine</text>
+        <text x="44" y="142" class="art-mono-xs" fill="var(--color-night-muted)">go 1.25.5 · amd64 / arm64</text>
+        <rect x="160" y="152" width="60" height="6" rx="3" fill="var(--color-night-line)" />
+        <rect x="160" y="152" width="42" height="6" rx="3" fill="var(--color-green)" class="breathe" />
+      </g>
+      <g transform="translate(268,64)">
+        <line x1="16" y1="0" x2="16" y2="200" stroke="var(--color-night-line-strong)" stroke-width="1.5" />
+        <line x1="66" y1="40" x2="66" y2="200" stroke="var(--color-night-line-strong)" stroke-width="1.5" />
+        <path d="M16,120 C 44,120 44,60 66,60" stroke="var(--color-green)" stroke-width="1.5" stroke-dasharray="3 5" class="dash-march" />
+        {[
+          { x: 16, y: 26, fill: true },
+          { x: 16, y: 72, fill: false },
+          { x: 16, y: 120, fill: false },
+          { x: 16, y: 166, fill: false },
+          { x: 66, y: 60, fill: true },
+          { x: 66, y: 108, fill: false },
+          { x: 66, y: 156, fill: false },
+        ].map((c) => (
+          <circle cx={c.x} cy={c.y} r="6" fill={c.fill ? "var(--color-green)" : "var(--color-night-panel)"} stroke={c.fill ? "none" : "var(--color-night-line-strong)"} stroke-width="1.5" />
+        ))}
+        <text x="86" y="30" class="art-mono-xs" fill="var(--color-night-text)">main</text>
+        <text x="86" y="64" class="art-mono-xs" fill="var(--color-green)">feature</text>
+        <text x="86" y="112" class="art-mono-xs" fill="var(--color-night-muted)">pull requests</text>
+        <text x="86" y="160" class="art-mono-xs" fill="var(--color-night-muted)">issues · tests</text>
+      </g>
+      <text x="24" y="212" class="art-mono-xs" fill="var(--color-night-muted)">x/ · app/ · pkg/ · docs/ · makefile</text>
+      <g>
+        <rect x="24" y="232" width="412" height="84" rx="9" fill="none" stroke="var(--color-night-line-strong)" />
+        <text x="40" y="258" class="art-mono-xs" fill="var(--color-green)">public-benefit lock</text>
+        <text x="40" y="278" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">stewarded by DETIO FOUNDATION LTD — no private capture,</text>
+        <text x="40" y="294" font-family="var(--font-sans)" font-size="11.5" fill="var(--color-night-muted)">no dividends; assets pass to another public-benefit entity.</text>
+      </g>
+    </g>
+  )}
+</svg>

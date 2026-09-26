@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import PartnerStrip from "@components/PartnerStrip.astro";
 import { SITE } from "@data/site";
 
 const timeline = [
@@ -30,9 +31,10 @@ const timeline = [
 ---
 
 <Base
-  title="About — VirtEngine"
-  description="Our mission, activities and beneficiaries: open education, privacy and access to secure digital infrastructure. DETIO FOUNDATION LTD, ACN 699 651 771."
+  title="About: Open Decentralized Cloud Mission | VirtEngine"
+  description="About VirtEngine and DETIO FOUNDATION LTD (ACN 699 651 771): open education, privacy and secure infrastructure. Learn the mission and activities."
   path="/about"
+  image="/media/learn-library-1200.webp"
   breadcrumbs={[
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
@@ -46,6 +48,8 @@ const timeline = [
       { name: "Home", href: "/" },
       { name: "About", href: "/about" },
     ]}
+    media="closing-hands"
+    mediaCaption="Open technology, stewarded for public benefit."
   />
 
   <Section eyebrow="Our purpose" title="Who this work is for">
@@ -56,8 +60,11 @@ const timeline = [
       <p><a href="/activities">Explore our activities and public resources</a>, <a href="/participate">Find a way to contribute</a> or <a href="/contact">contact the Foundation</a> about the project.</p>
     </div>
   </Section>
+
+  <PartnerStrip class="partner-strip--page" />
+
   <Section eyebrow="History" title="From DET.io to the foundation">
-    <ol class="relative max-w-3xl space-y-10 border-l border-line pl-8">
+    <ol class="relative space-y-10 border-l border-line pl-8">
       {
         timeline.map((item) => (
           <li class="reveal relative">
@@ -105,7 +112,7 @@ const timeline = [
     <div class="prose-body reveal max-w-3xl space-y-4 text-base">
       <p>
         Australian patent
-        <a href={SITE.patentUrl} rel="noopener">{SITE.patentId}</a> covers the
+        <a href={SITE.patentUrl} target="_blank" rel="noopener">{SITE.patentId}</a> covers the
         decentralized computing system at the heart of VirtEngine — including the
         blockchain control layer in which block-proposing validators decrypt and score
         encrypted identity data with machine-learning models and consensus validators
@@ -118,7 +125,7 @@ const timeline = [
   </Section>
 
   <Section eyebrow="Contact" title="Reach the project">
-    <div class="grid max-w-3xl gap-5 sm:grid-cols-2">
+    <div class="grid gap-5 sm:grid-cols-2">
       <div class="reveal rounded-card border border-line bg-panel p-7">
         <h3 class="text-base font-semibold">General &amp; licensing</h3>
         <p class="mt-2 font-mono text-sm">
@@ -128,7 +135,7 @@ const timeline = [
       <div class="reveal rounded-card border border-line bg-panel p-7">
         <h3 class="text-base font-semibold">Development</h3>
         <p class="mt-2 font-mono text-sm">
-          <a href={SITE.github} rel="noopener" class="text-green-deep hover:text-green-deep">github.com/virtengine</a>
+          <a href={SITE.github} target="_blank" rel="noopener" class="text-green-deep hover:text-green-deep">github.com/virtengine</a>
         </p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 ---
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
+import TableScroll from "@components/TableScroll.astro";
 import { ABOUT_NAV } from "@data/nav-sections";
 import { SITE } from "@data/site";
 
@@ -13,8 +14,8 @@ const crumbs = [
 
 <Guide
   title="What is identity.org.au"
-  metaTitle="What is identity.org.au — About | identity.org.au"
-  description="identity.org.au is an open-source community identity service operated by a not-for-profit foundation. It is independent of the Australian Government."
+  metaTitle="What Is Identity.org.au? Start Here | identity.org.au"
+  description="identity.org.au is a free open-source community identity service run by an Australian nonprofit. Independent of government. Start here."
   lede="An open-source community service for privacy-preserving digital identity, operated independently of government."
   eyebrow="About"
   breadcrumbs={crumbs}
@@ -74,7 +75,7 @@ const crumbs = [
     <h2>How it differs from government digital ID</h2>
   </div>
 
-  <div class="mt-6 overflow-x-auto">
+  <TableScroll label="This service compared with government digital ID" class="mt-6">
     <table class="table-gov">
       <caption class="sr-only">Comparison between this service and government digital identity</caption>
       <thead>
@@ -112,7 +113,7 @@ const crumbs = [
         </tr>
       </tbody>
     </table>
-  </div>
+  </TableScroll>
 
   <div class="prose-service mt-8">
     <h2>Why we lead with this</h2>

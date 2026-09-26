@@ -1,0 +1,98 @@
+---
+/**
+ * ResponsibilityBoundary — the chain ↔ provider daemon ↔ Waldur architecture.
+ *
+ * Three visually distinct columns. Capabilities that participate in the same
+ * responsibility chain share a `data-link` token; hovering or focusing any
+ * of them highlights the connected responsibilities in the adjacent columns
+ * (CSS `:has()` only, no JavaScript, keyboard reachable).
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const columns = [
+  {
+    id: "chain",
+    kicker: "Verifiable market",
+    title: "VirtEngine Protocol",
+    body: "Consensus state: who may trade, what was agreed, what is owed, and what was settled.",
+    foot: "Consensus + market state",
+    items: [
+      { label: "providers", link: "sync" },
+      { label: "offerings", link: "sync" },
+      { label: "orders", link: "route" },
+      { label: "bids / matches", link: "route" },
+      { label: "leases", link: "lifecycle" },
+      { label: "VEID", link: undefined },
+      { label: "escrow", link: undefined },
+      { label: "settlement", link: "usage" },
+    ],
+  },
+  {
+    id: "daemon",
+    kicker: "Bridge",
+    title: "Provider daemon",
+    body: "The operator-run agent that translates protocol events into control-plane operations and reconciles the answers back.",
+    foot: "Translation + reconciliation",
+    items: [
+      { label: "offering sync", link: "sync" },
+      { label: "mapping", link: undefined },
+      { label: "event subscriptions", link: "route" },
+      { label: "routing", link: "route" },
+      { label: "signed callbacks", link: "lifecycle" },
+      { label: "lifecycle reconciliation", link: "lifecycle" },
+      { label: "usage submission", link: "usage" },
+    ],
+  },
+  {
+    id: "waldur",
+    kicker: "Control plane",
+    title: "Waldur",
+    body: "The service-management platform that presents the catalogue and operates resources, projects, quotas and reporting.",
+    foot: "Service management + fulfilment",
+    items: [
+      { label: "HomePort", link: "sync" },
+      { label: "organisations", link: undefined },
+      { label: "projects", link: "route" },
+      { label: "catalogue", link: "sync" },
+      { label: "resources", link: "lifecycle" },
+      { label: "quotas", link: undefined },
+      { label: "reporting", link: "usage" },
+      { label: "backend plugins", link: undefined },
+    ],
+  },
+];
+---
+
+<div class:list={["mk-rb", className]}>
+  {
+    columns.map((column) => (
+      <section class={`mk-rb-col mk-rb-col--${column.id}`} aria-label={column.title}>
+        <p class="mk-rb-kicker">{column.kicker}</p>
+        <h3>{column.title}</h3>
+        <p>{column.body}</p>
+        <ul class="mk-rb-list">
+          {column.items.map((item) => (
+            <li
+              class="mk-rb-item"
+              data-link={item.link}
+              tabindex={item.link ? 0 : undefined}
+            >
+              {item.label}
+              {item.link && <code aria-hidden="true">↔</code>}
+            </li>
+          ))}
+        </ul>
+        <p class="mk-rb-foot">{column.foot}</p>
+      </section>
+    ))
+  }
+</div>
+<p class="mk-rb-note">
+  <strong>Trace a responsibility:</strong> hover or focus <em>offering sync</em> to follow an on-chain
+  offering into the provider mapping and the Waldur catalogue; hover <em>usage submission</em> to follow
+  component measurements back through signed usage into settlement state.
+</p>

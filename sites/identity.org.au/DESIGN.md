@@ -1,5 +1,16 @@
 # DESIGN — identity.org.au
 
+> **Amendment B (2026-09-25) is normative for the credential layer.**
+> Service UI stays Public Sans. Editorial headlines (H1, section H2, vault
+> band) use Newsreader, roman, not italic display. Record fields, MRZ, and
+> the honesty stamp use IBM Plex Mono. One vault band per page
+> (`ClosingBand`, `#17293a`). Guilloché grounds are seeded and decorative.
+> The Proof Card is the only foil. `scripts/og.mjs` uses `#17293a`, never
+> indigo. The honesty lock is a stamped notice above the footer, not only a
+> paragraph inside it.
+
+
+
 Government-service-grade design for a service that is emphatically **not** a
 government service. The design DNA is the digitalid.gov.au / my.identity.gov.au
 class of sites: white surfaces, near-black ink, one action colour used with
@@ -19,11 +30,13 @@ deep trust-blue as its single action colour.
 2. [Colour tokens + contrast table](#colour-tokens)
 3. [Typography](#typography)
 4. [Spacing, grid, measure](#spacing-grid-measure)
-5. [Component inventory](#component-inventory)
-6. [Phone mockup system](#phone-mockup-system)
-7. [Content and voice rules](#content-and-voice-rules)
-8. [Motion](#motion)
-9. [Honesty locks](#honesty-locks)
+5. [Layout and editorial system](#layout-and-editorial-system)
+6. [Component inventory](#component-inventory)
+7. [Phone mockup system](#phone-mockup-system)
+8. [Media system](#7b-media-system)
+9. [Content and voice rules](#content-and-voice-rules)
+10. [Motion](#motion)
+11. [Honesty locks](#honesty-locks)
 
 ## Logo — the Ridgemark
 
@@ -133,14 +146,58 @@ eyebrows.
 - Radius: `--radius-tile 0.375rem` (cards, buttons, alerts) — small radii only,
   nothing pill-shaped except phone-screen chips
 
-## Component inventory
+## 5. Layout and editorial system
+
+The rehaul keeps government-service restraint while giving journeys an editorial
+register: stronger section rhythm, captioned light figures, machine-readable
+status facts, statement bands, and one accessible demonstration pattern.
+
+- **Ridge motif**: a repeating radial-arc texture derived from the Ridgemark's
+  fingerprint ridges, drawn at ~5% ink on heroes and ~5% white on navy bands.
+  It is the only decorative pattern; there is no grain, lattice or noise.
+- **Primary actions are navy** (`--color-navy`), secondary actions are navy
+  outlines; the action blue is reserved for links and focus-affordance text.
+- **Statement bands**: `ClosingBand.astro` closes marketing and service journeys
+  in navy with a strong line and action buttons; the navy closing band and the
+  navy footer frame the light middle of the site.
+- `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
+  standfirst) with a 3px navy rule and predictable vertical rhythm. Sections do
+  **not** carry the page container; each Section is wrapped in
+  `.container-site` by the page so full-bleed bands (media, closing) can sit
+  between them.
+- `Section.astro`: ruled editorial header (`index · eyebrow`, headline,
+  standfirst) with a 3px navy rule and predictable vertical rhythm.
+- `ServiceHero.astro`: unified service hero with breadcrumbs, status tag,
+  actions, supporting note, and an optional framed media slot; `PageHeader.astro`
+  matches its type scale on guide and policy pages.
+- `FactStrip.astro`: a compact list of checkable facts inside the container,
+  separated by rules; every item is text unless it has a destination.
+- `ServiceFigure.astro`: light alternative to ad-hoc `<figure>` wrappers, with a
+  **navy rail**, responsive body, caption, and optional horizontal-scroll
+  preservation for wide diagrams.
+- `TableScroll.astro`: keyboard-focusable scroll region for tables that cannot be
+  simplified; paired with sticky first columns and a minimum table width.
+- `ShareDemo.astro`: a simplified zero-JS consent/proof/receipt demonstration.
+  One radio control set drives the illustrated phone and panel; boundary
+  accounting is explicit; the phone is decorative and panels carry meaning.
+- Headings follow page context: `Steps.astro` accepts `headingLevel={2|3}` so a
+  step list directly under an `h1` does not create an `h1 → h3` skip.
+
+## 6. Component inventory
 
 | Component | File | Pattern |
 | --- | --- | --- |
-| Provenance banner | `Header.astro` (bottom strip) | Site-wide "not a government service" notice, steel shield icon, tint surface |
-| Notice/alert | `Alert.astro` | Left rule + tinted surface + drawn SVG icon; `info` / `warning` / `success` |
+| Provenance statement | `Footer.astro` | Site-wide "not a government service" statement in the navy footer, with the accreditation posture and acknowledgement |
+| Service section | `Section.astro` | Ruled editorial section header and vertical rhythm; optional `index · eyebrow`, headline, standfirst |
+| Feature hero | `ServiceHero.astro` | Breadcrumbs, status tag, eyebrow, headline, standfirst, actions, supporting note, optional framed media |
+| Closing band | `ClosingBand.astro` | Navy statement band with action slots, used above the footer on key journeys |
+| Fact strip | `FactStrip.astro` | Compact machine-readable status facts inside the container; plain text unless a destination exists |
+| Service figure | `ServiceFigure.astro` | Light rail/caption frame for diagrams and phone mockups; optional scroll preservation for wide SVG diagrams |
+| Sharing demo | `ShareDemo.astro` | Simplified zero-JS request → proof → receipt walkthrough with boundary accounting |
+| Scrollable table | `TableScroll.astro` | Keyboard-focusable region with sticky first column for tables that cannot be simplified; wide variant for four or more columns |
+| Notice/alert | `Alert.astro` | Left rule + tinted surface + drawn SVG icon; `info` / `warning` / `success`, with live-region semantics |
 | Callout | `Callout.astro` | Neutral navy left-rule panel for asides and definitions |
-| Steps | `Steps.astro` | Gov numbered-steps: navy discs joined by a vertical rule, optional detail bullets |
+| Steps | `Steps.astro` | Gov numbered-steps: navy discs joined by a vertical rule, optional detail bullets, screen-reader step position, contextual `headingLevel` |
 | Card link | `CardLink.astro` | Chevron-affordance card list with optional tag + description |
 | Status tag | `StatusTag.astro` | Uppercase bordered tag: `neutral` / `info` / `success` / `warning` |
 | Breadcrumbs | `Breadcrumbs.astro` | On every interior page; BreadcrumbList JSON-LD emitted by `Base.astro` |
@@ -155,25 +212,78 @@ eyebrows.
 | Browser mockup | `components/phone/WebPortalFrame.astro` | Desktop-browser frame of the my.identity.org.au portal (credential, proofs, consents, session security) |
 | Phone mockups | `components/phone/*` | See below |
 
-## Phone mockup system
+## 7. Phone mockup system
 
 Refined SVG phone frames replace abstract hero art. `Phone.astro` draws the
-device (viewBox 0 0 320 660; screen area x 16–304, y 42–644) and slots screen
-content; `ScreenChrome.astro` adds the navy app bar (with the mark) and 5-step
-progress dots. Screens are accurate to the reference capture app
-(`mobile/veid-capture-app`):
+device (viewBox 0 0 328 670, device body at 4,4–316,656; usable screen area x
+16–304, y 42–644) and slots screen content; `ScreenChrome.astro` adds the navy
+app bar (with the mark) and 5-step progress dots. Screens are accurate to the
+reference capture app (`mobile/veid-capture-app`):
 
 | Screen | Shows | Used on |
 | --- | --- | --- |
-| `DocScanScreen` | Guided document capture: corner brackets, edge/glare checks, on-device processing note | set-up-your-wallet |
-| `LivenessScreen` | Active liveness: blink ✓ / head-turn in progress / smile next | set-up-your-wallet |
-| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | home hero |
-| `ConsentScreen` | Sharing request: requester, "they will see" / "they will never see", expiry, approve/decline | how-it-works |
-| `ZkShareScreen` | Zero-knowledge share: locked fields stay, one proof leaves | home, how-it-works |
+| `DocScanScreen` | Guided document capture: corner brackets, edge/glare checks, on-device processing note | set-up-your-wallet, mobile-wallet |
+| `LivenessScreen` | Active liveness: blink ✓ / head-turn in progress / smile next | set-up-your-wallet, mobile-wallet |
+| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | home hero, wallet overview |
+| `ZkShareScreen` | Zero-knowledge share: locked fields stay, one proof leaves | home, credentials |
+| `WebPortalFrame` | Browser portal: credential, proofs, consents, session security | wallet overview, web wallet |
 
 Every phone SVG has `role="img"` and a full-sentence `aria-label`.
 
-## Content and voice rules
+## 7b. Media system
+
+The site carries **real photography** as its "real world" layer — documents,
+devices, rooms and objects from open collections. There is no stock-photo look
+and no AI-generated imagery: every photograph is public-domain / CC0 source
+material rendered through one fixed brand treatment, so a hand holding a phone,
+a passport on a desk and a bank vault read as one system.
+
+### Sourcing rules
+
+- Source: Openverse (`api.openverse.org`), filtered to `license=cc0,pdm`, with
+  Wikimedia Commons searched directly as a fallback; only `image/jpeg`
+  photographs qualify and obvious artwork (paintings, drawings, engravings,
+  maps, posters) is rejected by title.
+- `scripts/media-harvest.py` downloads, crops, treats and writes both the WebP
+  variants and `public/media/manifest.json` (title, creator, licence, source,
+  provider, treatment). `scripts/build-media-data.py` generates
+  `src/data/media.ts` from the manifest — components import from there, never by
+  raw path.
+- `/media-credits` lists the whole library with its provenance; the footer links
+  to it.
+- Banned, permanently: AI-generated images, watermarked stock, imagery of
+  identifiable people presented as customers or users, and anything implying the
+  network is live.
+
+### Treatment (the pipeline)
+
+1. crop to the placement aspect (bias above centre for portraits);
+2. greyscale → **duotone gradient map** in the brand palette
+   (`paper`: navy `#142433` → steel `#5b83a8` → paper `#f7fafc`;
+   `night`: `#0b141d` → `#3f6b95` → `#cfe3f2`);
+3. optional **halftone dot screen** (15°, cell ≈ width/120) for object studies
+   with strong silhouettes — never on faces or scenes where legibility matters;
+4. export WebP at 720/1100/1200/1440 as placed, quality 78.
+
+Images are never placed raw: the duotone treatment *is* the brand layer.
+
+### Placement
+
+| Component | Use |
+| --- | --- |
+| `media/MediaFigure.astro` | Any framed image: figures, credits grid. Takes `slug`, `ratio`, `caption`, `credit`, `priority`, `sizes`. |
+| `media/MediaBand.astro` | Full-width photographic band with copy beside (`split` / `reverse`) or over the image (`full`, copy on a paper card). |
+
+Rules:
+
+- Images sit in a hairline frame with the tile radius — the same geometry as
+  every other surface; captions are body small, credits are letterspaced
+  uppercase, and provenance lives on `/media-credits`.
+- Text never sits directly on a photograph without a card (the `full` band uses
+  a paper card).
+- Alt text is short and factual, and never describes a person as a customer.
+
+## 8. Content and voice rules
 
 - **Plain English first.** Every technical concept gets a plain sentence before
   any term of art; jargon is defined on first use ("a zero-knowledge proof — a
@@ -210,21 +320,43 @@ invention creeps in:
   major argument; a related-articles rail; cross-links into `/wallet`,
   `/help` and `/get-started`.
 
-## Motion
+### Definitions and guides
+
+`/definitions` (`src/data/definitions.ts`) is the reference layer: one page
+per term, each mapped to exactly one primary query (see `SEO-PLAN.md`).
+`/guides` (`src/data/guides.ts`) holds long-form explainers and how-tos with
+the same section/callout/related shape, plus optional comparison tables
+rendered with `TableScroll` + `table-gov`.
+
+- Same rules as Insights: evergreen, no statistics or market-size figures,
+  no personas, attribution "Identity.org.au editorial".
+- One primary query per page — never two pages targeting the same query;
+  related queries ride as secondary keywords in the summary.
+- Each page ends with a visible `faq` block rendered as native `<details>` —
+  FAQPage JSON-LD is emitted from it, and Google requires marked-up questions
+  to be visible on the page.
+- Government-adjacent content (AGDIS, the Australian landscape) states
+  non-affiliation and non-accreditation explicitly, and uses "aligns with the
+  principles of" as the ceiling for any comparison with accredited systems.
+
+## 9. Motion
 
 Near zero. The only scripted behaviour on the site is the mobile menu toggle;
-FAQ accordions are native `<details>`. Transitions are 140–160ms colour/border
-eases on hover. There are no scroll animations, no parallax, no animated SVG.
+FAQ accordions are native `<details>`, and the sharing demonstration uses CSS-only
+radio state. Transitions are 140–160ms colour/border eases on hover; the demo's
+flow line is the only looping keyframe animation. There are no scroll animations,
+no parallax, no animated SVG beyond these restrained diagram cues.
 `prefers-reduced-motion: reduce` collapses all remaining transition durations
-to 0.01ms globally.
+to 0.01ms globally and disables looping demonstration/diagram motion.
 
-## Honesty locks
+## 10. Honesty locks
 
 Enforced in components so they cannot drift page-by-page:
 
-1. Provenance banner under the header on **every page** (Header.astro).
-2. Footer statement: not a government service; not AGDIS/myID/myGov.
-3. First FAQ question answers it explicitly (FAQPage JSON-LD included).
-4. No accreditation claims anywhere — "aligns with the principles of" is the
+1. Footer statement: not a government service; not AGDIS/myID/myGov.
+2. First FAQ question answers it explicitly (FAQPage JSON-LD included).
+3. No accreditation claims anywhere — "aligns with the principles of" is the
    ceiling. No app-store links, no user counts, no invented partners.
+4. Illustrated interactions are labelled as demonstrations, and sharing controls
+   never imply that data is transmitted by the marketing site.
 5. Schema.org uses `Organization` + `Service` — never `GovernmentService`.

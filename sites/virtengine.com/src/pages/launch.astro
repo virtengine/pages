@@ -1,35 +1,39 @@
 ---
 import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
+import { NETWORK_STATUS } from "@data/status";
 ---
 
 <Base
-  title="VirtEngine launch updates"
-  description="Receive launch and release updates for the VirtEngine protocol."
+  title="Launch Updates: TestNet & MainNet News | VirtEngine"
+  description="Join VirtEngine launch updates: TestNet January 2027, MainNet March 2027, releases and provider news. Get notified when the network opens."
   path="/launch"
+  image="/media/hero-infrastructure-1440.webp"
   breadcrumbs={[{ name: "Home", href: "/" }, { name: "Launch updates", href: "/launch" }]}
 >
-  <Section
+  <PageHero
     eyebrow="Launch updates"
     title="Follow the VirtEngine launch"
-    lede="TestNet is planned for January 2027, followed by MainNet in March 2027 after validation and a separate production approval. Join the list for confirmed dates and network updates."
+    lede={`${NETWORK_STATUS.short} ${NETWORK_STATUS.testnet.label} — ${NETWORK_STATUS.testnet.timing.toLowerCase()}; ${NETWORK_STATUS.mainnet.label} — ${NETWORK_STATUS.mainnet.timing.toLowerCase()}.`}
+    crumbs={[
+      { name: "Home", href: "/" },
+      { name: "Launch updates", href: "/launch" },
+    ]}
+    media="network-earth"
+    mediaCaption="TestNet and MainNet, watched closely."
   >
-    <div class="mb-8 grid max-w-2xl gap-4 sm:grid-cols-2">
-      <div class="rounded-card border border-line bg-panel p-5">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">TestNet</p>
-        <p class="mt-2 font-display text-2xl text-ink">January 2027</p>
-        <p class="mt-2 text-sm text-slate">Public pre-production validation; state may reset and does not automatically migrate to MainNet.</p>
-      </div>
-      <div class="rounded-card border border-green-soft bg-green-wash p-5">
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-slate">MainNet</p>
-        <p class="mt-2 font-display text-2xl text-green-deep">March 2027</p>
-        <p class="mt-2 text-sm text-slate">Production launch after TestNet exit criteria, remediation, final artifacts, and a fresh go/no-go decision.</p>
-      </div>
-    </div>
+    <a class="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-green-deep hover:text-green-dark" href="/network">View network status →</a>
+  </PageHero>
+
+  <Section
+    eyebrow="Launch list"
+    title="Join the launch list"
+    lede="We will only send updates relevant to the protocol launch, releases and network availability."
+  >
+    <p class="mb-8 max-w-2xl text-sm"><a href="/network">Full status, criteria and artifacts →</a></p>
     <div class="clip-corner max-w-2xl border border-line-strong bg-panel p-6 md:p-8">
-      <h2 class="font-display text-2xl text-ink">Join the launch list</h2>
-      <p class="prose-body mt-3">We will only send updates relevant to the protocol launch, releases and network availability.</p>
-      <form id="launch-signup" class="mt-7" novalidate>
+      <form id="launch-signup" class="mt-1" novalidate>
         <label for="launch-email" class="font-semibold text-ink">Email address</label>
         <input id="launch-email" name="email" type="email" autocomplete="email" required class="mt-2 block w-full rounded-sm border border-line-strong bg-paper px-4 py-3 text-ink" />
         <label class="mt-4 flex gap-3 text-sm text-slate">

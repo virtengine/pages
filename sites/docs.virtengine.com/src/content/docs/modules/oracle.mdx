@@ -1,0 +1,114 @@
+---
+title: x/oracle — Oracle module
+description: x/oracle brings external data such as token prices and reference rates into chain state for consensus-visible pricing and policy.
+---
+
+The `x/oracle` module brings external data — token prices, reference
+exchange rates — into chain state where economic logic can use it. Feeds are
+submitted, validated, and stored so that modules pricing marketplace
+services or evaluating policy have a consensus-visible data source.
+
+Oracle design constrains manipulation: submissions are permissioned and
+validated rather than free-for-all, because a corrupted price feed corrupts
+everything priced by it.
+
+## What it does
+
+Permissioned sources publish token prices and reference rates on a schedule.
+Each submission passes validation before entering state, becoming
+consensus-visible data that any module can reference deterministically.
+
+Consumers then resolve against stored rates: fiat-referenced settlement
+conversions, bid pricing strategies anchoring to published references, and
+supply mechanics referencing market conditions. The module also carries its
+feed configuration (`PriceFeedConfig`) and an aggregated view
+(`AggregatedPrice`) derived from submitted entries.
+
+Notably, the keeper carries delegation, rewards, and slashing logic: oracle
+participants are bonded and can be slashed for misbehavior. Feed integrity is
+backed by stake, not just by permission.
+
+## Why it exists
+
+A marketplace that prices real-world compute in a volatile token needs a
+trustworthy bridge to external prices. Doing that bridging in a dedicated,
+auditable module keeps a sensitive dependency contained and governable.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Feed | A stream of externally-sourced values validated into chain state. |
+| Oracle risk | The exposure created when on-chain logic depends on off-chain data quality. |
+
+## Core flow
+
+1. **Submit — Feeds are submitted.** Permissioned sources publish token
+   prices and reference rates on a schedule.
+2. **Validate — Values are checked.** Submissions pass validation before
+   entering state — the guardrail against corrupted data.
+3. **Store — Rates become state.** Consensus-visible data that any module can
+   reference deterministically.
+4. **Price — Logic consumes.** Settlement conversions, bid anchors, and
+   policy inputs resolve through stored rates.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgAddPriceEntry` | Submits a price entry to a feed. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Prices` | Stored price entries for a feed. |
+| `AggregatedPrice` | The aggregated price derived from submitted entries. |
+| `PriceFeedConfig` | The configuration of a price feed. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/settlement](/modules/settlement/) | Fiat-referenced pricing resolves through oracle rates. |
+| [x/bme](/modules/bme/) | Supply mechanics can reference oracle-reported market conditions. |
+| [x/market](/modules/market/) | Bid pricing strategies can anchor to oracle-published references. |
+
+## Related documentation
+
+- [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/) — where oracles
+  sit in the wider trust fabric.
+- [Escrow & Settlement](/concepts/escrow-settlement/) — where fiat-referenced
+  pricing is consumed.
+- [Pricing & Bidding](/providers/pricing-bidding/) — how providers and
+  tenants think about price.
+- [Tokenomics](/concepts/tokenomics/) — the supply mechanics that reference
+  market conditions.
+
+## FAQ
+
+### What is a feed?
+
+A stream of externally-sourced values — token prices, reference exchange
+rates — validated into chain state on a schedule.
+
+### What is oracle risk?
+
+The exposure created when on-chain logic depends on off-chain data quality.
+This module contains it by design: permissioned submissions, validation
+before storage, and a governable dependency surface.
+
+### Which modules read oracle data?
+
+Settlement for fiat-referenced pricing, market participants anchoring bid
+strategies, and supply mechanics referencing market conditions. See the
+[x/settlement module](/modules/settlement/).
+
+:::note
+Message and query types are defined in `x/oracle/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

@@ -1,0 +1,35 @@
+---
+/**
+ * LifecycleRail — the shared COMPACT lifecycle rail.
+ *
+ * Order → Match → Lease → Usage → Settlement. Used only as a compact strip
+ * outside the canonical lifecycle guide; every instance links to
+ * /learn/how-the-marketplace-works, which owns the full explanation.
+ */
+import { MARKETPLACE_STAGES } from "@data/market";
+
+interface Props {
+  /** Optional extra link rendered after the canonical lifecycle link. */
+  aside?: { label: string; href: string };
+  class?: string;
+}
+
+const { aside, class: className } = Astro.props;
+---
+
+<nav class:list={["mk-rail-band", className]} aria-label="Marketplace lifecycle">
+  <ol class="lifecycle-rail-compact">
+    {
+      MARKETPLACE_STAGES.map((stage, index) => (
+        <li>
+          {index > 0 && <span aria-hidden="true">→</span>}
+          <a href="/learn/how-the-marketplace-works">{stage.verb}</a>
+        </li>
+      ))
+    }
+  </ol>
+  <span class="mk-rail-band-links">
+    <a href="/learn/how-the-marketplace-works">See full lifecycle <span aria-hidden="true">→</span></a>
+    {aside && <a href={aside.href}>{aside.label} <span aria-hidden="true">→</span></a>}
+  </span>
+</nav>

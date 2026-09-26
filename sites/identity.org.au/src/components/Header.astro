@@ -36,7 +36,6 @@ const isActive = (href: string) =>
         <li class="ml-2 hidden xl:block">
           <a
             href={SITE.walletPortal}
-            rel="noopener"
             class="btn-primary whitespace-nowrap !px-4 !py-2 text-[0.92rem]"
           >
             Join the launch list
@@ -84,7 +83,7 @@ const isActive = (href: string) =>
         ))
       }
       <li class="px-5 py-3">
-        <a href={SITE.walletPortal} rel="noopener" class="btn-primary w-full justify-center">
+        <a href={SITE.walletPortal} class="btn-primary w-full justify-center">
           Join the launch list
         </a>
       </li>
@@ -95,10 +94,20 @@ const isActive = (href: string) =>
 <script>
   const toggle = document.getElementById("nav-toggle");
   const nav = document.getElementById("mobile-nav");
-  toggle?.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    nav?.classList.toggle("hidden", open);
+  const desktop = window.matchMedia("(min-width: 1024px)");
+  const setOpen = (open, moveFocus = false) => {
+    toggle?.setAttribute("aria-expanded", String(open));
+    nav?.classList.toggle("hidden", !open);
     nav?.classList.toggle("lg:!hidden", true);
+    if (open && moveFocus) nav?.querySelector("a")?.focus();
+    if (!open && moveFocus) toggle?.focus();
+  };
+  const isOpen = () => toggle?.getAttribute("aria-expanded") === "true";
+  toggle?.addEventListener("click", () => setOpen(!isOpen(), true));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen()) setOpen(false, true);
+  });
+  desktop.addEventListener("change", (event) => {
+    if (event.matches) setOpen(false);
   });
 </script>

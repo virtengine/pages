@@ -1,0 +1,72 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import { DEFINITIONS, DEFINITION_GROUPS } from "@data/definitions";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Definitions", href: "/definitions" },
+];
+
+const count = DEFINITIONS.length;
+---
+
+<Base
+  title="Cloud & Marketplace Definitions | VirtEngine"
+  description="Plain-English definitions of cloud and marketplace terms: IaaS, PaaS, SaaS, AI inference, HPC, private and hybrid cloud, compute marketplaces and settlement - each linked to how it works on VirtEngine."
+  path="/definitions"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Definitions"
+    title="Cloud and marketplace terms, defined"
+    lede="Every infrastructure and marketplace term this site uses, defined plainly before it is used anywhere else - with the section that matters: how each one is listed, metered and settled on an open market."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn">Guides & explainers</CTA>
+    <CTA href="/learn/marketplace-glossary" variant="secondary">Marketplace glossary</CTA>
+  </PageHero>
+
+  {
+    DEFINITION_GROUPS.map((group) => {
+      const entries = DEFINITIONS.filter((entry) => entry.group === group.group);
+      if (entries.length === 0) return null;
+      return (
+        <Section eyebrow={group.group} title={group.group} lede={group.blurb}>
+          <ul class="learn-map-list">
+            {entries.map((entry) => (
+              <li>
+                <a href={`/definitions/${entry.slug}`}>
+                  <span>
+                    <small>{entry.group}</small>
+                    <strong>{entry.term}</strong>
+                    <em>{entry.summary}</em>
+                  </span>
+                  <span class="learn-map-arrow" aria-hidden="true"></span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      );
+    })
+  }
+
+  <Section eyebrow="Go deeper" title="From definition to detail">
+    <div class="prose-body reveal max-w-3xl text-base">
+      <p>
+        Definitions answer <em>what</em>. For <em>how</em> - the order-to-settlement lifecycle, identity, economics and
+        the module reference - start with <a href="/learn/how-the-marketplace-works">how the marketplace works</a>,
+        browse the <a href="/learn">Learn library</a>, or read the <a href="/protocol">protocol architecture</a>. For
+        lookup vocabulary specific to listings and orders, the <a href="/learn/marketplace-glossary">marketplace glossary</a>{" "}
+        covers the objects themselves.
+      </p>
+    </div>
+    <div class="reveal mt-8 flex flex-wrap gap-4">
+      <CTA href="/learn">Learning library</CTA>
+      <CTA href="/marketplace" variant="secondary">Browse the marketplace</CTA>
+    </div>
+  </Section>
+</Base>

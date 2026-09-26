@@ -5,6 +5,8 @@ import PageHero from "@components/PageHero.astro";
 import ClauseRef from "@components/ClauseRef.astro";
 import CTA from "@components/CTA.astro";
 import { FOUNDATION_PAGES, getFoundationPage } from "@data/foundation";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return FOUNDATION_PAGES.map((page) => ({ params: { slug: page.slug } }));
@@ -18,6 +20,15 @@ const breadcrumbs = [
   { name: "Foundation", href: "/foundation" },
   { name: page.title, href: `/foundation/${page.slug}` },
 ];
+
+const canonical = new URL(`/foundation/${page.slug}`, SITE.url).href;
+const pageSchema = articleNode({
+  canonical,
+  title: page.title,
+  description: page.summary,
+  section: `Foundation · ${page.eyebrow}`,
+  about: [{ name: "DETIO FOUNDATION LTD", url: SITE.url }],
+});
 ---
 
 <Base
@@ -26,6 +37,7 @@ const breadcrumbs = [
   path={`/foundation/${page.slug}`}
   breadcrumbs={breadcrumbs}
   ogType="article"
+  schema={[pageSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero eyebrow={`Foundation · ${page.eyebrow}`} title={page.title} lede={page.summary} />

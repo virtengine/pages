@@ -1,0 +1,227 @@
+{
+  "hero-infrastructure": {
+    "title": "Free computer server room image",
+    "creator": null,
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/5912401/image-public-domain-black-technology",
+    "provider": "rawpixel",
+    "query": "data center server room",
+    "file": "/media/hero-infrastructure-1920.webp",
+    "srcset": [
+      "/media/hero-infrastructure-960.webp 960w",
+      "/media/hero-infrastructure-1440.webp 1440w",
+      "/media/hero-infrastructure-1920.webp 1920w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.7778,
+    "brightness": 108.6
+  },
+  "identity-portrait": {
+    "title": "Woman Portrait",
+    "creator": "Joseph L. Etchingham",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/woman-portrait-KHUKGKJ70W",
+    "provider": "stocksnap",
+    "file": "/media/identity-portrait-1100.webp",
+    "kind": "paper",
+    "halftone": true,
+    "srcset": [
+      "/media/identity-portrait-720.webp 720w",
+      "/media/identity-portrait-1100.webp 1100w"
+    ],
+    "aspect": 0.8
+  },
+  "provider-technician": {
+    "title": "Technician with laptop working on server rack at NERSC",
+    "creator": "Derrick Coetzee from Berkeley, CA, USA",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/w/index.php?curid=17445570",
+    "provider": "wikimedia",
+    "file": "/media/provider-technician-1200.webp",
+    "kind": "paper",
+    "halftone": true,
+    "srcset": [
+      "/media/provider-technician-720.webp 720w",
+      "/media/provider-technician-1200.webp 1200w"
+    ],
+    "aspect": 1.5
+  },
+  "settlement-ledger": {
+    "title": "Writing Drawing",
+    "creator": "Green Chameleon",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/writing-drawing-8Y0EDX4VP9",
+    "provider": "stocksnap",
+    "file": "/media/settlement-ledger-1200.webp",
+    "kind": "paper",
+    "halftone": true,
+    "srcset": [
+      "/media/settlement-ledger-720.webp 720w",
+      "/media/settlement-ledger-1200.webp 1200w"
+    ],
+    "aspect": 1.5
+  },
+  "learn-library": {
+    "title": "Books Library",
+    "creator": "Patrik Goethe",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/books-library-EB9B6BC1F6",
+    "provider": "stocksnap",
+    "file": "/media/learn-library-1200.webp",
+    "kind": "paper",
+    "halftone": true,
+    "srcset": [
+      "/media/learn-library-720.webp 720w",
+      "/media/learn-library-1200.webp 1200w"
+    ],
+    "aspect": 1.5
+  },
+  "network-earth": {
+    "title": "Real-time bus tracking control room in Lebanon",
+    "creator": "UrusHyby",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/w/index.php?curid=175250226",
+    "provider": "wikimedia",
+    "query": "control room monitors",
+    "file": "/media/network-earth-1920.webp",
+    "srcset": [
+      "/media/network-earth-960.webp 960w",
+      "/media/network-earth-1440.webp 1440w",
+      "/media/network-earth-1920.webp 1920w"
+    ],
+    "kind": "night",
+    "halftone": false,
+    "aspect": 1.7778
+  },
+  "identity-document": {
+    "title": "Hand writing sheet paper",
+    "creator": null,
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/3286308/free-photo-image-pen-arm-bright",
+    "provider": "rawpixel",
+    "query": "hand writing paper document",
+    "file": "/media/identity-document-1200.webp",
+    "srcset": [
+      "/media/identity-document-720.webp 720w",
+      "/media/identity-document-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "marketplace-hardware": {
+    "title": "Internet modem port",
+    "creator": null,
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/6038427/photo-image-public-domain-technology-line",
+    "provider": "rawpixel",
+    "query": "network switch cables",
+    "file": "/media/marketplace-hardware-1200.webp",
+    "srcset": [
+      "/media/marketplace-hardware-720.webp 720w",
+      "/media/marketplace-hardware-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "hpc-supercomputer": {
+    "title": "Lattice Quantum Chromodynamics (LQCD) cluster",
+    "creator": "U.S. Department of Energy",
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/3325544/free-photo-image-server-network",
+    "provider": "rawpixel",
+    "query": "supercomputer cluster",
+    "file": "/media/hpc-supercomputer-1920.webp",
+    "srcset": [
+      "/media/hpc-supercomputer-960.webp 960w",
+      "/media/hpc-supercomputer-1440.webp 1440w",
+      "/media/hpc-supercomputer-1920.webp 1920w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.7778
+  },
+  "open-source-screen": {
+    "title": "Developer Code",
+    "creator": "Christina Morillo",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/developer-code-NT1Q3GZVFI",
+    "provider": "stocksnap",
+    "query": "laptop code screen",
+    "file": "/media/open-source-screen-1200.webp",
+    "srcset": [
+      "/media/open-source-screen-720.webp 720w",
+      "/media/open-source-screen-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "staking-security": {
+    "title": "Padlock Key (1650-1700 (Baroque)) Scandinavian",
+    "creator": null,
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/10136242/padlock-with-key-1650-1700-baroque-scandinavian-and-german",
+    "provider": "rawpixel",
+    "query": "padlock key metal",
+    "file": "/media/staking-security-1200.webp",
+    "srcset": [
+      "/media/staking-security-720.webp 720w",
+      "/media/staking-security-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "closing-hands": {
+    "title": "Work Business",
+    "creator": "Kristin Hardwick",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/work-business-J5LXKNDREC",
+    "provider": "stocksnap",
+    "query": "handshake business",
+    "file": "/media/closing-hands-1920.webp",
+    "srcset": [
+      "/media/closing-hands-960.webp 960w",
+      "/media/closing-hands-1440.webp 1440w",
+      "/media/closing-hands-1920.webp 1920w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.7778
+  },
+  "identity-liveness": {
+    "title": "People Men",
+    "creator": "Brodie Vissers",
+    "license": "cc0",
+    "source": "https://stocksnap.io/photo/people-men-XO53SBWVMF",
+    "provider": "stocksnap",
+    "query": "selfie phone",
+    "file": "/media/identity-liveness-1200.webp",
+    "srcset": [
+      "/media/identity-liveness-720.webp 720w",
+      "/media/identity-liveness-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "provider-datacenter": {
+    "title": "Free computer server room image",
+    "creator": null,
+    "license": "cc0",
+    "source": "https://www.rawpixel.com/image/5912401/image-public-domain-black-technology",
+    "provider": "rawpixel",
+    "query": "server room",
+    "file": "/media/provider-datacenter-1200.webp",
+    "srcset": [
+      "/media/provider-datacenter-720.webp 720w",
+      "/media/provider-datacenter-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  }
+}

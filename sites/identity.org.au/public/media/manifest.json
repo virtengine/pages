@@ -1,0 +1,110 @@
+{
+  "wallet-in-hand": {
+    "title": "Hand holding (Unsplash).jpg",
+    "creator": "Samson Vowles [1]",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hand_holding_(Unsplash).jpg",
+    "provider": "wikimedia",
+    "query": "hand holding smartphone Unsplash",
+    "file": "/media/wallet-in-hand-1600.webp",
+    "srcset": [
+      "/media/wallet-in-hand-720.webp 720w",
+      "/media/wallet-in-hand-1200.webp 1200w",
+      "/media/wallet-in-hand-1600.webp 1600w"
+    ],
+    "kind": "paper",
+    "halftone": false,
+    "aspect": 1.5,
+    "alt": "A hand holding a smartphone."
+  },
+  "document-desk": {
+    "title": "Passport documents desk (Unsplash).jpg",
+    "creator": "Alex Robert alexrobert",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Passport_documents_desk_(Unsplash).jpg",
+    "provider": "wikimedia",
+    "query": "passport documents desk",
+    "file": "/media/document-desk-1600.webp",
+    "srcset": [
+      "/media/document-desk-720.webp 720w",
+      "/media/document-desk-1200.webp 1200w",
+      "/media/document-desk-1600.webp 1600w"
+    ],
+    "kind": "paper",
+    "halftone": false,
+    "aspect": 1.5,
+    "alt": "A passport and identity papers on a desk."
+  },
+  "identity-liveness": {
+    "title": "The Selfie (Unsplash).jpg",
+    "creator": "Annie Spratt anniespratt",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Selfie_(Unsplash).jpg",
+    "provider": "wikimedia",
+    "query": "selfie Unsplash",
+    "file": "/media/identity-liveness-1600.webp",
+    "srcset": [
+      "/media/identity-liveness-720.webp 720w",
+      "/media/identity-liveness-1200.webp 1200w",
+      "/media/identity-liveness-1600.webp 1600w"
+    ],
+    "kind": "paper",
+    "halftone": false,
+    "aspect": 1.5,
+    "alt": "A person holding a phone at arm's length to photograph themselves."
+  },
+  "identity-portrait": {
+    "title": "Curly hair and freckles man (Unsplash).jpg",
+    "creator": "Jeremy Bishop tidesinourveins",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Curly_hair_and_freckles_man_(Unsplash).jpg",
+    "provider": "wikimedia",
+    "query": "close up portrait man Unsplash",
+    "file": "/media/identity-portrait-1600.webp",
+    "srcset": [
+      "/media/identity-portrait-720.webp 720w",
+      "/media/identity-portrait-1100.webp 1100w",
+      "/media/identity-portrait-1600.webp 1600w"
+    ],
+    "kind": "paper",
+    "halftone": false,
+    "aspect": 0.8,
+    "alt": "A close portrait of a person's face."
+  },
+  "vault-door": {
+    "title": "Safe deposit vault 1908.jpg",
+    "creator": "The Cleveland Trust Company: An Epitome of the Past, A Chronicle of the Present, A Promise of the Future . Cleveland: The Cleveland Trust Company, 1908, p. 75 overleaf.",
+    "license": "pdm",
+    "source": "https://commons.wikimedia.org/wiki/File:Safe_deposit_vault_1908.jpg",
+    "provider": "wikimedia",
+    "query": "safe deposit boxes vault",
+    "file": "/media/vault-door-1600.webp",
+    "srcset": [
+      "/media/vault-door-960.webp 960w",
+      "/media/vault-door-1440.webp 1440w",
+      "/media/vault-door-1600.webp 1600w"
+    ],
+    "kind": "night",
+    "halftone": false,
+    "aspect": 1.7778,
+    "alt": "Two circular steel vault doors in a strongroom, one standing open."
+  },
+  "operations-room": {
+    "title": "Data center roof.jpg",
+    "creator": "Rsparks3",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Data_center_roof.jpg",
+    "provider": "wikimedia",
+    "query": "server room data center",
+    "file": "/media/operations-room-1600.webp",
+    "srcset": [
+      "/media/operations-room-960.webp 960w",
+      "/media/operations-room-1440.webp 1440w",
+      "/media/operations-room-1600.webp 1600w"
+    ],
+    "kind": "night",
+    "halftone": false,
+    "aspect": 1.7778,
+    "alt": "Cooling equipment on the roof of a data centre."
+  }
+}

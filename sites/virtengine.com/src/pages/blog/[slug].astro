@@ -1,15 +1,32 @@
 ---
 import Base from "@layouts/Base.astro";
 import { repairArchiveLinks } from "../../lib/archive-links";
-import Breadcrumbs from "@components/Breadcrumbs.astro";
+import PageHero from "@components/PageHero.astro";
 import BlogCard from "@components/BlogCard.astro";
 import { ALL_POSTS, formatBlogDate } from "@data/blog";
+import { media } from "@data/media";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
+import type { MediaSlug } from "@data/media";
 
 export function getStaticPaths() {
   return ALL_POSTS.map((article) => ({ params: { slug: article.slug }, props: { article } }));
 }
 
 const { article } = Astro.props;
+const canonical = new URL(`/blog/${article.slug}`, SITE.url).href;
+const articleSchema = articleNode({
+  canonical,
+  title: article.title,
+  description: article.description,
+  datePublished: article.publishedAt,
+  dateModified: article.publishedAt,
+  authorName: article.author,
+  authorType: "Organization",
+  section: article.kind === "legacy" ? "Historic archive" : "VirtEngine journal",
+  type: "BlogPosting",
+  about: ["Decentralized cloud computing", "VirtEngine protocol"],
+});
 const sameKindPosts = ALL_POSTS.filter((item) => item.kind === article.kind);
 const sameKindIndex = sameKindPosts.findIndex((item) => item.slug === article.slug);
 const related = [...sameKindPosts.slice(sameKindIndex + 1), ...sameKindPosts.slice(0, sameKindIndex)]
@@ -21,45 +38,60 @@ const crumbs = [
   ...(article.kind === "legacy" ? [{ name: "Historic archive", href: "/blog/archive" }] : []),
   { name: article.title, href: `/blog/${article.slug}` },
 ];
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: article.title,
-  description: article.description,
-  datePublished: article.publishedAt,
-  dateModified: article.publishedAt,
-  author: { "@type": "Organization", name: article.author },
-  publisher: { "@type": "Organization", name: "VirtEngine", url: "https://virtengine.com" },
-  mainEntityOfPage: `https://virtengine.com/blog/${article.slug}`,
-  isPartOf: { "@type": "Blog", name: "VirtEngine Journal", url: "https://virtengine.com/blog" },
-};
+/**
+ * Some legacy archive entries share the excerpt they were migrated with, which
+ * would produce duplicate meta descriptions. Prefixing the (unique) title keeps
+ * the description distinct and informative; the visible lede still shows the
+ * original excerpt verbatim.
+ */
+const metaDescriptionSource =
+  article.kind === "legacy" ? `${article.title}: ${article.description}` : article.description;
+
+/* Same deterministic image mapping as BlogCard, so an article and its card
+   always share one photograph from the brand library. */
+const CARD_MEDIA: MediaSlug[] = [
+  "provider-datacenter",
+  "marketplace-hardware",
+  "settlement-ledger",
+  "identity-document",
+  "learn-library",
+  "open-source-screen",
+  "network-earth",
+  "hpc-supercomputer",
+  "hero-infrastructure",
+  "identity-portrait",
+  "provider-technician",
+  "staking-security",
+];
+const heroMedia = CARD_MEDIA[[...article.slug].reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_MEDIA.length];
 ---
 
 <Base
   title={`${article.title} | VirtEngine`}
-  description={article.description}
+  description={metaDescriptionSource}
   path={`/blog/${article.slug}`}
+  image={media[heroMedia].src}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[articleSchema]}
+  publishedTime={article.publishedAt}
+  modifiedTime={article.publishedAt}
+  section={article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-
   <article>
-    <header class="grid-backdrop border-b border-line">
-      <div class="container-site pb-14 pt-10 md:pb-20 md:pt-14">
-        <Breadcrumbs crumbs={crumbs} class="mb-8" />
-        <p class="eyebrow">{article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}</p>
-        <h1 class="mt-5 max-w-4xl font-display text-4xl md:text-6xl">{article.title}</h1>
-        <p class="mt-6 max-w-3xl text-lg leading-8 text-slate md:text-xl">{article.description}</p>
-        <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
-          <span>{article.author}</span>
-          <span aria-hidden="true">/</span>
-          <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>
-          <span aria-hidden="true">/</span>
-          <span>{article.readingTime}</span>
-        </div>
-      </div>
-    </header>
+    <PageHero
+      eyebrow={article.kind === "legacy" ? "Historic archive" : "VirtEngine journal"}
+      title={article.title}
+      lede={article.description}
+      crumbs={crumbs}
+      media={heroMedia}
+    >
+      <p class="font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+        {article.author} <span aria-hidden="true">/</span>{" "}
+        <time datetime={article.publishedAt}>{formatBlogDate(article.publishedAt)}</time>{" "}
+        <span aria-hidden="true">/</span> {article.readingTime}
+      </p>
+    </PageHero>
 
     <div class="container-site py-12 md:py-20">
       <div class="mx-auto max-w-3xl">
@@ -68,7 +100,7 @@ const articleLd = {
             <aside class="archive-warning mb-10" aria-label="Historic content notice">
               <strong>Preserved historic article</strong>
               <p>
-                Originally published on blog.virtengine.com in 2015–2016. The article is retained as a project record. Known migration links are repaired where possible, and unavailable items are labelled; commands, dependencies, products, and security practices may be obsolete. Use the current <a href="https://docs.virtengine.com">VirtEngine documentation</a> for implementation guidance.
+                Originally published on blog.virtengine.com in 2015–2016. The article is retained as a project record. Known migration links are repaired where possible, and unavailable items are labelled; commands, dependencies, products, and security practices may be obsolete. Use the current <a href="https://docs.virtengine.com" target="_blank" rel="noopener noreferrer">VirtEngine documentation</a> for implementation guidance.
               </p>
             </aside>
           )
@@ -78,17 +110,19 @@ const articleLd = {
     </div>
   </article>
 
-  {
-    related.length > 0 && (
-      <section class="border-t border-line bg-paper-soft">
-        <div class="container-site py-14 md:py-20">
-          <p class="eyebrow">Continue reading</p>
-          <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
-          <div class="mt-8 grid gap-6 md:grid-cols-2">
-            {related.map((item) => <BlogCard article={item} />)}
+    {
+      related.length > 0 && (
+        <section class="border-t border-line bg-paper-soft">
+          <div class="container-site py-14 md:py-20">
+            <p class="eyebrow">Continue reading</p>
+            <h2 class="mt-4 font-display text-3xl">More from {article.kind === "legacy" ? "the archive" : "the journal"}</h2>
+            <div class="mt-8 grid gap-6 md:grid-cols-2">
+              {related.map((item, i) => (
+                <BlogCard article={item} mediaIndex={(CARD_MEDIA.indexOf(heroMedia) + 1 + i) % CARD_MEDIA.length} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-    )
-  }
+        </section>
+      )
+    }
 </Base>

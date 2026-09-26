@@ -1,0 +1,156 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import TableScroll from "@components/TableScroll.astro";
+import { GUIDES, getGuide } from "@data/guides";
+import { SITE } from "@data/site";
+import { articleNode, faqPageNode } from "@lib/schema";
+
+export function getStaticPaths() {
+  return GUIDES.map((guide) => ({ params: { slug: guide.slug } }));
+}
+
+const { slug } = Astro.params;
+const guide = getGuide(slug!)!;
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Guides", href: "/guides" },
+  { name: guide.title, href: `/guides/${guide.slug}` },
+];
+
+const related = guide.related
+  .map((slug) => getGuide(slug))
+  .filter((related) => related !== undefined);
+
+const updatedDisplay = new Date(guide.updated).toLocaleDateString("en-AU", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+const canonical = new URL(`/guides/${guide.slug}`, SITE.url).href;
+const guideSchema = articleNode({
+  canonical,
+  title: guide.title,
+  description: guide.summary,
+  dateModified: guide.updated,
+  section: `Guides · ${guide.topic}`,
+  type: "TechArticle",
+  about: ["Digital identity", guide.topic],
+});
+const guideFaqSchema = faqPageNode(canonical, guide.faq);
+---
+
+<Base
+  title={`${guide.title} — Guides | identity.org.au`}
+  description={guide.summary}
+  breadcrumbs={crumbs}
+  ogType="article"
+  schema={[guideSchema, guideFaqSchema]}
+  modifiedTime={guide.updated}
+>
+  <PageHeader crumbs={crumbs} eyebrow={`Guides · ${guide.topic}`} title={guide.title} lede={guide.summary} />
+
+  <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <article>
+      <p class="m-0 text-[0.9rem] text-muted">
+        Identity.org.au editorial · Last updated {updatedDisplay}
+      </p>
+      {
+        guide.sections.map((section) => (
+          <section class="mt-8 first-of-type:mt-6">
+            {section.heading && <h2 class="mt-0 mb-3 text-[1.4rem]">{section.heading}</h2>}
+            <div class="prose-service">
+              {section.paragraphs?.map((p) => <p set:html={p} />)}
+              {section.list && (
+                <ul>
+                  {section.list.map((item) => (
+                    <li set:html={item} />
+                  ))}
+                </ul>
+              )}
+            </div>
+            {section.table && (
+              <TableScroll label={section.table.caption} class="mt-6">
+                <table class="table-gov">
+                  <caption class="sr-only">{section.table.caption}</caption>
+                  <thead>
+                    <tr>
+                      {section.table.head.map((cell) => (
+                        <th scope="col">{cell}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {section.table.rows.map((row) => (
+                      <tr>
+                        {row.map((cell, index) =>
+                          index === 0 ? (
+                            <th scope="row" set:html={cell} />
+                          ) : (
+                            <td set:html={cell} />
+                          ),
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableScroll>
+            )}
+            {section.after && (
+              <div class="prose-service">
+                {section.after.map((p) => <p set:html={p} />)}
+              </div>
+            )}
+            {section.callout && (
+              <Alert tone={section.callout.tone} class="mt-5 max-w-[72ch]">
+                <p>{section.callout.text}</p>
+              </Alert>
+            )}
+          </section>
+        ))
+      }
+
+      <section class="mt-12 border-t-2 border-navy pt-8">
+        <h2 class="mt-0 mb-4 text-[1.4rem]">Quick answers</h2>
+        <div class="grid gap-3">
+          {
+            guide.faq.map((item) => (
+              <details class="details-gov">
+                <summary>{item.question}</summary>
+                <div>
+                  <p class="m-0 text-body">{item.answer}</p>
+                </div>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+    </article>
+
+    <aside class="lg:pt-2">
+      <h2 class="mt-0 text-[0.85rem] font-bold uppercase tracking-[0.13em] text-muted">
+        Related guides
+      </h2>
+      <div class="mt-4 grid gap-3">
+        {
+          related.map((related) => (
+            <CardLink href={`/guides/${related.slug}`} tag={related.topic} title={related.title} />
+          ))
+        }
+        <CardLink href="/guides" title="All guides" description="Every guide in one place." />
+      </div>
+      <div class="mt-8 border-t border-hairline pt-6 text-[0.95rem] text-body">
+        <p class="m-0 font-bold text-ink">See it in practice</p>
+        <p class="mt-2 mb-0">
+          These ideas are implemented by the <a href="/wallet" class="link-plain">Identity Wallet
+          service</a> — start with <a href="/how-it-works" class="link-plain">how it works</a>, or
+          look up a term in the <a href="/definitions" class="link-plain">definitions</a>.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Base>

@@ -77,8 +77,9 @@ for (const file of walk(".")) {
   }
 }
 
-const REQUIRED_SCRIPTS = ["build", "check:links", "check:types"];
+const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y", "check:types"];
 const sitesDir = "sites";
+const siteNames = new Set();
 if (!existsSync(sitesDir)) {
   failures.push("sites/: directory is missing");
 } else {
@@ -87,6 +88,7 @@ if (!existsSync(sitesDir)) {
     const pkgPath = join(sitesDir, entry.name, "package.json");
     if (!existsSync(pkgPath) || !statSync(pkgPath).isFile()) continue;
     counts.sites++;
+    siteNames.add(entry.name);
     let pkg;
     try {
       pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
@@ -101,6 +103,34 @@ if (!existsSync(sitesDir)) {
     }
   }
   if (counts.sites === 0) failures.push("sites/: no site package.json found — build gate would be vacuous");
+}
+
+// The accessibility ledger must not outlive the sites it budgets: an entry for a site that no
+// longer exists means either a rename (the new site silently has no budget) or leftover config.
+// The per-site checker cannot see this — it only ever runs against one site's dist.
+const a11yBaselinePath = join("scripts", "a11y-baseline.json");
+if (existsSync(a11yBaselinePath)) {
+  try {
+    const ledger = JSON.parse(readFileSync(a11yBaselinePath, "utf8"));
+    const keys = Object.keys(ledger);
+    if (keys.length === 0) {
+      failures.push(`${a11yBaselinePath}: empty ledger — the accessibility gate would be vacuous`);
+    }
+    for (const site of keys) {
+      if (!siteNames.has(site)) {
+        failures.push(`${a11yBaselinePath}: entry "${site}" has no matching directory under sites/`);
+      }
+    }
+    for (const site of siteNames) {
+      if (!keys.includes(site)) {
+        failures.push(`${a11yBaselinePath}: no budget entry for site "${site}"`);
+      }
+    }
+  } catch (err) {
+    failures.push(`${a11yBaselinePath}: invalid JSON — ${err.message}`);
+  }
+} else {
+  failures.push(`${a11yBaselinePath}: missing — the accessibility gate has no ledger`);
 }
 
 for (const failure of failures) console.error(`FAIL ${failure}`);

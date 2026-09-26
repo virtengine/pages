@@ -5,9 +5,9 @@ import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
 import DiagramFrame from "@components/DiagramFrame.astro";
-import StatCallout from "@components/StatCallout.astro";
 import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
 import { SITE } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
 
 const validatorDuties = [
   {
@@ -34,9 +34,10 @@ const requirements = [
 ---
 
 <Base
-  title="Staking & Validators — VirtEngine"
-  description="Secure the VirtEngine network as a validator or delegator: staking economics, validator requirements, the dual consensus + identity-network role, delegation, slashing risks, and governance."
+  title="Staking & Validators: Rewards & Slashing | VirtEngine"
+  description="Stake on VirtEngine as a validator or delegator: Cosmos staking rewards, dual consensus and VEID duties, 21-day unbonding, slashing risks, governance."
   path="/staking"
+  image="/media/staking-security-1200.webp"
   breadcrumbs={[
     { name: "Home", href: "/" },
     { name: "Staking", href: "/staking" },
@@ -46,6 +47,8 @@ const requirements = [
     eyebrow="For validators & staking partners"
     title="Stake the network that verifies identity by consensus"
     lede="VirtEngine validators do double duty: they secure the chain and operate the VEID Network. Delegators and staking partners share the rewards — and the responsibilities."
+    media="staking-security"
+    mediaCaption="Bonded stake under real slash conditions."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Staking", href: "/staking" },
@@ -72,33 +75,27 @@ const requirements = [
 
   <Section
     eyebrow="Economics"
-    title="Conservative staking, identity-led issuance"
-    lede="Staking rewards remain at a reduced proposed allocation. New tokens are issued only when unique human identities are verified; staking does not independently authorize minting. Economic parameters take effect through network governance."
+    title="Role overview — detail lives elsewhere"
+    lede="This page routes; it does not reproduce tokenomics. Supply, issuance and rewards detail lives in the canonical guides."
   >
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCallout value="~90% lower" label="Proposed staking reward allocation vs. prior model" source="Proposed policy" />
-      <StatCallout value="14 : 1" label="Eligible humans to Foundation genesis allocation in each 15-token batch" source="Proposed policy" />
-      <StatCallout value="50 years" label="Illustrative identity-allocation horizon" source="Proposed policy" />
-      <StatCallout value="Quarterly" label="Illustrative activity check" source="Proposed policy" />
+    <div class="staking-roles" role="img" aria-label="Stake splits into validator and delegator paths">
+      <pre>Stake
+├ Validator
+│  ├ consensus
+│  ├ VEID duties
+│  └ operational risk
+└ Delegator
+   ├ select validator
+   ├ governance
+   └ slashing exposure</pre>
     </div>
-    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
-      <p>
-        The proposed issuance model recognises verified uniqueness rather than treating
-        participation only as capital. When a user reaches the network-defined threshold for
-        a unique verified identity, the protocol may mint tokens to that account over time while
-        the account remains active. The working illustration is a quarterly sign-in check across
-        a 50-year horizon; the threshold, cadence and horizon are protocol parameters, not a
-        promise of an individual entitlement.
-      </p>
-      <p>
-        Each <strong>15-token</strong> VEID issuance batch allocates <strong>14 tokens</strong>
-        to eligible active verified humans and <strong>1 token</strong> to the
-        Foundation-controlled genesis account. The Foundation token is part of the 15-token
-        batch, not an additional token. That ratio, like all issuance parameters, can be
-        changed by consensus. Validator and delegator staking
-        rewards remain, but are proposed at roughly one tenth of the previous allocation.
-      </p>
-    </div>
+    <ul class="mk-chip-row">
+      <li><a href="/solutions/validators">Validator solution →</a></li>
+      <li><a href="/solutions/staking-partners">Staking partner solution →</a></li>
+      <li><a href="/solutions/token-holders">Token holder solution →</a></li>
+      <li><a href="/learn/understanding-slashing">Slashing guide →</a></li>
+      <li><a href="/learn/tokenomics-explained">Tokenomics →</a></li>
+    </ul>
   </Section>
 
   <Section eyebrow="Validator duties" title="Three jobs, one bonded stake">
@@ -158,12 +155,8 @@ const requirements = [
   <Section eyebrow="Network launch" title="TestNet before MainNet">
     <div class="prose-body reveal max-w-3xl space-y-4 text-base">
       <p>
-        TestNet is planned for <strong>January 2027</strong>, followed by MainNet in
-        <strong>March 2027</strong>. TestNet is the resettable pre-production proving
-        environment; staking there does not create MainNet balances or production
-        guarantees. MainNet requires successful TestNet exit evidence and a separate
-        go/no-go approval. See the <a href="/network">network page</a> for the current
-        posture and release materials.
+        {NETWORK_STATUS.testnet.label} — {NETWORK_STATUS.testnet.timing.toLowerCase()}; {NETWORK_STATUS.mainnet.label} — {NETWORK_STATUS.mainnet.timing.toLowerCase()}.
+        See the <a href="/network">network page</a> for posture, criteria and release materials (last updated {NETWORK_STATUS.lastUpdated}).
       </p>
     </div>
     <div class="reveal mt-8 flex flex-wrap gap-4">

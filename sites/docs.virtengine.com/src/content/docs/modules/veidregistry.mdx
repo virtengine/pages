@@ -1,0 +1,116 @@
+---
+title: x/veidregistry — VEID Registry module
+description: The x/veidregistry module is the ledger's index of identity records and scopes, the canonical answer identity-gating modules resolve against.
+---
+
+The `x/veidregistry` module is the ledger's index of identity state: which
+accounts hold verified records, which scopes those records comprise, and how
+identity state is looked up by the modules that enforce identity gates.
+
+Splitting the registry from the scoring engine keeps long-lived identity
+records cleanly separated from the verification workflow — scoring logic can
+evolve while the record-of-record interface other modules depend on stays
+stable.
+
+## What it does
+
+The module maintains the record-of-record interface for identity state. It
+records consensus-committed scores and scope outcomes produced by the
+scoring engine, binds each account to its verification outcomes and verified
+scopes, and exposes that state for lookup.
+
+Every identity gate on the chain resolves through it: marketplace identity
+gates, provider registration checks, and role conditions all query the
+registry rather than the machinery that produces the state. Because
+long-lived records are kept addressable separately, scoring machinery can
+change underneath without disturbing the address of truth.
+
+## Why it exists
+
+Every identity-gated action on the chain — registering a provider, creating
+a deployment, casting an identity-weighted vote — needs a fast, canonical
+answer to "what is this account's verified identity state?". The registry is
+that answer, kept apart from the machinery that produces it.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Identity record | The canonical on-chain record binding an account to its verification outcomes. |
+| Scope registration | The registry entry tracking which identity scopes an account has verified. |
+
+## Core flow
+
+1. **Commit — Scores commit.** Consensus-committed scores and scope
+   outcomes are recorded from the scoring engine.
+2. **Register — Records bind accounts.** The canonical record ties each
+   account to its verification outcomes and verified scopes.
+3. **Resolve — Modules query.** Marketplace gates, registration checks, and
+   role conditions resolve identity state through the registry.
+4. **Endure — Records outlive workflows.** Long-lived identity state stays
+   addressable as scoring machinery evolves underneath.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgUpsertVerifierVersion` | Creates or updates a verifier version in the registry. |
+| `MsgApproveVerifierVersion` | Approves a queued verifier version. |
+| `MsgCancelVerifierVersion` | Cancels a pending verifier version. |
+| `MsgRetireVerifierVersion` | Retires a verifier version from active use. |
+| `MsgReportValidatorReadiness` | Reports a validator's readiness for verification duties. |
+| `MsgUpdateVerifierRegParams` | Updates verifier registry parameters. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Verifier` / `Verifiers` | One registered verifier, or the full set. |
+| `ActiveVerifier` | The verifier version currently active. |
+| `QueuedVerifiers` | Verifier versions queued for activation. |
+| `EligibleVerifiers` | Verifier versions eligible for use. |
+| `ValidatorReadiness` | Readiness reports filed by validators. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veid](/modules/veid/) | Consensus-committed scores and scope outcomes are recorded into the registry. |
+| [x/market](/modules/market/) | Marketplace identity gates resolve accounts through the registry. |
+| [x/provider](/modules/provider/) | Provider registration checks registry state before admitting operators. |
+| [x/roles](/modules/roles/) | Role assignments can be conditioned on registry-verified identity. |
+
+## Related documentation
+
+- [VEID Overview](/veid/overview/) — the identity layer this registry serves.
+- [Enrollment](/veid/enrollment/) — where verified scopes originate.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why split the registry from scoring?
+
+So verification workflows can evolve without breaking the stable record
+interface that every gated module depends on — production machinery changes,
+the address of truth doesn't.
+
+### What does an identity record contain?
+
+The binding between an account and its verification outcomes, plus which
+identity scopes it has verified — the facts gated actions need, nothing
+more.
+
+### Which actions check the registry?
+
+Provider registration, deployment creation, marketplace participation gates,
+and identity-conditioned role grants — anything that must answer what an
+account's verified state is. See the [x/veid module](/modules/veid/).
+
+:::note
+Message and query types are defined in `x/veidregistry/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

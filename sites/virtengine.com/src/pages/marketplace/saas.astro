@@ -1,0 +1,153 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "SaaS on VirtEngine: Software as a Service";
+const description =
+  "Software as a Service on VirtEngine: publish and order software plans — seats, licences, subscriptions and support — through the same catalogue, lease and settlement rail as infrastructure.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "SaaS", href: "/marketplace/saas" },
+];
+
+const listings = [
+  { title: "Analytics Workspace", specs: ["10 seats", "Monthly plan", "Standard support"], components: ["seat-month", "support tier"], price: "$50 / seat / month" },
+  { title: "Developer Tool Seats", specs: ["Per-developer licence", "CI minutes included"], components: ["seat-month", "compute minutes"], price: "$24 / seat / month" },
+  { title: "Monitoring Subscription", specs: ["Host monitoring", "Alert routing", "30-day retention"], components: ["host-month"], price: "$6 / host / month" },
+];
+
+const moreListings = [
+  "Enterprise Support — named contact and response targets",
+  "Secure Collaboration — encrypted seats and audit log",
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/saas"
+  image="/media/marketplace-hardware-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · SaaS"
+    title="Software as a Service on VirtEngine"
+    lede="Software plans can use the same catalogue and settlement rail as infrastructure."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS</CTA>
+    <CTA href="/marketplace/custom-listings" variant="secondary">Custom listings</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <figure class="mk-viz">
+        <div class="mk-viz-flow">
+          <span>Catalogue plan</span>
+          <i aria-hidden="true">↓</i>
+          <span>Order</span>
+          <i aria-hidden="true">↓</i>
+          <span>Entitlement</span>
+        </div>
+        <div class="mk-viz-branch">
+          <div class="mk-viz-col">Seat <em>per user</em></div>
+          <div class="mk-viz-col">Licence <em>per term</em></div>
+          <div class="mk-viz-col">Support <em>per tier</em></div>
+        </div>
+        <figcaption>Entitlement rather than infrastructure: the plan grants access, and the provider's software delivers it.</figcaption>
+      </figure>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Catalogue"
+    title="Software plans in the same catalogue"
+    lede="Three illustrative listings. No production software vendors are implied. A SaaS listing sells access to software; it does not imply that VirtEngine deploys the application."
+  >
+    <div class="mk-cards-3">
+      {
+        listings.map((listing) => (
+          <MarketplaceListingCard
+            serviceType="SaaS"
+            title={listing.title}
+            region="Region-independent"
+            specs={listing.specs}
+            components={listing.components}
+            priceLabel={listing.price}
+            compact
+          />
+        ))
+      }
+    </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {moreListings.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
+  </Section>
+
+  <Section
+    eyebrow="Boundary"
+    title="What VirtEngine does — and does not do"
+    class="border-y border-line bg-paper-soft"
+  >
+    <div class="mk-cards-2">
+      <article class="mk-check-col mk-check-col--code">
+        <h3>VirtEngine provides</h3>
+        <p class="mk-check-note">The market and settlement layer around the software.</p>
+        <ul>
+          <li>counterparty identity and verification</li>
+          <li>catalogue representation and ordering</li>
+          <li>the lease or entitlement agreement</li>
+          <li>escrow and settlement</li>
+          <li>usage records where the plan is metered</li>
+        </ul>
+      </article>
+      <article class="mk-check-col mk-check-col--deploy">
+        <h3>The software provider provides</h3>
+        <p class="mk-check-note">The application itself.</p>
+        <ul>
+          <li>the hosted software and its operation</li>
+          <li>accounts, seats, licences and entitlements</li>
+          <li>plan features, limits and support</li>
+          <li>fulfilment through Waldur or a custom integration</li>
+          <li>the actual service relationship behind the plan</li>
+        </ul>
+      </article>
+    </div>
+    <div class="mk-tech-note">
+      <p>
+        Fulfilment is an entitlement change, not a machine. <a href="/waldur">Waldur integration</a> explains plan,
+        order-field and lifecycle handling; <a href="/marketplace/custom-listings#fulfilment">custom fulfilment
+        patterns</a> cover provider-defined plans; and <a href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs
+        SaaS</a> draws the comparison in full.
+      </p>
+    </div>
+  </Section>
+
+  <div class="container-site">
+    <LifecycleRail />
+  </div>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "What is SaaS?", href: "/definitions/what-is-saas" },
+        { label: "Custom listings", href: "/marketplace/custom-listings" },
+        { label: "Marketplace overview", href: "/marketplace" },
+        { label: "Use infrastructure through VirtEngine", href: "/tenants" },
+      ]}
+    />
+  </Section>
+</Base>

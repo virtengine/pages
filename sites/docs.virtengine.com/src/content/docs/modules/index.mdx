@@ -1,0 +1,85 @@
+---
+title: VirtEngine Module Reference
+description: Detailed reference for all 27 VirtEngine x/ modules — messages, queries, state objects and interactions across marketplace, identity, economics and governance.
+---
+
+Every piece of protocol behavior lives in a Cosmos SDK module under `x/` in
+the [virtengine repository](https://github.com/virtengine/virtengine). This
+section documents each of the 27 modules in depth: what it stores, the
+messages it accepts, the queries it exposes, and how it talks to the rest of
+the protocol.
+
+For the grouped overview with one-line purposes, see the
+[On-Chain Module Map](/protocol/modules/). Module APIs are defined in each
+module's `types/` package — when these pages and the code disagree, the code
+and its tests are authoritative (see
+[Clients & SDKs](/developers/sdk-and-clients/)).
+
+## Marketplace & workloads
+
+The exchange itself — orders, bids, leases, provider registration, resource
+definitions, and the HPC job marketplace.
+
+| Module | Purpose |
+| --- | --- |
+| [`x/market`](/modules/market/) | The order, match, and lease state machine at the center of the marketplace. |
+| [`x/marketplace`](/modules/marketplace/) | Marketplace coordination and offering surfaces layered over the core exchange. |
+| [`x/deployment`](/modules/deployment/) | Tenant deployment specifications and groups — what tenants ask the marketplace to run. |
+| [`x/provider`](/modules/provider/) | Provider registration and the on-chain attribute record tenants filter against. |
+| [`x/resources`](/modules/resources/) | Shared resource-unit and capacity definitions used across the marketplace. |
+| [`x/hpc`](/modules/hpc/) | The HPC job marketplace for scheduler-backed supercomputing clusters. |
+
+## Identity & security
+
+VEID identity scoring, the identity registry, multi-factor authentication,
+certificates, encryption, enclave attestation, fraud enforcement, and access
+control.
+
+| Module | Purpose |
+| --- | --- |
+| [`x/veid`](/modules/veid/) | Identity verification and trust scoring — the patented core of the protocol. |
+| [`x/veidregistry`](/modules/veidregistry/) | The registry of identity records and scopes that other modules resolve against. |
+| [`x/mfa`](/modules/mfa/) | On-chain multi-factor authentication policies for sensitive operations. |
+| [`x/cert`](/modules/cert/) | TLS certificates for mutual authentication between providers and tenants. |
+| [`x/encryption`](/modules/encryption/) | Public-key encryption so sensitive on-chain data is readable only by intended recipients. |
+| [`x/enclave`](/modules/enclave/) | Confidential-compute and enclave attestation for sensitive workloads. |
+| [`x/fraud`](/modules/fraud/) | Fraud reporting and enforcement hooks that police marketplace conduct. |
+| [`x/roles`](/modules/roles/) | Role-based access control shared across the protocol's modules. |
+
+## Economics & settlement
+
+Escrow-backed payments, governed settlement fees, validator transaction fees,
+VEID-led issuance, staking, delegation, and oracles.
+
+| Module | Purpose |
+| --- | --- |
+| [`x/escrow`](/modules/escrow/) | Funds held on-chain against active leases, released only by settlement rules. |
+| [`x/settlement`](/modules/settlement/) | Converts signed usage records into billable line items and provider payouts. |
+| [`x/take`](/modules/take/) | Governed marketplace settlement policy; validator transaction fees remain separate. |
+| [`x/bme`](/modules/bme/) | Burn-and-mint equilibrium mechanics linking token supply to marketplace demand. |
+| [`x/staking`](/modules/staking/) | Validator staking extensions over Cosmos SDK staking, tuned for the dual validator role. |
+| [`x/delegation`](/modules/delegation/) | The full delegation lifecycle for token holders and staking partners. |
+| [`x/issuancepolicy`](/modules/issuancepolicy/) | Governed controls over how and when new tokens are issued. |
+| [`x/oracle`](/modules/oracle/) | External price and data feeds brought on-chain for pricing and policy. |
+
+## Quality & governance
+
+Auditor-signed attributes, hardware benchmarks, reviews, support and dispute
+intake, and governed chain configuration.
+
+| Module | Purpose |
+| --- | --- |
+| [`x/audit`](/modules/audit/) | Auditor-signed provider attributes that upgrade self-claims into attestations. |
+| [`x/benchmark`](/modules/benchmark/) | On-chain hardware benchmarking records that ground offers in measured performance. |
+| [`x/review`](/modules/review/) | Tenant–provider reviews building portable, tamper-evident reputation. |
+| [`x/support`](/modules/support/) | Support and dispute intake flows for marketplace participants. |
+| [`x/config`](/modules/config/) | Governed chain-level configuration — including the approved-client list. |
+
+## Related reading
+
+- [Architecture](/protocol/architecture/) — how the modules fit together in
+  the node.
+- [How the Marketplace Works](/protocol/how-it-works/) — the order → match →
+  lease → usage → settlement lifecycle these modules implement.
+- [Clients & SDKs](/developers/sdk-and-clients/) — exploring module APIs from
+  the CLI, Go and TypeScript.

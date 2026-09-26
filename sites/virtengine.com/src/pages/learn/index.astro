@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { LEARN } from "@data/learn";
 
 const crumbs = [
@@ -10,55 +11,72 @@ const crumbs = [
   { name: "Learn", href: "/learn" },
 ];
 
-const fundamentals = LEARN.filter((g) =>
-  ["how-the-marketplace-works", "waldur-and-virtengine", "escrow-and-settlement-explained", "what-is-veid"].includes(g.slug),
-);
-const economics = LEARN.filter((g) =>
-  ["tokenomics-explained", "understanding-slashing", "provider-economics", "governance-guide"].includes(g.slug),
-);
-const advanced = LEARN.filter((g) =>
-  ["confidential-computing-on-virtengine", "hpc-on-virtengine", "mainnet-roadmap"].includes(g.slug),
-);
+const bySlug = (slug: string) => LEARN.find((g) => g.slug === slug);
+const pick = (slugs: string[]) => slugs.map(bySlug).filter((g): g is NonNullable<typeof g> => Boolean(g));
+
+const fundamentals = pick(["how-the-marketplace-works", "iaas-paas-saas-on-virtengine", "what-is-veid", "escrow-and-settlement-explained"]);
+const marketplace = pick(["three-ways-to-buy", "anatomy-of-a-marketplace-listing", "marketplace-glossary"]);
+const infrastructure = pick(["hpc-on-virtengine", "confidential-computing-on-virtengine"]);
+const economics = pick(["tokenomics-explained", "understanding-slashing", "provider-economics", "governance-guide"]);
+const network = pick(["mainnet-roadmap"]);
 
 const groups = [
-  { eyebrow: "Fundamentals", title: "Start here", items: fundamentals },
+  { eyebrow: "Marketplace", title: "Buying modes, listings, vocabulary", items: marketplace },
+  { eyebrow: "Infrastructure", title: "HPC and confidential computing", items: infrastructure },
   { eyebrow: "Economics & governance", title: "Money, risk, and control", items: economics },
-  { eyebrow: "Advanced capabilities", title: "Confidential compute, HPC & mainnet", items: advanced },
-];
+  { eyebrow: "Network", title: "Status and roadmap", items: network },
+].filter((g) => g.items.length > 0);
 ---
-
 <Base
-  title="Learn — VirtEngine guides & explainers"
-  description="In-depth guides to the VirtEngine protocol: marketplace mechanics, escrow and settlement, tokenomics, VEID identity, slashing, provider economics, confidential computing, HPC, governance, and the mainnet roadmap."
+  title="Learn: Marketplace, Tokenomics & Cloud Guides | VirtEngine"
+  description="Guides that explain how VirtEngine works — from the marketplace and service catalogue to identity, infrastructure, settlement and the MainNet roadmap."
   path="/learn"
+  image="/media/learn-library-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHero
+    media="learn-library"
+    mediaCaption="Written to be checked, not skimmed."
     eyebrow="Learn"
     title="The protocol, explained properly"
-    lede="Eleven guides that explain how VirtEngine actually works — grounded in the protocol repository, official integration documentation, and its economic simulation framework. No filler, no invented numbers."
+    lede="Fewer, stronger guides — each with a distinct job. Start with fundamentals, go deeper where needed, use reference material for lookup."
     crumbs={crumbs}
-  />
+  >
+  </PageHero>
+
+  <Section eyebrow="Fundamentals" title="Start with these four">
+    <ul class="learn-map-feature">
+      {
+        fundamentals.map((guide) => (
+          <li>
+            <a href={`/learn/${guide.slug}`}>
+              <MediaFigure slug={guide.media} ratio="16 / 9" sizes="(min-width: 1024px) 44vw, 100vw" />
+              <div>
+                <p class="learn-map-kicker">{guide.kicker}</p>
+                <h3>{guide.title}</h3>
+                <p>{guide.metaDescription}</p>
+                <span class="learn-map-go">Read the guide <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
 
   {
     groups.map((group) => (
       <Section eyebrow={group.eyebrow} title={group.title}>
-        <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="learn-map-list">
           {group.items.map((guide) => (
             <li>
-              <a
-                href={`/learn/${guide.slug}`}
-                class="clip-corner group flex h-full flex-col rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
-              >
-                <p class="font-mono text-xs font-medium uppercase tracking-[0.16em] text-green-deep">{guide.kicker}</p>
-                <h3 class="mt-2 text-lg font-semibold text-ink group-hover:text-green-dark">{guide.title}</h3>
-                <p class="mt-2.5 flex-1 text-sm leading-relaxed text-slate">{guide.metaDescription}</p>
-                <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-green-deep">
-                  Read the guide
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M2.5 8h11M9 3.5 13.5 8 9 12.5"></path>
-                  </svg>
+              <a href={`/learn/${guide.slug}`}>
+                <span>
+                  <small>{guide.kicker}</small>
+                  <strong>{guide.title}</strong>
+                  <em>{guide.metaDescription}</em>
                 </span>
+                <span class="learn-map-arrow" aria-hidden="true">→</span>
               </a>
             </li>
           ))}
@@ -70,15 +88,22 @@ const groups = [
   <Section eyebrow="Reference material" title="When you need the exact details">
     <div class="prose-body reveal max-w-3xl text-base">
       <p>
+        Looking up a single term? The <a href="/definitions">definitions hub</a> covers cloud and marketplace
+        vocabulary - IaaS, PaaS, AI inference, private and hybrid cloud - each with the section that matters here: how
+        it is listed, metered and settled on an open market. For listing and order vocabulary, the
+        <a href="/learn/marketplace-glossary">marketplace glossary</a> defines the objects themselves.
         The guides link into the <a href="/modules">module reference</a> — one page per on-chain
-        module — and outward to <a href="https://docs.virtengine.com">docs.virtengine.com</a>
-        for message-level documentation. Questions the guides don't answer may already be in the
-        <a href="/faq">FAQ</a>.
+        module — and outward to <a href="https://docs.virtengine.com" target="_blank" rel="noopener noreferrer">docs.virtengine.com</a>
+        for message-level documentation. The <a href="/marketplace">marketplace hub</a> covers the
+        service catalogue and buying paths, and questions the guides don't answer may already be in
+        the <a href="/faq">FAQ</a>.
       </p>
     </div>
     <div class="reveal mt-8 flex flex-wrap gap-4">
-      <CTA href="/modules">Module reference</CTA>
-      <CTA href="/faq" variant="secondary">FAQ</CTA>
+      <CTA href="/marketplace">Marketplace hub</CTA>
+      <CTA href="/modules" variant="secondary">Module reference</CTA>
+      <CTA href="/learn/marketplace-glossary" variant="secondary">Marketplace glossary</CTA>
+      <CTA href="/faq" variant="ghost">FAQ</CTA>
     </div>
   </Section>
 </Base>

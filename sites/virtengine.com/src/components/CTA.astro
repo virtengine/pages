@@ -21,7 +21,8 @@ const variants = {
 <a
   href={href}
   aria-label={ariaLabel}
-  rel={href.startsWith("http") ? "noopener" : undefined}
+  target={href.startsWith("http") ? "_blank" : undefined}
+  rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
   class:list={[
     "inline-flex items-center gap-2 rounded-sm text-sm font-semibold transition-colors",
     variant === "ghost" ? "py-1" : "px-5 py-2.5",

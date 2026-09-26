@@ -1,0 +1,49 @@
+---
+/**
+ * OrderAnatomy — what an order contains, how it resolves, and what the lease
+ * binds. Three columns, one diagram: ORDER → MATCH → LEASE.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["mk-order", className]}>
+  <article class="mk-order-col">
+    <h3>Order</h3>
+    <ul>
+      <li>Tenant</li>
+      <li>service / category</li>
+      <li>offering or requirements</li>
+      <li>region</li>
+      <li>resource requirements</li>
+      <li>provider constraints</li>
+      <li>price / cap</li>
+      <li>escrow</li>
+    </ul>
+    <p>Demand with budget behind it. Nothing matches until the escrow account exists.</p>
+  </article>
+  <article class="mk-order-col">
+    <h3>Match</h3>
+    <ul>
+      <li>direct listing</li>
+      <li>accepted bid</li>
+      <li>selector result</li>
+    </ul>
+    <p>Match selection happens on-chain. Every path resolves deterministically to one provider and one price.</p>
+  </article>
+  <article class="mk-order-col">
+    <h3>Lease</h3>
+    <ul>
+      <li>tenant</li>
+      <li>provider</li>
+      <li>offering</li>
+      <li>pricing</li>
+      <li>escrow</li>
+      <li>lifecycle</li>
+    </ul>
+    <p>The enforceable agreement. Fulfilment, usage and settlement all reference the lease.</p>
+  </article>
+</div>

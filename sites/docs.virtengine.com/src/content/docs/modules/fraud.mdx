@@ -1,0 +1,124 @@
+---
+title: x/fraud — Fraud module
+description: The x/fraud module receives and adjudicates marketplace fraud reports, then enforces flags, holds, and penalties that other modules honor across market flows.
+---
+
+The `x/fraud` module receives and adjudicates reports of marketplace
+misconduct — falsified usage, identity abuse, malicious workloads — and
+carries the enforcement hooks that other modules honor: flags, holds, and
+penalties that alter what a flagged account may do.
+
+It complements consensus-level slashing: where slashing punishes validator
+protocol violations, `x/fraud` addresses marketplace-level misconduct by
+tenants and providers.
+
+## What it does
+
+- **Reports land on-chain.** A report files an allegation of misconduct with
+  supporting evidence, opening a case anyone can follow through its
+  lifecycle (`FraudReport`, `FraudReports`).
+- **Adjudication is rule-bound.** Cases escalate
+  (`MsgEscalateFraudReport`), moderators get assigned
+  (`MsgAssignModerator`, `ModeratorQueue`), and each report is resolved or
+  rejected with its status tracked (`MsgResolveFraudReport`,
+  `MsgRejectFraudReport`, `MsgUpdateReportStatus`) — leaving an auditable
+  trail (`AuditLog`).
+- **Enforcement propagates.** Flags and holds propagate as enforcement hooks
+  other modules honor: market participation can be restricted, disputed or
+  fraudulent usage is intercepted before it settles, and support disputes
+  escalate here where misconduct is alleged.
+- **Standing updates.** Outcomes feed trust standing in
+  [x/veid](/modules/veid/), participation rights, and the auditable record.
+
+## Why it exists
+
+Open participation means adversarial participation. A marketplace that
+cannot expel or penalize bad actors decays into one; putting fraud
+handling on-chain makes enforcement transparent, rule-bound, and
+reviewable instead of arbitrary platform moderation.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Fraud report | An on-chain allegation of misconduct with supporting evidence, subject to adjudication. |
+| Enforcement hook | A module-level check that honors fraud flags before permitting an action. |
+
+## Core flow
+
+1. **Allege — A report is filed.** An on-chain allegation of misconduct with
+   supporting evidence opens the case.
+2. **Judge — The report is adjudicated.** Transparent, rule-bound
+   adjudication — enforcement by protocol, not arbitrary platform
+   moderation.
+3. **Enforce — Hooks engage.** Flags and holds propagate to market
+   participation, settlement, and support flows.
+4. **Resolve — Standing updates.** Outcomes feed trust standing,
+   participation rights, and the auditable record.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgSubmitFraudReport` | Files a fraud report with supporting evidence. |
+| `MsgEscalateFraudReport` | Escalates a filed report for deeper adjudication. |
+| `MsgResolveFraudReport` | Resolves a report with a finding. |
+| `MsgRejectFraudReport` | Rejects a report that does not stand up. |
+| `MsgAssignModerator` | Assigns a moderator to work a report. |
+| `MsgUpdateReportStatus` | Updates the status of a report under review. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `FraudReport` / `FraudReports` | A single report and the full report list. |
+| `FraudReportsByReporter` / `FraudReportsByReportedParty` | Reports filtered by who filed them or who they name. |
+| `ModeratorQueue` | Reports awaiting moderator attention. |
+| `AuditLog` | The module's auditable record of adjudication activity. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veid](/modules/veid/) | Identity abuse reports feed back into trust standing. |
+| [x/market](/modules/market/) | Enforcement outcomes can restrict marketplace participation. |
+| [x/settlement](/modules/settlement/) | Disputed or fraudulent usage is intercepted before it settles. |
+| [x/support](/modules/support/) | Dispute intake escalates to fraud handling where misconduct is alleged. |
+
+## Related documentation
+
+- [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/) — where fraud
+  handling sits in the wider trust fabric.
+- [Slashing](/validators/slashing/) — the consensus-layer counterpart for
+  validator misbehavior.
+- [Escrow & Settlement](/concepts/escrow-settlement/) — where fraudulent
+  usage is intercepted before payout.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What counts as marketplace fraud?
+
+Falsified usage, identity abuse, malicious workloads — conduct enforced at
+the marketplace layer rather than the consensus layer.
+
+### How is this different from slashing?
+
+Slashing punishes validator protocol violations like double-signing. The
+fraud module addresses tenant and provider misconduct — the two systems
+complement, never overlap. See [Slashing](/validators/slashing/).
+
+### Can enforcement stop a payout?
+
+Yes. Disputed or fraudulent usage is intercepted before it settles, and
+enforcement outcomes can restrict marketplace participation until
+resolved. See the [x/settlement module](/modules/settlement/).
+
+:::note
+Message and query types are defined in `x/fraud/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

@@ -1,0 +1,132 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import OrderDemo from "@components/marketplace/OrderDemo.astro";
+import { SERVICE_MODELS, ACQUISITION_PATHS } from "@data/market";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "Marketplace: Infrastructure & Services | VirtEngine";
+const description =
+  "What VirtEngine can sell: IaaS, PaaS, SaaS, HPC, GPU compute, storage, managed and custom listings — one catalogue, three acquisition paths, one settlement rail.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+];
+
+/** Mixed catalogue visual: the point is variety in one catalogue — not chain wiring. */
+const mixedCatalogue = [
+  SERVICE_MODELS.find(m => m.id === "gpu")!,
+  SERVICE_MODELS.find(m => m.id === "paas")!,
+  SERVICE_MODELS.find(m => m.id === "iaas")!,
+  SERVICE_MODELS.find(m => m.id === "hpc")!,
+  SERVICE_MODELS.find(m => m.id === "saas")!,
+  SERVICE_MODELS.find(m => m.id === "storage")!,
+  SERVICE_MODELS.find(m => m.id === "custom")!,
+];
+---
+<Base
+  title={title}
+  description={description}
+  path="/marketplace"
+  image="/media/marketplace-hardware-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace"
+    title="Infrastructure and services, through one verifiable market."
+    lede="Very different services can exist in one catalogue — compute, platforms, software, HPC, storage and custom work — ordered three ways and settled on one rail."
+    crumbs={crumbs}
+    media="marketplace-hardware"
+    mediaCaption="Many service types, one catalogue."
+  >
+    <CTA href="#service-types">Explore service types</CTA>
+    <CTA href="/learn/how-the-marketplace-works" variant="secondary">How the lifecycle works</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">Illustrative catalogue · {NETWORK_STATUS.posture}</span>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Service model atlas"
+    title="One catalogue, many service types."
+    lede="Each tile is an illustrative example from a different category. The visual point: very different services share one market."
+    id="service-types"
+  >
+    <ul class="mk-mixed-catalogue">
+      {mixedCatalogue.map((model) => (
+        <li>
+          <MarketplaceListingCard
+            serviceType={model.listing.serviceType}
+            title={model.listing.title}
+            provider={model.listing.provider}
+            region={model.listing.region}
+            specs={model.listing.specs.slice(0, 3)}
+            components={model.listing.components}
+            priceLabel={model.listing.priceLabel}
+            badges={model.listing.badges}
+            href={model.route}
+            cta={model.cta}
+            compact
+          />
+          <a class="mk-mixed-link" href={model.route} aria-label={`${model.title} — ${model.cta}`}>{model.label} <span aria-hidden="true">→</span></a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-6 text-sm"><a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS →</a></p>
+  </Section>
+
+  <Section eyebrow="How you source it" title="Direct, bid, or selector." lede="Compact overview — the full walkthrough is the canonical buying guide." id="buying">
+    <ul class="mk-compact-acq">
+      {ACQUISITION_PATHS.map((p) => (
+        <li>
+          <a class="mk-compact-acq-link" href={p.href} aria-label={`${p.tab} — ${p.short}`}>
+            <strong>{p.tab}</strong>
+            <span>{p.short}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-6"><a class="btn-quiet" href="/learn/three-ways-to-buy">Three ways to buy — full guide <span aria-hidden="true">→</span></a> <a class="btn-quiet" href="#demo">Try all three in the order demo <span aria-hidden="true">↓</span></a></p>
+  </Section>
+
+  <Section
+    eyebrow="Interactive demo"
+    title="Order infrastructure, end to end."
+    lede="A simulated marketplace terminal: pick a listing, configure the plan, buy direct, by bid or by selector, then deploy the lease and settle usage. Nothing here spends money or provisions hardware."
+    id="demo"
+  >
+    <OrderDemo />
+  </Section>
+
+  <Section eyebrow="One market rail" title="Order → Match → Lease → Usage → Settlement." lede="The lifecycle is explained once, in full, in the canonical guide." class="border-y border-line bg-paper-soft" id="lifecycle">
+    <LifecycleRail />
+  </Section>
+
+  <Section eyebrow="Trust signals" title="What every listing carries.">
+    <ul class="mk-trust-signals">
+      <li><a href="/veid"><strong>Provider identity</strong><span>VEID-verified counterparties</span></a></li>
+      <li><a href="/marketplace/iaas"><strong>Region</strong><span>placement and compliance input</span></a></li>
+      <li><a href="/providers"><strong>Audits</strong><span>auditor-signed attributes</span></a></li>
+      <li><a href="/marketplace/gpu-compute"><strong>Benchmarks</strong><span>measured performance</span></a></li>
+      <li><a href="/solutions/enterprises-confidential-compute"><strong>Attestation</strong><span>confidential paths where required</span></a></li>
+      <li><a href="/learn/three-ways-to-buy"><strong>Pricing</strong><span>published or competitive, always on-chain</span></a></li>
+    </ul>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <CTA href="/tenants">For tenants</CTA>
+      <CTA href="/providers" variant="secondary">For providers</CTA>
+      <CTA href="/waldur" variant="ghost">How Waldur fulfils orders →</CTA>
+    </div>
+  </Section>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <ul class="mk-related-compact">
+      <li><a href="/learn/how-the-marketplace-works">How the marketplace works →</a></li>
+      <li><a href="/learn/three-ways-to-buy">Three ways to buy →</a></li>
+      <li><a href="/learn/anatomy-of-a-marketplace-listing">Anatomy of a listing →</a></li>
+    </ul>
+  </Section>
+</Base>

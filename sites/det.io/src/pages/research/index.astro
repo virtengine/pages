@@ -9,18 +9,32 @@ import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
 import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
 import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
 import { RESEARCH_TOPICS } from "@data/research";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
   { name: "Research", href: "/research" },
 ];
+
+const researchListSchema = itemListNode(
+  new URL("/research", SITE.url).href,
+  "DET.io Foundation research topics",
+  RESEARCH_TOPICS.map((topic) => ({
+    name: topic.title,
+    href: `/research/${topic.slug}`,
+    description: topic.summary,
+  })),
+);
 ---
 
 <Base
-  title="Research — programs and topics of DET.io Foundation | det.io"
-  description="The foundation's research portfolio: the VirtEngine decentralized cloud program, the DSEMA multi-agent AI program, the open-source Bosun agent orchestrator, the VEID identity program, and six cross-cutting research topics — decentralized identity, multi-agent safety, confidential computing, protocol governance design, incentive mechanisms, and privacy-preserving verification."
+  title="Research: Cloud, AI Safety & Identity | det.io"
+  description="DET.io research portfolio: VirtEngine decentralized cloud, DSEMA multi-agent AI safety, Bosun coding agents, VEID identity and six cross-cutting topics."
   path="/research"
   breadcrumbs={breadcrumbs}
+  pageType="CollectionPage"
+  schema={[researchListSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero

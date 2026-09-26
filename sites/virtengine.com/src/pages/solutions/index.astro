@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import { SOLUTIONS } from "@data/solutions";
 
 const crumbs = [
@@ -25,27 +26,31 @@ const groups = [
     eyebrow: "Supply the network",
     title: "For operators with capacity to lease",
     lede: "Datacenters, GPU fleets, and HPC facilities earn settled revenue by serving on-chain leases.",
+    graphic: "Operator topology: facility → daemon → market",
     items: provide,
   },
   {
     eyebrow: "Secure the network",
     title: "For validators, partners & token holders",
     lede: "Consensus plus the VEID Network — one bonded stake, layered rewards, honest risk disclosure.",
+    graphic: "Protocol nodes: stake → consensus + identity → rewards",
     items: secure,
   },
   {
     eyebrow: "Build & deploy on the network",
     title: "For developers, enterprises & workloads",
     lede: "Typed module surfaces for builders; verifiable confidentiality, GPU sourcing, and auction-set pricing for tenants.",
+    graphic: "Workload requirements → matching capacity",
     items: build,
   },
 ];
 ---
 
 <Base
-  title="Solutions — who VirtEngine is for"
-  description="How different audiences use VirtEngine: GPU and datacenter providers, HPC clusters, validators, staking partners, token holders, developers, enterprises, and AI/ML teams."
+  title="Solutions: GPU, HPC & Enterprise Cloud | VirtEngine"
+  description="VirtEngine solutions for GPU providers, datacenters, HPC clusters, validators, developers, enterprises and AI teams. Find your path into the market."
   path="/solutions"
+  image="/media/provider-datacenter-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHero
@@ -53,11 +58,14 @@ const groups = [
     title="One protocol, many ways in"
     lede="VirtEngine serves both sides of the compute market and everyone securing it. Find the path that matches what you run, hold, or build — each page covers the problem, the protocol's answer, the economics, and the first steps."
     crumbs={crumbs}
+    media="provider-technician"
+    mediaCaption="Different operators, one protocol."
   />
 
   {
     groups.map((group) => (
       <Section eyebrow={group.eyebrow} title={group.title} lede={group.lede}>
+        <p class="sol-group-graphic" aria-label={group.graphic}>{group.graphic}</p>
         <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {group.items.map((sol) => (
             <li>
@@ -65,6 +73,12 @@ const groups = [
                 href={`/solutions/${sol.slug}`}
                 class="clip-corner group block h-full rounded-card border border-line bg-panel p-6 transition-colors hover:border-green-deep"
               >
+                <MediaFigure
+                  slug={sol.media}
+                  ratio="16 / 9"
+                  sizes="(min-width: 1024px) 28vw, 100vw"
+                  class="mb-5"
+                />
                 <h3 class="text-base font-semibold text-ink group-hover:text-green-dark">{sol.label}</h3>
                 <p class="mt-2 text-sm leading-relaxed text-slate">{sol.title}</p>
                 <p class="mt-3 font-mono text-xs text-muted">{sol.audience}</p>
@@ -79,8 +93,10 @@ const groups = [
   <Section eyebrow="Not sure where to start?" title="Start with how the marketplace works">
     <div class="prose-body reveal max-w-3xl text-base">
       <p>
-        Every solution above rests on the same five-stage lifecycle — order, bid, lease, usage,
-        settlement. The <a href="/learn/how-the-marketplace-works">marketplace walkthrough</a>
+        Every solution above rests on the same five-stage lifecycle — order, match, lease, usage,
+        settlement. Match is where the three buying paths part ways: direct at a listed price,
+        open to competing bids, or resolved by attribute. The
+        <a href="/learn/how-the-marketplace-works">marketplace walkthrough</a>
         explains it end to end, and the <a href="/faq">FAQ</a> answers the most common questions
         from providers, stakers, and developers.
       </p>

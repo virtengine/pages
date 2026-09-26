@@ -1,0 +1,71 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
+import { media } from "@data/media";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Media credits", href: "/media-credits" },
+];
+
+const assets = Object.entries(media).map(([slug, asset]) => ({ slug, ...asset }));
+---
+
+<Base
+  title="Media credits | identity.org.au"
+  description="Provenance for every photograph on identity.org.au: all CC0 or public domain, rendered through one brand treatment, with each creator and source recorded."
+  breadcrumbs={crumbs}
+  pageType="CollectionPage"
+  noindex
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Credits and provenance"
+    title="Media credits"
+    lede="Every photograph on this site is public domain or CC0, drawn from open collections, and rendered through the same navy duotone treatment. The record below lists each image, its creator, its licence and its source."
+  />
+
+  <div class="container-site py-12">
+    <div class="prose-service">
+      <p>
+        Images are sourced through the Openverse API, filtered to <code>cc0</code> and
+        <code>pdm</code>, with Wikimedia Commons searched directly when needed. CC0 and public
+        domain material carries no attribution obligation; provenance is recorded anyway, and
+        nobody shown in a photograph is presented as a customer or user of the service — these are
+        documentary images of documents, devices, rooms and objects.
+      </p>
+    </div>
+
+    <h2 class="mt-12 text-[1.6rem]">The library</h2>
+    <ul class="media-credits-grid mt-6 list-none p-0">
+      {
+        assets.map((asset) => (
+          <li class="media-credits-card">
+            <MediaFigure slug={asset.slug} ratio="3 / 2" />
+            <h3>{asset.alt}</h3>
+            <p>
+              {asset.credit}
+              {asset.source && (
+                <>
+                  {" · "}
+                  <a href={asset.source} rel="noopener">
+                    source
+                  </a>
+                </>
+              )}
+              {" · "}
+              {asset.license.toUpperCase()}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-10 max-w-3xl text-sm leading-relaxed text-muted">
+      To re-run the harvest and treatment pipeline, see
+      <code class="font-mono">scripts/media-harvest.py</code> in the
+      <a href="https://github.com/virtengine/pages" rel="noopener" class="link-plain" target="_blank">site repository</a>.
+    </p>
+  </div>
+</Base>

@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 
+# Content Signals (https://contentsignals.org): DETIO FOUNDATION LTD permits
+# all AI training, search, and input use of this site's public content.
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+# identity.org.au documents the Identity Wallet service operated by
+# DETIO FOUNDATION LTD. The sitemap lists canonical pages only.
+
 Sitemap: https://identity.org.au/sitemap-index.xml

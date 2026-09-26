@@ -12,9 +12,10 @@ const crumbs = [
 ---
 
 <Base
-  title="VirtEngine Journal — Protocol notes and historic archive"
-  description="Current writing about the VirtEngine decentralized cloud protocol, plus the complete preserved 2015–2016 VirtEngine blog archive."
+  title="Journal 2026: DePIN & Decentralized Cloud | VirtEngine"
+  description="VirtEngine Journal 2026: DePIN, decentralized cloud and protocol design notes, plus the preserved 2015-2016 archive. Learn how open infrastructure evolves."
   path="/blog"
+  image="/media/provider-technician-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHero
@@ -22,6 +23,8 @@ const crumbs = [
     title="Infrastructure markets, built in the open"
     lede="Current notes on protocol design, verifiable identity, provider operations, and settlement—together with the complete early VirtEngine blog archive."
     crumbs={crumbs}
+    media="provider-technician"
+    mediaCaption="Field notes from building an infrastructure market."
   >
     <div class="mt-8 flex flex-wrap gap-3">
       <a class="rounded-card bg-green-deep px-5 py-3 text-sm font-semibold text-white hover:bg-green-dark" href="#latest">
@@ -40,7 +43,7 @@ const crumbs = [
     lede="New articles from the VirtEngine Foundation about the system being built today."
   >
     <div class="grid gap-6 lg:grid-cols-3">
-      {CURRENT_POSTS.map((article) => <BlogCard article={article} featured />)}
+      {CURRENT_POSTS.map((article, i) => <BlogCard article={article} featured mediaIndex={i} />)}
     </div>
   </Section>
 
@@ -51,7 +54,7 @@ const crumbs = [
       lede="All 64 articles from 2015–2016 have been migrated with their original titles, dates, and article text. They are retained as a historical record, not current technical guidance. Known migration links are repaired where possible; unavailable items are labelled."
     >
       <div class="grid gap-6 md:grid-cols-2">
-        {LEGACY_POSTS.slice(0, 4).map((article) => <BlogCard article={article} />)}
+        {LEGACY_POSTS.slice(0, 4).map((article, i) => <BlogCard article={article} mediaIndex={i + CURRENT_POSTS.length} />)}
       </div>
       <div class="mt-10 flex flex-wrap items-center justify-between gap-5 border-t border-line-strong pt-8">
         <p class="max-w-2xl text-sm leading-7 text-slate">

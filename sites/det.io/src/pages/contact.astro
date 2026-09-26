@@ -8,8 +8,8 @@ import { SITE } from "@data/site";
 ---
 
 <Base
-  title="Contact — DETIO FOUNDATION LTD | det.io"
-  description="Contact DETIO FOUNDATION LTD: research collaboration, provider and staking partnerships, membership inquiries under clause 13 of the constitution. hello@det.io — Australia."
+  title="Contact DETIO: Research & Partnerships | det.io"
+  description="Contact DETIO FOUNDATION LTD: research collaboration, provider and staking partnerships, membership inquiries. hello@det.io — Australia."
   path="/contact"
   breadcrumbs={[
     { name: "Home", href: "/" },
@@ -19,7 +19,7 @@ import { SITE } from "@data/site";
   <PageHero
     eyebrow="Contact"
     title="Write to the foundation"
-    lede="One address reaches us. Tell us plainly what you're proposing and which program it concerns — a person, not a funnel, reads it."
+    lede="For questions about our work or a possible collaboration, tell us which program interests you and what you hope to understand or contribute."
   >
     <p class="mt-2 font-mono text-lg">
       <a href={`mailto:${SITE.email}`} class="text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">
@@ -45,16 +45,14 @@ import { SITE } from "@data/site";
           affiliation, the question you want to work on, and any relevant publications or
           code.
         </p>
-        <p class="font-mono text-xs text-text-soft">→ hello@det.io, subject "Research"</p>
+        <p class="font-mono text-xs text-text-soft"><a href="mailto:hello@det.io?subject=Research%20enquiry" class="underline underline-offset-4">Email a research enquiry →</a></p>
       </article>
 
       <article class="reveal grid content-start gap-3 rounded-card border border-hairline bg-surface p-7">
         <h3 class="text-xl font-bold">Providers, staking &amp; integration</h3>
         <p class="prose-inst text-[0.95rem]">
-          Datacenter and cloud operators who want to lease capacity, validators and staking
-          partners, and developers integrating against the protocol: the VirtEngine
-          properties are the right front door — start with the protocol site and
-          documentation.
+          Datacenter and cloud operators preparing for future participation, validators and staking
+          partners, and developers integrating against the protocol: start with the VirtEngine protocol site and documentation. The network is not live; check its current launch status before planning participation.
         </p>
         <div class="flex flex-wrap gap-2">
           <CTA href="https://virtengine.com" variant="ghost" rel="noopener">virtengine.com</CTA>
@@ -72,7 +70,7 @@ import { SITE } from "@data/site";
           <ClauseRef id="11.5" />. Note the constitution allows at most two Ordinary
           Members <ClauseRef id="11.3" />.
         </p>
-        <p class="font-mono text-xs text-text-soft">→ hello@det.io, subject "Membership"</p>
+        <p class="font-mono text-xs text-text-soft"><a href="mailto:hello@det.io?subject=Membership%20enquiry" class="underline underline-offset-4">Email a membership enquiry →</a></p>
       </article>
     </div>
   </Section>

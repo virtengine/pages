@@ -11,33 +11,41 @@ interface Props {
 import Mark from "@components/brand/Mark.astro";
 
 const { class: className, size = 34, byline = false, onDark = false } = Astro.props;
-const markSize = Math.round(size * 0.92);
-const wordmarkSize = Math.max(18, Math.round(size * 0.48));
+const sourceWidth = 1423;
+const sourceHeight = 362;
+const markWidth = size * (376 / sourceHeight);
+const wordmarkWidth = size * ((sourceWidth - 376) / sourceHeight);
+const lockupWidth = size * (sourceWidth / sourceHeight);
+const wordmarkClip = byline ? "inset(0)" : "inset(0 0 26.3% 0)";
 ---
 
 <span
-  class:list={["inline-flex items-center gap-2", className]}
-  style={`height:${size}px`}
+  class:list={["inline-flex shrink-0 items-center overflow-hidden whitespace-nowrap", className]}
+  style={`width:${lockupWidth}px;height:${size}px;flex:0 0 auto`}
   role="img"
   aria-label={byline ? "VirtEngine by DET.io" : "VirtEngine"}
 >
-  <Mark size={markSize} class="shrink-0 text-green" />
-  <span class="flex flex-col leading-none">
-    <span
-      class:list={["font-display", onDark ? "text-night-text" : "text-slate"]}
-      style={`font-size:${wordmarkSize}px`}>VirtEngine</span
-    >
-    {
-      byline && (
-        <span
-          class:list={[
-            "mt-1 text-right font-display text-[0.62rem] tracking-[0.08em]",
-            onDark ? "text-night-muted" : "text-faint",
-          ]}
-        >
-          by DET.io
-        </span>
-      )
-    }
+  <Mark size={markWidth} class="relative z-10 shrink-0 text-green" />
+  <span
+    class="relative h-full shrink-0 overflow-hidden"
+    style={`width:${wordmarkWidth}px;clip-path:${wordmarkClip}`}
+    aria-hidden="true"
+  >
+    <img
+      src="/brand/virtengine-original.png"
+      width={sourceWidth}
+      height={sourceHeight}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      class:list={["absolute top-0 max-w-none", onDark && "lockup-wordmark--light"]}
+      style={`width:${lockupWidth}px;height:${size}px;left:-${markWidth}px`}
+    />
   </span>
 </span>
+
+<style>
+  .lockup-wordmark--light {
+    filter: brightness(0) invert(1);
+  }
+</style>

@@ -1,12 +1,90 @@
 ---
 import Base from "@layouts/Base.astro";
+import MediaBand from "@components/media/MediaBand.astro";
+import MediaFigure from "@components/media/MediaFigure.astro";
 import {SITE} from "@data/site";
+
+const paths = [
+  {
+    id: "learners",
+    tab: "I want to learn",
+    kicker: "01 / STUDENTS, RESEARCHERS & CURIOUS READERS",
+    title: "Understand the system before using it.",
+    body: "A cloud marketplace connects people who need computing resources with operators who can supply them. VirtEngine makes the agreement between them part of an open protocol. You do not need tokens, an account, or identity verification to read these resources.",
+    steps: [
+      "Read the five-stage marketplace guide: order, match, lease, usage, and settlement.",
+      "Explore how identity and escrow fit into that agreement.",
+      "Use the module reference to connect a concept to its implementation.",
+    ],
+    actions: [{ label: "Read the introductory guide →", href: "/learn/how-the-marketplace-works" }],
+  },
+  {
+    id: "developers",
+    tab: "I want to contribute",
+    kicker: "02 / SOFTWARE & DOCUMENTATION CONTRIBUTORS",
+    title: "Make the next contribution useful.",
+    body: "The project publishes its implementation under Apache 2.0. A contribution can be a reproducible bug report, clearer documentation, a test, or a proposed improvement. Start by understanding the current code and its contribution instructions.",
+    steps: [
+      "Read the repository README and contribution guidance.",
+      "Check existing issues before opening a new one.",
+      "Explain the problem and the evidence; discuss larger changes before implementing them.",
+    ],
+    actions: [
+      { label: "Explore the source on GitHub ↗", href: SITE.github },
+      { label: "Understand the licence →", href: "/open-source" },
+    ],
+  },
+  {
+    id: "operators",
+    tab: "I run infrastructure",
+    kicker: "03 / PROVIDERS & VALIDATORS",
+    title: "Prepare now. Participate after approval.",
+    body: "The network is not live. Provider and validator pages explain the proposed operational model, not an available earning opportunity. Review the hardware, key management, integration, and security requirements before considering a future TestNet.",
+    steps: [
+      "Confirm the target network has an official launch decision.",
+      "Review the requirements for your intended role.",
+      "Use the published release and verification guidance when a network opens.",
+    ],
+    actions: [
+      { label: "Review provider requirements →", href: "/providers" },
+      { label: "Explore validator responsibilities →", href: "/staking" },
+      { label: "Check network status →", href: "/network" },
+    ],
+  },
+  {
+    id: "collaborators",
+    tab: "I want to collaborate",
+    kicker: "04 / RESEARCH & PUBLIC-BENEFIT COLLABORATION",
+    title: "Bring a question worth working on.",
+    body: "If your work concerns open infrastructure, privacy, education, or access to computing, contact the Foundation with a short description of your interest and the problem you hope to address. Possible collaboration is a discussion, not an existing commitment or programme enrolment.",
+    steps: [],
+    actions: [{ label: "Contact the Foundation →", href: "/contact" }],
+  },
+];
 ---
-<Base title="Get involved — VirtEngine" description="Learn about VirtEngine, contribute to its software and documentation, or prepare for future network participation.">
-<div class="container-site"><div class="content-hero"><p class="kicker">GET INVOLVED</p><h1>Your next step into<br/>an open project.</h1><p class="intro">Start with what you want to do. Learning and open-source contributions are possible today. Network participation depends on a future approved launch.</p></div>
-<nav class="route-tabs" aria-label="Choose your participation path"><a href="#learners">I want to learn</a><a href="#developers">I want to contribute</a><a href="#operators">I run infrastructure</a><a href="#collaborators">I want to collaborate</a></nav>
-<section id="learners" class="route-section"><p class="kicker">01 / STUDENTS, RESEARCHERS &amp; CURIOUS READERS</p><h2>Understand the system before using it.</h2><p>A cloud marketplace connects people who need computing resources with operators who can supply them. VirtEngine makes the agreement between them part of an open protocol. You do not need tokens, an account, or identity verification to read these resources.</p><ol><li>Read the five-stage marketplace guide: order, bid, lease, usage, and settlement.</li><li>Explore how identity and escrow fit into that agreement.</li><li>Use the module reference to connect a concept to its implementation.</li></ol><a class="button primary" href="/learn/how-the-marketplace-works">Read the introductory guide →</a></section>
-<section id="developers" class="route-section"><p class="kicker">02 / SOFTWARE &amp; DOCUMENTATION CONTRIBUTORS</p><h2>Make the next contribution useful.</h2><p>The project publishes its implementation under Apache 2.0. A contribution can be a reproducible bug report, clearer documentation, a test, or a proposed improvement. Start by understanding the current code and its contribution instructions.</p><ol><li>Read the repository README and contribution guidance.</li><li>Check existing issues before opening a new one.</li><li>Explain the problem and the evidence; discuss larger changes before implementing them.</li></ol><div class="action-row"><a class="button primary" href={SITE.github}>Explore the source on GitHub ↗</a><a class="text-link" href="/open-source">Understand the licence →</a></div></section>
-<section id="operators" class="route-section"><p class="kicker">03 / PROVIDERS &amp; VALIDATORS</p><h2>Prepare now. Participate after approval.</h2><p>The network is not live. Provider and validator pages explain the proposed operational model, not an available earning opportunity. Review the hardware, key management, integration, and security requirements before considering a future TestNet.</p><ol><li>Confirm the target network has an official launch decision.</li><li>Review the requirements for your intended role.</li><li>Use the published release and verification guidance when a network opens.</li></ol><div class="action-row"><a class="button primary" href="/providers">Review provider requirements →</a><a class="text-link" href="/staking">Explore validator responsibilities →</a><a class="text-link" href="/network">Check network status →</a></div></section>
-<section id="collaborators" class="route-section"><p class="kicker">04 / RESEARCH &amp; PUBLIC-BENEFIT COLLABORATION</p><h2>Bring a question worth working on.</h2><p>If your work concerns open infrastructure, privacy, education, or access to computing, contact the Foundation with a short description of your interest and the problem you hope to address. Possible collaboration is a discussion, not an existing commitment or programme enrolment.</p><a class="button primary" href="/contact">Contact the Foundation →</a></section></div>
+<Base title="Get Involved: Learn, Build & Provide | VirtEngine" description="Get involved with VirtEngine: read free DePIN guides, contribute Apache 2.0 code and docs, or prepare as a GPU provider or validator for TestNet 2027." path="/participate" breadcrumbs={[{name:"Home",href:"/"},{name:"Get involved",href:"/participate"}]}>
+<div class="container-site"><div class="content-hero content-hero--split"><div><p class="kicker">GET INVOLVED</p><h1>Your next step into<br/>an open project.</h1><p class="intro">Start with what you want to do. Learning and open-source contributions are possible today. Network participation depends on a future approved launch.</p></div><MediaFigure slug="closing-hands" ratio="4 / 3" sizes="(min-width: 1024px) 32vw, 100vw" caption="Four paths, one open project." /></div>
+<div class="pp">
+  <input type="radio" name="participation-path" id="pp-all" checked class="sr-only" />
+  {paths.map((p) => <input type="radio" name="participation-path" id={`pp-${p.id}`} class="sr-only" />)}
+  <nav class="route-tabs" role="tablist" aria-label="Choose your participation path">
+    <label for="pp-all">Show all paths</label>
+    {paths.map((p) => <label for={`pp-${p.id}`}>{p.tab}</label>)}
+  </nav>
+  <div class="pp-panels">
+    {paths.map((p) => (
+      <section id={p.id} class="route-section pp-panel" data-pp={p.id}>
+        <p class="kicker">{p.kicker}</p>
+        <h2>{p.title}</h2>
+        <p>{p.body}</p>
+        {p.steps.length > 0 && <ol>{p.steps.map((s) => <li>{s}</li>)}</ol>}
+        <div class="action-row">
+          {p.actions.map((a) => <a class="button primary" href={a.href}>{a.label}</a>)}
+        </div>
+      </section>
+    ))}
+  </div>
+</div>
+<MediaBand layout="reverse" slug="open-source-screen" eyebrow="How contribution works" title="The repository is the invitation." lede="Read the code, reproduce a bug, improve the documentation — contribution happens in the open, under Apache 2.0, with issues and proposals visible to everyone." caption="Source open. Contributions welcome today." />
+</div>
 </Base>

@@ -1,0 +1,21 @@
+---
+/**
+ * Static credit line. The auto-scrolling marquee was removed (impeccable:
+ * auto-scrolling text makes people read at the page's pace).
+ */
+interface Props {
+  items: string[];
+  variant?: "sand" | "sky";
+  label?: string;
+}
+
+const { items, label = "Foundation record" } = Astro.props;
+---
+
+<div class="ticker" aria-label={label}>
+  <div class="container-site">
+    <p class="ticker-track">
+      {items.map((item) => <span>{item}</span>)}
+    </p>
+  </div>
+</div>

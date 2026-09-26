@@ -1,0 +1,1198 @@
+---
+/**
+ * OrderDemo — a functional simulated marketplace order flow.
+ *
+ * Catalogue → Plan → Acquire (Direct / Open Bid / Selector) → Deploy →
+ * Manage & Settle. Every control is a real button, radio or input: no
+ * hover-only behaviour, so the demo works identically with mouse, touch
+ * and keyboard. All state lives in the script below; nothing spends money
+ * and nothing provisions hardware. Illustrative example throughout.
+ */
+const OFFERS = [
+  {
+    id: "gpu",
+    tag: "GPU & AI",
+    title: "H100 GPU Node",
+    provider: "Example Provider",
+    regions: [
+      ["ap-southeast", "ap-southeast"],
+      ["us-east", "us-east"],
+      ["eu-central", "eu-central"],
+    ],
+    specs: ["1 × H100", "24 vCPU", "192 GB RAM"],
+    unit: "GPU",
+    rate: 1.29,
+    rateNote: "$1.29 / GPU-hour",
+    period: "hour",
+    periodLabel: "hours",
+    qtyOptions: [1, 2, 4],
+    periodOptions: [24, 168, 720],
+    endpoint: "ssh tenant@{lease}.lease.example-provider.store",
+  },
+  {
+    id: "vm",
+    tag: "IaaS",
+    title: "General Purpose VM",
+    provider: "Example Provider",
+    regions: [
+      ["sydney-au", "Sydney · AU"],
+      ["us-east", "us-east"],
+    ],
+    specs: ["4 vCPU", "16 GB RAM", "200 GB NVMe"],
+    unit: "VM",
+    rate: 0.24,
+    rateNote: "$0.06 / vCPU-hour",
+    period: "hour",
+    periodLabel: "hours",
+    qtyOptions: [1, 2, 4],
+    periodOptions: [24, 168, 720],
+    endpoint: "ssh tenant@{lease}.lease.example-provider.store",
+  },
+  {
+    id: "k8s",
+    tag: "PaaS",
+    title: "Managed Kubernetes",
+    provider: "Example Provider",
+    regions: [
+      ["ap-southeast", "ap-southeast"],
+      ["eu-central", "eu-central"],
+    ],
+    specs: ["Managed control plane", "Autoscaling workers", "Managed upgrades"],
+    unit: "worker",
+    rate: 0.3,
+    rateNote: "$0.30 / worker-hour",
+    period: "hour",
+    periodLabel: "hours",
+    qtyOptions: [3, 5, 10],
+    periodOptions: [24, 168, 720],
+    endpoint: "kubectl --kubeconfig lease-{lease}.yaml get nodes",
+  },
+  {
+    id: "hpc",
+    tag: "HPC",
+    title: "GPU Batch Queue",
+    provider: "Example Provider",
+    regions: [
+      ["sydney-au", "Sydney · AU"],
+      ["ap-southeast", "ap-southeast"],
+    ],
+    specs: ["4 GPUs", "32 CPU cores", "6-hour maximum job"],
+    unit: "allocation",
+    rate: 8.4,
+    rateNote: "$8.40 / allocation-hour",
+    period: "hour",
+    periodLabel: "hours",
+    qtyOptions: [1, 2],
+    periodOptions: [6, 24, 72],
+    endpoint: "sbatch --lease={lease} job.sh",
+  },
+  {
+    id: "storage",
+    tag: "Storage",
+    title: "Object Storage Bucket",
+    provider: "Example Provider",
+    regions: [
+      ["sydney-au", "Sydney · AU"],
+      ["ap-southeast", "ap-southeast"],
+    ],
+    specs: ["S3-compatible", "Versioning", "Durable tier"],
+    unit: "TB",
+    rate: 100,
+    rateNote: "$100 / TB-month",
+    period: "month",
+    periodLabel: "months",
+    qtyOptions: [1, 5, 20],
+    periodOptions: [1, 3, 12],
+    endpoint: "https://{lease}.obj.example-provider.store",
+  },
+  {
+    id: "saas",
+    tag: "SaaS",
+    title: "Analytics Workspace",
+    provider: "Example Provider",
+    regions: [["global", "Global"]],
+    specs: ["Monthly plan", "Standard support", "Entitlement-based"],
+    unit: "seat",
+    rate: 50,
+    rateNote: "$50 / seat / month",
+    period: "month",
+    periodLabel: "months",
+    qtyOptions: [5, 10, 25],
+    periodOptions: [1, 6, 12],
+    endpoint: "Seats issued to workspace members",
+  },
+];
+
+const STEPS = ["Catalogue", "Plan", "Acquire", "Deploy", "Manage"];
+const BID_PROVIDERS = [
+  { name: "Kestrel Systems", eta: "Ready in ~7 min", factor: 0.87 },
+  { name: "Halcyon Cloud", eta: "Ready in ~3 min", factor: 0.91 },
+  { name: "Meridian Compute", eta: "Ready in ~4 min", factor: 0.94 },
+];
+---
+
+<div class="odemo" id="order-demo" data-step="1">
+  <div class="odemo-topbar">
+    <span class="odemo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <p class="odemo-title">VirtEngine Market <span>— simulated order terminal</span></p>
+    <p class="odemo-flag">Illustrative demo</p>
+  </div>
+
+  <ol class="odemo-steps" aria-label="Order progress">
+    {
+      STEPS.map((label, i) => (
+        <li>
+          <button type="button" class="odemo-step" data-goto-step={i + 1} disabled={i !== 0} aria-current={i === 0 ? "step" : undefined}>
+            <span class="odemo-step-n" aria-hidden="true">{i + 1}</span>
+            <span>{label}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="odemo-live sr-only" role="status" aria-live="polite" id="od-status"></p>
+
+  <!-- 1 · CATALOGUE -->
+  <section class="odemo-panel" data-panel="1" aria-labelledby="od-h1">
+    <h3 id="od-h1" tabindex="-1">1 · Pick a listing</h3>
+    <p class="odemo-sub">Six illustrative listings. Providers, prices and regions are fictional.</p>
+    <div class="odemo-filters" role="group" aria-label="Filter listings">
+      <label class="odemo-field">
+        <span>Category</span>
+        <select id="od-cat">
+          <option value="all">All categories</option>
+          <option value="GPU & AI">GPU &amp; AI</option>
+          <option value="IaaS">IaaS</option>
+          <option value="PaaS">PaaS</option>
+          <option value="HPC">HPC</option>
+          <option value="Storage">Storage</option>
+          <option value="SaaS">SaaS</option>
+        </select>
+      </label>
+      <label class="odemo-field">
+        <span>Search</span>
+        <input id="od-search" type="search" placeholder="e.g. GPU, Kubernetes…" autocomplete="off" />
+      </label>
+    </div>
+    <p class="odemo-count" id="od-count" role="status" aria-live="polite">6 listings</p>
+    <div class="odemo-grid" id="od-grid" role="listbox" aria-label="Listings">
+      {
+        OFFERS.map((o) => (
+          <article
+            class="odemo-card"
+            role="option"
+            tabindex="0"
+            aria-selected="false"
+            data-offer={o.id}
+            data-tag={o.tag}
+            data-search={`${o.title} ${o.provider} ${o.tag} ${o.specs.join(" ")}`.toLowerCase()}
+          >
+            <p class="odemo-tag">{o.tag}</p>
+            <p class="odemo-card-title">{o.title}</p>
+            <p class="odemo-provider">{o.provider}</p>
+            <ul class="odemo-specs">
+              {o.specs.map((s) => <li>{s}</li>)}
+            </ul>
+            <p class="odemo-price">{o.rateNote}</p>
+            <p class="odemo-pick" aria-hidden="true">Select ›</p>
+          </article>
+        ))
+      }
+    </div>
+    <noscript><p class="odemo-note">This demo needs JavaScript: the catalogue above is static without it.</p></noscript>
+    <div class="odemo-nav">
+      <span></span>
+      <button type="button" class="odemo-btn odemo-btn-primary" data-next="2" disabled>Continue with <span data-echo="offer">—</span> →</button>
+    </div>
+  </section>
+
+  <!-- 2 · PLAN -->
+  <section class="odemo-panel" data-panel="2" aria-labelledby="od-h2" hidden>
+    <h3 id="od-h2" tabindex="-1">2 · Configure the plan</h3>
+    <p class="odemo-sub" id="od-plan-sub">Choose quantity, term and region.</p>
+    <div id="od-plan"></div>
+    <div class="odemo-est" aria-live="polite">
+      <div>
+        <p class="odemo-est-label">Estimated total</p>
+        <p class="odemo-est-value" id="od-est">$0.00</p>
+      </div>
+      <div>
+        <p class="odemo-est-label">Escrow to fund (total + 10%)</p>
+        <p class="odemo-est-value" id="od-escrow">$0.00</p>
+      </div>
+    </div>
+    <div class="odemo-nav">
+      <button type="button" class="odemo-btn odemo-btn-ghost" data-next="1">← Catalogue</button>
+      <button type="button" class="odemo-btn odemo-btn-primary" data-next="3">Choose how to buy →</button>
+    </div>
+  </section>
+
+  <!-- 3 · ACQUIRE -->
+  <section class="odemo-panel" data-panel="3" aria-labelledby="od-h3" hidden>
+    <h3 id="od-h3" tabindex="-1">3 · Buy it your way</h3>
+    <p class="odemo-sub">One demand, three protocol paths. All three end in the same on-chain match.</p>
+    <div class="odemo-tabs" role="tablist" aria-label="Acquisition path">
+      <button type="button" role="tab" aria-selected="true" class="odemo-tab is-active" data-path="direct" id="od-tab-direct" aria-controls="od-path-direct">Direct <small>listed price</small></button>
+      <button type="button" role="tab" aria-selected="false" class="odemo-tab" data-path="bid" id="od-tab-bid" aria-controls="od-path-bid" tabindex="-1">Open bid <small>providers compete</small></button>
+      <button type="button" role="tab" aria-selected="false" class="odemo-tab" data-path="selector" id="od-tab-selector" aria-controls="od-path-selector" tabindex="-1">Selector <small>match by requirements</small></button>
+    </div>
+
+    <div class="odemo-path" data-path-panel="direct" role="tabpanel" id="od-path-direct" aria-labelledby="od-tab-direct" tabindex="0">
+      <p class="odemo-path-lede" id="od-direct-lede"></p>
+      <button type="button" class="odemo-btn odemo-btn-primary" data-order="direct">Place direct order</button>
+    </div>
+
+    <div class="odemo-path" data-path-panel="bid" role="tabpanel" id="od-path-bid" aria-labelledby="od-tab-bid" tabindex="0" hidden>
+      <div class="odemo-row">
+        <label class="odemo-field">
+          <span>Maximum price (USD)</span>
+          <input id="od-maxprice" type="number" min="1" step="0.01" inputmode="decimal" />
+        </label>
+        <div class="odemo-field">
+          <span aria-hidden="true">&nbsp;</span>
+          <button type="button" class="odemo-btn odemo-btn-primary" id="od-request-bids">Request bids</button>
+        </div>
+      </div>
+      <p class="odemo-note">Simulated bidding window — three example providers respond below. Illustrative prices.</p>
+      <ul class="odemo-bids" id="od-bids"></ul>
+    </div>
+
+    <div class="odemo-path" data-path-panel="selector" role="tabpanel" id="od-path-selector" aria-labelledby="od-tab-selector" tabindex="0" hidden>
+      <div class="odemo-row">
+        <label class="odemo-field">
+          <span>Region</span>
+          <select id="od-sel-region"></select>
+        </label>
+        <label class="odemo-field">
+          <span>Price cap (USD)</span>
+          <input id="od-sel-cap" type="number" min="1" step="0.01" inputmode="decimal" />
+        </label>
+        <div class="odemo-field">
+          <span aria-hidden="true">&nbsp;</span>
+          <button type="button" class="odemo-btn odemo-btn-primary" id="od-find-matches">Find matches</button>
+        </div>
+      </div>
+      <ul class="odemo-matches" id="od-matches"></ul>
+    </div>
+
+    <div class="odemo-nav">
+      <button type="button" class="odemo-btn odemo-btn-ghost" data-next="2">← Plan</button>
+      <button type="button" class="odemo-btn odemo-btn-primary" data-next="4" id="od-to-deploy" disabled>Review order →</button>
+    </div>
+  </section>
+
+  <!-- 4 · DEPLOY -->
+  <section class="odemo-panel" data-panel="4" aria-labelledby="od-h4" hidden>
+    <h3 id="od-h4" tabindex="-1">4 · Fund escrow &amp; deploy</h3>
+    <div class="odemo-summary" id="od-summary"></div>
+    <button type="button" class="odemo-btn odemo-btn-primary" id="od-deploy">Fund escrow &amp; deploy lease</button>
+    <div class="odemo-logwrap" id="od-logwrap" hidden>
+      <p class="odemo-est-label">Provisioning log (simulated)</p>
+      <ol class="odemo-log" id="od-log" aria-live="polite"></ol>
+    </div>
+    <div id="od-lease"></div>
+    <div class="odemo-nav">
+      <button type="button" class="odemo-btn odemo-btn-ghost" data-next="3" id="od-back-acquire">← Acquire</button>
+      <button type="button" class="odemo-btn odemo-btn-primary" data-next="5" id="od-to-manage" disabled>Open usage &amp; settlement →</button>
+    </div>
+  </section>
+
+  <!-- 5 · MANAGE -->
+  <section class="odemo-panel" data-panel="5" aria-labelledby="od-h5" hidden>
+    <h3 id="od-h5" tabindex="-1">5 · Usage &amp; settlement</h3>
+    <p class="odemo-sub">Simulated clock — one tick ≈ one billing period of the lease term.</p>
+    <div class="odemo-manage">
+      <dl class="odemo-kv">
+        <div><dt>Lease</dt><dd data-m="lease">—</dd></div>
+        <div><dt>Elapsed</dt><dd data-m="elapsed">0 of 0</dd></div>
+        <div><dt>Usage</dt><dd data-m="usage">0</dd></div>
+        <div><dt>Accrued</dt><dd data-m="accrued">$0.00</dd></div>
+        <div><dt>Escrow funded</dt><dd data-m="funded">$0.00</dd></div>
+      </dl>
+      <div class="odemo-meter" aria-hidden="true"><i id="od-meter"></i></div>
+      <div class="odemo-row">
+        <button type="button" class="odemo-btn odemo-btn-primary" id="od-settle">Settle &amp; release</button>
+        <button type="button" class="odemo-btn odemo-btn-ghost" id="od-restart">Start a new order</button>
+      </div>
+    </div>
+    <div id="od-receipt"></div>
+  </section>
+</div>
+
+<script type="application/json" id="od-data" set:html={JSON.stringify({ offers: OFFERS, bids: BID_PROVIDERS }).replace(/</g, "\\u003c")} />
+
+<style>
+  .odemo {
+    border: 1px solid var(--color-line-strong, #c6d0c8);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fbfdfb 0%, #f2f7f2 100%);
+    box-shadow: 0 30px 70px -45px rgb(20 41 31 / 0.35);
+    overflow: hidden;
+  }
+  .odemo-topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.7rem 1.1rem;
+    border-bottom: 1px solid var(--color-line, #e2e7e2);
+    background: rgba(255, 255, 255, 0.6);
+  }
+  .odemo-dots { display: inline-flex; gap: 0.35rem; }
+  .odemo-dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-line-strong, #c6d0c8); }
+  .odemo-title { margin: 0; font-family: var(--font-mono, monospace); font-size: 0.78rem; font-weight: 600; color: var(--color-ink, #14291f); }
+  .odemo-title span { font-weight: 400; color: var(--color-muted, #5f6b62); }
+  .odemo-flag {
+    margin: 0 0 0 auto;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-green-deep, #23683f);
+    border: 1px dashed var(--color-line-strong, #c6d0c8);
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+    background: #fff;
+    white-space: nowrap;
+  }
+  .odemo-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0.9rem 1.1rem 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  .odemo-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    border: 1px solid var(--color-line, #e2e7e2);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-muted, #5f6b62);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .odemo-step:disabled { cursor: default; opacity: 0.75; }
+  .odemo-step:not(:disabled):hover { border-color: var(--color-green-deep, #23683f); }
+  .odemo-step-n {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.68rem;
+  }
+  .odemo-step[aria-current="step"] {
+    border-color: var(--color-green-deep, #23683f);
+    background: var(--color-green-wash, #eef7ee);
+    color: var(--color-ink, #14291f);
+  }
+  .odemo-step.is-done { color: var(--color-green-deep, #23683f); }
+  .odemo-step.is-done .odemo-step-n { background: var(--color-green-deep, #23683f); border-color: var(--color-green-deep, #23683f); color: #fff; }
+  .odemo-step:focus-visible, .odemo-btn:focus-visible, .odemo-card:focus-visible,
+  .odemo-tab:focus-visible, .odemo-field input:focus-visible, .odemo-field select:focus-visible {
+    outline: 2px solid var(--color-green-deep, #23683f);
+    outline-offset: 2px;
+  }
+  .odemo-panel { padding: 1.2rem clamp(1rem, 3vw, 1.8rem) 1.6rem; }
+  .odemo-panel[hidden] { display: none; }
+  .odemo-panel h3 { margin: 0; font-size: 1.25rem; color: var(--color-ink, #14291f); }
+  .odemo-panel h3:focus { outline: none; }
+  .odemo-panel h3:focus-visible { outline: 2px solid var(--color-green-deep, #23683f); outline-offset: 3px; }
+  .odemo-sub { margin: 0.4rem 0 0; font-size: 0.88rem; color: var(--color-slate, #4c5951); }
+  .odemo-note { font-size: 0.8rem; color: var(--color-muted, #5f6b62); }
+  .odemo-filters { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
+  .odemo-field { display: grid; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; color: var(--color-ink, #14291f); }
+  .odemo-field > span { font-family: var(--font-mono, monospace); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted, #5f6b62); }
+  .odemo-field input, .odemo-field select {
+    min-height: 44px;
+    border: 1px solid var(--color-line-strong, #c6d0c8);
+    border-radius: 8px;
+    background: #fff;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.88rem;
+    color: var(--color-ink, #14291f);
+    max-width: 100%;
+  }
+  .odemo-count { margin: 0.9rem 0 0; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: var(--color-muted, #5f6b62); }
+  .odemo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin-top: 0.7rem; }
+  .odemo-card {
+    position: relative;
+    border: 1px solid var(--color-line, #e2e7e2);
+    border-radius: 12px;
+    background: #fff;
+    padding: 0.9rem;
+    cursor: pointer;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .odemo-card:hover { border-color: var(--color-green-deep, #23683f); transform: translateY(-1px); }
+  .odemo-card[aria-selected="true"] { border-color: var(--color-green-deep, #23683f); background: var(--color-green-wash, #eef7ee); }
+  .odemo-card[hidden] { display: none; }
+  .odemo-tag { margin: 0; font-family: var(--font-mono, monospace); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-green-deep, #23683f); }
+  .odemo-card-title { margin: 0.3rem 0 0; font-size: 1rem; font-weight: 700; color: var(--color-ink, #14291f); }
+  .odemo-provider { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--color-muted, #5f6b62); }
+  .odemo-specs { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.2rem; font-size: 0.8rem; color: var(--color-slate, #4c5951); }
+  .odemo-price { margin: 0.6rem 0 0; font-family: var(--font-mono, monospace); font-size: 0.82rem; color: var(--color-ink, #14291f); }
+  .odemo-pick { margin: 0.5rem 0 0; font-size: 0.82rem; font-weight: 700; color: var(--color-green-deep, #23683f); }
+  .odemo-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .odemo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.65rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .odemo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .odemo-btn-primary { background: var(--color-green-deep, #23683f); color: #fff; }
+  .odemo-btn-primary:hover:not(:disabled) { background: var(--color-green-dark, #185132); }
+  .odemo-btn-ghost { background: #fff; border-color: var(--color-line-strong, #c6d0c8); color: var(--color-ink, #14291f); }
+  .odemo-btn-ghost:hover:not(:disabled) { border-color: var(--color-green-deep, #23683f); }
+  .odemo-opt-group { margin-top: 1rem; }
+  .odemo-opt-group > p { margin: 0 0 0.45rem; font-family: var(--font-mono, monospace); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted, #5f6b62); }
+  .odemo-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .odemo-pill { position: relative; }
+  .odemo-pill input { position: absolute; opacity: 0; inset: 0; }
+  .odemo-pill span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--color-line-strong, #c6d0c8);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-ink, #14291f);
+    cursor: pointer;
+  }
+  .odemo-pill input:checked + span { border-color: var(--color-green-deep, #23683f); background: var(--color-green-deep, #23683f); color: #fff; }
+  .odemo-pill input:focus-visible + span { outline: 2px solid var(--color-green-deep, #23683f); outline-offset: 2px; }
+  .odemo-est {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 1.1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--color-green-deep, #23683f);
+    border-radius: 12px;
+    background: var(--color-green-wash, #eef7ee);
+  }
+  .odemo-est-label { margin: 0; font-family: var(--font-mono, monospace); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted, #5f6b62); }
+  .odemo-est-value { margin: 0.2rem 0 0; font-size: 1.3rem; font-weight: 700; color: var(--color-ink, #14291f); font-variant-numeric: tabular-nums; }
+  .odemo-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; margin-top: 1.1rem; }
+  .odemo-tab {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-line, #e2e7e2);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-ink, #14291f);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .odemo-tab small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--color-muted, #5f6b62); }
+  .odemo-tab.is-active { border-color: var(--color-green-deep, #23683f); background: var(--color-green-wash, #eef7ee); box-shadow: inset 0 -2px 0 var(--color-green-deep, #23683f); }
+  .odemo-path { margin-top: 1rem; border: 1px solid var(--color-line, #e2e7e2); border-radius: 12px; background: #fff; padding: 1rem; }
+  .odemo-path[hidden] { display: none; }
+  .odemo-path-lede { margin: 0 0 0.9rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-slate, #4c5951); }
+  .odemo-row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: end; }
+  .odemo-bids, .odemo-matches { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.55rem; }
+  .odemo-bid, .odemo-match {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+    border: 1px solid var(--color-line, #e2e7e2);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    background: #fff;
+    font-size: 0.85rem;
+  }
+  .odemo-bid.is-best { border-color: var(--color-green-deep, #23683f); background: var(--color-green-wash, #eef7ee); }
+  .odemo-bid strong, .odemo-match strong { color: var(--color-ink, #14291f); }
+  .odemo-bid .odemo-bid-price, .odemo-match .odemo-bid-price { margin-left: auto; font-family: var(--font-mono, monospace); font-weight: 700; }
+  .odemo-mini { font-family: var(--font-mono, monospace); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-green-deep, #23683f); border: 1px solid var(--color-green-deep, #23683f); border-radius: 999px; padding: 0.2rem 0.55rem; }
+  .odemo-summary { margin-top: 1rem; border: 1px solid var(--color-line, #e2e7e2); border-radius: 12px; background: #fff; padding: 1rem; }
+  .odemo-kv { margin: 0; display: grid; gap: 0.45rem; }
+  .odemo-kv > div { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 0.5rem; font-size: 0.86rem; }
+  .odemo-kv dt { font-family: var(--font-mono, monospace); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted, #5f6b62); padding-top: 0.15rem; }
+  .odemo-kv dd { margin: 0; color: var(--color-ink, #14291f); overflow-wrap: anywhere; }
+  .odemo-logwrap { margin-top: 1rem; }
+  .odemo-log {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    background: #0a100c;
+    color: #e9f0ea;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    min-height: 3rem;
+  }
+  .odemo-log .odemo-ok { color: var(--color-green-bright, #7ddd7a); }
+  .odemo-lease { margin-top: 1rem; border: 1px solid var(--color-green-deep, #23683f); border-radius: 12px; background: #fff; padding: 1rem; }
+  .odemo-code {
+    margin: 0.5rem 0 0;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    background: #0a100c;
+    color: #e9f0ea;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.78rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .odemo-meter { height: 0.6rem; border-radius: 999px; background: var(--color-paper-deep, #e9efe9); overflow: hidden; margin-top: 0.8rem; }
+  .odemo-meter i { display: block; height: 100%; width: 0; background: var(--color-green-deep, #23683f); transition: width 300ms linear; }
+  .odemo-receipt { margin-top: 1rem; border: 1px solid var(--color-line-strong, #c6d0c8); border-radius: 12px; background: #fff; padding: 1rem; }
+  .odemo-manage .odemo-row { margin-top: 1rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 900px) {
+    .odemo-grid { grid-template-columns: 1fr; }
+    .odemo-steps { grid-template-columns: 1fr 1fr; }
+    .odemo-step span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .odemo-tabs { grid-template-columns: 1fr; }
+    .odemo-est { grid-template-columns: 1fr; }
+    .odemo-kv > div { grid-template-columns: 1fr; gap: 0.1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .odemo-card, .odemo-meter i { transition: none; }
+  }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.getElementById("order-demo");
+  if (!root || root.dataset.booted === "true") return;
+  root.dataset.booted = "true";
+
+  var dataEl = document.getElementById("od-data");
+  var DATA = JSON.parse(dataEl ? dataEl.textContent || "{}" : "{}");
+  var OFFERS = DATA.offers || [];
+  var BID_PROVIDERS = DATA.bids || [];
+  function byId(id) {
+    for (var i = 0; i < OFFERS.length; i++) if (OFFERS[i].id === id) return OFFERS[i];
+    return null;
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var statusEl = document.getElementById("od-status");
+  function announce(msg) { if (statusEl) statusEl.textContent = msg; }
+  function money(n) {
+    return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function uid(prefix) {
+    return prefix + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+  }
+  function $(sel, ctx) { return (ctx || root).querySelector(sel); }
+  function $all(sel, ctx) { return Array.prototype.slice.call((ctx || root).querySelectorAll(sel)); }
+
+  var state = {
+    step: 1,
+    maxStep: 1,
+    offerId: null,
+    qty: 0,
+    periods: 0,
+    region: "",
+    path: "direct",
+    maxPrice: 0,
+    bids: [],
+    acceptedBid: null,
+    match: null, // { provider, price, via }
+    order: null,
+    lease: null,
+    funded: 0,
+    elapsed: 0,
+    accrued: 0,
+    timer: null,
+  };
+
+  function estimateFor(offer, qty, periods) { return offer.rate * qty * periods; }
+  function currentOffer() { return state.offerId ? byId(state.offerId) : null; }
+  function currentEstimate() {
+    var o = currentOffer();
+    return o ? estimateFor(o, state.qty, state.periods) : 0;
+  }
+
+  /* ---------- stepper ---------- */
+  var stepBtns = $all(".odemo-step");
+  var panels = $all(".odemo-panel");
+  function paintSteps() {
+    stepBtns.forEach(function (btn, i) {
+      var n = i + 1;
+      var done = n < state.step || (n <= state.maxStep && n !== state.step);
+      btn.classList.toggle("is-done", n < state.step);
+      if (n === state.step) btn.setAttribute("aria-current", "step");
+      else btn.removeAttribute("aria-current");
+      btn.disabled = n > state.maxStep || n === state.step;
+      void done;
+    });
+    panels.forEach(function (p) {
+      var show = Number(p.getAttribute("data-panel")) === state.step;
+      if (show) p.removeAttribute("hidden");
+      else p.setAttribute("hidden", "");
+    });
+    root.setAttribute("data-step", String(state.step));
+  }
+  function goStep(n) {
+    if (n < 1 || n > 5 || n > state.maxStep) return;
+    state.step = n;
+    if (n > state.maxStep) state.maxStep = n;
+    paintSteps();
+    var h = $('.odemo-panel[data-panel="' + n + '"] h3');
+    if (h) h.focus({ preventScroll: true });
+    var label = ["", "Catalogue", "Plan", "Acquire", "Deploy", "Manage"][n];
+    announce("Step " + n + ": " + label);
+    var panel = $('.odemo-panel[data-panel="' + n + '"]');
+    if (panel && window.matchMedia("(max-width: 900px)").matches) {
+      panel.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
+    }
+  }
+  stepBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () { goStep(Number(btn.getAttribute("data-goto-step"))); });
+  });
+  $all("[data-next]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var n = Number(btn.getAttribute("data-next"));
+      if (n === state.step + 1) state.maxStep = Math.max(state.maxStep, n);
+      goStep(n);
+    });
+  });
+
+  /* ---------- 1 · catalogue ---------- */
+  var cards = $all(".odemo-card");
+  var catSel = document.getElementById("od-cat");
+  var searchInput = document.getElementById("od-search");
+  var countEl = document.getElementById("od-count");
+  var continueBtn = $('.odemo-btn[data-next="2"]');
+  function paintCards() {
+    cards.forEach(function (c) {
+      var sel = c.getAttribute("data-offer") === state.offerId;
+      c.classList.toggle("is-selected", sel);
+      c.setAttribute("aria-selected", sel ? "true" : "false");
+    });
+    var echo = $("[data-echo='offer']");
+    var o = currentOffer();
+    if (echo) echo.textContent = o ? o.title : "—";
+    if (continueBtn) continueBtn.disabled = !o;
+  }
+  function applyFilters() {
+    var cat = catSel ? catSel.value : "all";
+    var q = searchInput && searchInput.value ? searchInput.value.trim().toLowerCase() : "";
+    var n = 0;
+    cards.forEach(function (c) {
+      var ok = true;
+      if (cat !== "all" && c.getAttribute("data-tag") !== cat) ok = false;
+      if (q && (c.getAttribute("data-search") || "").indexOf(q) === -1) ok = false;
+      c.hidden = !ok;
+      if (ok) n++;
+    });
+    if (countEl) countEl.textContent = n === 1 ? "1 listing" : n + " listings";
+  }
+  function selectOffer(id) {
+    state.offerId = id;
+    var o = currentOffer();
+    if (o) {
+      state.qty = o.qtyOptions[0];
+      state.periods = o.periodOptions[0];
+      state.region = o.regions[0][0];
+    }
+    state.acceptedBid = null;
+    state.match = null;
+    state.bids = [];
+    paintCards();
+    renderPlan();
+    renderAcquire();
+    resetDeploy();
+    if (o) announce(o.title + " selected. Continue to configure the plan.");
+  }
+  cards.forEach(function (card) {
+    var id = card.getAttribute("data-offer");
+    card.addEventListener("click", function () { selectOffer(id); });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectOffer(id); }
+    });
+  });
+  if (catSel) catSel.addEventListener("change", applyFilters);
+  if (searchInput) searchInput.addEventListener("input", applyFilters);
+
+  /* ---------- 2 · plan ---------- */
+  var planWrap = document.getElementById("od-plan");
+  var planSub = document.getElementById("od-plan-sub");
+  var estEl = document.getElementById("od-est");
+  var escrowEl = document.getElementById("od-escrow");
+  function pillGroup(name, label, options, current, format) {
+    var html = '<div class="odemo-opt-group"><p>' + label + "</p>" + '<div class="odemo-pills" role="radiogroup" aria-label="' + label + '">';
+    options.forEach(function (opt, i) {
+      var checked = opt === current || (i === 0 && (current === 0 || current === undefined));
+      html += '<label class="odemo-pill"><input type="radio" name="' + name + '" value="' + opt + '"' + (checked ? " checked" : "") + "><span>" + format(opt) + "</span></label>";
+    });
+    return html + "</div></div>";
+  }
+  function renderPlan() {
+    var o = currentOffer();
+    if (!o || !planWrap) return;
+    if (planSub) planSub.textContent = o.title + " · " + o.provider + " · " + o.rateNote + ".";
+    var html = pillGroup("od-qty", "Quantity (" + o.unit + "s)", o.qtyOptions, state.qty, function (v) { return v + " × " + o.unit; });
+    html += pillGroup("od-period", "Term (" + o.periodLabel + ")", o.periodOptions, state.periods, function (v) { return v + " " + o.periodLabel; });
+    html += '<div class="odemo-opt-group"><p>Region</p><label class="odemo-field"><select id="od-region" aria-label="Region">';
+    o.regions.forEach(function (r) {
+      html += '<option value="' + r[0] + '"' + (r[0] === state.region ? " selected" : "") + ">" + r[1] + "</option>";
+    });
+    planWrap.innerHTML = html + "</select></label></div>";
+    $all('input[name="od-qty"]', planWrap).forEach(function (r) {
+      r.addEventListener("change", function () { state.qty = Number(r.value); paintEstimate(); });
+    });
+    $all('input[name="od-period"]', planWrap).forEach(function (r) {
+      r.addEventListener("change", function () { state.periods = Number(r.value); paintEstimate(); });
+    });
+    var reg = document.getElementById("od-region");
+    if (reg) reg.addEventListener("change", function () { state.region = reg.value; paintEstimate(); });
+    paintEstimate();
+  }
+  function paintEstimate() {
+    var est = currentEstimate();
+    if (estEl) estEl.textContent = money(est);
+    if (escrowEl) escrowEl.textContent = money(est * 1.1);
+  }
+
+  /* ---------- 3 · acquire ---------- */
+  var tabs = $all(".odemo-tab");
+  var pathPanels = $all(".odemo-path");
+  var toDeploy = document.getElementById("od-to-deploy");
+  var directLede = document.getElementById("od-direct-lede");
+  var maxInput = document.getElementById("od-maxprice");
+  var bidsList = document.getElementById("od-bids");
+  var selRegion = document.getElementById("od-sel-region");
+  var selCap = document.getElementById("od-sel-cap");
+  var matchesList = document.getElementById("od-matches");
+  function setPath(p) {
+    if (state.path !== p) {
+      state.path = p;
+      state.acceptedBid = null;
+      state.match = null;
+    } else {
+      state.path = p;
+    }
+    tabs.forEach(function (t) {
+      var on = t.getAttribute("data-path") === p;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+    });
+    pathPanels.forEach(function (panel) {
+      if (panel.getAttribute("data-path-panel") === p) panel.removeAttribute("hidden");
+      else panel.setAttribute("hidden", "");
+    });
+    paintDeployReady();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { setPath(t.getAttribute("data-path")); });
+    t.addEventListener("keydown", function (e) {
+      var j = null;
+      if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+      if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+      if (j !== null) { e.preventDefault(); tabs[j].focus(); setPath(tabs[j].getAttribute("data-path")); }
+    });
+  });
+  function regionLabel(v) {
+    var map = { "ap-southeast": "ap-southeast", "us-east": "us-east", "eu-central": "eu-central", "sydney-au": "Sydney · AU", global: "Global" };
+    return map[v] || v;
+  }
+  function fmtTotal(o, qty, periods) {
+    return money(o.rate * qty * periods) + " for " + qty + " × " + o.unit + " · " + periods + " " + o.periodLabel;
+  }
+  function renderAcquire() {
+    var o = currentOffer();
+    var est = currentEstimate();
+    if (directLede && o) {
+      directLede.textContent = "Order " + state.qty + " × " + o.unit + " (" + o.title + ") in " + regionLabel(state.region) + " for " + state.periods + " " + o.periodLabel + " at the listed " + o.rateNote + " — estimated " + money(est) + ". Matches immediately; escrow funds first.";
+    }
+    if (maxInput && !maxInput.value) maxInput.value = est.toFixed(2);
+    if (selRegion) {
+      selRegion.innerHTML = '<option value="any">Any region</option>' +
+        ["ap-southeast", "us-east", "eu-central", "sydney-au"].map(function (r) {
+          return '<option value="' + r + '"' + (r === state.region ? " selected" : "") + ">" + regionLabel(r) + "</option>";
+        }).join("");
+    }
+    if (selCap && !selCap.value) selCap.value = est.toFixed(2);
+    if (bidsList) bidsList.innerHTML = "";
+    if (matchesList) matchesList.innerHTML = "";
+    state.acceptedBid = null;
+    state.match = null;
+    paintDeployReady();
+  }
+  function paintDeployReady() {
+    if (!toDeploy) return;
+    var ready = state.path === "direct" ? !!currentOffer() : !!state.match;
+    toDeploy.disabled = !ready;
+  }
+  $all('[data-order="direct"]').forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var o = currentOffer();
+      if (!o) return;
+      state.match = { provider: o.provider, price: currentEstimate(), via: "Direct · listed price" };
+      paintDeployReady();
+      announce("Direct order ready for review. Continue to deploy.");
+      state.maxStep = Math.max(state.maxStep, 4);
+      goStep(4);
+    });
+  });
+  var reqBids = document.getElementById("od-request-bids");
+  if (reqBids) reqBids.addEventListener("click", function () {
+    var max = maxInput ? Number(maxInput.value) : 0;
+    if (!max || max <= 0) { announce("Enter a maximum price first."); if (maxInput) maxInput.focus(); return; }
+    state.maxPrice = max;
+    var o = currentOffer();
+    state.bids = BID_PROVIDERS.map(function (b) {
+      return { name: b.name, eta: b.eta, price: Math.max(1, max * b.factor), factor: b.factor };
+    }).sort(function (a, b2) { return a.price - b2.price; });
+    renderBids();
+    announce(state.bids.length + " bids received. Accept one to continue.");
+  });
+  function renderBids() {
+    if (!bidsList) return;
+    bidsList.innerHTML = "";
+    state.bids.forEach(function (b, i) {
+      var li = document.createElement("li");
+      li.className = "odemo-bid" + (i === 0 ? " is-best" : "");
+      var strong = document.createElement("strong");
+      strong.textContent = b.name;
+      li.appendChild(strong);
+      var eta = document.createElement("span");
+      eta.textContent = b.eta;
+      li.appendChild(eta);
+      if (i === 0) {
+        var best = document.createElement("span");
+        best.className = "odemo-mini";
+        best.textContent = "Best price";
+        li.appendChild(best);
+      }
+      var price = document.createElement("span");
+      price.className = "odemo-bid-price";
+      price.textContent = money(b.price);
+      li.appendChild(price);
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "odemo-btn odemo-btn-ghost";
+      btn.textContent = "Accept bid";
+      btn.addEventListener("click", function () { acceptBid(b); });
+      li.appendChild(btn);
+      bidsList.appendChild(li);
+    });
+  }
+  function acceptBid(b) {
+    state.acceptedBid = b;
+    state.match = { provider: b.name, price: b.price, via: "Open bid · accepted at " + money(b.price) };
+    paintDeployReady();
+    announce("Bid from " + b.name + " accepted at " + money(b.price) + ". Continue to deploy.");
+    state.maxStep = Math.max(state.maxStep, 4);
+    goStep(4);
+  }
+  var findBtn = document.getElementById("od-find-matches");
+  if (findBtn) findBtn.addEventListener("click", function () {
+    var region = selRegion ? selRegion.value : "any";
+    var cap = selCap ? Number(selCap.value) : 0;
+    if (!cap || cap <= 0) { announce("Enter a price cap first."); if (selCap) selCap.focus(); return; }
+    var rows = OFFERS.map(function (o) {
+      var minTotal = o.rate * o.qtyOptions[0] * o.periodOptions[0];
+      var regionOk = region === "any" || o.regions.some(function (r) { return r[0] === region || r[0] === "global"; });
+      return { offer: o, minTotal: minTotal, regionOk: regionOk, ok: regionOk && minTotal <= cap };
+    }).sort(function (a, b2) {
+      if (a.ok !== b2.ok) return a.ok ? -1 : 1;
+      return a.minTotal - b2.minTotal;
+    });
+    if (!matchesList) return;
+    matchesList.innerHTML = "";
+    rows.forEach(function (row) {
+      var li = document.createElement("li");
+      li.className = "odemo-match";
+      var strong = document.createElement("strong");
+      strong.textContent = row.offer.title;
+      li.appendChild(strong);
+      var meta = document.createElement("span");
+      meta.textContent = row.offer.tag + " · from " + money(row.minTotal);
+      li.appendChild(meta);
+      var badge = document.createElement("span");
+      badge.className = "odemo-mini";
+      badge.textContent = row.ok ? "Meets requirements" : !row.regionOk ? "Wrong region" : "Over cap";
+      li.appendChild(badge);
+      if (row.ok) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "odemo-btn odemo-btn-ghost";
+        btn.textContent = "Use this match";
+        btn.addEventListener("click", function () { useMatch(row.offer); });
+        li.appendChild(btn);
+      } else {
+        li.setAttribute("aria-disabled", "true");
+      }
+      matchesList.appendChild(li);
+    });
+    var hits = rows.filter(function (r) { return r.ok; }).length;
+    announce(hits === 1 ? "1 eligible listing found." : hits + " eligible listings found.");
+  });
+  function useMatch(offer) {
+    selectOffer(offer.id);
+    setPath("selector");
+    state.match = { provider: offer.provider, price: currentEstimate(), via: "Selector · matched under cap" };
+    paintDeployReady();
+    announce(offer.title + " matched. Plan reset to defaults — review, then continue to deploy.");
+    state.maxStep = Math.max(state.maxStep, 4);
+  }
+
+  /* ---------- 4 · deploy ---------- */
+  var summaryEl = document.getElementById("od-summary");
+  var deployBtn = document.getElementById("od-deploy");
+  var logWrap = document.getElementById("od-logwrap");
+  var logEl = document.getElementById("od-log");
+  var leaseEl = document.getElementById("od-lease");
+  var toManage = document.getElementById("od-to-manage");
+  function resetDeploy() {
+    if (summaryEl) summaryEl.innerHTML = "";
+    if (logEl) logEl.innerHTML = "";
+    if (logWrap) logWrap.setAttribute("hidden", "");
+    if (leaseEl) leaseEl.innerHTML = "";
+    if (toManage) toManage.disabled = true;
+    if (deployBtn) deployBtn.disabled = false;
+    state.order = null;
+    state.lease = null;
+    stopTicker();
+  }
+  function kv(rows) {
+    var dl = document.createElement("dl");
+    dl.className = "odemo-kv";
+    rows.forEach(function (r) {
+      var div = document.createElement("div");
+      var dt = document.createElement("dt");
+      dt.textContent = r[0];
+      var dd = document.createElement("dd");
+      dd.textContent = r[1];
+      div.appendChild(dt);
+      div.appendChild(dd);
+      dl.appendChild(div);
+    });
+    return dl;
+  }
+  function renderSummary() {
+    if (!summaryEl) return;
+    summaryEl.innerHTML = "";
+    var o = currentOffer();
+    var m = state.match;
+    if (!o || !m) return;
+    var est = currentEstimate();
+    var escrow = state.path === "direct" || !m.price ? est * 1.1 : Math.max(m.price * 1.1, est);
+    state.order = {
+      id: uid("ORD"),
+      offerId: o.id,
+      qty: state.qty,
+      periods: state.periods,
+      region: state.region,
+      path: state.path,
+      provider: m.provider,
+      price: state.path === "direct" ? est : m.price,
+      escrow: escrow,
+    };
+    var head = document.createElement("p");
+    head.className = "odemo-est-label";
+    head.textContent = "Order " + state.order.id + " — review before funding";
+    summaryEl.appendChild(head);
+    summaryEl.appendChild(kv([
+      ["Offering", o.title + " · " + o.provider],
+      ["Plan", state.qty + " × " + o.unit + " · " + state.periods + " " + o.periodLabel + " · " + regionLabel(state.region)],
+      ["Acquisition", m.via],
+      ["Agreed total", money(state.order.price)],
+      ["Escrow to fund", money(state.order.escrow)],
+    ]));
+  }
+  if (deployBtn) deployBtn.addEventListener("click", function () {
+    if (!state.order) renderSummary();
+    if (!state.order) return;
+    deployBtn.disabled = true;
+    if (logWrap) logWrap.removeAttribute("hidden");
+    if (logEl) logEl.innerHTML = "";
+    var lines = [
+      "Order " + state.order.id + " created on-chain.",
+      "Escrow funded: " + money(state.order.escrow) + " (total + 10% buffer).",
+      "Match confirmed — " + state.order.provider + " at " + money(state.order.price) + ".",
+      "Lease binding tenant, provider and escrow…",
+      "Provider daemon provisioning via " + currentOffer().provider + " backend…",
+    ];
+    var i = 0;
+    function next() {
+      if (i < lines.length) {
+        var li = document.createElement("li");
+        li.textContent = "› " + lines[i];
+        if (logEl) logEl.appendChild(li);
+        i++;
+        if (!reduceMotion) setTimeout(next, 550);
+        else next();
+      } else {
+        finishDeploy();
+      }
+    }
+    next();
+  });
+  function finishDeploy() {
+    var li = document.createElement("li");
+    li.innerHTML = "";
+    var ok = document.createElement("span");
+    ok.className = "odemo-ok";
+    ok.textContent = "✓ Resource ready — lease active.";
+    li.appendChild(ok);
+    if (logEl) logEl.appendChild(li);
+    state.lease = { id: uid("LSE") };
+    renderLease();
+    if (toManage) toManage.disabled = false;
+    state.maxStep = Math.max(state.maxStep, 5);
+    announce("Lease " + state.lease.id + " active. Open usage and settlement.");
+  }
+  function renderLease() {
+    if (!leaseEl || !state.order || !state.lease) return;
+    leaseEl.innerHTML = "";
+    var o = currentOffer();
+    var box = document.createElement("div");
+    box.className = "odemo-lease";
+    var head = document.createElement("p");
+    head.className = "odemo-est-label";
+    head.textContent = "Lease " + state.lease.id + " — active";
+    box.appendChild(head);
+    box.appendChild(kv([
+      ["Tenant", "Demo tenant (VEID-verified in production)"],
+      ["Provider", state.order.provider],
+      ["Term", state.order.periods + " " + o.periodLabel],
+      ["Escrow", money(state.order.escrow) + " locked"],
+    ]));
+    var code = document.createElement("p");
+    code.className = "odemo-code";
+    code.textContent = o.endpoint.replace("{lease}", state.lease.id.toLowerCase());
+    box.appendChild(code);
+    leaseEl.appendChild(box);
+  }
+
+  /* ---------- 5 · manage ---------- */
+  var manageVals = {};
+  $all("[data-m]").forEach(function (el) { manageVals[el.getAttribute("data-m")] = el; });
+  var meterEl = document.getElementById("od-meter");
+  var receiptEl = document.getElementById("od-receipt");
+  var settleBtn = document.getElementById("od-settle");
+  var restartBtn = document.getElementById("od-restart");
+  function perTick() {
+    if (!state.order) return { total: 0, per: 0 };
+    var total = state.order.periods;
+    var per = total / 60;
+    return { total: total, per: per };
+  }
+  function paintManage() {
+    if (!state.order) return;
+    var o = currentOffer();
+    var t = perTick();
+    if (manageVals.lease) manageVals.lease.textContent = state.lease ? state.lease.id : "—";
+    if (manageVals.elapsed) manageVals.elapsed.textContent = Math.min(t.total, state.elapsed).toFixed(state.order && o.period === "month" ? 1 : 0) + " of " + t.total + " " + o.periodLabel;
+    if (manageVals.usage) manageVals.usage.textContent = (state.qty * state.elapsed).toFixed(1) + " " + o.unit + "-" + o.periodLabel;
+    if (manageVals.accrued) manageVals.accrued.textContent = money(state.accrued);
+    if (manageVals.funded) manageVals.funded.textContent = money(state.funded || state.order.escrow);
+    if (meterEl) meterEl.style.width = Math.min(100, (state.accrued / (state.funded || state.order.escrow)) * 100) + "%";
+  }
+  function stopTicker() {
+    if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  }
+  function startTicker() {
+    stopTicker();
+    if (!state.order) return;
+    state.funded = state.order.escrow;
+    state.elapsed = 0;
+    state.accrued = 0;
+    if (receiptEl) receiptEl.innerHTML = "";
+    if (settleBtn) settleBtn.disabled = false;
+    var ratePer = state.order.price / state.order.periods;
+    paintManage();
+    announce("Simulated usage running.");
+    state.timer = setInterval(function () {
+      var t = perTick();
+      state.elapsed = Math.min(t.total, state.elapsed + t.per);
+      state.accrued = Math.min(state.order.price, ratePer * state.elapsed);
+      paintManage();
+      if (state.elapsed >= t.total) {
+        stopTicker();
+        announce("Term complete. Settle to close the lease.");
+      }
+    }, 1000);
+  }
+  if (settleBtn) settleBtn.addEventListener("click", function () {
+    if (!state.order) return;
+    stopTicker();
+    settleBtn.disabled = true;
+    var refund = Math.max(0, state.funded - state.accrued);
+    if (!receiptEl) return;
+    receiptEl.innerHTML = "";
+    var box = document.createElement("div");
+    box.className = "odemo-receipt";
+    var head = document.createElement("p");
+    head.className = "odemo-est-label";
+    head.textContent = "Settlement receipt " + uid("STL") + " — simulated";
+    box.appendChild(head);
+    box.appendChild(kv([
+      ["Lease", state.lease ? state.lease.id : "—"],
+      ["Usage billed", money(state.accrued)],
+      ["Escrow funded", money(state.funded)],
+      ["Refunded to tenant", money(refund)],
+      ["Dispute window", "24 hours (simulated as closed)"],
+    ]));
+    var note = document.createElement("p");
+    note.className = "odemo-note";
+    note.textContent = "In production, signed usage records settle from escrow after the dispute window. Nothing moved here.";
+    box.appendChild(note);
+    receiptEl.appendChild(box);
+    announce("Settled. " + money(refund) + " refunded in this simulation.");
+  });
+  function fullReset() {
+    stopTicker();
+    state.step = 1;
+    state.maxStep = 1;
+    state.offerId = null;
+    state.path = "direct";
+    setPath("direct");
+    if (maxInput) maxInput.value = "";
+    if (selCap) selCap.value = "";
+    paintCards();
+    if (receiptEl) receiptEl.innerHTML = "";
+    goStep(1);
+    announce("Demo reset. Pick a listing to begin.");
+  }
+  if (restartBtn) restartBtn.addEventListener("click", fullReset);
+
+  /* ---------- step entry hooks ---------- */
+  var origGo = goStep;
+  goStep = function (n) {
+    if (n === 2 && !currentOffer()) return;
+    if (n === 3) renderAcquire();
+    if (n === 4) renderSummary();
+    if (n === 5 && state.order && !state.timer && state.accrued === 0 && (!receiptEl || !receiptEl.textContent)) startTicker();
+    origGo(n);
+  };
+
+  // init
+  applyFilters();
+  paintCards();
+  setPath("direct");
+  paintSteps();
+})();
+</script>

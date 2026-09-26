@@ -5,41 +5,46 @@ import Section from "@components/Section.astro";
 import CTA from "@components/CTA.astro";
 import { FAQ, FAQ_CATEGORIES } from "@data/faq";
 import { SITE } from "@data/site";
+import { faqPageNode } from "@lib/schema";
 
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "FAQ", href: "/faq" },
 ];
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((f) => ({
-    "@type": "Question",
-    name: f.question,
-    acceptedAnswer: { "@type": "Answer", text: f.answer },
-  })),
-};
+const canonical = new URL("/faq", SITE.url).href;
+const faqSchema = faqPageNode(canonical, FAQ);
+
+/** Stable deep anchors so other pages can link straight to /faq#providers etc. */
+const catId = (category: string) =>
+  category
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 ---
 
 <Base
-  title="FAQ — VirtEngine questions, answered"
-  description="Frequently asked questions about VirtEngine: what the protocol is, mainnet status, provider payments, HPC support, staking economics, slashing risk, VEID privacy, and building on the chain."
+  title="FAQ: Decentralized Cloud Questions Answered | VirtEngine"
+  description="VirtEngine FAQ: what the DePIN protocol is, TestNet and MainNet dates, provider pay, HPC support, staking, slashing, VEID privacy and Cosmos SDK builds."
   path="/faq"
+  image="/media/learn-library-1200.webp"
   breadcrumbs={crumbs}
+  schema={[faqSchema]}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} slot="head" />
   <PageHero
     eyebrow="FAQ"
     title="Questions, answered from the source"
     lede="Every answer below is grounded in the protocol repository, its documentation, or the foundation's constitution — with links to go deeper."
     crumbs={crumbs}
+    media="learn-library"
+    mediaCaption="Answers grounded in primary sources."
   />
 
   {
     FAQ_CATEGORIES.map((cat) => (
-      <Section eyebrow="FAQ" title={cat}>
-        <div class="max-w-3xl space-y-4">
+      <Section eyebrow="FAQ" title={cat} id={catId(cat)}>
+        <div class="space-y-4">
           {FAQ.filter((f) => f.category === cat).map((f) => (
             <details class="reveal clip-corner group rounded-card border border-line bg-panel">
               <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
@@ -71,8 +76,8 @@ const faqLd = {
     <div class="prose-body reveal max-w-3xl text-base">
       <p>
         Everything above traces to a primary source: the
-        <a href={SITE.github} rel="noopener">protocol repository</a>, the
-        <a href={SITE.docs}>documentation site</a>, or the DETIO FOUNDATION constitution
+        <a href={SITE.github} target="_blank" rel="noopener">protocol repository</a>, the
+        <a href={SITE.docs} target="_blank" rel="noopener">documentation site</a>, or the DETIO FOUNDATION constitution
         (covered on the <a href="/about">about page</a>). For deeper treatments, start with the
         <a href="/learn">guides</a> or the <a href="/modules">module reference</a>.
       </p>

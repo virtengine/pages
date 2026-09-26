@@ -4,19 +4,34 @@ import PageHeader from "@components/PageHeader.astro";
 import CardLink from "@components/CardLink.astro";
 import StatusTag from "@components/StatusTag.astro";
 import { INSIGHT_ARTICLES, INSIGHT_TOPICS, FEATURED_INSIGHTS } from "@data/insights";
+import { GUIDES, GUIDE_TOPICS } from "@data/guides";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
 
 const crumbs = [
   { name: "Home", href: "/" },
   { name: "Insights", href: "/insights" },
 ];
 
+const insightsListSchema = itemListNode(
+  new URL("/insights", SITE.url).href,
+  "identity.org.au insights",
+  INSIGHT_ARTICLES.map((article) => ({
+    name: article.title,
+    href: `/insights/${article.slug}`,
+    description: article.summary,
+  })),
+);
+
 const rest = INSIGHT_ARTICLES.filter((a) => !FEATURED_INSIGHTS.includes(a));
 ---
 
 <Base
-  title="Insights — analysis on digital identity | identity.org.au"
-  description="Evergreen analysis and explainers on digital identity: synthetic media and fraud, identity architecture, zero-knowledge cryptography, consent, and the human-rights stakes of identity infrastructure."
+  title="Insights: Digital Identity Analysis | identity.org.au"
+  description="Evergreen analysis on digital identity: deepfakes and fraud, architecture, zero-knowledge cryptography, consent and human-rights stakes."
   breadcrumbs={crumbs}
+  pageType="CollectionPage"
+  schema={[insightsListSchema]}
 >
   <PageHeader
     crumbs={crumbs}
@@ -69,6 +84,34 @@ const rest = INSIGHT_ARTICLES.filter((a) => !FEATURED_INSIGHTS.includes(a));
         );
       })
     }
+
+    <section class="mt-12">
+      <h2 class="mt-0 border-b-2 border-navy pb-3 text-[1.4rem]">Guides</h2>
+      <p class="mt-4 mb-0 text-body measure">
+        Longer explainers and practical walkthroughs live alongside insights — methods compared,
+        the Australian landscape, and free steps you can take today.
+      </p>
+      <div class="mt-5 grid gap-4 md:grid-cols-2">
+        {
+          GUIDE_TOPICS.flatMap((topic) => GUIDES.filter((guide) => guide.topic === topic)).map(
+            (guide) => (
+              <CardLink
+                href={`/guides/${guide.slug}`}
+                tag={guide.topic}
+                title={guide.title}
+                description={guide.summary}
+              />
+            ),
+          )
+        }
+        <CardLink
+          href="/definitions"
+          tag="Reference"
+          title="Digital identity definitions"
+          description="Every term of art on this site, defined in plain English."
+        />
+      </div>
+    </section>
 
     <section class="mt-14 border border-hairline rounded-tile bg-alt px-6 py-6">
       <StatusTag tone="neutral">Editorial standards</StatusTag>

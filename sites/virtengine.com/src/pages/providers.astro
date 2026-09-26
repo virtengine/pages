@@ -4,14 +4,12 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import Card from "@components/Card.astro";
 import CTA from "@components/CTA.astro";
-import DiagramFrame from "@components/DiagramFrame.astro";
-import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
 import { SITE } from "@data/site";
 
 const whyProvide = [
   {
     title: "Monetize idle capacity",
-    body: "Turn unused racks, cloud headroom, or HPC cycles into revenue. The marketplace matches your capacity with tenant demand — you set your own bid pricing strategy.",
+    body: "Turn unused racks, cloud headroom, or HPC cycles into revenue. The marketplace matches your capacity with tenant demand — publish list prices for direct orders, and set your own bid strategy for open ones.",
   },
   {
     title: "Settlement without invoicing",
@@ -28,7 +26,7 @@ const whyProvide = [
 ];
 
 const daemonDuties = [
-  { name: "Bid engine", detail: "Watches open orders on-chain and places bids per your configured pricing and capacity rules." },
+  { name: "Pricing & bid engine", detail: "Publishes your list prices, watches open orders on-chain, and places bids per your configured pricing and capacity rules." },
   { name: "Workload orchestration", detail: "Instantiates leased workloads through Kubernetes, or through SLURM / MOAB / Open OnDemand for HPC jobs." },
   { name: "Usage metering", detail: "Collects per-workload resource metrics on an hourly cadence and batches them into signed usage records." },
   { name: "Chain submission", detail: "Submits MsgRecordUsage batches with retry and backoff; reconciles against platform metrics and flags anomalies." },
@@ -48,7 +46,7 @@ const onboarding = [
   {
     step: "03",
     title: "Deploy the provider daemon",
-    body: "Install and configure the daemon against your Kubernetes cluster or HPC scheduler; connect your chain key and set bid pricing.",
+    body: "Install and configure the daemon against your Kubernetes cluster or HPC scheduler; connect your chain key, and set list prices and bid strategy.",
   },
   {
     step: "04",
@@ -58,15 +56,16 @@ const onboarding = [
   {
     step: "05",
     title: "Bid, serve, settle",
-    body: "The daemon bids on matching orders. Won leases run on your infrastructure, usage settles hourly, and escrow pays out after the 24-hour dispute window.",
+    body: "Direct orders match your list prices; the daemon bids on open ones. Won leases run on your infrastructure, usage settles hourly, and escrow pays out after the 24-hour dispute window.",
   },
 ];
 ---
 
 <Base
-  title="Providers — VirtEngine"
-  description="Lease datacenter, cloud, or HPC capacity into the VirtEngine marketplace. How provider economics, the provider daemon, usage settlement, and onboarding work."
+  title="Sell GPU & Cloud Capacity: Provider Guide | VirtEngine"
+  description="Lease GPU, datacenter or HPC capacity into VirtEngine's DePIN marketplace. Escrow-backed pay under governed settlement fees, daemon setup and onboarding steps."
   path="/providers"
+  image="/media/provider-datacenter-1200.webp"
   breadcrumbs={[
     { name: "Home", href: "/" },
     { name: "Providers", href: "/providers" },
@@ -76,6 +75,8 @@ const onboarding = [
     eyebrow="For providers"
     title="Prepare to provide infrastructure"
     lede="A guide to the proposed provider role for datacenter operators, cloud providers, and HPC facilities. The network is not live; use this material to assess future participation."
+    media="provider-technician"
+    mediaCaption="Operator work on the supply side of the market."
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Providers", href: "/providers" },
@@ -96,26 +97,13 @@ const onboarding = [
   <Section
     eyebrow="Economics"
     title="Usage in, payment out"
-    lede="The settlement pipeline connects your running workloads to escrowed tenant funds. Every hop is signed, windowed for disputes, and reconciled."
+    lede="Metered usage settles from escrow. Full money path lives in the canonical guides — not repeated here."
   >
-    <DiagramFrame
-      label="Settlement flow diagram in two halves. Left, the provider daemon: a usage meter collects per-workload resource metrics; a scheduled collector produces hourly usage records; the settlement pipeline batches records and runs anomaly detection; a chain submitter sends signed MsgRecordUsage batches. Right, on-chain: the settlement module converts usage into billable line items; a 24-hour dispute window allows corrections; the escrow module holds funds against the lease; then payout — the provider receives the agreed settlement amount with no marketplace commission deducted."
-      caption="fig 01 — usage reporting and settlement pipeline (docs/usage-reporting-settlement.md)"
-      class="reveal"
-    >
-      <SettlementFlow />
-    </DiagramFrame>
-    <div class="prose-body reveal mt-8 max-w-3xl space-y-4 text-base">
-      <p>
-        Settlement runs on a default one-hour interval. Reported usage sits in a
-        <strong>24-hour dispute window</strong> during which either party can raise
-        corrections; anomaly detection flags outliers automatically before they ever
-        reach the chain. After the window closes, line items settle against lease escrow
-        and the agreed funds transfer to your provider account with no marketplace
-        commission deducted. Low validator transaction fees apply only to the on-chain
-        actions involved.
-      </p>
-    </div>
+    <p class="max-w-3xl text-sm leading-relaxed text-muted">
+      Usage is metered hourly as signed records, passes a 24-hour dispute window, then settles from lease escrow
+      under the governed fee policy. <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/escrow-and-settlement-explained">Escrow & settlement →</a>
+      <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/provider-economics">Provider economics →</a>
+    </p>
   </Section>
 
   <Section
@@ -175,7 +163,18 @@ const onboarding = [
     </ul>
   </Section>
 
-  <Section eyebrow="Onboarding" title="The planned provider workflow" id="onboarding">
+  <Section eyebrow="Onboarding" title="Readiness checklist" id="onboarding">
+    <ul class="provider-readiness">
+      <li><strong>Infrastructure</strong><span>✓ Kubernetes or HPC scheduler</span></li>
+      <li><strong>Public endpoint</strong><span>✓ reachable by tenants</span></li>
+      <li><strong>Metering</strong><span>✓ per-workload collection</span></li>
+      <li><strong>VEID / organisation</strong><span>○ verify identity</span></li>
+      <li><strong>Audit / benchmark</strong><span>○ optional attestation</span></li>
+      <li><strong>Daemon configuration</strong><span>○ prices + keys</span></li>
+    </ul>
+  </Section>
+
+  <Section eyebrow="Onboarding" title="The planned provider workflow">
     <ol class="grid gap-5 lg:grid-cols-5">
       {
         onboarding.map((step) => (

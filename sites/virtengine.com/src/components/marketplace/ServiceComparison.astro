@@ -1,0 +1,53 @@
+---
+/**
+ * ServiceComparison — IaaS vs PaaS vs SaaS as a responsibility stack.
+ *
+ * Who manages each layer, with the shared VirtEngine market rail underneath.
+ * The Learn article owns this comparison; service pages link to it instead
+ * of copying it.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const rows: { layer: string; iaas: "you" | "provider"; paas: "you" | "provider"; saas: "you" | "provider" }[] = [
+  { layer: "Application", iaas: "you", paas: "you", saas: "provider" },
+  { layer: "Runtime", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Platform", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Operating system", iaas: "you", paas: "provider", saas: "provider" },
+  { layer: "Infrastructure", iaas: "provider", paas: "provider", saas: "provider" },
+];
+
+const label = (owner: "you" | "provider") => (owner === "you" ? "You" : "Provider");
+---
+
+<div class:list={["mk-resp", className]}>
+  <table class="mk-matrix mk-resp-table">
+    <caption class="sr-only">Who manages each layer under IaaS, PaaS and SaaS</caption>
+    <thead>
+      <tr>
+        <th scope="col">Layer</th>
+        <th scope="col">IaaS</th>
+        <th scope="col">PaaS</th>
+        <th scope="col">SaaS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <th scope="row">{row.layer}</th>
+            <td class={row.iaas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.iaas)}</td>
+            <td class={row.paas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.paas)}</td>
+            <td class={row.saas === "you" ? "mk-who-you" : "mk-who-provider"}>{label(row.saas)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="mk-resp-rail">
+    VirtEngine market · identity · settlement rail — the same underneath all three
+  </p>
+</div>

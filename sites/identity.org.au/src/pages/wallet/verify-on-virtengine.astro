@@ -2,7 +2,9 @@
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import Steps from "@components/Steps.astro";
+import TableScroll from "@components/TableScroll.astro";
 import VerifyFlow from "@components/diagrams/VerifyFlow.astro";
 import { WALLET_NAV } from "@data/nav-sections";
 import { TIERS } from "@data/tiers";
@@ -49,8 +51,8 @@ const flowSteps = [
 
 <Guide
   title="Verify on VirtEngine"
-  metaTitle="Verify on VirtEngine — become an approved client | identity.org.au"
-  description="The end-to-end flow from wallet to approved client: complete verification levels, receive an on-chain VEID score and tier, and present your tier to providers and the marketplace — which never see your documents."
+  metaTitle="Verify on VirtEngine: Tiers On-Chain | identity.org.au"
+  description="From wallet to approved client: complete levels, receive an on-chain VEID score and tier, present proofs providers accept. No documents shared."
   lede="How verification in your wallet becomes approval on the VirtEngine network: evidence in, score and tier out, and marketplace actions unlocked — with providers seeing your tier, never your documents."
   eyebrow="The service"
   breadcrumbs={crumbs}
@@ -68,9 +70,15 @@ const flowSteps = [
     </p>
   </div>
 
-  <div class="mt-8 border border-hairline rounded-tile bg-paper p-4 sm:p-6">
+  <ServiceFigure
+    rail="Wallet to marketplace"
+    railRight="Verified flow"
+    scroll
+    class="mt-8"
+    caption="Verification becomes approval: evidence stays encrypted, the network scores and records a tier, and marketplace actions unlock by tier — never by documents."
+  >
     <VerifyFlow />
-  </div>
+  </ServiceFigure>
 
   <div class="prose-service mt-10">
     <h2>The flow, end to end</h2>
@@ -80,7 +88,7 @@ const flowSteps = [
   <div class="prose-service mt-10">
     <h2>What providers see — and never see</h2>
   </div>
-  <div class="mt-5 overflow-x-auto">
+  <TableScroll label="What providers and the marketplace see and never see" class="mt-5">
     <table class="table-gov">
       <caption class="sr-only">What providers and the marketplace see about a verified client, and what they never see</caption>
       <thead>
@@ -108,7 +116,7 @@ const flowSteps = [
         </tr>
       </tbody>
     </table>
-  </div>
+  </TableScroll>
 
   <div class="prose-service mt-10">
     <h2>How tiers gate marketplace actions</h2>
@@ -120,7 +128,7 @@ const flowSteps = [
       applied mechanically.
     </p>
   </div>
-  <div class="mt-5 overflow-x-auto">
+  <TableScroll label="Verification tiers and unlocked marketplace activity" class="mt-5">
     <table class="table-gov">
       <caption class="sr-only">Verification tiers and the marketplace activity each typically unlocks</caption>
       <thead>
@@ -140,7 +148,7 @@ const flowSteps = [
         }
       </tbody>
     </table>
-  </div>
+  </TableScroll>
 
   <Callout title="If an action needs a higher tier" class="mt-8">
     <p>
@@ -156,7 +164,7 @@ const flowSteps = [
       The VirtEngine network and the wallet are open-source infrastructure rolling out together.
       Tier requirements for specific offerings are set on-chain and may evolve through network
       governance — this page describes the mechanism, and the
-      <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain">technical documentation</a>
+      <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain" target="_blank">technical documentation</a>
       tracks the current parameters.
     </p>
   </Alert>

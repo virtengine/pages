@@ -1,356 +1,308 @@
 ---
 import Base from "@layouts/Base.astro";
-import Section from "@components/Section.astro";
-import ProgramCard from "@components/ProgramCard.astro";
-import ClauseRef from "@components/ClauseRef.astro";
-import DiagramFrame from "@components/DiagramFrame.astro";
-import CTA from "@components/CTA.astro";
+import RegisterMark from "@components/brand/RegisterMark.astro";
 import HeroLattice from "@components/diagrams/HeroLattice.astro";
-import EcosystemMap from "@components/diagrams/EcosystemMap.astro";
 import ProgramVirtArt from "@components/diagrams/ProgramVirtArt.astro";
 import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
 import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
 import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
 import { PURPOSES, SITE } from "@data/site";
+
+const programs = [
+  {
+    name: "VirtEngine",
+    plate: "01",
+    area: "Open infrastructure",
+    status: "In development",
+    href: "/research/virtengine",
+    cta: "Study the protocol",
+    body: "An open cloud marketplace protocol. Study how resource requests, provider bids, identity, and payments fit together.",
+    src: "research/virtengine",
+    art: ProgramVirtArt,
+  },
+  {
+    name: "DSEMA",
+    plate: "02",
+    area: "Accountable AI",
+    status: "Research architecture",
+    href: "/research/dsema",
+    cta: "Read the open questions",
+    body: "Research into multi-agent AI that can evolve under verifiable controls. Explore the design questions around oversight and safety.",
+    src: "research/dsema",
+    art: ProgramDsemaArt,
+  },
+  {
+    name: "Bosun",
+    plate: "03",
+    area: "Open-source engineering",
+    status: "Experimental software",
+    href: "/research/bosun",
+    cta: "Inspect the source",
+    body: "An open-source orchestrator for AI coding agents. Examine how work is coordinated, reviewed, and recovered under human supervision.",
+    src: "research/bosun",
+    art: ProgramBosunArt,
+  },
+  {
+    name: "Identity & VEID",
+    plate: "04",
+    area: "Privacy and digital rights",
+    status: "Protocol research",
+    href: "/research/identity",
+    cta: "Explore encrypted identity",
+    body: "Verifiable identity with less disclosure. Explore encrypted verification, consent, and how services could use proofs of attributes.",
+    src: "research/identity",
+    art: ProgramIdentityArt,
+  },
+];
+
+const waysIn = [
+  { tag: "For learners", title: "Understand an idea.", body: "Follow a guide, explore a research question, and inspect its evidence.", href: "/participate#learn" },
+  { tag: "For developers", title: "Make something better.", body: "Improve a guide, report a reproducible issue, or contribute code.", href: "/participate#contribute" },
+  { tag: "For collaborators", title: "Bring a useful question.", body: "Discuss research that connects technical work to a public need.", href: "/participate#collaborate" },
+];
 ---
 
-<Base title={SITE.title} description={SITE.description} path="/">
-  <!-- hero -->
-  <div class="relative overflow-hidden border-b border-hairline bg-surface">
-    <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
-    <div class="container-site relative grid items-center gap-10 py-12 md:py-20 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
-      <div class="grid gap-6">
-        <p class="eyebrow">Digital Elastic Technologies, Internet Organization</p>
-        <h1 class="headline-accent max-w-[11ch] text-4xl font-bold md:text-[3.75rem] md:leading-[1.04]">
-          A research foundation for digital technologies.
-        </h1>
-        <p class="prose-inst max-w-xl text-lg md:text-xl">
-          <strong>DETIO FOUNDATION LTD</strong> is a not-for-profit research organisation building
-          privacy-preserving infrastructure, distributed computing, and trustworthy AI.
+<Base
+  title="DET.io: Australian Open Tech Research Nonprofit"
+  description="DETIO FOUNDATION LTD (ACN 699 651 771): Australian nonprofit researching decentralized cloud, AI safety and privacy. Open-source software for public benefit."
+  path="/"
+>
+  <section class="record-mast" aria-labelledby="record-title">
+    <div class="container-site record-mast-inner">
+      <div>
+        <p class="folio">
+          <RegisterMark />
+          <span>№ 001 · DET.IO · FIELD RECORD</span>
         </p>
-        <div class="flex flex-wrap gap-3">
-          <CTA href="/mission">Our mission</CTA>
-          <CTA href="/governance" variant="secondary">How we are governed</CTA>
+        <span class="record-rule" aria-hidden="true"></span>
+        <h1 id="record-title">Technology for a more open future.</h1>
+        <p class="record-lede">
+          Our mission is to advance education, protect digital rights, and improve access to secure, resilient digital infrastructure.
+        </p>
+        <p class="record-copy">
+          DETIO FOUNDATION LTD develops open research, software, and learning resources in distributed computing, privacy, and accountable AI. For people who want to understand, question, and improve technology.
+        </p>
+        <div class="record-actions">
+          <a class="btn-press" href="/activities">See the work</a>
+          <a class="record-link" href="/mission">Why we exist</a>
         </div>
-        <div class="hero-signals" aria-label="Foundation overview">
-          <div><span>01</span><strong>Australia</strong><small>not-for-profit company</small></div>
-          <div><span>04</span><strong>Programs</strong><small>cloud, AI, identity, engineering</small></div>
-          <div><span>Open</span><strong>Research</strong><small>code and technical work in public</small></div>
-        </div>
       </div>
-      <div class="hero-art reveal" role="img" aria-label="Abstract diagram of a distributed node lattice converging on the DET.io Foundation seal.">
-        <HeroLattice />
-      </div>
-    </div>
-  </div>
-
-  <!-- mission distilled -->
-  <Section
-    number="01"
-    eyebrow="Research focus"
-    title="Four areas of technical work"
-    lede="Clause 6 of the constitution sets the foundation's four focus areas: research, resilient infrastructure, digital rights and technology safety."
-  >
-    <div class="grid gap-5 md:grid-cols-2">
-      {
-        PURPOSES.map((p) => (
-          <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
-            <div class="flex items-center justify-between gap-3">
-              <h3 class="text-xl font-bold">{p.name}</h3>
-              <ClauseRef id={p.clause} />
-            </div>
-            <p class="prose-inst text-[0.98rem]">{p.summary}</p>
-          </article>
-        ))
-      }
-    </div>
-    <p class="prose-inst mt-8">
-      Read about the foundation's focus areas and operating model on the <a href="/mission">mission page</a>.
-    </p>
-  </Section>
-
-  <!-- research programs -->
-  <Section
-    number="02"
-    eyebrow="Research programs"
-    title="Four technology programs"
-    lede="The foundation develops, publishes, and maintains four technology programs: two flagship programs named in the constitution, an open-source applied-engineering track, and an identity program."
-  >
-    <div class="grid gap-6 lg:grid-cols-2">
-      <ProgramCard
-        program="Program 01 — decentralized cloud"
-        title="VirtEngine"
-        href="/research/virtengine"
-        projectHref="https://virtengine.com"
-        projectLabel="Visit VirtEngine"
-        projectExternal
-        facts={[
-          ["stack", "Go · CometBFT · Cosmos SDK"],
-          ["license", "Apache-2.0, open source"],
-          ["patent", "AU2024203136B2 — granted to 12 May 2044"],
-          ["identity", "VEID (Verifiable Electronic Identity) — privacy-preserving"],
-        ]}
-      >
-        <p>
-          A decentralized cloud computing marketplace connecting tenants who need compute
-          with providers who lease capacity — with identity, encryption, escrow, and
-          settlement enforced by the chain itself.
-        </p>
-        <Fragment slot="art"><ProgramVirtArt /></Fragment>
-      </ProgramCard>
-
-      <ProgramCard
-        program="Program 02 — trustworthy AI"
-        title="DSEMA"
-        href="/research/dsema"
-        projectHref="/research/dsema"
-        projectLabel="Explore DSEMA"
-        facts={[
-          ["subject", "self-evolving multi-agent AI"],
-          ["status", "research — patent pending"],
-          ["control plane", "blockchain orchestration"],
-          ["safety", "constitutional safety layer"],
-        ]}
-      >
-        <p>
-          The Dynamically Self-Evolving Multi-Agent architecture: a research program for
-          safe, accountable, auditable multi-agent AI systems that improve themselves under
-          verifiable on-chain control.
-        </p>
-        <Fragment slot="art"><ProgramDsemaArt /></Fragment>
-      </ProgramCard>
-
-      <ProgramCard
-        program="Program 03 — autonomous engineering"
-        title="Bosun"
-        href="/research/bosun"
-        projectHref="https://bosun.engineer"
-        projectLabel="Visit bosun.engineer"
-        projectExternal
-        facts={[
-          ["status", "experimental — open source"],
-          ["license", "Apache-2.0"],
-          ["install", "npm install -g bosun"],
-          ["home", "bosun.engineer"],
-        ]}
-      >
-        <p>
-          A fully open-source, experimental control plane for autonomous software
-          engineering — routing work across AI coding agents, automating PR lifecycles,
-          and recovering from failure while humans stay in command.
-        </p>
-        <Fragment slot="art"><ProgramBosunArt /></Fragment>
-      </ProgramCard>
-
-      <ProgramCard
-        program="Program 04 — verifiable identity"
-        title="Identity — VEID (Verifiable Electronic Identity)"
-        href="/research/identity"
-        projectHref="https://identity.org.au"
-        projectLabel="Visit VEID Network"
-        projectExternal
-        facts={[
-          ["layer", "x/veid · x/mfa · x/veid/zk"],
-          ["patent", "AU2024203136B2 — granted to 12 May 2044"],
-          ["service", "identity.org.au"],
-          ["privacy", "on-device · zero-knowledge"],
-        ]}
-      >
-        <p>
-          Verifiable Electronic Identity: multi-factor verification encrypted on the
-          user's device, scored by chain consensus, and presented to services as proofs of
-          attributes — never copies of documents.
-        </p>
-        <Fragment slot="art"><ProgramIdentityArt /></Fragment>
-      </ProgramCard>
-    </div>
-    <p class="prose-inst mt-8">
-      Six cross-cutting research topics — from <a href="/research/decentralized-identity">decentralized identity</a>
-      and <a href="/research/multi-agent-safety">multi-agent safety</a> to
-      <a href="/research/incentive-mechanism-design">incentive mechanism design</a> — are mapped
-      on the <a href="/research">research portfolio</a>.
-    </p>
-  </Section>
-
-  <!-- public-benefit lock -->
-  <Section
-    number="03"
-    eyebrow="The public-benefit lock"
-    title="No private capture — by constitution, not by promise"
-    lede="Most technology pledges are policies that a future board can quietly reverse. Ours are Protected Provisions in the constitution itself, changeable only under clause 18 with a special resolution and written Founding Member consent."
-  >
-    <div class="grid gap-5 md:grid-cols-3">
-      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
-        <h3 class="text-lg font-bold">No dividends. No private extraction.</h3>
-        <p class="prose-inst text-[0.95rem]">
-          Income and assets must be applied solely to the charitable purposes. Distribution
-          to members, directors, founders, or related parties is prohibited.
-          <ClauseRef id="8.1" /> <ClauseRef id="8.2" />
-        </p>
-      </article>
-      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
-        <h3 class="text-lg font-bold">The technology is locked to the public.</h3>
-        <p class="prose-inst text-[0.95rem]">
-          VirtEngine, DSEMA, the patents, and all Transferred Assets must be owned,
-          stewarded, and applied for public benefit — a Protected Provision.
-          <ClauseRef id="sch 1" /> <ClauseRef id="31.1" />
-        </p>
-      </article>
-      <article class="reveal grid gap-3 rounded-card border border-hairline bg-surface p-6">
-        <h3 class="text-lg font-bold">Capital cannot buy control.</h3>
-        <p class="prose-inst text-[0.95rem]">
-          Transferable economic value — including any protocol token — must be structurally
-          separated from governance over the foundation's purposes.
-          <ClauseRef id="38.1" /> <ClauseRef id="38.5" />
-        </p>
-      </article>
-    </div>
-    <p class="prose-inst mt-8">
-      Even on winding up, surplus assets cannot flow to members: they must pass to another
-      charity with compatible purposes <ClauseRef id="61" /> <ClauseRef id="62" />. See the
-      full breakdown on the <a href="/governance">governance page</a> and in the
-      <a href="/foundation/public-benefit-lock">public-benefit lock deep dive</a>.
-    </p>
-  </Section>
-
-  <!-- constitution explorer -->
-  <Section
-    number="04"
-    eyebrow="The constitution explorer"
-    title="Read the document that defines us — in plain language"
-    lede="Thirteen parts, sixty-three clauses, twenty entrenched Protected Provisions. The constitution explorer translates the entire signed instrument into ten plain-language topics, each with exact clause citations you can verify."
-  >
-    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {
-        [
-          { slug: "purpose-and-public-benefit-lock", title: "Purpose and the public-benefit lock", source: "Parts 1–2" },
-          { slug: "amendments-and-protected-provisions", title: "Amendments and Protected Provisions", source: "Clause 18 · Schedule 1" },
-          { slug: "reserved-matters", title: "Reserved Matters — the consent gate", source: "Clause 18A" },
-          { slug: "asset-stewardship-and-transferred-assets", title: "Asset stewardship and Transferred Assets", source: "Part 5" },
-          { slug: "protocol-governance-privacy-and-safety", title: "Protocol governance, privacy, safety", source: "Part 6" },
-          { slug: "winding-up-and-the-charity-lock", title: "Winding up and the charity lock", source: "Part 13" },
-        ].map((topic) => (
-          <a
-            href={`/constitution/${topic.slug}`}
-            class="group reveal grid content-start gap-2 rounded-card border border-hairline bg-surface p-5 transition-colors hover:border-blue-deep"
-          >
-            <span class="font-mono text-xs tracking-[0.14em] text-text-soft uppercase">{topic.source}</span>
-            <span class="font-display text-lg leading-snug font-bold group-hover:text-blue-deep">{topic.title}</span>
-          </a>
-        ))
-      }
-    </div>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <CTA href="/constitution">All ten topics</CTA>
-      <CTA href="/faq" variant="secondary">Questions, answered plainly</CTA>
-    </div>
-  </Section>
-
-  <!-- ecosystem -->
-  <Section
-    number="05"
-    eyebrow="Ecosystem"
-    title="One foundation, a family of public properties"
-    lede="det.io is the institutional anchor. The protocol, its documentation, the citizen-facing identity wallet, and the Bosun orchestrator each have a dedicated home."
-  >
-    <DiagramFrame
-      label="Ecosystem map: DETIO FOUNDATION LTD, ACN 699 651 771, at the center, stewarding the VirtEngine, DSEMA, Bosun and Identity research programs and five public properties — virtengine.com for the protocol and marketplace, docs.virtengine.com for open documentation, identity.org.au for the VEID identity wallet, bosun.engineer for the open-source agent orchestrator, and the open-source Apache-2.0 repositories on GitHub."
-      caption="fig 01 — the DETIO / VirtEngine ecosystem"
-      class="reveal"
-    >
-      <EcosystemMap />
-    </DiagramFrame>
-    <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <li class="rounded-card border border-hairline bg-surface p-5">
-        <a href="https://virtengine.com" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">virtengine.com</a>
-        <p class="prose-inst mt-2 text-sm">The protocol: marketplace, staking, VEID, and tokenomics for providers, tenants, and validators.</p>
-      </li>
-      <li class="rounded-card border border-hairline bg-surface p-5">
-        <a href="https://docs.virtengine.com" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">docs.virtengine.com</a>
-        <p class="prose-inst mt-2 text-sm">Open technical documentation — node operations, provider guides, module reference.</p>
-      </li>
-      <li class="rounded-card border border-hairline bg-surface p-5">
-        <a href="https://identity.org.au" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">identity.org.au</a>
-        <p class="prose-inst mt-2 text-sm">The Identity Wallet: plain-language home of VEID for individuals and relying services.</p>
-      </li>
-      <li class="rounded-card border border-hairline bg-surface p-5">
-        <a href="https://bosun.engineer" rel="noopener" class="font-display font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep">bosun.engineer</a>
-        <p class="prose-inst mt-2 text-sm">The open-source Bosun agent orchestrator — docs, installation, and operator guides.</p>
-      </li>
-    </ul>
-  </Section>
-
-  <!-- closing CTA -->
-  <section class="container-site pb-4">
-    <div class="rounded-frame bg-night px-8 py-12 text-night-text md:px-14">
-      <p class="font-mono text-xs tracking-[0.18em] text-sky-bright uppercase">Work with the foundation</p>
-      <h2 class="mt-4 max-w-2xl text-3xl font-bold md:text-4xl" style="color: var(--color-night-text)">
-        Research collaboration, provider partnerships, membership.
-      </h2>
-      <p class="mt-4 max-w-2xl text-night-muted">
-        We welcome inquiries from researchers, infrastructure operators and prospective
-        partners. Tell us what you are building or investigating.
-      </p>
-      <div class="mt-7 flex flex-wrap gap-3">
-        <a href="/contact" class="inline-flex items-center gap-2 rounded-md bg-sky px-5 py-2.5 font-display text-sm font-semibold text-night transition-colors hover:bg-sky-bright">
-          Contact us
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
-        </a>
-        <a href="/transparency" class="inline-flex items-center gap-2 rounded-md border border-night-hairline px-5 py-2.5 font-display text-sm font-semibold text-night-text transition-colors hover:border-sky-bright hover:text-sky-bright">
-          Transparency commitments
-        </a>
-      </div>
+      <aside class="evidence-col" aria-label="Record evidence">
+        <dl class="evidence-list">
+          <div>
+            <dt>Entity</dt>
+            <dd>Public company limited by guarantee</dd>
+          </div>
+          <div>
+            <dt>ACN</dt>
+            <dd>{SITE.acn}</dd>
+          </div>
+          <div>
+            <dt>Clause</dt>
+            <dd><a href="/mission">cl 6.1</a></dd>
+          </div>
+          <div>
+            <dt>Patent</dt>
+            <dd><a href={SITE.patentVeUrl}>{SITE.patentVe}</a></dd>
+          </div>
+        </dl>
+        <figure class="plate">
+          <p class="plate-kicker"><span>Plate 01</span><span>Field record</span></p>
+          <div class="plate-art" aria-hidden="true"><HeroLattice /></div>
+          <figcaption><span>Four connected programs</span><span>src: research/index</span></figcaption>
+        </figure>
+      </aside>
     </div>
   </section>
+
+  <section class="container-site record-section" aria-labelledby="f-what">
+    <p class="folio"><RegisterMark /><span>File 01 · What we do</span></p>
+    <h2 id="f-what">Ideas become useful when people can examine them.</h2>
+    <p class="record-stand">
+      We connect technical research with public resources. Learners can study the ideas, developers can inspect the software, and researchers can challenge the design.
+    </p>
+    <div class="record-columns">
+      <article>
+        <p class="folio">01 · Learn</p>
+        <h3>Publish open knowledge</h3>
+        <p>Guides, specifications, and technical explanations make infrastructure and AI research easier to understand and evaluate.</p>
+        <a href="/activities#education">Start learning</a>
+      </article>
+      <article>
+        <p class="folio">02 · Build</p>
+        <h3>Develop in the open</h3>
+        <p>Open-source software makes the implementation available for review, reuse, and improvement by other developers.</p>
+        <a href="/activities#software">Browse the work</a>
+      </article>
+      <article>
+        <p class="folio">03 · Question</p>
+        <h3>Research trust and safety</h3>
+        <p>We examine privacy, verification, governance, and human oversight through published designs and experimental tools.</p>
+        <a href="/activities#safety">Read the questions</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="container-site record-section" aria-labelledby="f-programs">
+    <p class="folio"><RegisterMark /><span>File 02 · Programs</span></p>
+    <h2 id="f-programs">Four ways to work towards that purpose.</h2>
+    <p class="record-stand"><a class="record-link" href="/research">All research topics</a></p>
+    <div class="program-explorer" data-program-tabs>
+      <div class="program-tabs" role="tablist" aria-label="Research programs">
+        {programs.map((p, i) => (
+          <button
+            class="program-tab"
+            id={`program-tab-${p.plate}`}
+            type="button"
+            role="tab"
+            aria-selected={i === 0 ? "true" : "false"}
+            aria-controls={`program-panel-${p.plate}`}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <span class="program-tab-index">{p.plate}</span>
+            <span class="program-tab-name" data-preserve-acronym>{p.name}</span>
+            <span class="program-tab-arrow" aria-hidden="true">↗</span>
+          </button>
+        ))}
+      </div>
+      {programs.map((p, i) => {
+        const Art = p.art;
+        return (
+          <section
+            class="program-panel plate"
+            id={`program-panel-${p.plate}`}
+            role="tabpanel"
+            aria-labelledby={`program-tab-${p.plate}`}
+            tabindex="0"
+            hidden={i !== 0}
+          >
+            <div class="program-panel-top plate-kicker"><span>Plate {p.plate} · {p.area}</span><span>{p.status}</span></div>
+            <div class="program-panel-main">
+              <figure class="program-figure" aria-label={`${p.name} research diagram`}>
+                <div class="plate-art"><Art /></div>
+                <figcaption>FIG {p.plate} <span aria-hidden="true">/</span> {p.area}</figcaption>
+              </figure>
+              <div class="program-copy">
+                <p class="program-meta"><span>PROGRAM {p.plate}</span><span class="program-status">{p.status}</span></p>
+                <h3 data-preserve-acronym>{p.name}</h3>
+                <p class="program-description">{p.body}</p>
+                <a class="program-action" href={p.href}>{p.cta}<span aria-hidden="true">↗</span></a>
+                <p class="program-source">Open materials <span>·</span> {p.src}</p>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+    </div>
+    <p class="status-note">Status: in development. Open materials are available today. Research goals are not claims of deployed services or measured impact.</p>
+  </section>
+
+  <script>
+    document.querySelectorAll<HTMLElement>("[data-program-tabs]").forEach((explorer) => {
+      const tabs = Array.from(explorer.querySelectorAll<HTMLButtonElement>("[role='tab']"));
+      const panels = Array.from(explorer.querySelectorAll<HTMLElement>("[role='tabpanel']"));
+      const activate = (index: number, moveFocus = false) => {
+        tabs.forEach((tab, i) => {
+          const selected = i === index;
+          tab.setAttribute("aria-selected", String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+          panels[i].hidden = !selected;
+        });
+        if (moveFocus) tabs[index].focus();
+      };
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => activate(index));
+        tab.addEventListener("keydown", (event) => {
+          let next = index;
+          if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+          else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+          else if (event.key === "Home") next = 0;
+          else if (event.key === "End") next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          activate(next, true);
+        });
+      });
+    });
+  </script>
+
+  <section class="night-band" aria-labelledby="f-charter">
+    <div class="container-site record-section">
+      <p class="folio">File 03 · Constitution</p>
+      <h2 id="f-charter">Four purposes, written into the constitution.</h2>
+      <p class="record-stand" style="color:var(--color-night-muted)">
+        Every program must advance at least one of these purposes. The wording below is condensed from the signed instrument.
+      </p>
+      <ol class="charter-list">
+        {
+          PURPOSES.map((p) => (
+            <li>
+              <a href="/mission">
+                <span>cl {p.clause}</span>
+                <strong>{p.name}</strong>
+                <span aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="container-site record-section" aria-labelledby="f-code">
+    <p class="folio"><RegisterMark /><span>File 04 · Source</span></p>
+    <h2 id="f-code">Clone it. Read it. Challenge it.</h2>
+    <p class="record-stand">
+      Everything we publish is inspectable. Start from the repositories. The protocol, the agent orchestrator, and the documentation are public.
+    </p>
+    <figure class="plate" style="margin-top:1.5rem">
+      <p class="plate-kicker"><span>Plate 05</span><span>Public repositories</span></p>
+      <pre class="program-copy" style="margin:0;font-family:var(--font-mono);font-size:0.82rem;line-height:1.7;overflow-x:auto"><code>git clone {SITE.github}.git
+git clone {SITE.bosunGithub}.git</code></pre>
+      <figcaption>
+        <span>VirtEngine · Bosun</span>
+        <span>
+          <a href={SITE.github}>VirtEngine</a>
+          · <a href={SITE.bosunGithub}>Bosun</a>
+          · <a href="https://docs.virtengine.com">Docs</a>
+        </span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="container-site record-section" aria-labelledby="f-way">
+    <p class="folio"><RegisterMark /><span>File 05 · Participation</span></p>
+    <h2 id="f-way">Start with what you want to do.</h2>
+    <p class="record-stand">You can read our resources and contribute to open-source work without becoming a member of the Foundation.</p>
+    <ol class="contents">
+      {
+        waysIn.map((w) => (
+          <li>
+            <a href={w.href}>
+              <span>{w.tag}</span>
+              <span><strong>{w.title}</strong><em>{w.body}</em></span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="record-stand">
+      <a class="record-link" href="/foundation/who-we-are">Meet the Foundation</a>
+      · <a class="record-link" href="/governance">How decisions are made</a>
+      · <a class="record-link" href="/constitution">Read the constitution</a>
+      · <a class="record-link" href="/transparency">Check the public record</a>
+    </p>
+  </section>
+
+  <section class="container-site record-section" aria-labelledby="f-close">
+    <p class="folio">Contact</p>
+    <h2 id="f-close">Good research starts with a clear question.</h2>
+    <p class="record-stand">Tell us what you are investigating and who it could help.</p>
+    <p class="record-actions"><a class="btn-press" href="/contact">Contact the Foundation</a></p>
+    <p class="colophon">
+      Colophon. Type: Instrument Serif, Archivo, IBM Plex Mono. Stock #f1efe9, ink #14171c, spot #1a6f97.
+      Annotation red is status only. Sources: constitution cl 6.1, ACN {SITE.acn}, patent {SITE.patentVe}.
+      Reviewed 2026-09-25.
+    </p>
+  </section>
 </Base>
-
-<style>
-  .hero-art {
-    position: relative;
-    padding: clamp(0.5rem, 2vw, 1.5rem);
-    border: 1px solid var(--color-hairline);
-    background:
-      radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-sky) 20%, transparent), transparent 46%),
-      var(--color-surface);
-    box-shadow: 0 20px 50px color-mix(in srgb, var(--color-blue-deep) 12%, transparent);
-  }
-
-  .hero-art::before {
-    content: "FOUNDATION SYSTEMS · TECHNOLOGY RESEARCH";
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    z-index: 1;
-    color: var(--color-text-soft);
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
-  }
-
-  .hero-signals {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.625rem;
-    max-width: 42rem;
-    margin-top: 0.4rem;
-  }
-
-  .hero-signals > div {
-    display: grid;
-    gap: 0.22rem;
-    min-width: 0;
-    padding: 0.9rem;
-    border: 1px solid var(--color-hairline);
-    border-top: 2px solid var(--color-blue-deep);
-    background: color-mix(in srgb, var(--color-surface) 92%, var(--color-sky));
-  }
-
-  .hero-signals span { color: var(--color-blue-deep); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; }
-  .hero-signals strong { color: var(--color-ink); font-family: var(--font-display); font-size: 0.95rem; }
-  .hero-signals small { color: var(--color-text-muted); font-size: 0.72rem; line-height: 1.35; }
-
-  @media (max-width: 420px) {
-    .hero-signals { grid-template-columns: 1fr; }
-    .hero-art::before { font-size: 0.54rem; }
-  }
-</style>

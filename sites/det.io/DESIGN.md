@@ -1,5 +1,19 @@
 # DET.io Brand & Design Guide
 
+> **Amendment B (2026-09-25) is normative for surface and type.**
+> The page is a two-colour research record, not a sticker sheet and not a 3D
+> render. **The logo is brand, not a design surface:** `Lockup` renders
+> `public/images/detio-logo.png` exactly as it is and it is never redrawn,
+> flattened or replaced. Display is Instrument Serif (sentence case, weight
+> 400). Text is Archivo. Evidence is IBM Plex Mono.
+> Stock `#f1efe9`, ink `#14171c`, spot `#1a6f97`, annotation red `#b4341f`
+> for status only. One shadow: `3px 3px 0` on `.plate`. No lattice, grain,
+> marquees, gradient text, uppercase H1, or backdrop blur.
+> Sections below that specify cream paper, Space Grotesk, Inter, or JetBrains
+> Mono are historical.
+
+
+
 Design system for **det.io**, the institutional home of DETIO FOUNDATION LTD.
 This document is normative: logo construction, tokens, type, spacing, diagram
 style, and motion are defined here and implemented in `src/styles/global.css`
@@ -31,7 +45,8 @@ Sampled brand colors: sky blue `#5DBADB`, steel `#4C7094`, navy shadow
 a reconstructed vector; the flat 2D variant
 (`_agent-context/brand/detio/detio-logo-flat.png`) and the hand-built
 `CloudMark`/`Wordmark` geometry below remain for historical reference and
-single-color/favicon-style uses only.
+single-color/favicon-style uses only. **Amendment B: this asset is not part of
+the design sweep — the sweep changes what the page is made of, never the mark.**
 
 The design language is **institutional paper**: cool blue-tinted light
 surfaces, editorial double keylines, numbered folio sections, mono "evidence
@@ -246,3 +261,115 @@ number, or a repository path. State intent as intent (ACNC registration),
 research as research (DSEMA), and never invent numbers, staff, partners, or
 status. Sentence-case headings; no exclamation marks; "the foundation", not
 "we're on a mission".
+
+## Amendment A — Field Edition (retro institutional layer)
+
+Adopted to give det.io a memorable, artistic register without breaking the
+normative identity above: the logo construction (§2), the brand blue scale
+(§3.1–3.2), the evidence register (§6), and the voice rules (§10) are
+unchanged. What changes is *surface and rhythm*, fusing two references:
+
+- **Hermes-agent (Nous Research)**: full-field colour, oversized condensed
+  display type, grain/halftone texture, terminal install block, giant
+  numerals (`#1 Connect…`), playful-but-plain tier verbs, sticker-like
+  cards, footer illustration.
+- **Mozilla.org**: mission-first hero, plain-language product blurbs with
+  bold lead-ins, eyebrow-kicker card grid (Product / Impact / Program /
+  Event), trust strip, newsletter-to-contact rhythm, mega footer.
+
+### A.1 New tokens (`global.css` `@theme`)
+
+Pastel revision: the first cut introduced primary brights (federal blue,
+signal red) that clashed with the pastel brand family. They are removed.
+The only addition is one pastel plate tint:
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| `--color-mist` | `#eef4f6` | Pale blue-grey figure-plate band behind program diagrams. |
+
+Paper tokens warmed to archival stock: `paper #f5f0e2`, `surface #fdfbf3`,
+`vellum #ece4cf`, `sage #e0d6bc`, hairlines `#d8cdb2 / #a89a76`, ink
+`#1d1a13`. Sky `#5DBADB` remains graphic-only on light. All accents stay
+inside sky / blue-deep `#1a6f97` / blue-mid / steel `#4c7094` / sage.
+
+### A.2 New patterns (`styles/retro.css`, `components/Ticker.astro`)
+
+- **Trust strip**: thin ink micro-bar above the sticky header (ACN, open
+  research/software, public-record link) — Mozilla trust-strip nod.
+- **Hero**: uppercase Space Grotesk 700 with an outlined ghost word, federal
+  kicker chip with hard shadow, rubber-stamp badge, ticket-stub plate
+  (perforation + foot link), ghost numeral backdrop, film grain.
+- **Ticker ribbon**: pastel marquee in sand (sage) and sky (sky-wash)
+  variants (`ticker-scroll` 28s, pause on hover, `prefers-reduced-motion`
+  collapses, screen-reader text preserved).
+- **Field numerals**: Hermes-style giant outlined `01/02/03` column heads,
+  outlined in blue-deep.
+- **Program files**: stacked cards — full-width pastel figure plate on top
+  (mist band, 300 px desktop), file body below with area tag + status mono
+  + plain-language body + arrow link; hard-shadow lift on hover.
+- **Figure plates**: each program diagram carries a hairline grid, a soft
+  sky glow, a steel `FIG 0n` caption, and blue-deep corner ticks; flow
+  strokes render bolder on the plate via a scoped rule. Pastel fills only.
+- **Field-kit band**: light vellum panel; the terminal itself stays a small
+  navy sticker card (functional, not a colour field). `git clone` commands
+  for the two real repositories only — no invented install commands.
+- **Stub tickets**: headers in blue-deep / steel / sage — no brights.
+- **Governance certificate**: light panel (was a night band) to keep large
+  surfaces pastel; the footer night band is unchanged.
+- Hard-shadow buttons (`.btn-hard`, blue-deep) with press-down active
+  state; all motion guarded by `prefers-reduced-motion`.
+- Width discipline: grid/flex children get `min-width: 0`, hero display
+  type steps down at ≤760 px, `body { overflow-x: clip }` (sticky-safe).
+
+### A.3 Constraints carried forward
+
+No new webfonts (Space Grotesk / Inter / JetBrains Mono only). No invented
+claims, statistics, newsletters, or install commands. Contrast (verified):
+ink on paper ≈ 15.3:1; `blue-deep` on surface ≈ 5.4:1 (AA); steel
+`#4c7094` on paper ≈ 4.9:1 (AA). Sky `#5DBADB` never carries small text.
+
+### A.4 Second edition: restraint, Field Quiet, proof layer (2026-09)
+
+A review round concluded the first edition shouted everywhere: five competing
+numbering systems, uppercase at every level, shadows on static panels, and a
+ticket metaphor ("Admit one") with no meaning. Corrections, all normative:
+
+- **Numbering**: two systems only — `File 0n` section indices and `FIG 0n`
+  figure captions (plus bignums inside the File 01 columns, one level each).
+  Ghost numerals shrink to a colophon whisper; "Admit one" is removed.
+- **Case discipline**: uppercase is display voice (H1/H2/bands only).
+  Card and column titles are sentence-case bold.
+- **Shadow discipline** (the Gumroad rule): offset shadows appear ONLY on
+  interactive elements — buttons, link-cards, stickers. Static panels
+  (columns, certificate, closing) are flat with ink borders.
+- **Verbs**: every homepage CTA carries a distinct plain verb (Study / Read
+  / Inspect / Explore / Start / Browse) — repeated "Explore the program →"
+  is banned.
+- **Field Quiet** (`retro.css`, applied via shared components so all 38
+  interior pages inherit it): same paper/ink/type/kickers; hairlines, not
+  shadows. `Section` → `q-sec-head` (sentence-case H2); `PageHero` → `q-hero`
+  with chip kicker, ink title, and a decorative `FieldSeal` motif;
+  `DiagramFrame` → `frame-quiet`; `CTA` → `btn-hard--sm` / `f-link`;
+  `ProgramCard` → `card-quiet` (flat, lifts on hover);
+  `ClauseRef` → ink-bordered chip; `Breadcrumbs` → uppercase letterspaced
+  mono; `foundation-button` / `path-tabs` / `editorial-status` restyled in
+  `editorial.css` to match.
+- **Proof layer**: the charter band renders the four real clause-6.1 purposes
+  from `site.ts PURPOSES` (no invented statistics anywhere); participation
+  stubs carry path contents (ethereum model); program cards use a zero-JS
+  `:has()` figure-zoom on hover/focus (virtengine.com interaction language).
+- **Motifs** (`components/motifs/`): `FieldSeal`, `FieldLock`, `FieldLattice`
+  — the reusable pastel object library (ethereum.org model) for interior
+  heroes and dividers. New diagrams should compose motifs before inventing
+  geometry.
+
+### A.5 Site relationship: det.io vs virtengine.com
+
+det.io is the **foundation** (archival paper, Field/Quiet, evidence
+register, constitution citations). virtengine.com is the **protocol product**
+(engineering paper, instrument plates, green accent, `:has()` previews).
+Shared: Space Grotesk / Inter / JetBrains Mono stack, zero-JS motion
+discipline, `prefers-reduced-motion` guards, ACN/patent evidence chips.
+Distinct: paper tint, accent hue, shadow language, hero architecture. Neither
+site may borrow the other's accent or plate system; cross-links live in the
+det.io footer Ecosystem nav and the virtengine.org stewardship references.

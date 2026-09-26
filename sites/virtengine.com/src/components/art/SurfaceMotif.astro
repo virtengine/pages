@@ -1,0 +1,169 @@
+---
+/**
+ * SurfaceMotif — compact instrument motifs for the homepage explorer panels.
+ * Four kinds: market, identity, settlement, hpc. Decorative (the panel copy
+ * carries the meaning; the visual is generated from the same brand geometry).
+ */
+import VImage from "@components/brand/VImage.astro";
+
+interface Props {
+  kind: "market" | "identity" | "settlement" | "hpc";
+  class?: string;
+}
+const { kind, class: className } = Astro.props;
+---
+
+<svg viewBox="0 0 420 300" class:list={["h-auto w-full", className]} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id={`sm-glow-${kind}`} cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7ddd7a" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#7ddd7a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  {kind === "market" && (
+    <g>
+      <rect x="18" y="34" width="112" height="44" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <path d="M34,48 L48,48 L41,62 Z" fill="var(--color-green)" fill-opacity="0.9" />
+      <text x="56" y="54" class="am-s" fill="var(--color-night-text)">tenant</text>
+      <text x="56" y="68" class="am-xs" fill="var(--color-night-faint)">post order</text>
+
+      <rect x="18" y="222" width="112" height="44" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <path d="M34,236 L48,236 L41,250 Z" fill="var(--color-green)" fill-opacity="0.9" />
+      <text x="56" y="242" class="am-s" fill="var(--color-night-text)">tenant</text>
+      <text x="56" y="256" class="am-xs" fill="var(--color-night-faint)">fund escrow</text>
+
+      <rect x="290" y="34" width="112" height="44" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <rect x="306" y="47" width="14" height="14" rx="2.5" stroke="var(--color-green)" stroke-width="1.5" />
+      <text x="328" y="54" class="am-s" fill="var(--color-night-text)">provider</text>
+      <text x="328" y="68" class="am-xs" fill="var(--color-night-faint)">match order</text>
+
+      <rect x="290" y="222" width="112" height="44" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <rect x="306" y="235" width="14" height="14" rx="2.5" stroke="var(--color-green)" stroke-width="1.5" />
+      <text x="328" y="242" class="am-s" fill="var(--color-night-text)">provider</text>
+      <text x="328" y="256" class="am-xs" fill="var(--color-night-faint)">run workload</text>
+
+      <circle cx="210" cy="150" r="86" fill={`url(#sm-glow-${kind})`} />
+      <path d="M210,96 L257,123 L257,177 L210,204 L163,177 L163,123 Z" stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.85" />
+      <VImage x={196} y={137} h={26} />
+      <text x="210" y="228" text-anchor="middle" class="am-xs" fill="var(--color-green)">x/market</text>
+
+      <path class="dash-march" d="M130,56 C 168,66 178,96 186,128" stroke="var(--color-green)" stroke-width="1.4" />
+      <path class="dash-march" d="M130,244 C 168,234 178,204 186,172" stroke="var(--color-green)" stroke-width="1.4" />
+      <path class="dash-march" d="M290,56 C 252,66 242,96 234,128" stroke="var(--color-green)" stroke-width="1.4" style="animation-delay:-0.6s" />
+      <path class="dash-march" d="M290,244 C 252,234 242,204 234,172" stroke="var(--color-green)" stroke-width="1.4" style="animation-delay:-0.6s" />
+    </g>
+  )}
+
+  {kind === "identity" && (
+    <g>
+      <rect x="30" y="52" width="128" height="168" rx="10" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <rect x="48" y="74" width="42" height="48" rx="4" fill="none" stroke="var(--color-night-line-strong)" />
+      <circle cx="69" cy="90" r="9" stroke="var(--color-night-line-strong)" />
+      <path d="M55,116 C58,104 80,104 83,116" stroke="var(--color-night-line-strong)" />
+      <line x1="102" y1="82" x2="140" y2="82" stroke="var(--color-night-line-strong)" stroke-width="3" />
+      <line x1="102" y1="96" x2="134" y2="96" stroke="var(--color-night-line-strong)" stroke-width="3" />
+      <line x1="48" y1="134" x2="140" y2="134" stroke="var(--color-night-line-strong)" stroke-width="3" />
+      <line x1="48" y1="150" x2="122" y2="150" stroke="var(--color-night-line-strong)" stroke-width="3" />
+      <text x="94" y="238" text-anchor="middle" class="am-xs" fill="var(--color-night-faint)">device capture</text>
+
+      <circle cx="210" cy="150" r="92" fill={`url(#sm-glow-${kind})`} />
+      <path d="M210,84 L268,106 V152 C268,186 244,208 210,220 C176,208 152,186 152,152 V106 Z" stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.9" />
+      <path d="M196,150 L206,161 L229,132" stroke="var(--color-green-bright)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M210,110 L236,120 V120" stroke="var(--color-night-line-strong)" stroke-width="1" stroke-dasharray="2 4" />
+      <text x="210" y="246" text-anchor="middle" class="am-xs" fill="var(--color-green)">consensus score</text>
+
+      <path class="dash-march" d="M158,136 C 176,132 186,130 196,130" stroke="var(--color-green)" stroke-width="1.4" />
+      <path class="dash-march" d="M290,96 L346,96 M290,150 L346,150 M290,204 L346,204" stroke="var(--color-night-line-strong)" stroke-width="1.2" stroke-dasharray="2 6" />
+
+      <rect x="290" y="76" width="112" height="40" rx="9" fill="var(--color-night-raised)" stroke="var(--color-green)" stroke-opacity="0.5" />
+      <text x="304" y="94" class="am-s" fill="var(--color-green)">score ≥ T</text>
+      <text x="304" y="107" class="am-xs" fill="var(--color-night-faint)">proved, not shared</text>
+
+      <rect x="290" y="130" width="112" height="40" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <text x="304" y="148" class="am-s" fill="var(--color-night-text)">attribute</text>
+      <text x="304" y="161" class="am-xs" fill="var(--color-night-faint)">age · residency</text>
+
+      <rect x="290" y="184" width="112" height="40" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <text x="304" y="202" class="am-s" fill="var(--color-night-text)">gating</text>
+      <text x="304" y="215" class="am-xs" fill="var(--color-night-faint)">marketplace access</text>
+    </g>
+  )}
+
+  {kind === "settlement" && (
+    <g>
+      <rect x="24" y="40" width="180" height="220" rx="12" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <text x="42" y="68" class="am-s" fill="var(--color-night-text)">provider daemon</text>
+      {[0, 1, 2].map((i) => (
+        <g transform={`translate(42, ${88 + i * 52})`}>
+          <rect width="144" height="40" rx="8" fill="none" stroke="var(--color-night-line)" />
+          <text x="12" y="17" class="am-xs" fill="var(--color-green)">{["meter", "batch", "submit"][i]}</text>
+          <rect x="12" y="26" width="120" height="5" rx="2.5" fill="var(--color-night-line)" />
+          <rect x="12" y="26" width={[104, 78, 56][i]} height="5" rx="2.5" fill="var(--color-green)" fill-opacity={["0.9", "0.7", "0.5"][i]} class="breathe" />
+        </g>
+      ))}
+      <path class="dash-march" d="M204,150 H 258" stroke="var(--color-green)" stroke-width="1.6" marker-end="url(#sm-arrow-settlement)" />
+      <defs>
+        <marker id="sm-arrow-settlement" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+          <path d="M0 0 L8 4 L0 8 Z" fill="#60cc5d" />
+        </marker>
+      </defs>
+
+      <rect x="262" y="40" width="134" height="220" rx="12" fill="var(--color-night)" stroke="var(--color-green)" stroke-opacity="0.42" />
+      <text x="280" y="68" class="am-s" fill="var(--color-green)">on chain</text>
+      {[
+        { y: 88, t: "x/settlement", s: "line items" },
+        { y: 140, t: "dispute window", s: "24 h", amber: true },
+        { y: 192, t: "x/escrow", s: "payout" },
+      ].map((row) => (
+        <g transform={`translate(280, ${row.y})`}>
+          <rect width="98" height="40" rx="8" fill="none" stroke={row.amber ? "var(--color-amber)" : "var(--color-night-line-strong)"} stroke-dasharray={row.amber ? "4 4" : undefined} />
+          <text x="10" y="17" class="am-xs" fill={row.amber ? "var(--color-amber)" : "var(--color-green)"}>{row.t}</text>
+          <text x="10" y="30" class="am-xs" fill="var(--color-night-faint)">{row.s}</text>
+        </g>
+      ))}
+    </g>
+  )}
+
+  {kind === "hpc" && (
+    <g>
+      <rect x="30" y="44" width="150" height="212" rx="12" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <text x="48" y="72" class="am-s" fill="var(--color-night-text)">cluster</text>
+      {[0, 1, 2, 3].map((i) => (
+        <g transform={`translate(48, ${88 + i * 42})`}>
+          <rect width="114" height="30" rx="6" fill="none" stroke="var(--color-night-line)" />
+          {[0, 1, 2, 3, 4].map((k) => (
+            <circle cx={16 + k * 18} cy="15" r="4" fill={i === 1 ? "var(--color-green)" : "var(--color-night-line-strong)"} class={i === 1 ? "breathe" : undefined} style={i === 1 ? `animation-delay:-${k * 0.4}s` : undefined} />
+          ))}
+        </g>
+      ))}
+      <text x="105" y="272" text-anchor="middle" class="am-xs" fill="var(--color-night-faint)">slurm · moab · ood</text>
+
+      <circle cx="272" cy="150" r="76" fill={`url(#sm-glow-${kind})`} />
+      <rect x="234" y="108" width="76" height="84" rx="10" stroke="var(--color-green)" stroke-width="1.5" stroke-opacity="0.85" />
+      <text x="272" y="132" text-anchor="middle" class="am-s" fill="var(--color-green)">x/hpc</text>
+      <path d="M250,148 H294 M250,160 H294 M250,172 H282" stroke="var(--color-night-line-strong)" stroke-width="3" />
+      <path class="dash-march" d="M180,150 H 228" stroke="var(--color-green)" stroke-width="1.5" />
+      <path class="dash-march" d="M314,150 H 360" stroke="var(--color-green)" stroke-width="1.5" style="animation-delay:-0.7s" />
+
+      <rect x="330" y="122" width="72" height="56" rx="9" fill="var(--color-night-raised)" stroke="var(--color-night-line-strong)" />
+      <text x="366" y="144" text-anchor="middle" class="am-xs" fill="var(--color-night-text)">job</text>
+      <text x="366" y="158" text-anchor="middle" class="am-xs" fill="var(--color-night-faint)">settled</text>
+      <text x="366" y="171" text-anchor="middle" class="am-xs" fill="var(--color-green)">✓</text>
+    </g>
+  )}
+</svg>
+
+<style>
+  .am-s {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+  }
+  .am-xs {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>

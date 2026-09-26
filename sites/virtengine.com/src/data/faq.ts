@@ -72,7 +72,7 @@ export const FAQ: FaqEntry[] = [
     category: "Providers",
     question: "How and when do providers get paid?",
     answer:
-      "The provider daemon meters running workloads hourly and submits signed usage records on-chain. Each record sits in a 24-hour dispute window; after it closes, the settlement module converts it into priced line items and releases the agreed payment from the lease's escrow automatically. VirtEngine charges no marketplace commission or platform fee; only low validator transaction fees apply to the on-chain actions. There is no invoicing and no accounts receivable.",
+      "The provider daemon meters running workloads hourly and submits signed usage records on-chain. Each record sits in a 24-hour dispute window; after it closes, the settlement module converts it into priced line items and releases the agreed payment from the lease's escrow automatically. Settlement fees are governed protocol parameters — not a private platform margin — and low validator transaction fees apply to the on-chain actions. There is no invoicing and no accounts receivable.",
     links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
   },
   {

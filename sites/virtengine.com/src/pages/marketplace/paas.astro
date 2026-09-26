@@ -1,0 +1,147 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "PaaS on VirtEngine: Platform as a Service";
+const description =
+  "Platform as a Service on VirtEngine: order managed Kubernetes, databases, inference endpoints, ML workspaces and batch platforms from independent providers, settled from component usage.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "PaaS", href: "/marketplace/paas" },
+];
+
+const platforms = [
+  { title: "Managed Kubernetes", specs: ["Control plane managed", "Autoscaling workers", "Managed upgrades"], components: ["vCPU-hour", "storage GB-month"], price: "Component-priced plan" },
+  { title: "Managed Database", specs: ["Replicated", "Automated backups", "Point-in-time restore"], components: ["node-hour", "storage GB-month"], price: "Component-priced plan" },
+  { title: "AI Inference Endpoint", specs: ["Managed runtime", "Autoscaling", "Model versioning"], components: ["request", "GPU-hour"], price: "Usage-priced" },
+];
+
+const morePlatforms = [
+  "ML Workspace — managed notebooks with GPU attach",
+  "Application Runtime — build, TLS, scaling",
+  "Batch Scheduler — queues and job templates",
+];
+
+const stack: [string, "you" | "provider"][] = [
+  ["Your application", "you"],
+  ["PaaS runtime", "provider"],
+  ["Managed service", "provider"],
+  ["Orchestration", "provider"],
+  ["Infrastructure", "provider"],
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/paas"
+  image="/media/hero-infrastructure-1440.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · PaaS"
+    title="Platform as a Service on VirtEngine"
+    lede="Order a managed platform instead of assembling every server beneath it."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn/iaas-paas-saas-on-virtengine">Compare IaaS, PaaS and SaaS</CTA>
+    <CTA href="/marketplace/custom-listings" variant="secondary">Custom listings</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <figure class="mk-viz">
+        <div class="mk-viz-stack">
+          <p class="eyebrow">Responsibility stack</p>
+          {
+            stack.map(([label, owner]) => (
+              <div class={owner === "you" ? "mk-viz-you" : "mk-viz-managed"}>
+                {label}
+                <em>{owner === "you" ? "you manage" : "provider manages"}</em>
+              </div>
+            ))
+          }
+        </div>
+        <figcaption>The provider operates the platform; you deploy onto it. The line moves down the stack, not away from the chain.</figcaption>
+      </figure>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Catalogue"
+    title="Example managed platforms"
+    lede="Three illustrative listings — example providers, not live availability. What changes between providers is the runtime they operate, not the market rail."
+  >
+    <div class="mk-cards-3">
+      {
+        platforms.map((platform) => (
+          <MarketplaceListingCard
+            serviceType="PaaS"
+            title={platform.title}
+            region="Example region"
+            specs={platform.specs}
+            components={platform.components}
+            priceLabel={platform.price}
+            compact
+          />
+        ))
+      }
+    </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        {morePlatforms.map((m) => <li>{m}</li>)}
+      </ul>
+    </details>
+    <p class="mk-rb-note">
+      A managed-platform plan adds components and how they are measured, limits that bound consumption, and the
+      lifecycle actions the provider supports. Where the responsibility line sits for each service model is the
+      subject of the <a href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs SaaS article</a>.
+    </p>
+  </Section>
+
+  <Section
+    eyebrow="Fulfilment"
+    title="How a platform is provisioned"
+    class="border-y border-line bg-paper-soft"
+  >
+    <FulfilmentFlow
+      nodes={["Lease", "Provider daemon", "Waldur plugin", "Managed platform", "Platform endpoint"]}
+      kinds={{ Lease: "protocol", "Provider daemon": "provider", "Waldur plugin": "provider", "Managed platform": "provider" }}
+      caption="The chain records the lease. The provider's integration creates the platform; the endpoint is what your team uses."
+    />
+    <div class="mk-tech-note">
+      <p>
+        <strong>Go deeper:</strong> <a href="/waldur">Waldur integration</a> for order routing and lifecycle callbacks,{" "}
+        <a href="/learn/how-the-marketplace-works#fulfilment">fulfilment</a> for the full path, and{" "}
+        <a href="/modules/market">x/market</a> for lease state.
+      </p>
+    </div>
+  </Section>
+
+  <div class="container-site">
+    <LifecycleRail aside={{ label: "Compare the service models", href: "/learn/iaas-paas-saas-on-virtengine" }} />
+  </div>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "What is PaaS?", href: "/definitions/what-is-paas" },
+        { label: "IaaS", href: "/marketplace/iaas" },
+        { label: "SaaS", href: "/marketplace/saas" },
+        { label: "Custom listings", href: "/marketplace/custom-listings#fulfilment" },
+      ]}
+    />
+  </Section>
+</Base>

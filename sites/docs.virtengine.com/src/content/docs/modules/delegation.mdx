@@ -1,0 +1,133 @@
+---
+title: x/delegation — Delegation module
+description: x/delegation manages the full delegation lifecycle — delegating, redelegating, unbonding, and claiming rewards net of validator commission.
+---
+
+The `x/delegation` module manages how token holders place stake with
+validators without running infrastructure themselves: delegating,
+redelegating between validators, unbonding, and collecting the delegator
+share of rewards net of validator commission.
+
+Delegation grants voting weight, not custody — tokens remain the delegator's
+throughout. The module gives staking-as-a-service partners a complete
+on-chain lifecycle to build client offerings on.
+
+## What it does
+
+The module covers the delegator's side of staking end to end. A holder
+delegates bonded stake to a validator of their choice, earns the delegator
+share of block, VEID, and uptime rewards minus the validator's commission,
+moves stake between validators by redelegating, and exits through unbonding
+when done.
+
+Every operation is an on-chain object with queries behind it: delegations,
+unbonding entries, redelegations, historical and claimable rewards, validator
+shares, and slashing events. Staking-as-a-service partners get a complete
+lifecycle to build on — delegate, move, exit, and claim are all first-class
+messages rather than off-chain bookkeeping.
+
+## Why it exists
+
+Most token holders will never run a validator, but the network still needs
+their stake bonded for security. A first-class delegation lifecycle turns
+passive holders into security contributors — and spreads stake across more
+validators, strengthening the Nakamoto coefficient.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Delegation | Bonding your tokens to a validator's stake in exchange for a share of its rewards. |
+| Commission | The validator's percentage cut of rewards before the delegator share is distributed. |
+| Redelegation | Moving bonded stake between validators without a full unbonding cycle. |
+
+## Core flow
+
+1. **Delegate — Bond to a validator.** Choose on quality — uptime, self-bond,
+   commission, governance participation — and delegate.
+2. **Earn — Collect net of commission.** The delegator share of block, VEID,
+   and uptime rewards arrives minus the validator's cut.
+3. **Move — Redelegate freely.** Shift bonded stake between validators
+   without sitting out a full unbonding cycle.
+4. **Exit — Unbond when done.** Twenty-one days, no earnings, still slashable
+   for prior offenses — plan exits around the window.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgDelegate` | Bonds tokens from a delegator to a validator. |
+| `MsgUndelegate` | Begins unbonding bonded stake from a validator. |
+| `MsgRedelegate` | Moves bonded stake from one validator to another. |
+| `MsgClaimRewards` | Claims delegator rewards from a single position. |
+| `MsgClaimAllRewards` | Claims delegator rewards across all of a delegator's positions. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| **Delegations** | Bonded stake, viewed per delegation or per validator. |
+| `Delegation` | A single delegation record. |
+| `DelegatorDelegations` | Every delegation made by one delegator. |
+| `ValidatorDelegations` | Every delegation placed on one validator. |
+| **Unbonding** | Stake currently in the exit window. |
+| `UnbondingDelegation` | A single unbonding delegation record. |
+| `DelegatorUnbondingDelegations` | All unbonding delegations of one delegator. |
+| **Redelegations** | Stake moving between validators. |
+| `Redelegation` | A single redelegation record. |
+| `Redelegations` | All redelegations in progress. |
+| `DelegatorRedelegations` | Redelegations initiated by one delegator. |
+| **Rewards** | The delegator share of rewards. |
+| `HistoricalRewards` | Historical reward rates recorded for a delegation. |
+| `DelegatorRewards` | Claimable rewards for one delegator. |
+| `DelegatorAllRewards` | Claimable rewards across every position of a delegator. |
+| **Shares & slashing** | Delegation accounting and penalties. |
+| `ValidatorShares` | Delegation shares held on a validator. |
+| `SlashingEvents` | Slashing events affecting delegations. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/staking](/modules/staking/) | Delegated stake bonds to validators and weights consensus power. |
+| [x/veid](/modules/veid/) | Delegators share in validator income that includes VEID rewards. |
+
+## Related documentation
+
+- [Staking](/modules/staking/) — the validator side of the same stake.
+- [Staking Partners](/validators/staking-partners/) — staking-as-a-service
+  operators building on this lifecycle.
+- [Staking Economics](/validators/staking-economics/) — how delegation
+  rewards are funded.
+- [Running a Validator](/validators/running-a-validator/) — what delegators
+  are selecting on.
+- [Governance & Staking](/concepts/governance-staking/) — what bonded stake
+  does beyond security.
+
+## FAQ
+
+### What is delegation?
+
+Bonding your tokens to a validator's stake in exchange for a share of its
+rewards — the way most holders participate in security.
+
+### What is commission?
+
+The validator's percentage cut of rewards before the delegator share is
+distributed. Low commission means little if uptime is poor — select on
+quality first.
+
+### What is redelegation?
+
+Moving bonded stake between validators without a full unbonding cycle —
+repositioning without the 21-day wait. See the
+[x/staking module](/modules/staking/).
+
+:::note
+Message and query types are defined in `x/delegation/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

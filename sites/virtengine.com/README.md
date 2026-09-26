@@ -62,3 +62,34 @@ src/
   `DESIGN.md`. The visual identity is built from the real VirtEngine brand:
   green `#60CC5D` nested-triangle mark + grey `#575757` wordmark
   (source assets in `_agent-context/brand/virtengine/`).
+
+## SEO and structured data
+
+- Every page emits one JSON-LD `@graph` from `src/layouts/Base.astro`, built by
+  `src/lib/schema.ts`. Nodes are linked by stable `@id`s, so the site, its pages,
+  breadcrumbs and articles form one entity graph instead of unrelated blobs.
+- The graph always contains `ImageObject #logo`, `Organization #organization`,
+  `WebSite #website` and a `WebPage` for the page itself, plus a `BreadcrumbList`
+  when the page passes `breadcrumbs`.
+- Pages add their own nodes with the `schema` prop: `BlogPosting` for journal
+  articles, `TechArticle` for `/learn` guides, `FAQPage` for `/faq`, and
+  `SoftwareApplication` for the home page. Never hand-write a `<script
+  type="application/ld+json">` in a page — extend `src/lib/schema.ts` instead.
+- `publishedTime` / `modifiedTime` / `section` props drive `datePublished`,
+  `dateModified`, `article:published_time` and `og:article:section`. Set them
+  only from real dates in `src/data/`; never invent a date to satisfy a linter.
+- Paginated views of the historic blog archive are `noindex` and excluded from
+  the sitemap; the sitemap filter lives in `astro.config.mjs`.
+- Validate after a build: `pnpm build && node scripts/check-structured-data.mjs`
+  (exit code 1 on any error). It checks JSON validity, required properties per
+  type, `@id` resolution, absolute URLs, headline length, and that FAQ markup is
+  visible on the page.
+- `pnpm audit:seo` reports duplicate/missing/overlong titles and meta
+  descriptions across `dist/` (advisory, always exits 0).
+- `src/lib/meta.ts` shapes `<title>` and the meta description for search display
+  — titles into ~65 characters by dropping a redundant segment, descriptions into
+  158 characters at a word boundary. It only affects meta output; visible
+  headings and ledes keep their authored text.
+- The journal feed lives at `/blog/rss.xml`, advertised with
+  `<link rel="alternate" type="application/rss+xml">`.
+

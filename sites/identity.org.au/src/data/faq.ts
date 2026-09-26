@@ -45,6 +45,59 @@ export const FAQ_GROUPS: FaqGroup[] = [
     ],
   },
   {
+    heading: "Key terms",
+    items: [
+      {
+        question: "What is an identity document?",
+        answer:
+          "An official record that links you to your details — a passport, driver licence or birth certificate. It is evidence about you rather than identity itself, and a photo of one is easy to fake now that document images can be generated.",
+        more: { label: "What is an identity document", href: "/definitions/what-is-an-identity-document" },
+      },
+      {
+        question: "What is digital identity verification?",
+        answer:
+          "Checking, online, that a person is who they claim to be: evidence is produced and assessed, and a result — a level, a pass/fail answer or a cryptographic proof — is issued. A digital identity check means the same thing in practice.",
+        more: { label: "Digital identity verification, defined", href: "/definitions/what-is-digital-identity-verification" },
+      },
+      {
+        question: "What is digital identity proofing?",
+        answer:
+          "The process of establishing that an identity claim is genuine, to a stated level of confidence — deciding what evidence is enough before anything is checked against it. Proportionality decides how much evidence that answer is worth collecting.",
+        more: { label: "Digital identity proofing, defined", href: "/definitions/what-is-digital-identity-proofing" },
+      },
+      {
+        question: "What is document verification?",
+        answer:
+          "Checking that an identity document is genuine, unaltered and belongs to its presenter: data-page checks, authenticity checks, coherence checks and a live portrait match. It is one component of identity verification, not the whole of it.",
+        more: { label: "Document verification, defined", href: "/definitions/what-is-document-verification" },
+      },
+      {
+        question: "What is age verification?",
+        answer:
+          "Confirming someone is old enough for something. The methods range from document checks to facial age estimation to zero-knowledge threshold proofs — and the best answer to “are you over 18?” does not include your birth date.",
+        more: { label: "Age verification explained", href: "/guides/age-verification-explained" },
+      },
+      {
+        question: "What is a digital identity wallet?",
+        answer:
+          "An app that holds your verified claims and cryptographic keys, and lets you prove things to services without handing over documents. It is not a folder of document scans — the point is that services receive answers while the evidence stays with you.",
+        more: { label: "What is a digital identity wallet", href: "/definitions/what-is-a-digital-identity-wallet" },
+      },
+      {
+        question: "What is the Australian Government Digital ID System?",
+        answer:
+          "The Australian Government's framework for proving identity online — commonly called AGDIS — pairing the myID sign-in app with providers accredited under the Digital ID Act 2024. identity.org.au is separate from it and claims no accreditation.",
+        more: { label: "The Australian Government Digital ID System", href: "/guides/australian-government-digital-id-system" },
+      },
+      {
+        question: "What are identity verification solutions?",
+        answer:
+          "The approaches a service can use to confirm who a user is: document checks, authoritative-source checks, biometric liveness, assisted video, and reusable credentials. They differ less in whether they check than in what they demand and what they leave you storing.",
+        more: { label: "Identity verification solutions compared", href: "/guides/identity-verification-solutions-compared" },
+      },
+    ],
+  },
+  {
     heading: "The wallet service",
     items: [
       {

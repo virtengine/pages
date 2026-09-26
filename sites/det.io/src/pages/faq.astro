@@ -4,33 +4,24 @@ import Breadcrumbs from "@components/Breadcrumbs.astro";
 import PageHero from "@components/PageHero.astro";
 import CTA from "@components/CTA.astro";
 import { FAQ } from "@data/faq";
+import { SITE } from "@data/site";
+import { faqPageNode } from "@lib/schema";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
   { name: "FAQ", href: "/faq" },
 ];
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: { "@type": "Answer", text: item.answer },
-  })),
-};
+const faqSchema = faqPageNode(new URL("/faq", SITE.url).href, FAQ);
 ---
 
 <Base
-  title="FAQ — honest answers about DET.io Foundation | det.io"
-  description="Frequently asked questions about DETIO FOUNDATION LTD: charity status, the public-benefit lock, who controls the foundation, what happens on winding up, tokens, patents, membership, and how to verify every claim."
+  title="FAQ: Honest Answers About DET.io | det.io"
+  description="DET.io FAQ: charity status, public-benefit lock, who controls the foundation, winding-up, tokens, patents and membership. Verify every claim."
   path="/faq"
   breadcrumbs={breadcrumbs}
+  schema={[faqSchema]}
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
-  </Fragment>
-
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero
     eyebrow="Frequently asked questions"
@@ -54,7 +45,7 @@ const faqLd = {
                   {item.links.map((link) => (
                     <a
                       href={link.href}
-                      rel={link.href.startsWith("http") ? "noopener" : undefined}
+                      target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener" : undefined}
                       class="inline-flex items-center gap-1.5 font-display text-sm font-semibold text-blue-deep underline decoration-hairline-strong underline-offset-4 hover:decoration-blue-deep"
                     >
                       {link.label}

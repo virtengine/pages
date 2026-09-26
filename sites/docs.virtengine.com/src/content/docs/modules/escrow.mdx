@@ -1,0 +1,120 @@
+---
+title: x/escrow — Escrow module
+description: The x/escrow module holds tenant funds against active leases on-chain, releasing them only under governed settlement rules.
+---
+
+The `x/escrow` module is the marketplace's payment-custody layer. A tenant's
+budget is committed on-chain against active leases before work starts, yet it
+does not transfer until settlement rules say so — never at a counterparty's
+discretion.
+
+Every deposit, drawdown, and refund is an auditable state transition, so both
+sides can always explain where a balance came from and where it went.
+
+## What it does
+
+The escrow module holds tenant funds against active leases. When a deployment
+is created, the tenant funds an escrow account; when leases form, payment
+obligations draw against that balance. Providers can verify collateral exists
+before committing capacity, and tenants know funds move only under settlement
+rules — not at a counterparty's discretion.
+
+Escrow accounts track deposits, settlements, and withdrawals as auditable
+state transitions. If a balance runs dry, the associated leases close for
+non-payment; when a deployment closes, any unspent balance returns to the
+tenant.
+
+Beyond the lease lifecycle, the module carries an IBC bridge with transfer
+and timeout handling, a dispute subsystem, invoice and billing records, and
+payout and reconciliation subsystems that keep reported and settled amounts
+honest.
+
+## Why it exists
+
+Payment risk kills open marketplaces: providers won't serve strangers on the
+promise of a future invoice, and tenants won't prepay strangers either.
+On-chain escrow removes both counterparty risks at once — funds are provably
+committed but provably not yet transferred.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Escrow account | The on-chain balance a tenant funds against a deployment's payment obligations. |
+| Drawdown | The settlement-triggered transfer from escrow toward a provider's earned balance. |
+
+## Core flow
+
+1. **Fund — Tenant funds escrow.** The deployment's escrow account opens with
+   real budget behind it — demand arrives collateralized.
+2. **Verify — Providers check collateral.** Capacity commits only after
+   collateral is provably in place and visible on-chain.
+3. **Draw — Settlement draws down.** Each cleared usage record converts into a
+   drawdown toward the provider's earned balance.
+4. **Refund — Remainders return.** Unspent balances flow back to the tenant
+   when the deployment closes.
+
+## Messages
+
+`x/escrow` submits exactly one message of its own: `MsgAccountDeposit`,
+which authorizes a deposit and credits the escrow account.
+
+The lease-escrow lifecycle — `MsgCreateEscrow`, `MsgActivateEscrow`,
+`MsgReleaseEscrow`, `MsgRefundEscrow`, and `MsgDisputeEscrow` — is not
+submitted here. Those messages are registered by the
+[x/settlement](/modules/settlement/) module and drive escrow state from
+outside; its page carries the full lifecycle table.
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Accounts` | Escrow accounts tracked by the module. |
+| `Invoice` / `InvoiceLedger` | An invoice and its entry ledger. |
+| `InvoicesByCustomer` / `InvoicesByProvider` | Invoices filtered by customer or provider. |
+| `Payments` | Payments recorded against escrow. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | Every lease is backed by a funded escrow account from creation. |
+| [x/settlement](/modules/settlement/) | Settled usage line items draw down escrow into provider payouts. |
+| [x/take](/modules/take/) | Applies the governed settlement-fee policy as escrow releases to providers. |
+| [x/deployment](/modules/deployment/) | Deployments fund and reclaim the escrow behind their leases. |
+
+## Related documentation
+
+- [Escrow & Settlement](/concepts/escrow-settlement/) — the full payment path,
+  with verified CLI examples.
+- [Leases & Escrow](/tenants/leases-and-escrow/) — the tenant-side view of
+  funding a lease.
+- [Usage & Payments](/providers/usage-and-payments/) — how providers report
+  usage and draw payment.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is an escrow account?
+
+The on-chain balance a tenant funds against a deployment's payment
+obligations — deposits, settlements, and withdrawals tracked as auditable
+state transitions.
+
+### What is a drawdown?
+
+The settlement-triggered transfer from escrow toward a provider's earned
+balance — the moment committed funds become earned funds. See the
+[x/settlement module](/modules/settlement/).
+
+### What happens if escrow runs dry?
+
+Associated leases close for non-payment through the market state machine:
+service stops, and the record stays auditable for both sides.
+
+:::note
+Message and query types are defined in `x/escrow/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

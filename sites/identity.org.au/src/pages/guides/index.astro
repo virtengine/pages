@@ -1,0 +1,72 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import CardLink from "@components/CardLink.astro";
+import { GUIDES, GUIDE_TOPICS } from "@data/guides";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
+
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Guides", href: "/guides" },
+];
+
+const guidesListSchema = itemListNode(
+  new URL("/guides", SITE.url).href,
+  "identity.org.au guides",
+  GUIDES.map((guide) => ({
+    name: guide.title,
+    href: `/guides/${guide.slug}`,
+    description: guide.summary,
+  })),
+);
+---
+
+<Base
+  title="Guides: Digital Identity How-Tos and Explainers | identity.org.au"
+  description="Long-form guides on digital identity: protecting yourself for free, age verification, Australia's Digital ID landscape and identity verification methods compared."
+  breadcrumbs={crumbs}
+  pageType="CollectionPage"
+  schema={[guidesListSchema]}
+>
+  <PageHeader
+    crumbs={crumbs}
+    eyebrow="Guides"
+    title="Digital identity, explained at length"
+    lede="Practical, evergreen guides: methods compared side by side, the Australian landscape without invented numbers, and free steps you can take today."
+  />
+
+  <div class="container-site py-12">
+    {
+      GUIDE_TOPICS.map((topic) => {
+        const guides = GUIDES.filter((guide) => guide.topic === topic);
+        if (guides.length === 0) return null;
+        return (
+          <section class="mb-12 last:mb-0">
+            <h2 class="mt-0 border-b-2 border-navy pb-3 text-[1.4rem]">{topic}</h2>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              {guides.map((guide) => (
+                <CardLink
+                  href={`/guides/${guide.slug}`}
+                  tag={topic}
+                  title={guide.title}
+                  description={guide.summary}
+                />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+
+    <section class="mt-14 border border-hairline rounded-tile bg-alt px-6 py-6">
+      <h2 class="mt-0 text-[1.25rem]">Prefer shorter answers?</h2>
+      <p class="text-body measure">
+        The <a href="/definitions" class="link-plain">definitions</a> section answers “what is X?”
+        in a page, the <a href="/faq" class="link-plain">frequently asked questions</a> cover the
+        service, and the <a href="/insights" class="link-plain">insights</a> articles argue the
+        architecture in full.
+      </p>
+    </section>
+  </div>
+</Base>

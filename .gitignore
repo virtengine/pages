@@ -7,3 +7,14 @@ dist/
 !.env.example
 .DS_Store
 *.log
+
+# Kanban task worktrees. Each one holds its own node_modules/ and dist/ (~900 MB
+# total), and its contents are already reachable through its branch — so an
+# unignored .worktrees/ lets a plain `git add -A` (or `git commit -a`) in the
+# primary checkout stage the whole lot.
+.worktrees/
+
+# Generated at build time: every site's `build` script runs scripts/og.mjs, which
+# rasterizes the social card into public/og.png (Astro then copies it to dist/).
+# Keeping the committed blob tracked meant every build rewrote a tracked binary.
+sites/*/public/og.png

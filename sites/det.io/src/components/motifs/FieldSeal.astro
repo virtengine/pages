@@ -1,0 +1,50 @@
+---
+/**
+ * FieldSeal — the foundation seal as a reusable motif for interior heroes.
+ * Simplified from the homepage HeroLattice: concentric rings, chain hex,
+ * and the public-benefit lock. Decorative; parents supply text alternatives.
+ */
+interface Props {
+  size?: number;
+}
+
+const { size = 148 } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 160 180"
+  width={size}
+  height={size * 1.125}
+  fill="none"
+  aria-hidden="true"
+  class="field-seal"
+>
+  <circle cx="80" cy="72" r="66" stroke="var(--color-hairline-strong)" stroke-width="1" opacity="0.7"></circle>
+  <circle cx="80" cy="72" r="56" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2"></circle>
+  <circle cx="80" cy="72" r="48" fill="none" stroke="var(--color-hairline-strong)" stroke-width="1"></circle>
+  <g stroke="var(--color-blue-deep)" stroke-width="2" fill="none">
+    <path d="M80 40 L107 56 L107 88 L80 104 L53 88 L53 56 Z"></path>
+    <path d="M80 40 V58 M107 56 L92 65 M107 88 L92 79 M80 104 V86 M53 88 L68 79 M53 56 L68 65"></path>
+  </g>
+  <g fill="var(--color-blue-deep)">
+    <circle cx="80" cy="40" r="3.6" class="node-pulse"></circle>
+    <circle cx="107" cy="56" r="3.6" class="node-pulse" style="animation-delay: -0.6s"></circle>
+    <circle cx="107" cy="88" r="3.6" class="node-pulse" style="animation-delay: -1.2s"></circle>
+    <circle cx="80" cy="104" r="3.6" class="node-pulse" style="animation-delay: -1.8s"></circle>
+    <circle cx="53" cy="88" r="3.6" class="node-pulse" style="animation-delay: -2.4s"></circle>
+    <circle cx="53" cy="56" r="3.6" class="node-pulse" style="animation-delay: -3s"></circle>
+  </g>
+  <circle cx="80" cy="72" r="5.5" fill="var(--color-surface)" stroke="var(--color-ink)" stroke-width="2"></circle>
+  <g transform="translate(80 148)">
+    <rect x="-11" y="-6" width="22" height="17" rx="3.5" fill="var(--color-sage)" stroke="var(--color-blue-deep)" stroke-width="1.8"></rect>
+    <path d="M-6.5 -6 V-11 a6.5 6.5 0 0 1 13 0 V-6" stroke="var(--color-blue-deep)" stroke-width="1.8" fill="none"></path>
+    <circle cx="0" cy="1" r="2" fill="var(--color-blue-deep)"></circle>
+    <path d="M0 3 V6.5" stroke="var(--color-blue-deep)" stroke-width="1.8" stroke-linecap="round"></path>
+  </g>
+</svg>
+
+<style>
+  .field-seal {
+    flex-shrink: 0;
+  }
+</style>

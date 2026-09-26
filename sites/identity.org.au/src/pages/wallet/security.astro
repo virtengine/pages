@@ -2,6 +2,7 @@
 import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { WALLET_NAV } from "@data/nav-sections";
 
@@ -14,8 +15,8 @@ const crumbs = [
 
 <Guide
   title="Wallet security"
-  metaTitle="Wallet security — the model in plain terms | identity.org.au"
-  description="The Identity Wallet security model: on-device processing, envelope encryption before anything moves, key handling, consent revocation, real deletion by key destruction, and the lost-device path."
+  metaTitle="Wallet Security: Encryption & Keys | identity.org.au"
+  description="Wallet security model: on-device processing, envelope encryption, key handling, consent revocation and real deletion by key destruction."
   lede="Security here is architectural, not promissory: evidence is processed and encrypted on your device, keys stay in secure hardware, and there is no central archive to breach."
   eyebrow="The service"
   breadcrumbs={crumbs}
@@ -61,7 +62,14 @@ const crumbs = [
     </p>
   </div>
 
-  <DataLifecycle class="mt-6" />
+  <ServiceFigure
+    rail="Data lifecycle"
+    railRight="Five stages"
+    caption="Captured on your phone, encrypted before it moves, processed in a sealed vault, destroyed after scoring — leaving only the result."
+    class="mt-6"
+  >
+    <DataLifecycle />
+  </ServiceFigure>
 
   <div class="prose-service mt-6">
     <p>

@@ -40,6 +40,30 @@ Kubernetes deployment, an HPC scheduler such as SLURM, or a custom provider
 integration. Kubernetes and schedulers are execution targets — not the limit
 of the marketplace catalogue.
 
+### Who owns what
+
+A non-deterministic service cannot run inside consensus, so the split is
+deliberate:
+
+| Concern | Owner | Why |
+| --- | --- | --- |
+| Catalogue listings, orders, bids, leases, reservations, escrow | **The chain** | Must be deterministic and identical on every validator |
+| Offering discovery, provider onboarding, service accounting, admin UI | **Waldur** | Rich, stateful, operator-driven |
+| Provisioning execution (VM, cloud, HPC) | **Provider daemon** | Talks to real infrastructure |
+| Metering reconciliation | Provider daemon vs. Waldur | Cross-checks two independent sources |
+
+Waldur offerings are mirrored on-chain as **signed snapshots** verified against
+a registered Waldur key, so every validator agrees on the same catalogue
+without performing network calls. Buying a Waldur-backed listing emits a
+**durable command** that an off-chain adapter executes in Waldur; the results
+flow back as signed, reconciliation-checked inputs.
+
+This is what "Waldur integrated with the chain" means in practice: the
+marketplace **semantics** are protocol code that runs on validators, while the
+Waldur **service** runs at the edge. The chain is the source of truth for
+commercial state; Waldur is the operational and administrative plane. See
+[Acquisition Pathways](/concepts/acquisition-pathways/) for the end-to-end view.
+
 ## Reconciliation and metering
 
 The provider daemon can cross-validate its metering against Waldur platform

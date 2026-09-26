@@ -3,7 +3,7 @@ title: How the Marketplace Works
 description: The end-to-end VirtEngine marketplace lifecycle — order creation, provider bidding, lease formation, deployment, usage reporting, and escrow settlement.
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { Steps, Aside } from '@astrojs/starlight/components';
 import MarketplaceFlow from '../../../components/diagrams/MarketplaceFlow.astro';
 
 Every workload on VirtEngine moves through the same on-chain lifecycle. This
@@ -11,6 +11,14 @@ page follows a deployment from the tenant's first transaction to the
 provider's final payout.
 
 <MarketplaceFlow caption="The marketplace lifecycle: orders attract bids, the winning bid forms a lease, and verified usage drives escrow settlement." />
+
+<Aside type="note" title="Two ways to acquire">
+The lifecycle below is the **bidding** path. If you buy a published listing
+directly, the protocol resolves it immediately against that listing and the
+"providers bid" step is skipped — everything from lease formation onward is
+identical. See [Acquisition Pathways](/concepts/acquisition-pathways/) for the
+full set of options.
+</Aside>
 
 ## The lifecycle, step by step
 

@@ -1,0 +1,39 @@
+---
+/**
+ * Light service-figure frame: rail, responsive figure area, caption.
+ * The frame is visual only: narrative text alternatives remain on the SVG or
+ * are supplied by the surrounding page copy.
+ */
+interface Props {
+  caption: string;
+  rail?: string;
+  railRight?: string;
+  /** Wide diagrams scroll horizontally instead of shrinking below legibility. */
+  scroll?: boolean;
+  /** Accessible name for the scroll region; defaults to the caption. */
+  scrollLabel?: string;
+  class?: string;
+}
+
+const { caption, rail, railRight, scroll = false, scrollLabel, class: className } = Astro.props;
+---
+
+<figure class:list={["figure-service", scroll && "figure-service--scroll", className]}>
+  {
+    (rail || railRight) && (
+      <div class="figure-service-rail" aria-hidden="true">
+        <span>{rail}</span>
+        <span>{railRight}</span>
+      </div>
+    )
+  }
+  <div
+    class="figure-service-body"
+    role={scroll ? "region" : undefined}
+    aria-label={scroll ? (scrollLabel ?? caption) : undefined}
+    tabindex={scroll ? 0 : undefined}
+  >
+    <slot />
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>

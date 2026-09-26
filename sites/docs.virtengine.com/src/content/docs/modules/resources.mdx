@@ -1,0 +1,128 @@
+---
+title: x/resources — Resources module
+description: The x/resources module defines the shared resource units and capacity vocabulary that every marketplace module quantifies resources with.
+---
+
+The `x/resources` module defines the vocabulary of the marketplace: what a
+unit of CPU, memory, storage, or GPU means, how capacity is expressed, and
+how resource requirements are compared for matching. Every module that talks
+about capacity — deployments, orders, bids, usage records — uses these shared
+definitions.
+
+Centralizing the resource model prevents drift: a bid can be checked against
+an order, and a usage record against a lease, because all three quantify
+resources identically.
+
+## What it does
+
+The module fixes the units and records how capacity moves:
+
+- **Units are defined once.** CPU, memory, storage, and accelerator capacity
+  are quantified identically everywhere in the protocol.
+- **Capacity and demand share them.** Providers express inventory and
+  deployments express requirements in the same shared units, so matching
+  compares specifications with no translation layer.
+- **Reservations track commitments.** Lease creation in
+  [x/market](/modules/market/) reserves capacity idempotently, keyed per
+  lease, with lineage linking order, bid, lease, and escrow payment.
+
+Consumption is recorded and settled in the units capacity was leased in,
+with benchmarks qualifying abstract units by measured performance.
+
+## Why it exists
+
+Marketplaces fail on ambiguity. If tenant and provider disagree on what
+"one unit of compute" means, matching and settlement both break. A single,
+consensus-maintained resource model is what makes cross-provider price
+comparison and automated settlement possible.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Resource unit | The canonical quantification of CPU, memory, storage, or accelerator capacity. |
+| Capacity | A provider's leasable inventory, expressed in resource units for matching. |
+
+## Core flow
+
+1. **Define — Units are defined once.** The module fixes what each unit of
+   CPU, memory, storage, or accelerator capacity means.
+2. **Express — Capacity and demand use them.** Providers express inventory
+   and deployments express requirements in the same shared units.
+3. **Match — Orders meet bids.** Matching compares specifications written in
+   the shared vocabulary — no translation layer, no ambiguity.
+4. **Settle — Usage bills in kind.** Consumption is recorded and settled in
+   the units it was leased in, with benchmarks qualifying abstract units by
+   measured performance.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgAllocateResources` | Allocates capacity for a matched order, bid, or lease. |
+| `MsgActivateAllocation` | Activates an allocation so its capacity is in use. |
+| `MsgReleaseAllocation` | Releases an allocation back to available capacity. |
+| `MsgProviderHeartbeat` | Reports a provider's continuing capacity liveness. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Allocation` / `AllocationHistory` | A single allocation and its recorded history. |
+| `AllocationsByProvider` | All allocations belonging to one provider. |
+| `AvailableResources` | Capacity not currently committed. |
+| `Reservation` | A single reserved-capacity record. |
+| `ReservationByBid` / `ReservationByConsumer` / `ReservationByJob` / `ReservationByLease` / `ReservationByOrder` | Reservations looked up by their originating bid, consumer, job, lease, or order. |
+| `ReservationLineage` | Lineage linking order, bid, lease, and escrow payment. |
+| `ReservationsByProvider` | Every reservation held by one provider. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/deployment](/modules/deployment/) | Deployment groups express requirements in shared resource units. |
+| [x/market](/modules/market/) | Order/bid matching compares resource specifications from this module. |
+| [x/settlement](/modules/settlement/) | Usage records quantify consumption in the same units they were leased in. |
+| [x/benchmark](/modules/benchmark/) | Benchmarks ground abstract units in measured hardware performance. |
+
+## Related documentation
+
+- [Marketplace](/concepts/marketplace/) — the exchange built on this shared
+  vocabulary.
+- [Deploying Workloads](/tenants/deploying-workloads/) — how tenants
+  express resource requirements.
+- [Usage Reporting](/concepts/usage-reporting/) — how metered consumption
+  is recorded and billed.
+- [Benchmarks & Audits](/providers/benchmarks-audits/) — grounding units in
+  measured hardware performance.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Why centralize the resource model?
+
+Marketplaces fail on ambiguity: if tenant and provider disagree on what one
+unit of compute means, matching and settlement both break. A single
+consensus-maintained model makes cross-provider comparison and automated
+settlement possible.
+
+### What do benchmarks add to units?
+
+They ground abstract units in measured hardware performance — the same unit
+of compute qualified by what the underlying hardware actually measures. See
+the [x/benchmark module](/modules/benchmark/).
+
+### Which modules use these definitions?
+
+Every module that talks about capacity: deployments express requirements in
+them, orders and bids match on them, and usage records and settlement bill
+in them.
+
+:::note
+Message and query types are defined in `x/resources/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

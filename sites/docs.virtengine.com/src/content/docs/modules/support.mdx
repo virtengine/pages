@@ -1,0 +1,125 @@
+---
+title: x/support — Support module
+description: The x/support module provides sealed, on-chain intake for tickets and disputes raised against leases, usage records, and counterparties.
+---
+
+The `x/support` module is the on-chain intake path for problems: tickets and
+disputes raised against leases, usage records, or counterparties, tracked as
+state with defined lifecycles rather than emails into a void.
+
+It is the front door of the dispute machinery — settlement's 24-hour dispute
+window, fraud escalation, and correction flows all connect to intake records
+created here. Request payloads are sealed as `EncryptedSupportPayload`, so
+intake is visible as lifecycle state without exposing the details inside.
+
+## What it does
+
+A participant opens a support request describing the problem. The message
+returns both a ticket ID and a ticket number, giving the filer a durable
+handle while the record moves through its lifecycle: requests are updated as
+work proceeds, responses are attached, and resolved requests are archived
+rather than deleted.
+
+For problems already tracked outside the chain, the module registers
+external ticket references — pointers to outside service desks that can be
+updated or removed as those external tickets change. Because payloads are
+sealed in `EncryptedSupportPayload`, the chain carries the existence,
+ownership, and status of a ticket without publishing its contents.
+
+Intake is also where disputes begin: usage disputes raised inside the
+settlement window flow through these records, and misconduct allegations
+escalate from support into fraud handling.
+
+## Why it exists
+
+Decentralization removes the support desk, but not the need for recourse.
+Structured, on-chain intake gives every participant a visible,
+non-discretionary path to raise problems — and gives the protocol's dispute
+rules something concrete to operate on.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Dispute intake | The structured on-chain record opening a dispute with lifecycle tracking. |
+
+## Core flow
+
+1. **Raise — A problem is filed.** Tickets and disputes open against the
+   lease, record, or counterparty concerned.
+2. **Track — The record lives.** Defined lifecycles replace emails into a
+   void — status and history are visible state.
+3. **Route — It reaches the right machinery.** Usage disputes meet the
+   settlement window; misconduct allegations escalate to fraud handling.
+4. **Resolve — Outcomes are recorded.** Resolutions, corrections, and
+   escalations leave an auditable trail for all parties.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgCreateSupportRequest` | Open a support request, returning a ticket ID and ticket number. |
+| `MsgUpdateSupportRequest` | Update an existing support request record. |
+| `MsgAddSupportResponse` | Attach a response to a support request. |
+| `MsgArchiveSupportRequest` | Archive a support request that is no longer active. |
+| `MsgRegisterExternalTicket` | Register a reference to an outside service-desk ticket. |
+| `MsgUpdateExternalTicket` | Update a registered external ticket reference. |
+| `MsgRemoveExternalTicket` | Remove an external ticket reference. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `SupportRequest` | A single support request record. |
+| `SupportRequestsBySubmitter` | Support requests filed by one submitter. |
+| `SupportResponsesByRequest` / `SupportResponsesBy` | Responses attached to support requests. |
+| `Support` | A single support record. |
+| `ExternalRef` / `ExternalRefsByOwner` | Registered external ticket references, individually and by owner. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/settlement](/modules/settlement/) | Usage disputes raised in the window flow through intake records. |
+| [x/fraud](/modules/fraud/) | Misconduct allegations escalate from support to fraud handling. |
+| [x/market](/modules/market/) | Disputes reference the leases they concern. |
+
+## Related documentation
+
+- [Escrow & Settlement](/concepts/escrow-settlement/) — the dispute window
+  intake records feed into.
+- [Fraud, Audit & Oracles](/concepts/fraud-audit-oracles/) — where escalated
+  misconduct allegations end up.
+- [x/settlement module](/modules/settlement/) — usage disputes and
+  corrections attached to intake records.
+- [x/fraud module](/modules/fraud/) — enforcement after escalation.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is dispute intake?
+
+The structured on-chain record opening a dispute, with lifecycle tracking
+from filing through resolution — the front door of the protocol's dispute
+machinery.
+
+### How does this connect to settlement?
+
+Usage disputes raised inside the 24-hour window flow through intake
+records; corrections and holds attach to them before payout completes. See
+the [x/settlement module](/modules/settlement/).
+
+### What if the problem is misconduct?
+
+Misconduct allegations escalate from support to fraud handling, where
+enforcement hooks can restrict participation pending adjudication. See the
+[x/fraud module](/modules/fraud/).
+
+:::note
+Message and query types are defined in `x/support/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

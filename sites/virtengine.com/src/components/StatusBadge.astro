@@ -1,0 +1,10 @@
+---
+import { NETWORK_STATUS } from "@data/status";
+interface Props { note?: string; class?: string }
+const { note, class: className } = Astro.props;
+---
+<p class:list={["status-badge", className]}>
+  <i class="rail-lamp" aria-hidden="true"></i>
+  <a href="/network">{NETWORK_STATUS.posture}</a>
+  {note && <span>{note}</span>}
+</p>

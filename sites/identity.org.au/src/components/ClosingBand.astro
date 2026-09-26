@@ -1,0 +1,34 @@
+---
+/**
+ * Closing statement band: the page's one vault band. Guilloché ground, inverse
+ * text, action slots. Used above the footer on marketing and service journeys.
+ */
+import Guilloche from "./Guilloche.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  body?: string;
+  class?: string;
+}
+
+const { eyebrow = "The Identity Wallet", title, body, class: className } = Astro.props;
+---
+
+<section class:list={["closing-band", className]}>
+  <div class="vault-ground" aria-hidden="true">
+    <Guilloche seed="IDAU-VAULT" />
+  </div>
+  <div class="container-site closing-band-inner">
+    <p class="closing-band-eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    {body && <p class="closing-band-body">{body}</p>}
+    {
+      Astro.slots.has("default") && (
+        <div class="closing-band-actions">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</section>

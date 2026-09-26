@@ -65,8 +65,8 @@ const steps = [
 
 <Guide
   title="Become a verifier"
-  metaTitle="Become a verifier — step by step | identity.org.au"
-  description="The step-by-step path for organisations: understand tiers, register on the VirtEngine network, integrate verification requests, handle tier and score responses, meet consent obligations, and go live."
+  metaTitle="Become a Verifier: Step-by-Step Path | identity.org.au"
+  description="How organisations adopt identity verification: understand tiers, compare approaches, register on the VirtEngine network, integrate requests and go live."
   lede="The full path from “we need to verify users” to operating as a verifier on the VirtEngine network — six steps, each with the obligations attached."
   eyebrow="For services"
   breadcrumbs={crumbs}
@@ -83,7 +83,7 @@ const steps = [
     </p>
   </div>
 
-  <Steps steps={steps} class="mt-8" />
+  <Steps steps={steps} headingLevel={2} class="mt-8" />
 
   <Callout title="What you never handle" class="mt-6">
     <p>
@@ -108,7 +108,7 @@ const steps = [
   <Alert tone="info" title="Ready to start?" class="mt-8">
     <p>
       Engineering documentation — the VEID module, consent framework specification and APIs — is
-      at <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain">docs.virtengine.com</a>.
+      at <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain" target="_blank">docs.virtengine.com</a>.
       For onboarding conversations, email
       <a href={`mailto:${SITE.email}`} class="link-plain">{SITE.email}</a>.
     </p>

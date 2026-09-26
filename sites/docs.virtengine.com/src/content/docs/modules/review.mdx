@@ -1,0 +1,111 @@
+---
+title: x/review — Review module
+description: The x/review module records lease-bound tenant and provider reviews as tamper-evident chain state that builds portable reputation.
+---
+
+The `x/review` module records reviews between lease counterparties: tenants
+review providers on delivery quality, and provider-side standing accumulates
+into a reputation that is portable across the whole marketplace and
+tamper-evident by construction — reviews are chain state tied to real
+leases.
+
+Because a review requires an underlying lease, reputation cannot be
+fabricated by sockpuppet accounts at scale; combined with VEID identity
+gating, review farming is structurally expensive.
+
+## What it does
+
+Every completed lease opens a review window for both sides. Tenants rate
+providers on delivery quality, providers rate tenants on conduct, and each
+review lands as chain state bound to the lease it came from — visible across
+the whole marketplace rather than locked inside one interface.
+
+That binding is the module's anti-manipulation property. Only actual
+counterparties of a real lease can review, so manufactured standing is
+structurally off the table, and accumulated reputation feeds offer
+presentation and tenant choice wherever the participant goes.
+
+## Why it exists
+
+Repeat-game trust is what makes marketplaces work, and centralized platforms
+hold that trust hostage — leave the platform, lose your reputation. On-chain
+reviews make track records a public good owned by the participant who earned
+them.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Lease-bound review | A review permitted only between actual counterparties of a real lease. |
+| Portable reputation | Track record held as chain state, not as a platform's private asset. |
+
+## Core flow
+
+1. **Serve — A lease completes.** Delivery happened between verifiable
+   counterparties — the precondition for any review.
+2. **Review — Both sides rate.** Tenants review providers on delivery
+   quality; providers review tenants on conduct.
+3. **Record — Reviews become state.** Tamper-evident, tied to the lease, and
+   visible across the whole marketplace.
+4. **Compound — Standing compounds.** Accumulated reputation feeds offer
+   presentation and tenant choice — portability included.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgSubmitReview` | Submit a review against a completed lease. |
+| `MsgDeleteReview` | Remove a previously submitted review. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Review` | A single review record. |
+| `ReviewsByUser` | Reviews associated with one user. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | Reviews attach to completed leases between real counterparties. |
+| [x/veid](/modules/veid/) | Identity gating makes review manipulation costly. |
+| [x/marketplace](/modules/marketplace/) | Reputation signals inform offer presentation and choice. |
+
+## Related documentation
+
+- [Marketplace](/concepts/marketplace/) — where reputation signals shape
+  offer presentation and selection.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
+  provider standing when picking a bid.
+- [VEID Overview](/veid/overview/) — the identity layer behind review
+  gating.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a lease-bound review?
+
+A review permitted only between actual counterparties of a real lease — the
+constraint that anchors reputation to delivery.
+
+### Can reputation be faked?
+
+Not at scale. Reviews require an underlying lease, and VEID identity gating
+makes review farming structurally expensive — repeat-game trust,
+protocol-enforced.
+
+### What does portable reputation mean?
+
+Your track record lives in chain state rather than a platform's database:
+switch interfaces or providers and your earned standing travels with you.
+See [How the marketplace works](/concepts/marketplace/).
+
+:::note
+Message and query types are defined in `x/review/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

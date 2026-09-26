@@ -1,0 +1,132 @@
+---
+title: x/market — Market module
+description: The x/market module implements the marketplace exchange itself — orders, bids, and leases executed as chain state by consensus.
+---
+
+The `x/market` module is the order, match, and lease state machine at the
+center of the marketplace. Tenants post orders describing the resources they
+need; orders naming a specific offering match outright at the listed price,
+while open orders collect competing bids from provider daemons watching the
+chain.
+
+A match becomes a **lease** — the on-chain contract under which a provider
+serves a workload and gets paid. All three objects are chain state, created
+and transitioned by transactions and validated by consensus.
+
+## What it does
+
+The module implements the exchange itself and enforces the lifecycle rules
+that keep matching honest:
+
+- An order can only be matched while open.
+- A bid must satisfy the order's resource and attribute requirements, and
+  the message server validates bid price against order price.
+- A lease binds exactly one tenant, one provider, and one escrow account.
+
+Matching also enforces the minimum deposit and maximum bids per order,
+reserves capacity in [x/resources](/modules/resources/) when a lease is
+created, and opens the escrow payment stream. Lease closure — voluntary, for
+non-payment, or through enforcement — flows back through the same state
+machine, so every marketplace event leaves an auditable record. Closing a
+lease re-opens the order for a still-open group.
+
+## Why it exists
+
+In a conventional cloud, the exchange between buyer and seller happens
+inside a company's private billing system. VirtEngine's premise is that the
+exchange should be the protocol: matching, pricing, and contract state
+executed by consensus rather than by a trusted intermediary. `x/market` is
+where that premise is implemented.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Order | A tenant's on-chain request — compute, memory, storage, region, and required attributes — naming a specific offering or open for bids. |
+| Bid | A provider's priced offer against an open order, placed automatically by the provider daemon. Direct orders never need one. |
+| Lease | The matched contract between tenant and provider that authorizes a workload and its payment stream. |
+
+## Core flow
+
+1. **Post — Tenant posts an order.** A structured, on-chain request for
+   resources: compute, memory, storage, region, and required attributes.
+2. **Match — Direct purchase or winning bid.** A named offering matches
+   immediately at its listed price; open orders resolve to the accepted or
+   best-ranked bid.
+3. **Match — A match becomes a lease.** The matched contract authorizes the
+   workload and its payment stream, backed by escrow funded before serving
+   starts.
+4. **Close — Usage settles, lease closes.** Recorded usage settles into
+   payments from escrow; closure of any kind returns through the state
+   machine as an auditable record.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgCreateBid` | A provider daemon submits a priced bid against an open order. |
+| `MsgCloseBid` | Closes a previously submitted bid. |
+| `MsgCreateLease` | Turns an accepted or direct match into a lease. |
+| `MsgCloseLease` | Closes a lease; the order re-opens for a still-open group. |
+| `MsgWithdrawLease` | Withdraws a lease, ending its binding. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Bid` / `Bids` | A single bid, or the bid list. |
+| `Lease` / `Leases` | A single lease, or the lease list. |
+| `Order` / `Orders` | A single order, or the order list. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/deployment](/modules/deployment/) | Orders are derived from tenant deployment specifications and groups. |
+| [x/escrow](/modules/escrow/) | Every lease is backed by an escrow account funded before the workload starts. |
+| [x/provider](/modules/provider/) | Bids reference registered providers and their on-chain attributes. |
+| [x/veid](/modules/veid/) | Marketplace participation is identity-gated by VEID trust scores. |
+| [x/settlement](/modules/settlement/) | Usage recorded against a lease settles into payments from lease escrow. |
+
+## Related documentation
+
+- [Marketplace](/concepts/marketplace/) — how the exchange fits together
+  end to end.
+- [Deploying Workloads](/tenants/deploying-workloads/) — how tenants turn
+  a workload spec into orders.
+- [Leases & Escrow](/tenants/leases-and-escrow/) — the tenant view of the
+  lease and its payment stream.
+- [Pricing & Bidding](/providers/pricing-bidding/) — how provider daemons
+  decide what to bid.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### Who can match an order?
+
+A named offering matches its own direct orders outright. For open orders,
+any provider whose bid satisfies the resource and attribute requirements,
+while the order is open. Matching is consensus-validated, never
+discretionary.
+
+### What exactly does a lease bind together?
+
+Exactly one tenant, one provider, and one escrow account — the payment
+stream is authorized against collateral that provably exists before serving
+starts. See the [x/escrow module](/modules/escrow/).
+
+### How does a lease end?
+
+Voluntarily, for non-payment when escrow runs dry, or through enforcement —
+each path transitions through the same state machine so the marketplace
+record stays complete. See
+[How the marketplace works](/concepts/marketplace/).
+
+:::note
+Message and query types are defined in `x/market/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

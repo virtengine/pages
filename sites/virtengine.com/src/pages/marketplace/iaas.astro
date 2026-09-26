@@ -1,0 +1,171 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHero from "@components/PageHero.astro";
+import Section from "@components/Section.astro";
+import CTA from "@components/CTA.astro";
+import MarketplaceListingCard from "@components/marketplace/MarketplaceListingCard.astro";
+import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
+import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
+import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
+import { NETWORK_STATUS } from "@data/status";
+
+const title = "IaaS on VirtEngine: Infrastructure as a Service";
+const description =
+  "Infrastructure as a Service on VirtEngine: order VMs, private cloud, bare metal, GPU nodes and storage, fulfilled by the provider's control plane and settled from verified usage.";
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "IaaS", href: "/marketplace/iaas" },
+];
+
+const listings = [
+  {
+    title: "General Purpose VM",
+    specs: ["4 vCPU", "16 GB RAM", "200 GB NVMe"],
+    components: ["vCPU-hour", "storage GB-month"],
+    price: "$0.06 / vCPU-hour",
+  },
+  {
+    title: "GPU Node",
+    specs: ["1 × H100", "24 vCPU", "192 GB RAM", "NVMe scratch"],
+    components: ["GPU-hour", "storage GB-month"],
+    price: "$1.29 / GPU-hour",
+  },
+  {
+    title: "Private Cloud Tenant",
+    specs: ["Dedicated quota", "Managed control plane", "Network isolation"],
+    components: ["reserved capacity", "storage GB-month"],
+    price: "Reserved plan",
+  },
+];
+
+const variations: [string, string][] = [
+  ["Region", "placement, residency and latency differ per listing"],
+  ["CPU / GPU", "architecture, generation and core count"],
+  ["Memory / storage", "capacity, storage class and IOPS tier"],
+  ["Network", "bandwidth, private links and egress treatment"],
+  ["Attestation", "confidential capability where the provider offers it"],
+  ["Audits / benchmarks", "auditor-signed attributes and measured performance"],
+  ["Pricing", "published plan, metered components or reserved term"],
+  ["Support", "the response tier attached to the plan"],
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path="/marketplace/iaas"
+  image="/media/provider-datacenter-1200.webp"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Marketplace · IaaS"
+    title="Infrastructure as a Service on VirtEngine"
+    lede="Choose infrastructure. Form a lease. Operate it through the provider's control plane. Settle from verified usage."
+    crumbs={crumbs}
+  >
+    <CTA href="/learn/how-the-marketplace-works">How orders become leases</CTA>
+    <CTA href="/providers" variant="secondary">Prepare to provide infrastructure</CTA>
+    <div class="mk-page-hero-flag">
+      <span class="mk-status">{NETWORK_STATUS.posture}</span>
+      <span class="mk-flag">Example listings are illustrative</span>
+    </div>
+    <div slot="art">
+      <figure class="mk-viz">
+        <div class="mk-viz-stack">
+          <p class="eyebrow">Provider supplies</p>
+          <div class="mk-viz-managed">Physical infrastructure <em>racks · power · network</em></div>
+          <div class="mk-viz-managed">Hypervisor or cloud <em>OpenStack · VMware · custom</em></div>
+          <div class="mk-viz-managed">Network &amp; storage <em>interconnect · volumes</em></div>
+          <p class="mk-viz-arrow" aria-hidden="true">↓</p>
+          <p class="eyebrow">Tenant receives</p>
+          <div class="mk-viz-you">VM · GPU node · private cloud tenant <em>a lease, not a raw API key</em></div>
+        </div>
+        <figcaption>What is delivered: a leased resource you operate, fulfilled by the provider's control plane.</figcaption>
+      </figure>
+    </div>
+  </PageHero>
+
+  <Section
+    eyebrow="Catalogue"
+    title="Common IaaS listing types"
+    lede="Three illustrative examples. Example providers and prices only — not live availability."
+  >
+    <div class="mk-cards-3">
+      {
+        listings.map((listing) => (
+          <MarketplaceListingCard
+            serviceType="IaaS"
+            title={listing.title}
+            region="Example region"
+            specs={listing.specs}
+            components={listing.components}
+            priceLabel={listing.price}
+            compact
+          />
+        ))
+      }
+    </div>
+    <details class="mk-more">
+      <summary>More examples</summary>
+      <ul class="mk-chip-row">
+        <li>Bare Metal Node — 64 cores, 512 GB RAM</li>
+        <li>Block Storage — SSD-backed snapshots</li>
+        <li>Object Storage — S3-compatible versioning</li>
+      </ul>
+    </details>
+  </Section>
+
+  <Section
+    eyebrow="Variation"
+    title="What varies between providers"
+    lede="Two listings can look similar and differ on every dimension that matters to a workload."
+    class="border-y border-line bg-paper-soft"
+  >
+    <table class="mk-matrix">
+      <thead><tr><th>Attribute</th><th>What it changes</th></tr></thead>
+      <tbody>
+        {variations.map(([term, detail]) => (
+          <tr><td>{term}</td><td>{detail}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="mk-rb-note">
+      <strong>Check the listing, not the category.</strong> The card and the plan are where these differences are
+      visible before you order. Evidence like audits, benchmarks and attestation travels with the provider —
+      see <a href="/providers">provider participation</a>.
+    </p>
+  </Section>
+
+  <Section eyebrow="Fulfilment" title="How a lease becomes a machine">
+    <FulfilmentFlow
+      nodes={["Lease", "Provider daemon", "Waldur / provider API", "Backend", "VM · network · storage"]}
+      kinds={{ Lease: "protocol", "Provider daemon": "provider", "Waldur / provider API": "provider", Backend: "provider" }}
+      caption="Lease → daemon → Waldur/backend → resource. Consensus records the agreement; the provider's control plane creates the resource."
+    />
+    <div class="mk-tech-note">
+      <p>
+        <strong>Go deeper:</strong> <a href="/waldur">Waldur integration</a> for the control-plane boundary,{" "}
+        <a href="/learn/anatomy-of-a-marketplace-listing">listing anatomy</a> for the fields behind each card, and{" "}
+        <a href="/learn/iaas-paas-saas-on-virtengine">IaaS vs PaaS vs SaaS</a> for where the responsibility line moves.
+      </p>
+    </div>
+  </Section>
+
+  <div class="container-site">
+    <LifecycleRail />
+  </div>
+
+  <Section eyebrow="Continue" title="Related pages" class="border-t border-line">
+    <RelatedMarketplacePages
+      eyebrow="Explore"
+      title="Related destinations"
+      links={[
+        { label: "What is IaaS?", href: "/definitions/what-is-iaas" },
+        { label: "GPU & AI compute", href: "/marketplace/gpu-compute" },
+        { label: "HPC & batch", href: "/marketplace/hpc" },
+        { label: "How marketplace orders work", href: "/learn/how-the-marketplace-works" },
+      ]}
+    />
+  </Section>
+</Base>

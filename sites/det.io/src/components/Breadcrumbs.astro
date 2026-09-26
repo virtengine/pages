@@ -17,7 +17,7 @@ const { crumbs, class: className } = Astro.props;
 ---
 
 <nav aria-label="Breadcrumb" class:list={["container-site pt-6", className]}>
-  <ol class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-soft">
+  <ol class="flex flex-wrap items-center gap-1.5 font-mono text-[0.7rem] tracking-[0.08em] text-text-soft uppercase">
     {
       crumbs.map((crumb, i) => (
         <li class="flex items-center gap-1.5">

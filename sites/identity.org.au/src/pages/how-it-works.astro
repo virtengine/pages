@@ -1,12 +1,15 @@
 ---
 import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
+import ClosingBand from "@components/ClosingBand.astro";
+import Section from "@components/Section.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
+import ShareDemo from "@components/ShareDemo.astro";
 import Steps from "@components/Steps.astro";
 import Alert from "@components/Alert.astro";
 import Callout from "@components/Callout.astro";
-import ConsentScreen from "@components/phone/ConsentScreen.astro";
-import ZkShareScreen from "@components/phone/ZkShareScreen.astro";
-import ServiceConfirmedScreen from "@components/phone/ServiceConfirmedScreen.astro";
+import TableScroll from "@components/TableScroll.astro";
+import MediaBand from "@components/media/MediaBand.astro";
 import LockAndKey from "@components/diagrams/LockAndKey.astro";
 
 const crumbs = [
@@ -46,8 +49,9 @@ const onNetwork = [
 ---
 
 <Base
-  title="How it works | identity.org.au"
-  description="How the Identity Wallet works, end to end: on-device capture and encryption, network verification, consent-based sharing, and zero-knowledge proofs — in plain language."
+  title="How It Works: Capture to ZK Proof | identity.org.au"
+  description="How the Wallet works end to end: on-device capture and encryption, network verification, consent sharing and ZK proofs. In plain language."
+  image="/media/identity-liveness-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHeader
@@ -57,86 +61,86 @@ const onNetwork = [
     lede="The entire design follows one rule: the sensitive material stays with you, and everyone else gets answers. Here is the pipeline, in plain language."
   />
 
-  <div class="container-site py-12">
-    <section class="grid gap-12 lg:grid-cols-2">
-      <div>
-        <h2 class="mt-0 flex items-center gap-3 text-[1.5rem]">
-          <span class="inline-block h-7 w-1.5 bg-navy" aria-hidden="true"></span>
-          Part one — on your device
-        </h2>
-        <Steps steps={onDevice} class="mt-6" />
+  <div class="container-site">
+    <Section
+      index="01"
+      eyebrow="The pipeline"
+      title="Sensitive material stays with you. Everyone else gets answers."
+      lede="The same rule runs through capture, encryption, verification and sharing. Read it as two halves: what happens on your phone, and what the network is allowed to know."
+    >
+      <div class="grid gap-12 lg:grid-cols-2">
+        <div>
+          <h3 class="mt-0 flex items-center gap-3 text-[1.4rem]">
+            <span class="inline-block h-7 w-1.5 bg-navy" aria-hidden="true"></span>
+            Part one — on your device
+          </h3>
+          <Steps steps={onDevice} class="mt-6" />
+        </div>
+        <div>
+          <h3 class="mt-0 flex items-center gap-3 text-[1.4rem]">
+            <span class="inline-block h-7 w-1.5 bg-steel" aria-hidden="true"></span>
+            Part two — on the network
+          </h3>
+          <Steps steps={onNetwork} class="mt-6" />
+        </div>
       </div>
-      <div>
-        <h2 class="mt-0 flex items-center gap-3 text-[1.5rem]">
-          <span class="inline-block h-7 w-1.5 bg-steel" aria-hidden="true"></span>
-          Part two — on the network
-        </h2>
-        <Steps steps={onNetwork} class="mt-6" />
-      </div>
-    </section>
+      <Callout title="Why split it this way?" class="mt-10 max-w-[72ch]">
+        <p>
+          Conventional identity systems copy your documents into a central database — and central
+          databases get breached. This design means there is nothing central to raid: your evidence
+          exists in readable form only on your device, and the network holds tamper-proof results.
+        </p>
+      </Callout>
+    </Section>
+  </div>
 
-    <Callout title="Why split it this way?" class="mt-10 max-w-[72ch]">
-      <p>
-        Conventional identity systems copy your documents into a central database — and central
-        databases get breached. This design means there is nothing central to raid: your evidence
-        exists in readable form only on your device, and the network holds tamper-proof results.
-      </p>
-    </Callout>
+  <MediaBand
+    slug="document-desk"
+    eyebrow="The evidence"
+    title="One document, read once."
+    lede="A passport or licence is captured, checked and encrypted on the phone in one sitting. What moves afterwards is a sealed scope and a result — the paper on the desk stays a photograph on your device."
+    caption="Identity papers, captured and encrypted on the spot — the desk does not keep a copy."
+  />
 
-    <section class="mt-16">
-      <h2 class="mt-0 text-[1.6rem]">Inside the trusted processing unit</h2>
-      <p class="text-body measure">
-        The step that deserves the closest look is the processing itself. Your encrypted
-        evidence is opened only inside a hardware-sealed vault whose key is forged in the
-        hardware and never exists outside it — and the chain checks the vault's exact
-        fingerprint before any data enters.
-      </p>
-      <figure class="m-0 mt-8 rounded-tile border border-hairline bg-alt p-4 sm:p-6">
+  <div class="container-site">
+    <Section
+      index="02"
+      eyebrow="Trusted processing"
+      title="Inside the trusted processing unit"
+      lede="Your encrypted evidence is opened only inside a hardware-sealed vault whose key is forged in the hardware and never exists outside it — and the chain checks the vault's exact fingerprint before any data enters."
+    >
+      <ServiceFigure
+        rail="Trusted processing"
+        railRight="Lock and key"
+        scroll
+        caption="The lock and the key: sealed on your device, admitted through the attestation gate, processed and destroyed inside the vault — only the result reaches the chain."
+      >
         <LockAndKey />
-        <figcaption class="mt-3 text-[0.9rem] text-muted">
-          The lock and the key: sealed on your device, admitted through the attestation gate,
-          processed and destroyed inside the vault — only the result reaches the chain.
-        </figcaption>
-      </figure>
+      </ServiceFigure>
       <a href="/privacy/trusted-processing" class="link-plain mt-5 inline-block font-semibold">
         Trusted processing, explained in full — how the vault works and when data is destroyed
       </a>
-    </section>
+    </Section>
+  </div>
 
-    <section class="mt-16">
-      <h2 class="mt-0 text-[1.6rem]">When a service asks about you</h2>
-      <p class="text-body measure">
-        Verification happens once. Sharing happens as often as you approve it — and only what you
-        approve. Three screens show the complete exchange:
-      </p>
-      <div class="mt-8 grid items-start gap-8 sm:grid-cols-2 xl:grid-cols-3">
-        <figure class="mx-auto my-0 w-full max-w-[300px]">
-          <ConsentScreen />
-          <figcaption class="mt-3 text-[0.9rem] text-muted">
-            The consent screen: who is asking, exactly what they will see, what they will never
-            see, and when the consent expires. Nothing moves until you approve.
-          </figcaption>
-        </figure>
-        <figure class="mx-auto my-0 w-full max-w-[300px]">
-          <ZkShareScreen />
-          <figcaption class="mt-3 text-[0.9rem] text-muted">
-            Zero-knowledge sharing: your data stays locked on the device; the service receives one
-            verifiable answer — nothing else.
-          </figcaption>
-        </figure>
-        <figure class="mx-auto my-0 w-full max-w-[300px] sm:col-span-2 xl:col-span-1">
-          <ServiceConfirmedScreen />
-          <figcaption class="mt-3 text-[0.9rem] text-muted">
-            Service confirmation: the signed answer is valid, the approved service opens, and
-            the service keeps a consent receipt rather than a copy of your identity evidence.
-          </figcaption>
-        </figure>
-      </div>
-    </section>
+  <div class="container-site">
+    <Section
+      index="03"
+      eyebrow="Consent in practice"
+      title="When a service asks about you"
+      lede="Verification happens once. Sharing happens as often as you approve it — and only what you approve. Walk through the complete exchange."
+    >
+      <ShareDemo />
+    </Section>
+  </div>
 
-    <section class="mt-16">
-      <h2 class="mt-0 text-[1.6rem]">What each party ends up holding</h2>
-      <div class="mt-6 overflow-x-auto">
+  <div class="container-site">
+    <Section
+      index="04"
+      eyebrow="Visibility"
+      title="What each party ends up holding"
+    >
+      <TableScroll label="What each party holds and never holds">
         <table class="table-gov">
           <caption class="sr-only">What you, the network, and services each hold</caption>
           <thead>
@@ -169,16 +173,24 @@ const onNetwork = [
             </tr>
           </tbody>
         </table>
-      </div>
-    </section>
-
-    <Alert tone="info" title="Want to go deeper?" class="mt-12 max-w-[72ch]">
-      <p>
-        <a href="/about/the-technology" class="link-plain">The technology</a> names every component,
-        and <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
-        details what evidence earns each level. Engineers can go straight to the
-        <a href="https://docs.virtengine.com" rel="noopener" class="link-plain">protocol docs</a>.
-      </p>
-    </Alert>
+      </TableScroll>
+      <Alert tone="info" title="Want to go deeper?" class="mt-10 max-w-[72ch]">
+        <p>
+          <a href="/about/the-technology" class="link-plain">The technology</a> names every component,
+          and <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
+          details what evidence earns each level. Engineers can go straight to the
+          <a href="https://docs.virtengine.com" rel="noopener" class="link-plain" target="_blank">protocol docs</a>.
+        </p>
+      </Alert>
+    </Section>
   </div>
+
+  <ClosingBand
+    eyebrow="Start the pipeline"
+    title="Set up once. Prove anything, without the documents."
+    body="The setup takes about ten minutes on a phone. Everything after that is answers, receipts and revocation — never another copy of your licence."
+  >
+    <a href="/get-started" class="btn-inverse">Set up your wallet</a>
+    <a href="/launch" class="btn-inverse-ghost">Join the launch list</a>
+  </ClosingBand>
 </Base>

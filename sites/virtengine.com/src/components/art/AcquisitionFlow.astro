@@ -1,0 +1,85 @@
+---
+/**
+ * AcquisitionFlow — the homepage hero figure: three ways to acquire, one
+ * settlement rail.
+ *
+ * Deliberately built from ordinary DOM + CSS grid/flex only:
+ * no fixed SVG coordinate system, no percentage-positioned hotspot overlays,
+ * no viewport-unit geometry and no 3D/compositing transforms. The layout is
+ * the document flow, so it cannot drift, clip or rasterise at the wrong scale
+ * on mobile engines (the failure mode of the previous SVG+overlay figure).
+ *
+ * Content comes from the canonical model: ACQUISITION_PATHS (direct, bid,
+ * selector) and the shared LIFECYCLE stages that every path resolves into.
+ */
+import { ACQUISITION_PATHS } from "@data/market";
+import { LIFECYCLE } from "@data/site";
+
+const stages = LIFECYCLE.slice(1).map(({ step, name, short }) => ({ step, name, short }));
+const demandChips = ["named listing", "or specs + caps", "escrow-backed"];
+---
+
+<figure class="aqf">
+  <figcaption class="aqf-caption">
+    <p class="aqf-kicker">The acquisition system</p>
+    <p class="aqf-sub">Three ways in. One settlement rail out.</p>
+  </figcaption>
+
+  <div class="aqf-demand">
+    <span class="aqf-demand-node" aria-hidden="true"></span>
+    <span class="aqf-demand-copy">
+      <span class="aqf-eyebrow">Order</span>
+      <strong>Demand with budget behind it</strong>
+    </span>
+    <ul class="aqf-demand-chips">
+      {demandChips.map((chip) => <li>{chip}</li>)}
+    </ul>
+  </div>
+
+  <p class="aqf-branch" aria-hidden="true">choose a path</p>
+
+  <ol class="aqf-paths">
+    {
+      ACQUISITION_PATHS.map((path) => (
+        <li>
+          <a class="aqf-path" href={path.href}>
+            <span class="aqf-num" aria-hidden="true">{path.n}</span>
+            <span class="aqf-path-body">
+              <span class="aqf-path-head">
+                <strong>{path.tab}</strong>
+                <small>{path.tag}</small>
+              </span>
+              <span class="aqf-path-copy">{path.short}</span>
+              <span class="aqf-steps">
+                {path.steps.map(([key]) => (
+                  <span class="aqf-step">{key}</span>
+                ))}
+              </span>
+            </span>
+            <span class="aqf-go" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="aqf-converge" aria-hidden="true">match</p>
+
+  <div class="aqf-rail">
+    <p class="aqf-rail-label">Every path lands on the same rail</p>
+    <ol class="aqf-stages">
+      {
+        stages.map((stage) => (
+          <li class="aqf-stage">
+            <span class="aqf-stage-n" aria-hidden="true">{stage.step}</span>
+            <strong>{stage.name}</strong>
+            <small>{stage.short}</small>
+          </li>
+        ))
+      }
+    </ol>
+    <a class="aqf-rail-link" href="/learn/how-the-marketplace-works">
+      Walk through the lifecycle <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</figure>

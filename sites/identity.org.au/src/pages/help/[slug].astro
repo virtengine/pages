@@ -3,8 +3,11 @@ import Base from "@layouts/Base.astro";
 import PageHeader from "@components/PageHeader.astro";
 import Alert from "@components/Alert.astro";
 import CardLink from "@components/CardLink.astro";
+import ServiceFigure from "@components/ServiceFigure.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
-import { HELP_ARTICLES, RELATED_EXTERNAL, getArticle } from "@data/help";
+import { HELP_ARTICLES, RELATED_RESOURCES, getArticle } from "@data/help";
+import { SITE } from "@data/site";
+import { articleNode } from "@lib/schema";
 
 export function getStaticPaths() {
   return HELP_ARTICLES.map((article) => ({ params: { slug: article.slug } }));
@@ -25,7 +28,7 @@ const related = article.related
     if (internal) {
       return { title: internal.title, href: `/help/${internal.slug}`, summary: internal.summary };
     }
-    const external = RELATED_EXTERNAL[r];
+    const external = RELATED_RESOURCES[r];
     return external ? { title: external.title, href: external.href, summary: undefined } : null;
   })
   .filter((r) => r !== null);
@@ -36,16 +39,16 @@ const updatedDisplay = new Date(article.updated).toLocaleDateString("en-AU", {
   year: "numeric",
 });
 
-const articleLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: article.title,
+const canonical = new URL(`/help/${article.slug}`, SITE.url).href;
+const helpSchema = articleNode({
+  canonical,
+  title: article.title,
   description: article.summary,
   dateModified: article.updated,
-  inLanguage: "en-AU",
-  author: { "@type": "Organization", name: "DETIO FOUNDATION LTD" },
-  mainEntityOfPage: `https://identity.org.au/help/${article.slug}`,
-};
+  section: `Help · ${article.category}`,
+  type: "TechArticle",
+  about: ["Identity Wallet support", article.category],
+});
 ---
 
 <Base
@@ -53,9 +56,9 @@ const articleLd = {
   description={article.summary}
   breadcrumbs={crumbs}
   ogType="article"
+  schema={[helpSchema]}
+  modifiedTime={article.updated}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleLd)} />
-
   <PageHeader crumbs={crumbs} eyebrow={article.category} title={article.title} lede={article.summary} />
 
   <div class="container-site grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -83,14 +86,19 @@ const articleLd = {
               </Alert>
             )}
             {section.embed === "lifecycle" && (
-              <div class="mt-6">
+              <ServiceFigure
+                rail="Data lifecycle"
+                railRight="Five stages"
+                caption="Captured on your phone, encrypted before it moves, processed in a sealed vault, destroyed after scoring — leaving only the result."
+                class="mt-6"
+              >
                 <DataLifecycle />
-                <p class="mt-4 mb-0">
-                  <a href="/privacy/trusted-processing" class="link-plain font-semibold">
-                    Trusted processing — the lock and the key
-                  </a>
-                </p>
-              </div>
+              </ServiceFigure>
+              <p class="mt-4 mb-0">
+                <a href="/privacy/trusted-processing" class="link-plain font-semibold">
+                  Trusted processing — the lock and the key
+                </a>
+              </p>
             )}
           </section>
         ))

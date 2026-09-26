@@ -1,0 +1,63 @@
+---
+/**
+ * ProtocolDiagram — render one of the six site diagrams inside the dark
+ * engineering-plate frame, with its full text alternative. Shared by the
+ * learn guides and the solution pages so both stay in one visual language.
+ */
+import DiagramFrame from "@components/DiagramFrame.astro";
+import LifecycleFlow from "@components/diagrams/LifecycleFlow.astro";
+import SettlementFlow from "@components/diagrams/SettlementFlow.astro";
+import VeidPipeline from "@components/diagrams/VeidPipeline.astro";
+import StakingDiagram from "@components/diagrams/StakingDiagram.astro";
+import ArchitectureMap from "@components/diagrams/ArchitectureMap.astro";
+import WaldurBridge from "@components/diagrams/WaldurBridge.astro";
+import type { LearnDiagram } from "@data/learn";
+
+interface Props {
+  diagram: LearnDiagram;
+  caption?: string;
+  class?: string;
+}
+
+const { diagram, caption, class: className } = Astro.props;
+
+const diagrams: Record<LearnDiagram, { component: any; label: string }> = {
+  lifecycle: {
+    component: LifecycleFlow,
+    label:
+      "Marketplace lifecycle flow diagram in five stages: order (a tenant posts a deployment), match (a direct purchase at a listed price, an accepted bid, or an attribute match), lease (escrow is funded and the workload starts), usage (signed usage records are submitted), and settlement (escrow is released after the dispute window).",
+  },
+  settlement: {
+    component: SettlementFlow,
+    label:
+      "Settlement flow diagram: on the provider side, a usage meter, scheduled hourly collector, settlement pipeline with anomaly detection, and chain submitter; on-chain, the settlement module, 24-hour dispute window, escrow, and payout of the agreed amount under the governed fee policy.",
+  },
+  veid: {
+    component: VeidPipeline,
+    label:
+      "VEID verification pipeline diagram: on-device capture, liveness, biometric attestation, and encryption; on-chain validator identity network scoring encrypted scopes by consensus; zero-knowledge verification surfaces for score thresholds, attributes, and marketplace gating.",
+  },
+  staking: {
+    component: StakingDiagram,
+    label:
+      "Staking topology diagram: delegators and staking partners delegate to the validator set; validators perform consensus, identity network, and governance duties; rewards flow back minus commission; misbehavior leads to slashing of bonded stake.",
+  },
+  architecture: {
+    component: ArchitectureMap,
+    label:
+      "Layered architecture diagram: clients on top, the VirtEngine chain with its module domains in the middle, the provider daemon below, and Kubernetes, HPC schedulers, and confidential enclaves at the infrastructure layer.",
+  },
+  waldur: {
+    component: WaldurBridge,
+    label:
+      "Waldur and VirtEngine integration diagram: the VirtEngine consensus layer exchanges offering, order, lease and settlement state with the provider daemon; the daemon synchronizes and reconciles the Waldur control plane, routes lifecycle actions, validates callbacks and reports usage.",
+  },
+};
+
+const entry = diagrams[diagram];
+const Diagram = entry.component;
+---
+
+<DiagramFrame label={entry.label} caption={caption} class={className}>
+  <Diagram />
+</DiagramFrame>

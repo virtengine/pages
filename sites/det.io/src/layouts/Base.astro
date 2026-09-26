@@ -1,16 +1,27 @@
 ---
-import "@fontsource/space-grotesk/500.css";
-import "@fontsource/space-grotesk/600.css";
-import "@fontsource/space-grotesk/700.css";
-import "@fontsource/inter/400.css";
-import "@fontsource/inter/500.css";
-import "@fontsource/inter/600.css";
-import "@fontsource/jetbrains-mono/400.css";
-import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/instrument-serif/latin-400.css";
+import "@fontsource/instrument-serif/latin-400-italic.css";
+import "@fontsource-variable/archivo/wght.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
 import "../styles/global.css";
+import "../styles/editorial.css";
+import "../styles/retro.css";
 import Header from "@components/Header.astro";
+import "../styles/record.css";
 import Footer from "@components/Footer.astro";
 import { SITE } from "@data/site";
+import { fitTitle, metaDescription } from "@lib/meta";
+import {
+  DEFAULT_IMAGE,
+  breadcrumbNode,
+  logoNode,
+  organizationNode,
+  schemaGraph,
+  webPageNode,
+  webSiteNode,
+  type SchemaNode,
+} from "@lib/schema";
 
 interface Breadcrumb {
   name: string;
@@ -24,50 +35,55 @@ interface Props {
   path?: string;
   breadcrumbs?: Breadcrumb[];
   ogType?: "website" | "article";
+  /** Extra JSON-LD nodes merged into this page's @graph. */
+  schema?: (SchemaNode | null | undefined | false)[];
+  /** schema.org WebPage subtype: WebPage, CollectionPage, AboutPage, ContactPage. */
+  pageType?: string;
+  /** ISO date of the last material change, when the data provides one. */
+  modifiedTime?: string;
+  /** Keep a page out of the index. */
+  noindex?: boolean;
+  /** Override the social/structured-data image with an absolute or site path. */
+  image?: string;
 }
 
-const { title, description, path, breadcrumbs, ogType = "website" } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  breadcrumbs,
+  ogType = "website",
+  schema = [],
+  pageType = "WebPage",
+  modifiedTime,
+  noindex = false,
+  image,
+} = Astro.props;
 
-const pathname = path ?? Astro.url.pathname;
+const pathname = (path ?? Astro.url.pathname).replace(/\.html$/, "");
 const canonical = new URL(pathname === "/" ? "/" : pathname.replace(/\/$/, ""), SITE.url).href;
-const ogImage = new URL("/og.png", SITE.url).href;
+const ogImage = image ? new URL(image, SITE.url).href : DEFAULT_IMAGE;
+const ogImageType = ogImage.endsWith(".png") ? "image/png" : ogImage.endsWith(".jpg") || ogImage.endsWith(".jpeg") ? "image/jpeg" : "image/webp";
+/** Search-display shaping only: visible page copy keeps its authored text. */
+const documentTitle = fitTitle(title, { brand: "det.io" });
+const searchDescription = metaDescription(description);
 
-const organizationLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE.name,
-  legalName: SITE.legalName,
-  url: SITE.url,
-  email: SITE.email,
-  identifier: `ACN ${SITE.acn}`,
-  nonprofitStatus: "Nonprofit",
-  description:
-    "Australian technology research organisation developing decentralized systems, including the VirtEngine protocol and the DSEMA multi-agent architecture.",
-  foundingLocation: { "@type": "Country", name: "Australia" },
-  sameAs: [SITE.github, "https://virtengine.com", "https://identity.org.au"],
-};
-
-const webSiteLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-  publisher: { "@type": "Organization", name: SITE.legalName, url: SITE.url },
-};
-
-const breadcrumbLd = breadcrumbs
-  ? {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: breadcrumbs.map((crumb, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: crumb.name,
-        item: new URL(crumb.href, SITE.url).href,
-      })),
-    }
-  : null;
+const graph = schemaGraph([
+  logoNode(),
+  organizationNode(),
+  webSiteNode(),
+  webPageNode({
+    canonical,
+    title,
+    description,
+    image: ogImage,
+    breadcrumbs,
+    type: pageType,
+    dateModified: modifiedTime,
+  }),
+  breadcrumbs && breadcrumbs.length > 0 ? breadcrumbNode(canonical, breadcrumbs) : null,
+  ...schema,
+]);
 ---
 
 <!doctype html>
@@ -75,13 +91,27 @@ const breadcrumbLd = breadcrumbs
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{documentTitle}</title>
+    <meta name="description" content={searchDescription} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="DET.io Foundation — research and governance notes"
+      href={new URL("/rss.xml", SITE.url).href}
+    />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#f6f9fb" />
+    <meta name="theme-color" content="#f1efe9" />
+    <meta name="author" content={SITE.legalName} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex, follow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
+    <meta name="googlebot" content={noindex ? "noindex, follow" : "index, follow"} />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
@@ -89,17 +119,21 @@ const breadcrumbLd = breadcrumbs
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content={ogImageType} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_AU" />
+    {modifiedTime && ogType === "article" && <meta property="article:modified_time" content={modifiedTime} />}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
-    <script type="application/ld+json" set:html={JSON.stringify(webSiteLd)} />
-    {breadcrumbLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
     <slot name="head" />
   </head>
   <body class="bg-paper text-ink">
@@ -111,7 +145,7 @@ const breadcrumbLd = breadcrumbs
     <Footer />
     <script>
       for (const element of document.querySelectorAll("main *")) {
-        if (element.closest("svg, script, style")) continue;
+        if (element.closest("svg, script, style, [data-preserve-acronym]")) continue;
         for (const node of element.childNodes) {
           if (node.nodeType === Node.TEXT_NODE) {
             node.textContent = (node.textContent ?? "").replace(
@@ -121,6 +155,20 @@ const breadcrumbLd = breadcrumbs
           }
         }
       }
+    </script>
+    <script>
+      // Any link that leaves this site opens in a new tab.
+      document.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((a) => {
+        try {
+          const url = new URL(a.getAttribute("href") || "", window.location.href);
+          if (url.origin === window.location.origin) return;
+          if (url.protocol !== "https:" && url.protocol !== "http:") return;
+          if (a.target !== "_blank") a.target = "_blank";
+          if (!/\bnoopener\b/.test(a.rel)) a.rel = (a.rel ? `${a.rel} ` : "") + "noopener";
+        } catch {
+          /* ignore malformed hrefs */
+        }
+      });
     </script>
   </body>
 </html>

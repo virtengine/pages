@@ -5,18 +5,31 @@ import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
 import { FOUNDATION_PAGES } from "@data/foundation";
 import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
   { name: "Foundation", href: "/foundation" },
 ];
+
+const foundationListSchema = itemListNode(
+  new URL("/foundation", SITE.url).href,
+  "DETIO FOUNDATION LTD in practice",
+  FOUNDATION_PAGES.map((page) => ({
+    name: page.title,
+    href: `/foundation/${page.slug}`,
+    description: page.summary,
+  })),
+);
 ---
 
 <Base
-  title="The Foundation — DETIO FOUNDATION LTD in practice | det.io"
-  description="How DETIO FOUNDATION LTD works as an institution: who we are, the public-benefit lock in depth, intellectual property stewardship of both patents, the clause-10 code of conduct, and membership honestly described."
+  title="The Foundation: DETIO in Practice | det.io"
+  description="How DETIO FOUNDATION LTD works: public-benefit lock, IP and patent stewardship, code of conduct and membership. An honest institutional portrait."
   path="/foundation"
   breadcrumbs={breadcrumbs}
+  pageType="CollectionPage"
+  schema={[foundationListSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero

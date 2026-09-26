@@ -1,0 +1,128 @@
+---
+title: x/provider — Provider module
+description: The x/provider module is the on-chain registry of capacity operators, their endpoints, and the attributes tenant orders filter against.
+---
+
+The `x/provider` module is the registry of capacity operators. A provider
+record carries the operator's chain address, service endpoint, and
+attributes: region, hardware classes, certifications, and any property a
+tenant might filter on when choosing where a workload lands.
+
+Attributes are the connective tissue of marketplace trust. Tenants
+constrain orders to providers matching required attributes, and auditors
+can sign attributes (via [x/audit](/modules/audit/)) so claims like
+datacenter tier or jurisdiction carry third-party weight rather than
+self-assertion alone.
+
+## What it does
+
+The module maintains, on-chain:
+
+- **The provider record.** Address, endpoint, and attributes in one
+  verifiable registration that tenant orders filter against.
+- **Domain verification.** A token-and-challenge flow lets a provider prove
+  control of its service domain, with verification confirmable and
+  revocable on chain.
+- **Provider signing keys.** Operators set, rotate, and revoke the key their
+  daemon signs with, with key epochs queryable for verification history.
+
+Auditor signatures upgrade self-claims into attestations that orders can
+explicitly require, and published hardware benchmarks tie measured
+performance to the record so bids compete on evidence.
+
+## Why it exists
+
+An open marketplace needs a structured, verifiable answer to "who is
+offering this capacity?". Registering providers on-chain — with attributes
+that auditors can attest — replaces the trust role a centralized cloud's
+brand plays, using records anyone can verify.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Provider record | The on-chain registration carrying an operator's endpoint and attributes. |
+| Attribute | A key–value property of a provider — region, hardware, certification — filterable by tenant orders. |
+| Provider daemon | The off-chain agent that bids, orchestrates workloads, and reports usage for a registered provider. |
+
+## Core flow
+
+1. **Verify — VEID verification first.** Registration is identity-gated
+   through VEID verification — accountability starts before the first bid.
+2. **Register — Create the record.** Address, endpoint, and attributes go
+   on-chain as the provider record tenants will filter against.
+3. **Attest — Get attributes signed.** Auditor signatures upgrade self-claims
+   into attestations that tenant orders can explicitly require.
+4. **Benchmark — Publish measurements.** Hardware benchmarks tie measured
+   performance to the record, so bids compete on evidence.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgCreateProvider` | Registers a provider record on-chain. |
+| `MsgUpdateProvider` | Updates a registered provider's endpoint and attributes. |
+| `MsgDeleteProvider` | Removes a provider record. |
+| `MsgGenerateDomainVerificationToken` | Generates a token proving control of the provider's domain. |
+| `MsgRequestDomainVerification` | Starts domain verification for a provider. |
+| `MsgConfirmDomainVerification` | Confirms a pending domain verification. |
+| `MsgRevokeDomainVerification` | Revokes a previously confirmed domain verification. |
+| `MsgVerifyProviderDomain` | Performs a domain verification check for a provider. |
+| `MsgSetProviderSigningKey` | Sets the key the provider daemon signs with. |
+| `MsgRotateProviderSigningKey` | Rotates the provider's signing key. |
+| `MsgRevokeProviderSigningKey` | Revokes a provider signing key. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Provider` / `Providers` | A single provider record, or the registry list. |
+| `ProviderSigningKey` | The current signing key for a provider. |
+| `ProviderSigningKeyEpochs` | Past signing-key epochs for a provider. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/market](/modules/market/) | Bids are placed by registered providers; orders filter on provider attributes. |
+| [x/audit](/modules/audit/) | Auditors sign provider attributes to upgrade self-claims into attestations. |
+| [x/benchmark](/modules/benchmark/) | Published hardware benchmarks are tied to the provider record. |
+| [x/veid](/modules/veid/) | Provider registration is identity-gated through VEID verification. |
+
+## Related documentation
+
+- [Providers Overview](/providers/overview/) — what it means to operate
+  capacity on the network.
+- [Provider Daemon](/providers/provider-daemon/) — the off-chain agent that
+  bids and orchestrates workloads.
+- [Benchmarks & Audits](/providers/benchmarks-audits/) — getting claims
+  measured and attested.
+- [Choosing Providers](/tenants/choosing-providers/) — how tenants filter
+  on attributes when picking a bid.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is a provider attribute?
+
+A key–value property of a provider — region, hardware class, certification —
+that tenant orders can filter on when choosing where a workload lands.
+
+### Who can sign attributes?
+
+Recognized auditors via `x/audit`. Auditor status is itself an on-chain
+role, and attestations are revocable and traceable to accountable,
+identity-verified signers. See the [x/audit module](/modules/audit/).
+
+### What is the provider daemon?
+
+The off-chain agent that watches open orders, bids per configured pricing,
+instantiates won leases on the operator's infrastructure, meters usage per
+workload, and submits signed records to the chain.
+
+:::note
+Message and query types are defined in `x/provider/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

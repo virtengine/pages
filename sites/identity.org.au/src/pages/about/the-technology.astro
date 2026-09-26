@@ -1,6 +1,7 @@
 ---
 import Guide from "@layouts/Guide.astro";
 import Callout from "@components/Callout.astro";
+import TableScroll from "@components/TableScroll.astro";
 import { ABOUT_NAV } from "@data/nav-sections";
 import { SITE } from "@data/site";
 
@@ -13,8 +14,8 @@ const crumbs = [
 
 <Guide
   title="The technology"
-  metaTitle="The technology — About | identity.org.au"
-  description="VEID (Verifiable Electronic Identity), the identity layer of the VirtEngine network, explained in plain language: on-device capture, encrypted payloads, network verification, and zero-knowledge proofs."
+  metaTitle="Technology: VEID Identity Explained | identity.org.au"
+  description="VEID, the identity layer of the VirtEngine network, in plain language: on-device capture, encrypted payloads, network verification and ZK proofs."
   lede="The wallet is powered by VEID (Verifiable Electronic Identity), the identity layer of the open-source VirtEngine network. Here is what each part does, in plain language."
   eyebrow="About"
   breadcrumbs={crumbs}
@@ -33,7 +34,7 @@ const crumbs = [
     <h2>The pieces, named</h2>
   </div>
 
-  <div class="mt-6 overflow-x-auto">
+  <TableScroll label="Technology components and their roles" class="mt-6">
     <table class="table-gov">
       <caption class="sr-only">The technology components and what each does</caption>
       <thead>
@@ -76,7 +77,7 @@ const crumbs = [
         </tr>
       </tbody>
     </table>
-  </div>
+  </TableScroll>
 
   <div class="prose-service mt-8">
     <h2>Why a blockchain is involved</h2>

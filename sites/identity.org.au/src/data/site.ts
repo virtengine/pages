@@ -2,9 +2,9 @@ export const SITE = {
   name: "identity.org.au",
   serviceName: "Identity Wallet",
   url: "https://identity.org.au",
-  title: "identity.org.au — the Identity Wallet for the VirtEngine ecosystem",
+  title: "Private Digital Identity Wallet Australia | identity.org.au",
   description:
-    "Set up a privacy-preserving digital Identity Wallet, prove who you are without handing over your documents, and stay in control of your data. An open-source community service operated by the not-for-profit DETIO FOUNDATION LTD. It is independent of the Australian Government.",
+    "Set up a free privacy-preserving digital Identity Wallet. Prove age or ID without sharing documents. Open-source, nonprofit-run, independent of government.",
   email: "hello@det.io",
   dpoEmail: "dpo@virtengine.com",
   securityEmail: "security@virtengine.com",
@@ -28,6 +28,7 @@ export const NAV: NavItem[] = [
   { label: "Get started", href: "/get-started" },
   { label: "How it works", href: "/how-it-works" },
   { label: "Insights", href: "/insights" },
+  { label: "Guides", href: "/guides" },
   { label: "Help", href: "/help" },
   { label: "For services", href: "/for-services" },
   { label: "About", href: "/about" },
@@ -65,6 +66,17 @@ export const FOOTER_COLUMNS: { heading: string; links: NavItem[] }[] = [
     ],
   },
   {
+    heading: "Guides and terms",
+    links: [
+      { label: "All guides", href: "/guides" },
+      { label: "Digital identity definitions", href: "/definitions" },
+      { label: "How to protect your identity for free", href: "/guides/how-to-protect-your-identity-for-free" },
+      { label: "Age verification explained", href: "/guides/age-verification-explained" },
+      { label: "Identity verification solutions compared", href: "/guides/identity-verification-solutions-compared" },
+      { label: "The Australian Government Digital ID System", href: "/guides/australian-government-digital-id-system" },
+    ],
+  },
+  {
     heading: "Help and support",
     links: [
       { label: "Help centre", href: "/help" },
@@ -97,6 +109,7 @@ export const FOOTER_COLUMNS: { heading: string; links: NavItem[] }[] = [
       { label: "Terms of use", href: "/terms-of-use" },
       { label: "Accessibility", href: "/accessibility" },
       { label: "Security", href: "/security" },
+      { label: "Media credits", href: "/media-credits" },
     ],
   },
 ];

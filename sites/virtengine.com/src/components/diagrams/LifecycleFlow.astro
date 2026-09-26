@@ -1,11 +1,12 @@
 ---
 /**
- * Marketplace lifecycle: order → bid → lease → usage → settlement.
+ * Marketplace lifecycle: order → match → lease → usage → settlement.
+ * "Match" is direct purchase at a listed price or competitive bidding.
  * Decorative inside DiagramFrame — the frame carries the aria-label.
  */
 const stages = [
   { x: 10, name: "order", note: "tenant posts\ndeployment" },
-  { x: 138, name: "bid", note: "providers\ncompete" },
+  { x: 138, name: "match", note: "direct price\nor open bid" },
   { x: 266, name: "lease", note: "escrow funded,\nworkload starts" },
   { x: 394, name: "usage", note: "signed usage\nrecords" },
   { x: 522, name: "settlement", note: "escrow released\nafter dispute window" },
@@ -59,6 +60,6 @@ const stages = [
     style="animation-delay:-1.2s"
   ></path>
   <text x="320" y="200" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" fill="var(--color-text-soft)">
-    agreed payment to provider &#183; 0% marketplace commission &#183; remaining escrow back to tenant
+    agreed payment to provider &#183; governed settlement fees &#183; remaining escrow back to tenant
   </text>
 </svg>

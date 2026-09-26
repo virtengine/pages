@@ -1,0 +1,116 @@
+---
+title: x/bme — BME module
+description: The x/bme module implements burn-and-mint supply operations, tying token issuance to verified human identities and demand.
+---
+
+The `x/bme` module implements burn-and-mint equilibrium mechanics: service
+payments burn tokens and issuance mints them, so supply equilibrates around
+real marketplace demand rather than a fixed emission schedule.
+
+Issuance itself is governed — mint schedules operate under issuance-policy
+bounds, and every parameter stays changeable only by governance.
+
+## What it does
+
+The bme module implements supply operations. The proposed issuance path is
+VEID-led: a 15-token batch is issued as eligible active verified humans
+accrue entitlement, with 14 tokens allocated to those humans and 1 token
+allocated to the Foundation-controlled genesis account. Staking rewards
+remain at a much lower proposed level.
+
+Initial supply is zero and there is no fixed maximum supply. New issuance is
+conditional on verified human identities. The in-repo simulation framework
+(pkg/economics) contains legacy inflation assumptions and requires alignment
+before it can validate this policy.
+
+Keeper hooks into escrow settlement and fee collection (`escrow.go`,
+`fee_collection.go`, `settlement.go`) tie burns and mints to the payment
+flows they respond to.
+
+## Why it exists
+
+A pure fixed-supply token disconnects the asset from the service it prices;
+unconstrained inflation destroys holder trust. BME ties supply mechanics to
+real consumption of compute, aligning the token's monetary dynamics with the
+marketplace it exists to serve.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Burn-and-mint equilibrium | A monetary design where service payments burn tokens and issuance mints them, equilibrating around real demand. |
+
+## Core flow
+
+1. **Verify — Humans verify.** Eligible active verified humans accrue
+   entitlement through VEID — issuance follows identity, not speculation.
+2. **Batch — 15-token batches issue.** Fourteen tokens to humans, one to the
+   genesis account, per the proposed path.
+3. **Reward — Security gets funded.** Issuance funds staking rewards alongside
+   the inflation mechanism, at a much lower proposed level than the prior
+   model.
+4. **Govern — Policy bounds everything.** Schedules, safeguards, and
+   parameters stay changeable only by governance.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgBurnMint` | Executes a paired burn-and-mint operation. |
+| `MsgMintACT` | Mints ACT through the module's issuance path. |
+| `MsgBurnACT` | Burns ACT out of circulation. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `Params` | Current module parameters. |
+| `Status` | The module's current issuance status. |
+| `VaultState` | The state of the module's token vault. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/take](/modules/take/) | Applies the governed marketplace settlement policy. |
+| [x/settlement](/modules/settlement/) | Settles escrow under the governed policy. |
+| [x/issuancepolicy](/modules/issuancepolicy/) | Mint schedules operate under governed issuance policy. |
+| [x/staking](/modules/staking/) | Issuance funds staking rewards alongside the inflation mechanism. |
+
+## Related documentation
+
+- [Tokenomics](/concepts/tokenomics/) — the supply design explained in
+  context.
+- [Take & BME](/concepts/take-and-bme/) — settlement policy and supply
+  mechanics side by side.
+- [Governance Staking](/concepts/governance-staking/) — how issuance funds
+  staking rewards.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is burn-and-mint equilibrium?
+
+A monetary design where service payments burn tokens and issuance mints them,
+equilibrating around real demand — connecting the asset to the service it
+prices. See [Tokenomics explained](/concepts/tokenomics/).
+
+### Is there a maximum supply?
+
+No fixed maximum and zero initial supply. New tokens issue only through
+verified human identities, with continued issuance as new identities are
+verified and the verified population grows.
+
+### What still needs work here?
+
+The in-repo simulation framework (pkg/economics) carries legacy inflation
+assumptions and requires alignment before it can validate the proposed
+policy — stated openly so analysts price the uncertainty correctly.
+
+:::note
+Message and query types are defined in `x/bme/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

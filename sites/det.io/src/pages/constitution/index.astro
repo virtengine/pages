@@ -6,11 +6,23 @@ import Section from "@components/Section.astro";
 import ClauseRef from "@components/ClauseRef.astro";
 import CTA from "@components/CTA.astro";
 import { CONSTITUTION_TOPICS } from "@data/constitution";
+import { SITE } from "@data/site";
+import { itemListNode } from "@lib/schema";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
   { name: "Constitution", href: "/constitution" },
 ];
+
+const constitutionListSchema = itemListNode(
+  new URL("/constitution", SITE.url).href,
+  "Constitution of DETIO FOUNDATION LTD — plain-language topics",
+  CONSTITUTION_TOPICS.map((topic) => ({
+    name: topic.title,
+    href: `/constitution/${topic.slug}`,
+    description: topic.summary,
+  })),
+);
 
 const parts = [
   ["Part 1", "Preliminary — name, type, definitions", "1–5"],
@@ -31,10 +43,12 @@ const parts = [
 ---
 
 <Base
-  title="Constitution explorer — DETIO FOUNDATION LTD | det.io"
-  description="A plain-language explorer of the signed constitution of DETIO FOUNDATION LTD: purpose, the public-benefit lock, members, directors, Protected Provisions, Reserved Matters, asset stewardship, protocol governance, and the charity-only winding-up rule — with exact clause citations."
+  title="Constitution Explorer: DETIO FOUNDATION LTD | det.io"
+  description="Plain-language explorer of DETIO FOUNDATION LTD's constitution: purposes, public-benefit lock, members, directors and winding-up. With clause citations."
   path="/constitution"
   breadcrumbs={breadcrumbs}
+  pageType="CollectionPage"
+  schema={[constitutionListSchema]}
 >
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero

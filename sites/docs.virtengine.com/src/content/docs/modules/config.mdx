@@ -1,0 +1,120 @@
+---
+title: x/config — Config module
+description: The x/config module holds chain-level configuration as governed state, including the approved-client list gating VEID identity submissions.
+---
+
+The `x/config` module holds chain-level configuration as governed state. Its
+highest-stakes entry is the approved-client list: the set of client
+interfaces permitted to submit identity data into VEID. Validators verify
+that identity submissions originate from an approved client and carry the
+user's signature before scoring them.
+
+Other operational parameters live here too, so that "how the chain is
+configured" is always a queryable, proposal-governed fact rather than an
+operator convention.
+
+## What it does
+
+The module stores configuration values as ordinary chain state, readable by
+anyone and changeable only through governance. The approved-client list is
+the centerpiece: clients are registered, updated, suspended, reactivated,
+and revoked as on-chain records, and enforcement reads that list at
+submission time.
+
+Two queries support the check directly — `ValidateClientSignature` and
+`ValidateClientVersion` — so validators can confirm a submission's origin
+and signature before any identity data is scored. Because the list and the
+parameters sit in state, "what is the chain configured to do" is answered by
+a query, not by inspecting an operator's files.
+
+## Why it exists
+
+The security of the identity pipeline depends on the integrity of capture
+software. Governing the approved-client list on-chain puts that trust
+decision where it belongs — with the network's stakeholders, under public
+proposal and vote — instead of with any single party.
+
+## Primary objects
+
+| Concept | Definition |
+| --- | --- |
+| Approved client | A governance-vetted client interface permitted to submit identity data. |
+| Governed parameter | A configuration value changeable only by on-chain proposal and vote. |
+
+## Core flow
+
+1. **Propose — A change is proposed.** Adding an approved client or
+   adjusting a parameter opens a public governance proposal.
+2. **Vote — Stakeholders decide.** The network's stakeholders vote — the
+   trust decision sits with them, not with any single party.
+3. **Store — Config lands in state.** The approved list and parameters
+   become queryable chain state that enforcement reads.
+4. **Enforce — Validator checks apply.** Identity submissions failing the
+   approved-client and signature checks are rejected before scoring.
+
+## Messages
+
+| Message | Purpose |
+| --- | --- |
+| `MsgRegisterApprovedClient` | Register a new approved client on the governance list. |
+| `MsgUpdateApprovedClient` | Update the record of an already registered approved client. |
+| `MsgSuspendApprovedClient` | Suspend an approved client, halting its standing. |
+| `MsgReactivateApprovedClient` | Reactivate a previously suspended approved client. |
+| `MsgRevokeApprovedClient` | Revoke an approved client from the list. |
+| `MsgUpdateParams` | Governance-only update of module parameters. |
+
+## Queries
+
+| Query | Purpose |
+| --- | --- |
+| `ApprovedClient` | A single registered approved client. |
+| `ApprovedClients` | The full approved-client list. |
+| `ApprovedClientsByStatus` | Approved clients filtered by lifecycle status. |
+| `ValidateClientSignature` | Check that a submission carries a valid client signature. |
+| `ValidateClientVersion` | Check a submitted client version against validation. |
+| `Params` | Current module parameters. |
+
+## Module interactions
+
+| Module | How they interact |
+| --- | --- |
+| [x/veid](/modules/veid/) | Identity submissions are accepted only from approved clients. |
+| [x/roles](/modules/roles/) | Configuration changes require authorized roles and governance. |
+| [x/issuancepolicy](/modules/issuancepolicy/) | Economic policy parameters live alongside operational config. |
+
+## Related documentation
+
+- [VEID Overview](/veid/overview/) — the identity pipeline approved clients
+  feed.
+- [Governance](/validators/governance/) — how proposals and votes carry
+  configuration changes.
+- [x/roles module](/modules/roles/) — the authorization model for
+  configuration changes.
+- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+
+## FAQ
+
+### What is the approved-client list?
+
+The set of client interfaces permitted to submit identity data into VEID — a
+governance-vetted list, because the security of the identity pipeline
+depends on the integrity of capture software.
+
+### Why does client approval live on-chain?
+
+It puts the trust decision where it belongs — with the network's
+stakeholders, under public proposal and vote — rather than with any single
+party distributing capture apps. See the [x/veid module](/modules/veid/).
+
+### What else is governed here?
+
+Operational parameters across the chain, so configuration is always a
+queryable, proposal-governed fact — role-authorized and, where required,
+MFA-protected. See the [Governance](/validators/governance/) guide.
+
+:::note
+Message and query types are defined in `x/config/types/` in the
+[virtengine repository](https://github.com/virtengine/virtengine). When this
+page and the code disagree, the code and its tests are authoritative — see
+[Clients & SDKs](/developers/sdk-and-clients/).
+:::

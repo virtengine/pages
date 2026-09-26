@@ -4,8 +4,38 @@
  * usage-reporting-settlement.md, hpc-*.md, veid/, README.md,
  * _docs/operations/mainnet-go-no-go-decision.md. No invented figures.
  */
+import type { MediaSlug } from "@data/media";
+import { MARKETPLACE_LEARN } from "./learn-marketplace";
 
 export type LearnDiagram = "lifecycle" | "settlement" | "veid" | "staking" | "architecture" | "waldur";
+
+/**
+ * A visual rendered in the article body, above the prose sections. These are
+ * the interactive figures the marketplace layer is built from; each one has a
+ * complete text alternative and renders semantic HTML underneath.
+ */
+export type LearnVisualKind =
+  | "lifecycle"
+  | "acquisition"
+  | "atlas"
+  | "listing-anatomy"
+  | "service-comparison"
+  | "settlement-rail"
+  | "order-anatomy"
+  | "responsibility"
+  | "fulfilment"
+  | "meters";
+
+export interface LearnVisual {
+  kind: LearnVisualKind;
+  /** Full text alternative for the figure (required). */
+  label: string;
+  caption?: string;
+  /** Fulfilment-flow nodes when kind is "fulfilment". */
+  nodes?: string[];
+  kinds?: Record<string, "protocol" | "provider">;
+  meters?: { label: string; value: string; percent: number }[];
+}
 
 export interface LearnScreenshot {
   src: string;
@@ -27,6 +57,25 @@ export interface LearnSection {
   bullets?: string[];
 }
 
+/** One page-level FAQ entry. */
+export interface LearnFaq {
+  question: string;
+  answer: string;
+  links?: { label: string; href: string }[];
+}
+
+/**
+ * One step of the interactive overview stepper. The panel links into the
+ * full article section via `href` (a `#section-id` anchor), so the stepper
+ * is a navigable map rather than duplicated prose.
+ */
+export interface LearnJourneyStep {
+  label: string;
+  title: string;
+  body: string;
+  href: string;
+}
+
 export interface LearnEntry {
   slug: string;
   title: string;
@@ -39,10 +88,23 @@ export interface LearnEntry {
   /** Optional site diagram rendered after the intro. */
   diagram?: LearnDiagram;
   diagramCaption?: string;
+  /** Interactive marketplace visuals rendered after the intro. */
+  visuals?: LearnVisual[];
+  /** Render the marketplace glossary (definition list) instead of prose. */
+  glossary?: boolean;
   screenshots?: LearnScreenshot[];
   sources?: LearnSource[];
   sections: LearnSection[];
   related: { label: string; href: string }[];
+  /** Brand photography for the hero. */
+  media: MediaSlug;
+  mediaCaption: string;
+  /** Four key takeaways rendered as a checklist card under the hero. */
+  takeaways: string[];
+  /** Page-level FAQ rendered as an accordion. */
+  faqs: LearnFaq[];
+  /** Optional overview stepper for pipeline-structured guides. */
+  journey?: LearnJourneyStep[];
 }
 
 export const LEARN: LearnEntry[] = [
@@ -51,52 +113,84 @@ export const LEARN: LearnEntry[] = [
     title: "How the VirtEngine marketplace works",
     label: "How the marketplace works",
     metaDescription:
-      "A walkthrough of VirtEngine's Waldur-connected marketplace: a multi-service catalogue, custom offerings, orders, bids, leases, usage reporting, and settlement.",
+      "How VirtEngine's Waldur-connected marketplace works: multi-service catalogue, three acquisition paths (direct, bid, selector), leases, usage reporting and settlement.",
     kicker: "Marketplace fundamentals",
     intro:
-      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, bid, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees.",
+      "VirtEngine combines a Waldur-connected, multi-service catalogue with a five-stage protocol lifecycle: order, match, lease, usage, settlement. Waldur makes private clouds, storage, VMs and fully custom provider offerings available in one self-service surface; the protocol supplies identity, exchange and settlement guarantees. Match runs three acquisition paths: buy a named offering outright at its listed price (direct), open the order to competitive bids, or describe requirements and get matched to the best eligible listing (selector).",
     diagram: "lifecycle",
-    diagramCaption: "The five-stage marketplace lifecycle: order → bid → lease → usage → settlement",
+    diagramCaption: "The five-stage marketplace lifecycle: order → match → lease → usage → settlement",
+    visuals: [
+      {
+        kind: "lifecycle",
+        label:
+          "Interactive five-stage lifecycle rail. Order: the tenant describes demand and funds escrow. Match: direct purchase at a listed price, competing bids, or attribute matching. Lease: the match binds tenant, provider and escrow. Usage: the provider measures and signs consumption. Settlement: validated usage releases escrowed funds after the dispute window. Selecting a stage shows what the tenant does, what the provider does, what becomes protocol state, and what stays off-chain.",
+        caption: "The five stages, with the responsibility split at each one.",
+      },
+      {
+        kind: "acquisition",
+        label:
+          "Interactive comparison of the three acquisition paths — direct order, open bid and selector — with an illustrative figure per path and a comparison table covering who chooses the provider, how price is set, whether bids are awaited and the best use of each path.",
+        caption: "Match runs three ways. One market rail.",
+      },
+      {
+        kind: "settlement-rail",
+        label:
+          "One settlement rail diagram: GPU VMs, managed Kubernetes, databases, HPC jobs, software plans, support services and custom listings all feed a single path from usage or agreed component through validated signed records to settlement and escrow release.",
+        caption: "Many service types, one settlement rail.",
+      },
+    ],
     sections: [
       {
         heading: "Stage 1 — Order: describing what you need",
         paragraphs: [
-          "A tenant can begin from a Waldur marketplace offering: a private cloud, storage service, VM, accelerator-backed service, or a provider's fully custom listing. Where a workload deployment is needed, x/deployment carries its declarative description in groups with CPU, memory, storage, accelerator and placement requirements.",
-          "Creating the deployment emits orders into the market module (x/market). An order is the marketplace's demand signal: a structured, on-chain request that any qualifying provider can compete for. The tenant also funds an escrow account at this point, so the market can see the demand is backed by real budget.",
+          "A tenant can begin from a catalogue offering: a private cloud, storage service, VM, accelerator-backed service, or a provider's fully custom listing. Where a workload deployment is needed, x/deployment carries its declarative description in groups with CPU, memory, storage, accelerator and placement requirements.",
+          "The order is the demand signal: a structured, on-chain request that either names one offering at its listed price or opens demand providers can bid on. Escrow is funded at this point, so the market can see the demand is backed by real budget.",
         ],
       },
       {
-        heading: "Stage 2 — Bid: providers compete",
+        heading: "Stage 2 — Match: three acquisition paths",
         paragraphs: [
-          "Provider daemons — the off-chain agents operators run inside their datacenters, clouds, and HPC facilities — watch the chain for open orders that match their registered capacity and attributes. When one appears, the daemon prices it against the operator's configured strategy and places a bid.",
-          "Bids are on-chain objects too: priced offers that must satisfy the order's resource and attribute requirements to be valid. Multiple providers bidding against the same order is the mechanism that sets prices — competition per order, not per contract cycle.",
+          "Direct orders resolve immediately against the named offering — no waiting, no auction. Open orders collect bids from provider daemons, which price the work against their configured strategy; valid bids must satisfy the order's resource and attribute requirements.",
+          "The tenant can accept a bid, or let the matching engine auto-resolve to the best-ranked offer when the bidding window closes. Selector orders name no provider at all: category, region, minimum specifications and a maximum price are resolved deterministically within that cap.",
+        ],
+        bullets: [
+          "Direct — published price, immediate match, no bidding window.",
+          "Open bid — competing on-chain bids, accepted or auto-resolved.",
+          "Selector — request-for-quote semantics without the negotiation round-trip.",
         ],
       },
       {
         heading: "Stage 3 — Lease: the match becomes a contract",
         paragraphs: [
-          "The tenant accepts a winning bid and the match becomes a lease — the on-chain contract binding one tenant, one provider, and one escrow account. The VE–Waldur API passes the agreed service into the appropriate fulfilment path. That can be Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
+          "The match becomes a lease: the on-chain contract binding one tenant, one provider, and one escrow account. The Waldur integration passes the agreed service into the appropriate fulfilment path — Kubernetes for containerized services, a scheduler adapter (SLURM, MOAB, Open OnDemand) for HPC jobs, or a provider-defined integration for a custom offering.",
           "Off-chain communication between tenant and provider — delivering the workload manifest, fetching status — is mutually authenticated with TLS certificates anchored on-chain by x/cert.",
         ],
       },
       {
         heading: "Stage 4 — Usage: metering with signatures",
         paragraphs: [
-          "While the workload runs, the provider daemon meters per-workload resource consumption on an hourly cadence. Metrics are processed into usage records, screened by anomaly detection, and submitted to the chain in signed batches (MsgRecordUsage) with retry and backoff.",
-          "Reconciliation runs alongside — cross-checking reported usage against platform metrics on a six-hour default interval and flagging discrepancies above threshold.",
+          "The provider daemon meters per-workload consumption on an hourly cadence. Metrics become usage records, screened by anomaly detection and submitted in signed batches (MsgRecordUsage) with retry and backoff.",
+          "Reconciliation runs alongside — cross-checking reported usage against platform metrics on a six-hour default interval and flagging discrepancies above threshold. A record that never gets signed never becomes billable.",
         ],
       },
       {
         heading: "Stage 5 — Settlement: usage becomes payment",
         paragraphs: [
-          "The settlement module (x/settlement) validates each usage record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window during which either party can raise corrections; after it closes, line items settle against the lease's escrow.",
-          "Funds transfer from escrow to the provider at the agreed lease price. There is no protocol commission or platform fee on marketplace settlement; low validator transaction fees apply only to the on-chain messages that create, operate and settle the lease. When the deployment closes, any unspent escrow returns to the tenant. No invoices were created, and no one had to trust the other side's accounting.",
+          "The settlement module (x/settlement) validates each record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window where either party can raise corrections; after it closes, line items settle against the lease's escrow.",
+          "Funds transfer to the provider at the agreed lease price under the governed settlement fee policy — protocol parameters set by governance, not a private platform margin. When the deployment closes, unspent escrow returns to the tenant.",
+        ],
+      },
+      {
+        heading: "Fulfilment",
+        paragraphs: [
+          "The chain does not provision infrastructure. After the lease binds tenant, provider and escrow, the provider daemon routes the matched request into the provider control plane, which invokes the configured backend.",
+          "Provision, resize, suspend, resume and terminate are asynchronous. Each outcome returns as an authenticated callback before it becomes correlated lease state. Operational dashboards remain views; protocol payout follows the lease.",
         ],
       },
       {
         heading: "Why this design holds up",
         paragraphs: [
-          "Each stage hands off to the next with a verifiable artifact: orders backed by escrow, bids validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts — the marketplace's guarantees are protocol properties, not platform policies.",
+          "Each stage hands off with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts.",
         ],
       },
     ],
@@ -106,162 +200,79 @@ export const LEARN: LearnEntry[] = [
       { label: "Become a provider", href: "/providers" },
       { label: "Cost-optimized cloud", href: "/solutions/cost-optimized-cloud" },
     ],
-  },
-  {
-    slug: "waldur-and-virtengine",
-    title: "How Waldur and VirtEngine work together",
-    label: "Waldur + VirtEngine",
-    metaDescription:
-      "A visual guide to the Waldur and VirtEngine integration: HomePort, MasterMind, offering synchronization, order routing, resource lifecycle, usage, and on-chain settlement.",
-    kicker: "Control-plane integration",
-    intro:
-      "Waldur gives cloud and HPC users a mature catalogue, project workspace, resource console and reporting interface. VirtEngine adds the decentralized market: provider registration, competitive bids, leases, identity, escrow and settlement. The provider daemon is the bridge that keeps chain state and the Waldur control plane correlated.",
-    diagram: "waldur",
-    diagramCaption:
-      "The responsibility boundary: VirtEngine coordinates the verifiable market; the provider daemon translates and reconciles; Waldur presents and operates the service catalogue.",
-    screenshots: [
+    media: "marketplace-hardware",
+    mediaCaption: "Demand meets capacity on one exchange.",
+    takeaways: [
+      "Five stages, one lifecycle: order → match → lease → usage → settlement.",
+      "Match runs three ways: direct at a listed price, open to competing bids, or resolved by attributes.",
+      "Every stage produces a verifiable artifact — orders backed by escrow, signed usage, rule-bound settlement.",
+      "Both counterparties are VEID-verified before anything starts.",
+      "Settlement fees are governance-set protocol parameters; unspent escrow returns to the tenant.",
+    ],
+    faqs: [
       {
-        src: "/media/waldur/marketplace.webp",
-        alt: "Waldur HomePort marketplace showing service categories, providers, orders, search and offering cards",
-        title: "Marketplace catalogue",
-        caption:
-          "HomePort gives users a searchable service catalogue. In a VirtEngine deployment, the provider daemon correlates these Waldur offerings with their on-chain offering identifiers.",
-        sourceHref: "https://waldur.com/#screenshots",
+        question: "Where do I start — Waldur or the chain?",
+        answer:
+          "Either. Tenants can begin from a Waldur offering and buy it outright at its listed price; the protocol client creates the verifiable market order and the lease is correlated with a Waldur order for fulfilment. Open bidding is available when you want price discovery instead, and selector orders match eligible listings by attribute and price cap. Match selection and escrow never leave the chain.",
+        links: [{ label: "Waldur + VirtEngine", href: "/waldur" }],
       },
       {
-        src: "/media/waldur/project-workspace.webp",
-        alt: "Waldur HomePort project dashboard showing costs, team size, usage and aggregated limits",
-        title: "Project workspace",
-        caption:
-          "Projects group people, resources, orders, limits and operational cost views. VirtEngine leases and provider allocations can be surfaced in the same workspace.",
-        sourceHref: "https://waldur.com/#screenshots",
+        question: "Who sets the price?",
+        answer:
+          "The offering's published price for direct orders; competing providers for open bid orders; the best eligible listing within your cap for selector orders. Bids must satisfy the order's resource and attribute requirements, and multiple bids against one order is the price-setting mechanism for that mode — competition per order, not per contract cycle.",
       },
       {
-        src: "/media/waldur/resource-details.png",
-        alt: "Waldur HomePort private cloud resource detail showing status, quotas, compute, network and storage usage",
-        title: "Resource lifecycle and quotas",
-        caption:
-          "Waldur remains the provider-side operational console for resource state, quotas and actions while signed callbacks return lifecycle outcomes to the bridge.",
-        sourceHref: "https://docs.waldur.com/latest/developer-guide/homeport/",
+        question: "What happens when usage numbers are disputed?",
+        answer:
+          "Records sit in a 24-hour window where either party can raise corrections. Disputes escalate through support intake, and to fraud handling where misconduct is alleged — while anomaly detection screens records before they ever reach the chain.",
+        links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
       },
       {
-        src: "/media/waldur/reporting.webp",
-        alt: "Waldur HomePort reporting screen showing providers, offerings, plans and active resource counts",
-        title: "Usage and reporting",
-        caption:
-          "Waldur exposes operational and accounting reports. VirtEngine separately turns signed usage records into protocol settlement against escrow.",
-        sourceHref: "https://waldur.com/#screenshots",
+        question: "How do tenant and provider communicate off-chain?",
+        answer:
+          "Through mutually authenticated channels: delivering manifests, fetching status, and reaching services all ride TLS connections anchored on-chain by x/cert.",
+        links: [{ label: "x/cert module", href: "/modules/cert" }],
       },
     ],
-    sections: [
+    journey: [
       {
-        heading: "One marketplace, two distinct responsibilities",
-        paragraphs: [
-          "Waldur is the service-management control plane. Its HomePort web application talks to the MasterMind API to manage organizations, projects, offerings, orders, resources, quotas, usage views and provider integrations. Waldur's own marketplace follows a uniform offering → order → resource pipeline across OpenStack, SLURM, Rancher, VMware, Azure, scripted services, remote Waldur deployments and site-agent plugins.",
-          "VirtEngine is the consensus and settlement layer. Its chain records provider and offering state, orders, bids, leases, identity checks, escrow and settlement. It does not replace Waldur's cloud UI or backend plugins; it makes the commercial relationship between otherwise independent tenants and providers verifiable on-chain.",
-        ],
+        label: "Order",
+        title: "Post demand backed by budget",
+        body: "A deployment emits a structured on-chain order; the tenant funds escrow so the market sees real budget behind the demand.",
+        href: "#stage-1-order-describing-what-you-need",
       },
       {
-        heading: "The bridge is part of the provider daemon",
-        paragraphs: [
-          "The integration code lives in pkg/waldur and pkg/provider_daemon. The Waldur client lists and creates offerings, creates and tracks orders, manages resources and lifecycle actions, and submits component usage. The provider daemon subscribes to marketplace events and translates the relevant state into Waldur API operations.",
-          "Offering synchronization is chain-to-Waldur. When enabled, the worker maps an on-chain offering to a Waldur provider offering, persists the mapping, retries transient failures and periodically reconciles drift. The on-chain offering ID is retained as the backend cross-reference, so a polished catalogue card never becomes detached from the protocol object it represents.",
-        ],
+        label: "Match",
+        title: "Direct purchase or competitive bid",
+        body: "Named offerings match immediately at the listed price; open orders collect bids and resolve to the best-ranked offer.",
+        href: "#stage-2-match-three-acquisition-paths",
       },
       {
-        heading: "What a tenant experiences",
-        paragraphs: [
-          "A tenant can discover services through a branded HomePort catalogue and work inside familiar organization and project boundaries. Categories, plans, components, limits and custom order fields turn provider capacity into understandable products instead of raw infrastructure APIs.",
-          "The current VirtEngine code is strongest on chain-to-Waldur orchestration: the protocol client creates the verifiable market order, providers bid, and a selected lease is correlated with a Waldur order or resource for fulfilment. HomePort then becomes the day-to-day resource console for status, quotas, access details and supported actions. A deployment can expose more of the ordering path in HomePort, but that does not move bid selection or escrow out of the chain.",
-        ],
+        label: "Lease",
+        title: "The match becomes a contract",
+        body: "One tenant, one provider, one escrow account — fulfilment routes to Kubernetes, a scheduler adapter, or a custom integration.",
+        href: "#stage-3-lease-the-match-becomes-a-contract",
       },
       {
-        heading: "What a provider operates",
-        paragraphs: [
-          "The provider publishes capacity and pricing into VirtEngine, configures the Waldur organization, categories and backend integration, and runs the provider daemon with both chain and Waldur credentials. The bridge keeps the catalogue synchronized and routes the matched service request to the correct Waldur offering and project.",
-          "Waldur then invokes the configured processor: OpenStack for tenants, VMs, volumes and networks; SLURM or site agent for HPC allocations; Rancher for Kubernetes; or a custom processor for a provider-defined service. This is why Waldur is valuable here: VirtEngine does not need to embed every infrastructure-specific workflow into consensus code.",
-        ],
+        label: "Usage",
+        title: "Metered, signed, screened",
+        body: "Hourly metering with anomaly detection, signed batches with retry and backoff, and six-hour reconciliation against platform metrics.",
+        href: "#stage-4-usage-metering-with-signatures",
       },
       {
-        heading: "Lifecycle updates return as authenticated events",
-        paragraphs: [
-          "Provision, resize, suspend, resume and terminate operations are asynchronous. The bridge includes callback URLs and idempotency keys in Waldur actions, tracks the expected operation, and maps Waldur order and resource states back to VirtEngine allocation states.",
-          "The callback handler is designed for an adversarial boundary: signatures are required by default, payload size is bounded, timestamps expire, nonces are tracked to reject replay, signer allow-lists can be enforced, and accepted callbacks can be submitted through a durable chain mutation sink. A green status badge in HomePort therefore becomes protocol state only after the bridge has validated and correlated it.",
-        ],
+        label: "Settlement",
+        title: "Records become payment",
+        body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout under the governed fee policy — and unspent funds return.",
+        href: "#stage-5-settlement-usage-becomes-payment",
       },
-      {
-        heading: "Usage is visible in Waldur and settled by VirtEngine",
-        paragraphs: [
-          "Waldur offerings define measurable components such as CPU-hours, GPU-hours, RAM GB-hours, storage and network transfer. The VirtEngine Waldur client can submit those component readings against the correlated resource, which makes provider and project reporting useful for operators and customers.",
-          "The decentralized payment path remains separate. Signed usage records are validated against the VirtEngine lease, pass through the dispute window, and settle against on-chain escrow. Waldur's invoices, estimates and dashboards are operational views; they do not override the lease price or authorize a protocol payout.",
-        ],
-      },
-      {
-        heading: "A practical end-to-end walkthrough",
-        paragraphs: [],
-        bullets: [
-          "Publish: a provider registers an offering on-chain; the sync worker creates or updates the corresponding Waldur offering and stores both identifiers.",
-          "Discover: the service appears in HomePort with a category, plan, limits, measured components and provider details.",
-          "Match: a VirtEngine order receives competing bids; the tenant selects one and the lease binds provider, tenant and escrow.",
-          "Provision: the provider daemon routes the matched request to Waldur, which invokes the configured cloud, HPC or custom processor.",
-          "Operate: HomePort exposes resource state and actions; authenticated callbacks keep the bridge and chain allocation correlated.",
-          "Measure: component usage is visible in Waldur and submitted into VirtEngine's signed usage and settlement pipeline.",
-          "Settle: after validation and the dispute window, VirtEngine releases the agreed amount from escrow and returns unused funds when the deployment closes.",
-        ],
-      },
-      {
-        heading: "What is implemented, and what still depends on deployment",
-        paragraphs: [
-          "The repository contains the Waldur API client, marketplace and resource operations, automatic offering synchronization, order routing, lifecycle control, callback verification, usage submission and provider-daemon wiring. Those are real code paths, not a design-only diagram.",
-          "Production availability still depends on operator configuration: Waldur credentials and organization IDs, category mappings, callback TLS and signer policy, durable chain submission, a supported backend plugin, and deployment-specific certification. An integration present in upstream Waldur is not automatically a certified VirtEngine provider adapter.",
-        ],
-      },
-    ],
-    sources: [
-      {
-        label: "Waldur marketplace model",
-        detail: "Official offering, order, resource, plugin and policy concepts",
-        href: "https://docs.waldur.com/latest/about/concepts/marketplace/",
-      },
-      {
-        label: "Waldur HomePort",
-        detail: "Official browser UI, accessibility and mobile requirements",
-        href: "https://docs.waldur.com/latest/developer-guide/homeport/",
-      },
-      {
-        label: "Waldur screenshots",
-        detail: "Official Marketplace, project and reporting interface gallery",
-        href: "https://waldur.com/#screenshots",
-      },
-      {
-        label: "VirtEngine Waldur client",
-        detail: "Marketplace, lifecycle and usage API implementation",
-        href: "https://github.com/virtengine/virtengine/tree/main/pkg/waldur",
-      },
-      {
-        label: "VirtEngine provider bridge",
-        detail: "Offering sync, event routing and authenticated callbacks",
-        href: "https://github.com/virtengine/virtengine/tree/main/pkg/provider_daemon",
-      },
-      {
-        label: "Integration status overview",
-        detail: "Implemented, upstream and planned capability boundaries",
-        href: "/waldur",
-      },
-    ],
-    related: [
-      { label: "Waldur integration overview", href: "/waldur" },
-      { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
-      { label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" },
-      { label: "Become a provider", href: "/providers" },
     ],
   },
   {
     slug: "escrow-and-settlement-explained",
-    title: "Escrow and settlement, explained",
+    title: "Escrow & Settlement Explained: No Invoices",
     label: "Escrow & settlement",
     metaDescription:
-      "How VirtEngine replaces invoicing with protocol machinery: escrow accounts, hourly usage records, the 24-hour dispute window, anomaly detection, and automatic payout.",
+      "How VirtEngine replaces invoicing: escrow accounts, hourly usage records, 24-hour dispute window, anomaly detection and automatic payout.",
     kicker: "Payments architecture",
     intro:
       "The hardest problem in any compute marketplace is not matching — it's money. Who holds the funds? Who verifies the meter? What happens when the numbers are disputed? VirtEngine answers all three with protocol machinery: escrow, signed usage reporting, and windowed settlement.",
@@ -291,7 +302,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Settlement and payout",
         paragraphs: [
-          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount: VirtEngine applies no protocol take or marketplace commission. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
+          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount under the governed fee policy — protocol parameters set by governance, not a private platform take. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
         ],
       },
       {
@@ -307,13 +318,71 @@ export const LEARN: LearnEntry[] = [
       { label: "Provider economics", href: "/learn/provider-economics" },
       { label: "How the marketplace works", href: "/learn/how-the-marketplace-works" },
     ],
+    media: "settlement-ledger",
+    mediaCaption: "Metered usage, settled from escrow.",
+    takeaways: [
+      "Escrow is commitment without transfer — provably funded, movable only under settlement rules.",
+      "Meters collect hourly; records are signed, anomaly-screened, and reconciled every six hours.",
+      "Every record waits out a 24-hour dispute window before it can settle.",
+      "Payout follows the governed settlement fee policy; unspent escrow returns to the tenant.",
+    ],
+    faqs: [
+      {
+        question: "What happens if escrow runs dry?",
+        answer:
+          "Leases close for non-payment and service stops. If a deployment closes with balance remaining, it returns to the tenant — funds are committed, never stranded.",
+      },
+      {
+        question: "What are the metering pipeline defaults?",
+        answer:
+          "One-hour settlement intervals, batches of ten records, three retry attempts, and a reconciliation pass every six hours cross-checking chain-reported usage against platform metrics with a configurable discrepancy threshold.",
+        links: [{ label: "x/settlement module", href: "/modules/settlement" }],
+      },
+      {
+        question: "Who can dispute a usage record?",
+        answer:
+          "Either party, inside the 24-hour window. Disputed records escalate through support intake, and to fraud handling where misconduct is alleged.",
+        links: [{ label: "x/escrow module", href: "/modules/escrow" }],
+      },
+      {
+        question: "What does the provider actually receive?",
+        answer:
+          "The agreed settlement amount from escrow under the governed fee policy — protocol parameters, not a private platform take. Only chain-message transaction fees otherwise apply, proposed at approximately 90% below standard network transaction fees.",
+      },
+    ],
+    journey: [
+      {
+        label: "Escrow",
+        title: "Fund commitment, not payment",
+        body: "The tenant funds x/escrow at deployment creation; providers verify collateral exists before serving a single hour.",
+        href: "#escrow-commitment-without-transfer",
+      },
+      {
+        label: "Meter",
+        title: "Hourly signed records",
+        body: "The collector runs hourly; anomaly detection screens output; signed batches submit with retry and backoff.",
+        href: "#the-metering-pipeline",
+      },
+      {
+        label: "Dispute",
+        title: "24 hours to correct",
+        body: "Nothing settles immediately. Corrections come from either party; misconduct escalates to fraud handling.",
+        href: "#the-24-hour-dispute-window",
+      },
+      {
+        label: "Settle",
+        title: "Line items become payout",
+        body: "Validated records price into line items and draw down escrow under the governed fee policy — full audit trail from meter to payment.",
+        href: "#settlement-and-payout",
+      },
+    ],
   },
   {
     slug: "tokenomics-explained",
-    title: "VirtEngine tokenomics, explained",
+    title: "VirtEngine Tokenomics: Supply & Rewards",
     label: "Tokenomics",
     metaDescription:
-      "The proposed VirtEngine economic model: identity-led issuance, conservative staking rewards, and governance-controlled parameters.",
+      "VirtEngine tokenomics 2026: identity-led issuance from zero supply, conservative staking rewards and governance-controlled parameters.",
     kicker: "Economics",
     intro:
       "VirtEngine's proposed economic model recognizes sustained, unique verified identity while retaining a conservative staking component for network security. Parameters are governance-controlled and may change before or after launch.",
@@ -378,13 +447,45 @@ export const LEARN: LearnEntry[] = [
       { label: "For token holders", href: "/solutions/token-holders" },
       { label: "Governance guide", href: "/learn/governance-guide" },
     ],
+    media: "identity-document",
+    mediaCaption: "Issuance that follows verified humans, not a schedule.",
+    takeaways: [
+      "Initial supply is zero; issuance follows verified human identities — no premine, no cap.",
+      "VEID batches mint 15 tokens: 14 to eligible humans, 1 to the Foundation genesis account.",
+      "Staking rewards continue at a proposed ~90% lower level — governed, never promised yield.",
+      "Every parameter — threshold, activity rules, ratios, schedules — is amendable by consensus.",
+    ],
+    faqs: [
+      {
+        question: "Is there a fixed maximum supply?",
+        answer:
+          "No. New tokens issue only as unique human identities verify, and continue as the verified population grows — supply follows participation, not a schedule.",
+      },
+      {
+        question: "What is the 50-year illustration?",
+        answer:
+          "The working illustration for allocation accrual: a 50-year horizon with a quarterly sign-in activity check. Inactive accounts pause future minting until they again meet the protocol rules — and the threshold, activity definition, and duration can all change by consensus.",
+      },
+      {
+        question: "Does the Foundation get a premine?",
+        answer:
+          "No. The genesis account starts at zero; its allocation comes from eligible VEID issuance batches — 1 token in each 15-token batch — a governed parameter updatable through consensus.",
+        links: [{ label: "x/bme module", href: "/modules/bme" }],
+      },
+      {
+        question: "Do TestNet tokens carry into MainNet?",
+        answer:
+          "No guarantee. TestNet parameters, tokens, and state are pre-production. Final parameters should be checked against published governance decisions.",
+        links: [{ label: "Mainnet roadmap", href: "/learn/mainnet-roadmap" }],
+      },
+    ],
   },
   {
     slug: "what-is-veid",
     title: "What is VEID (Verifiable Electronic Identity)?",
     label: "What is VEID?",
     metaDescription:
-      "VEID is VirtEngine's privacy-preserving identity layer: on-device capture, active liveness, biometric hardware attestation, validator consensus scoring, and zero-knowledge proofs.",
+      "VEID explained: VirtEngine's privacy-preserving identity layer with on-device capture, liveness, hardware attestation, validator scoring and ZK proofs.",
     kicker: "Identity layer",
     intro:
       "VEID turns identity verification into a protocol function. Instead of outsourcing KYC to a company that warehouses your documents, VirtEngine's validator set scores encrypted identity evidence by consensus — and users prove facts about the result with zero-knowledge proofs, revealing nothing else.",
@@ -430,6 +531,64 @@ export const LEARN: LearnEntry[] = [
       { label: "x/veid module", href: "/modules/veid" },
       { label: "x/encryption module", href: "/modules/encryption" },
       { label: "For validators", href: "/solutions/validators" },
+    ],
+    media: "identity-liveness",
+    mediaCaption: "Proof of a present human, computed on-device.",
+    takeaways: [
+      "Evidence is captured on-device — documents, liveness, biometrics, device integrity — and sealed before it leaves the phone.",
+      "Only governance-approved clients may submit; client and user both sign.",
+      "Validators decrypt, score with shared models, and commit trust scores by consensus (patent AU2024203136B2).",
+      "Counterparties learn only ZK-proven facts — never documents, biometrics, or scores.",
+    ],
+    faqs: [
+      {
+        question: "What actually leaves my phone?",
+        answer:
+          "Only encrypted identity scopes — never raw documents or biometrics. The public ledger carries ciphertext and committed scores, nothing else.",
+      },
+      {
+        question: "What is active liveness?",
+        answer:
+          "Challenge–response selfie checks that defeat photos, replays, and injection attacks — proven on-device before anything is sealed into a scope.",
+      },
+      {
+        question: "Can anyone build a VEID client?",
+        answer:
+          "Anyone can build, but only governance-approved clients on the x/config list may submit identity data — capture-software integrity is a stakeholder vote, not an assumption.",
+        links: [{ label: "x/veid module", href: "/modules/veid" }],
+      },
+      {
+        question: "Where is the consumer program?",
+        answer:
+          "Presented at identity.org.au; protocol-side documentation lives at docs.virtengine.com. The reference wallet implementation is mobile/veid-capture-app/ in the protocol repo.",
+        links: [{ label: "VEID overview page", href: "/veid" }],
+      },
+    ],
+    journey: [
+      {
+        label: "Capture",
+        title: "Evidence on-device",
+        body: "Documents with OCR, active-liveness selfie, biometric and device attestation — sealed into encrypted scopes before anything leaves the phone.",
+        href: "#capture-happens-on-your-device",
+      },
+      {
+        label: "Submit",
+        title: "Approved clients only",
+        body: "Submissions need the governance-approved client list and dual signatures — client and user — verified before any scoring.",
+        href: "#only-approved-clients-may-submit",
+      },
+      {
+        label: "Score",
+        title: "Consensus scoring",
+        body: "Validators decrypt with their keys, evaluate with shared ML models, and commit trust scores — the patented identity-consensus method.",
+        href: "#validators-score-by-consensus",
+      },
+      {
+        label: "Prove",
+        title: "Zero-knowledge disclosure",
+        body: "Prove a threshold or attribute — age range, residency — without revealing the document, the biometric, or the score itself.",
+        href: "#zero-knowledge-disclosure",
+      },
     ],
   },
   {
@@ -489,28 +648,60 @@ export const LEARN: LearnEntry[] = [
       { label: "x/staking module", href: "/modules/staking" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
     ],
+    media: "staking-security",
+    mediaCaption: "Bonded stake, and the conditions that guard it.",
+    takeaways: [
+      "Equivocation and extended downtime are the slashable offenses — basis-point penalties on bonded stake.",
+      "Delegators underwrite their validator: delegated stake slashes alongside self-bond.",
+      "Unbonding takes 21 days — no rewards, still slashable for prior offenses.",
+      "Commission is the least informative number; evaluate uptime, key custody, self-bond, ML capacity, and governance.",
+    ],
+    faqs: [
+      {
+        question: "What is equivocation?",
+        answer:
+          "Signing two different blocks at the same height — the cardinal consensus sin — carrying slashing penalties on bonded stake.",
+      },
+      {
+        question: "Does slashing touch delegators?",
+        answer:
+          "Yes. Delegation is underwriting, not lending: your stake shares the validator's liability for equivocation and extended downtime.",
+        links: [{ label: "For staking partners", href: "/solutions/staking-partners" }],
+      },
+      {
+        question: "Why does unbonding take 21 days?",
+        answer:
+          "It makes long-range attacks expensive. During the window your stake earns no rewards and remains slashable for offenses the validator committed while your stake was bonded.",
+      },
+      {
+        question: "How is slashing different from fraud enforcement?",
+        answer:
+          "Slashing punishes validator protocol violations. Tenant and provider misconduct flows through the fraud module instead.",
+        links: [{ label: "x/fraud module", href: "/modules/fraud" }],
+      },
+    ],
   },
   {
     slug: "provider-economics",
-    title: "Provider economics on VirtEngine",
+    title: "Provider Economics: Revenue & Pricing",
     label: "Provider economics",
     metaDescription:
-      "The revenue model for VirtEngine providers: bid pricing, escrow-backed leases, zero marketplace commission, low validator transaction fees, and how benchmarks, audits, and reviews raise realised prices.",
+      "The revenue model for VirtEngine providers: listing and bid pricing, escrow-backed leases, governed settlement fees, low chain fees, plus how benchmarks and audits lift prices.",
     kicker: "Economics",
     intro:
       "A provider's business on VirtEngine reduces to three questions: what does capacity earn, what does the protocol charge, and what raises realized prices over time? The answers are unusually legible, because every term is chain state.",
     sections: [
       {
-        heading: "Revenue: bids you price, escrow that pays",
+        heading: "Revenue: prices you set, escrow that pays",
         paragraphs: [
-          "You set bid pricing strategy in the provider daemon; the marketplace matches it against demand. Every lease you win is backed by escrow funded before the workload starts — verifiable on-chain — so revenue risk is settled before capacity is committed.",
+          "You publish list prices for direct orders, and configure bid strategy in the provider daemon for orders opened to competition; the marketplace matches both against demand. Every lease you win is backed by escrow funded before the workload starts — verifiable on-chain — so revenue risk is settled before capacity is committed.",
           "Usage is metered hourly and settles automatically after the 24-hour dispute window. There is no invoicing, no collections, and no accounts-receivable aging: settled usage is settled money.",
         ],
       },
       {
         heading: "Costs: validator fees and operations",
         paragraphs: [
-          "VirtEngine charges 0% marketplace commission: settlement releases the agreed lease amount from escrow without a platform deduction. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
+          "Settlement fees are protocol parameters set by governance — not a private platform deduction — and the agreed lease amount releases from escrow under that policy. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
         ],
       },
       {
@@ -534,7 +725,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "A worked lifecycle",
         paragraphs: [
-          "A tenant posts an order; your daemon bids your configured price; the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount, with no marketplace commission deducted. Your track record grows by one more served lease, and the next order prices a little better.",
+          "A tenant posts an order; a direct order matches your published price, or your daemon bids your configured price and the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount under the governed fee policy. Your track record grows by one more served lease, and the next order prices a little better.",
         ],
       },
     ],
@@ -544,13 +735,45 @@ export const LEARN: LearnEntry[] = [
       { label: "Datacenter operators", href: "/solutions/datacenter-operators" },
       { label: "GPU compute providers", href: "/solutions/gpu-compute-providers" },
     ],
+    media: "provider-technician",
+    mediaCaption: "The economics of serving capacity.",
+    takeaways: [
+      "You price the bids; funded escrow pays them — revenue risk settles before capacity commits.",
+      "Settlement fees are governance-set; chain fees run ~90% below standard networks and batch well.",
+      "Benchmarks, audits, reviews, and enclave capability move you from price competition to quality competition.",
+      "Demand arrives verified and funded — containers to HPC batch — and every served lease raises the next price.",
+    ],
+    faqs: [
+      {
+        question: "What does the protocol charge providers?",
+        answer:
+          "Settlement fees are governance-set protocol parameters, not a private platform margin. Only chain-message transaction fees otherwise apply — proposed at approximately 90% below standard network transaction fees, manageable with batching. Your real cost base stays power, hardware, bandwidth, and people.",
+      },
+      {
+        question: "How do we escape pure price competition?",
+        answer:
+          "Publish benchmarks for measured capability, get attributes auditor-signed, compound lease-bound reviews, and offer attested enclave capacity. Attribute-constrained orders pay for verified quality instead of the lowest sticker price.",
+      },
+      {
+        question: "What does “no accounts receivable” mean in practice?",
+        answer:
+          "Usage meters hourly and settles automatically after the dispute window. No invoicing, no collections, no aging — settled usage is settled money.",
+        links: [{ label: "Escrow & settlement explained", href: "/learn/escrow-and-settlement-explained" }],
+      },
+      {
+        question: "Who are we selling to?",
+        answer:
+          "Identity-verified tenants with funded escrow — from containerized services to HPC batch jobs. Attribute-constrained orders from buyers who need audited, benchmarked, or attested capacity are where differentiated operators win.",
+        links: [{ label: "Datacenter operators", href: "/solutions/datacenter-operators" }],
+      },
+    ],
   },
   {
     slug: "confidential-computing-on-virtengine",
-    title: "Confidential computing on VirtEngine",
+    title: "Confidential Computing: Enclaves & Proof",
     label: "Confidential computing",
     metaDescription:
-      "How VirtEngine makes confidential compute verifiable: enclave attestation on-chain via x/enclave, encrypted payload delivery via x/encryption, and attested placement constraints.",
+      "Confidential computing on VirtEngine: enclave attestation on-chain, encrypted payloads and attested placement. Run sensitive workloads verifiably.",
     kicker: "Security architecture",
     intro:
       "Confidential computing — running workloads inside hardware-isolated enclaves the host cannot inspect — solves a technical problem. VirtEngine solves the adjacent marketplace problem: proving to a paying counterparty that confidentiality actually holds, before secrets are delivered.",
@@ -593,13 +816,45 @@ export const LEARN: LearnEntry[] = [
       { label: "x/encryption module", href: "/modules/encryption" },
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
     ],
+    media: "identity-portrait",
+    mediaCaption: "Confidentiality you can verify, not just trust.",
+    takeaways: [
+      "TEEs close the memory-reading hole in silicon; attestations prove exactly what runs inside.",
+      "Attestation is chain state — orders can require attested execution, so unverified capacity never matches.",
+      "Secrets deliver only into verified enclaves: proof first, secrets second, enforced by protocol.",
+      "Confidential workloads inherit the full stack: VEID, mTLS, audits, fraud enforcement.",
+    ],
+    faqs: [
+      {
+        question: "What is an attestation?",
+        answer:
+          "Hardware-signed evidence of exactly what code, in exactly what configuration, runs inside the enclave — verifiable by any counterparty, not just the operator's claim.",
+        links: [{ label: "x/enclave module", href: "/modules/enclave" }],
+      },
+      {
+        question: "When do our secrets move?",
+        answer:
+          "Only after attestation verifies. Envelope-encrypted payloads deliver into the proven enclave — proof first, secrets second — enforced by protocol machinery rather than provider goodwill.",
+        links: [{ label: "x/encryption module", href: "/modules/encryption" }],
+      },
+      {
+        question: "What can we show procurement?",
+        answer:
+          "On-chain attestations, auditor-signed provider attributes, VEID-verified counterparties, mTLS channels, and signed metered usage — a confidentiality argument built from protocol state that survives review.",
+      },
+      {
+        question: "Which workloads fit this pattern?",
+        answer:
+          "Wherever data or models must not be exposed to the infrastructure operator: regulated datasets, proprietary weights in training or inference, key-handling services, and multi-party computations where participants trust the enclave but not each other.",
+      },
+    ],
   },
   {
     slug: "hpc-on-virtengine",
-    title: "HPC on VirtEngine",
+    title: "HPC on VirtEngine: SLURM Jobs On-Chain",
     label: "HPC on VirtEngine",
     metaDescription:
-      "How VirtEngine brings supercomputing into the marketplace: the x/hpc job model, SLURM/MOAB/Open OnDemand adapters, job lifecycle management, and settlement for batch work.",
+      "HPC on VirtEngine: the x/hpc job model, SLURM, MOAB and Open OnDemand adapters, job lifecycle and settlement for batch supercomputing work.",
     kicker: "Supercomputing",
     intro:
       "HPC is the marketplace's most distinctive capability: batch supercomputing capacity, offered and settled on-chain, executing through the schedulers clusters already run. No re-platforming, no container shim around a batch queue — a native job model.",
@@ -642,13 +897,45 @@ export const LEARN: LearnEntry[] = [
       { label: "AI/ML workloads", href: "/solutions/ai-ml-workloads" },
       { label: "Provider overview", href: "/providers" },
     ],
+    media: "hpc-supercomputer",
+    mediaCaption: "Batch capacity, scheduled and settled.",
+    takeaways: [
+      "Jobs — resources, walltime, partitions — are first-class marketplace objects, not container leases.",
+      "Native adapters (SLURM with munge/JWT, MOAB, Open OnDemand); the scheduler stays in charge.",
+      "Crash-safe lifecycle tracking with a dedicated audit log for job, security, and usage events.",
+      "Settlement is identical to cloud leases: signed records, dispute window, escrow drawdown.",
+    ],
+    faqs: [
+      {
+        question: "Do we replace our scheduler?",
+        answer:
+          "No. Adapters connect the provider daemon to your existing controller; the scheduler keeps its resources and the marketplace becomes another source of authorized work.",
+      },
+      {
+        question: "What survives a daemon crash?",
+        answer:
+          "Running jobs are not orphaned and queued jobs are not double-dispatched — state recovery is crash-safe by design, with concurrency limits and timeouts.",
+      },
+      {
+        question: "How are partitions exposed to the market?",
+        answer:
+          "Through per-partition configuration: facilities choose which partitions and job classes the market may schedule into, without disturbing primary-user allocations.",
+        links: [{ label: "HPC clusters solution", href: "/solutions/hpc-clusters" }],
+      },
+      {
+        question: "Where is the operator detail?",
+        answer:
+          "In docs/hpc-provider-operations.md, docs/hpc-node-agent.md, and docs/hpc-workload-publishing.md in the protocol repo — scheduler auth, job lifecycle, and workload publishing end to end.",
+        links: [{ label: "x/hpc module", href: "/modules/hpc" }],
+      },
+    ],
   },
   {
     slug: "governance-guide",
-    title: "Governance on VirtEngine",
+    title: "Governance: Voting, Upgrades & Control",
     label: "Governance guide",
     metaDescription:
-      "How VirtEngine is governed: bonded-stake voting, governed issuance and validator-fee parameters, roles and configuration, and Foundation stewardship.",
+      "VirtEngine governance guide: bonded-stake voting, issuance and fee parameters, roles and config, plus Foundation stewardship. Learn who controls what.",
     kicker: "Governance",
     intro:
       "VirtEngine's answer to \"who controls this?\" has two layers: on-chain governance by bonded stake for protocol decisions, and a not-for-profit foundation whose constitution forbids private capture of the project itself. This guide covers both.",
@@ -656,7 +943,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Bonded stake governs",
         paragraphs: [
-          "Validators and delegators vote with bonded stake on parameter changes, software upgrades, and chain configuration. Economic parameters — staking targets, validator-fee parameters and issuance policy — are chain state, adjustable by proposal rather than by decree. Marketplace commission is set to zero. If you delegate, your stake carries governance weight; using it is part of the job.",
+          "Validators and delegators vote with bonded stake on parameter changes, software upgrades, and chain configuration. Economic parameters — staking targets, validator-fee parameters, marketplace settlement fees and issuance policy — are chain state, adjustable by proposal rather than by decree. If you delegate, your stake carries governance weight; using it is part of the job.",
         ],
       },
       {
@@ -669,7 +956,7 @@ export const LEARN: LearnEntry[] = [
         heading: "Governed economics",
         paragraphs: [],
         bullets: [
-          "Marketplace commission — 0% of settled marketplace payments",
+          "Marketplace settlement fees — governed parameters applied to settled payments",
           "Validator transaction-fee parameters — proposed at approximately 90% below standard networks",
           "Issuance policy — VEID-led 15-token batches: 14 to eligible humans and 1 to the Foundation genesis account",
           "Chain configuration — operational parameters queryable as state",
@@ -695,13 +982,45 @@ export const LEARN: LearnEntry[] = [
       { label: "Open source & patent", href: "/open-source" },
       { label: "Tokenomics explained", href: "/learn/tokenomics-explained" },
     ],
+    media: "closing-hands",
+    mediaCaption: "Decisions made with the stakeholders who carry them.",
+    takeaways: [
+      "Bonded stake votes on parameters, upgrades, and configuration — delegating carries governance weight.",
+      "The approved-client list is the most consequential governed object: capture-software integrity by stakeholder vote.",
+      "Settlement fees are governed parameters, chain fees ~90% below standard, issuance VEID-led — all chain state, all amendable.",
+      "The Foundation's constitution locks the project to public benefit: no private operation, no dividends, no capture.",
+    ],
+    faqs: [
+      {
+        question: "What can governance change?",
+        answer:
+          "Economic parameters — staking targets, fee parameters, issuance policy — plus the approved-client list, chain configuration, and software upgrades. Anything protocol runs by proposal and vote.",
+      },
+      {
+        question: "Why is the approved-client list so important?",
+        answer:
+          "Identity capture happens in software, so that software's integrity is a trust decision — made by stakeholders with a public proposal trail, rather than left to any single party.",
+        links: [{ label: "x/config module", href: "/modules/config" }],
+      },
+      {
+        question: "What does the Foundation control?",
+        answer:
+          "Stewardship of the protocol, patent rights, identity system, chain, and token under a public-benefit lock — not operation of the network or a central VEID service. Stakeholders govern the running protocol; the constitution guarantees no one can take the protocol itself private.",
+        links: [{ label: "About the foundation", href: "/about" }],
+      },
+      {
+        question: "What is the marketplace commission?",
+        answer:
+          "Settlement fees are governed protocol parameters, set and changed only by stakeholder vote — not a private platform margin.",
+      },
+    ],
   },
   {
     slug: "mainnet-roadmap",
-    title: "The road to mainnet",
+    title: "Road to MainNet: TestNet 2027 to Launch",
     label: "Mainnet roadmap",
     metaDescription:
-      "VirtEngine's launch posture: TestNet planned for January 2027 and MainNet for March 2027, with a validation and promotion gate between them.",
+      "Road to VirtEngine MainNet: TestNet January 2027, MainNet March 2027, validation gates and promotion criteria. Track the launch posture.",
     kicker: "Network",
     intro:
       "VirtEngine's launch posture is unusual for the industry: it is a checked-in, versioned decision record, not a marketing countdown. This guide reports exactly what the repository records and shows you how to verify it yourself.",
@@ -755,7 +1074,39 @@ export const LEARN: LearnEntry[] = [
       { label: "Staking overview", href: "/staking" },
       { label: "Open source project", href: "/open-source" },
     ],
+    media: "hero-infrastructure",
+    mediaCaption: "From TestNet to MainNet, stage by stage.",
+    takeaways: [
+      "TestNet January 2027: public pre-production validation; state may reset, tokens have no production value.",
+      "February is remediation and review; March MainNet needs fresh go/no-go approval — TestNet success is not automatic promotion.",
+      "The decision record is checked in: config/mainnet/, the go/no-go doc, RELEASE.md, VERIFICATION.md.",
+      "After genesis, chain state is the truth — and the repo stays the source for releases and posture.",
+    ],
+    faqs: [
+      {
+        question: "Do TestNet tokens or state carry into MainNet?",
+        answer:
+          "No guarantee. TestNet is pre-production and may reset; MainNet needs TestNet exit evidence, final artifacts, and a fresh approval.",
+      },
+      {
+        question: "What happens in February?",
+        answer:
+          "Observing results, remediating and re-testing defects, completing security and operational reviews, freezing production artifacts, and coordinating validators — the unglamorous work between evidence and approval.",
+      },
+      {
+        question: "What should operators verify before running?",
+        answer:
+          "That their release tag is actually published, that the target network has an approved launch or upgrade decision, and that VERIFICATION.md matches their deployment — with genesis materials validated against the published bundle in config/mainnet/.",
+        links: [{ label: "Network status", href: "/network" }],
+      },
+      {
+        question: "Where do launch dates get published?",
+        answer:
+          "Through the formal launch process. Neither network should be described as live before confirmation - exact dates arrive through official announcements, not this guide.",
+      },
+    ],
   },
+  ...MARKETPLACE_LEARN,
 ];
 
 export function getLearn(slug: string): LearnEntry | undefined {

@@ -89,3 +89,31 @@ formal confirmation.
 
 See [DESIGN.md](./DESIGN.md) for the design tokens (palette, typography,
 diagram conventions) and how the Starlight theme is customized.
+
+## SEO and structured data
+
+- `src/components/Head.astro` overrides Starlight's `Head` (registered in
+  `astro.config.mjs`): it renders Starlight's own head tags and appends one
+  JSON-LD `@graph` per page, built by `src/lib/schema.ts`.
+- The graph reuses the entity `@id`s declared on virtengine.com
+  (`https://virtengine.com/#organization`, `/#website`) so Google reads one
+  VirtEngine entity across both hosts. Do not invent second `@id`s for the same
+  entity.
+- Each docs page is marked up as a `TechArticle` whose breadcrumb trail is
+  derived from the sidebar (`Documentation → group → page`), so new sidebar
+  entries need no extra markup work.
+- The `/404` content route is emitted with `noindex`, and Starlight keeps its
+  canonical + Open Graph tags.
+- Validate after a build:
+  `node scripts/check-structured-data.mjs dist https://docs.virtengine.com`
+  (exit code 1 on any error). Pass the origin explicitly when the graph
+  references entities on another host.
+- `pnpm audit:seo` reports duplicate/missing/overlong titles and meta
+  descriptions across `dist/` (advisory, always exits 0).
+- `scripts/build.mjs` must invoke Astro as `node node_modules/astro/astro.js`.
+  Spawning the `.bin` shim needs `shell: true` on Windows, and cmd.exe then
+  splits on the space in this repository's path ("DET-IO FOUNDATION"), so the
+  build dies before it starts. Do not "simplify" it back to the shim.
+- Descriptions come from each page's frontmatter; keep them under ~160
+  characters so search results don't cut them mid-sentence.
+

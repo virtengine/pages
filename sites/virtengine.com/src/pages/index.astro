@@ -1,19 +1,160 @@
 ---
 import Base from "@layouts/Base.astro";
-import HeroNetwork from "@components/diagrams/HeroNetwork.astro";
-import {CURRENT_POSTS} from "@data/blog";
+import FieldBackdrop from "@components/art/FieldBackdrop.astro";
+import SurfaceWash from "@components/art/SurfaceWash.astro";
+import InfrastructureMarket from "@components/marketplace/InfrastructureMarket.astro";
+import ServiceModelShowcase from "@components/marketplace/ServiceModelShowcase.astro";
+import BuyingMethods from "@components/marketplace/BuyingMethods.astro";
+import { CURRENT_POSTS } from "@data/blog";
+import { SITE, foundationDetails } from "@data/site";
+import { NETWORK_STATUS } from "@data/status";
+import { SUPPORT } from "@data/partners";
+
+const journalPair = CURRENT_POSTS.slice(0, 2);
 ---
-<Base title="VirtEngine — Open infrastructure. Shared possibility." description="A nonprofit-stewarded, open-source cloud marketplace protocol. Explore the research, understand the technology, and help develop public-benefit digital infrastructure.">
-<section class="home-hero container-site">
-<div class="hero-copy"><p class="kicker">OPEN SOURCE. PUBLIC BENEFIT.</p><h1>Open infrastructure.<br/><em>Shared possibility.</em></h1><p class="hero-lede">Our mission is to advance open education, privacy, and access to secure digital infrastructure.</p><p class="hero-body">VirtEngine is an open-source protocol stewarded by DETIO FOUNDATION LTD, an Australian not-for-profit public company limited by guarantee (ACN 699 651 771). We develop and document technology for transparent computing markets, verifiable identity, and privacy.</p><div class="action-row"><a class="button primary" href="/about">Discover our mission <span aria-hidden="true">↗</span></a><a class="text-link" href="/learn/how-the-marketplace-works">How VirtEngine works <span aria-hidden="true">→</span></a></div><p class="hero-footnote">Open to study, build on, and improve. Apache 2.0 licensed.</p></div>
-<figure class="network-plate"><div class="plate-top"><span>THE VIRTENGINE PROTOCOL</span><span class="plate-tag">IN DEVELOPMENT</span></div><div class="plate-heading">Many providers.<br/>One open protocol.</div><div class="network-art" role="img" aria-label="Tenants send orders and providers send bids to a shared network of validators. The protocol coordinates their agreement."><HeroNetwork /></div><figcaption><span>Request capacity</span><span>Verify &amp; coordinate</span><span>Provide resources</span></figcaption><div class="plate-bottom"><span>Designed for transparent participation</span><a href="/protocol" aria-label="Explore protocol architecture">↗</a></div></figure>
-</section>
-<div class="mission-band"><div class="container-site"><p>Technology held in public benefit.</p><span>Nonprofit stewardship</span><span>Open research &amp; education</span><span>Privacy &amp; access</span></div></div>
-<section class="container-site home-section"><div class="section-intro"><div><p class="kicker">01 / WHY WE BUILD</p><h2>What we do.<br/>Who our work serves.</h2></div><p>We publish software, practical learning resources, and open specifications for students, researchers, developers, and infrastructure operators. Our work helps people understand, scrutinise, and contribute to the technology they may rely on.</p></div>
-<div class="program-grid"><article><span class="card-number">01</span><h3>Learn in the open</h3><p>Original guides and module references explain how infrastructure markets work. Students, researchers, and developers can study the design and inspect its implementation.</p><a class="text-link" href="/learn">Explore the learning library →</a></article><article><span class="card-number">02</span><h3>Make infrastructure transparent</h3><p>The protocol describes how people request computing resources, how providers bid, and how usage is recorded. Open specifications make these decisions inspectable.</p><a class="text-link" href="/protocol">Understand the protocol →</a></article><article><span class="card-number">03</span><h3>Build trust with privacy</h3><p>VEID explores verifiable identity for network participation. It is decentralised protocol technology; the Foundation does not operate a central VEID verification service.</p><a class="text-link" href="/veid">Read about VEID →</a></article></div><p class="archive-note"><a href="/activities">Explore our activities, available resources, and intended public benefit →</a></p>
-</section>
-<section class="container-site status-block"><div><p class="kicker">DEVELOPMENT STATUS / 17 SEPTEMBER 2026</p><h2>Building openly.<br/>Launching carefully.</h2><p>The network is not live. You can read the source, review the design, and contribute today. Production services depend on testing and a separate launch approval.</p><a class="text-link" href="/network">Read the launch criteria →</a></div><ol class="launch-line"><li class="current"><span>NOW</span><h3>Research &amp; development</h3><p>Open code, documentation, and release preparation.</p></li><li><span>PLANNED · JAN 2027</span><h3>Public TestNet</h3><p>Validation with operators. Test state may reset.</p></li><li><span>PLANNED · MAR 2027</span><h3>MainNet, subject to approval</h3><p>Only after evidence, remediation, and a go/no-go decision.</p></li></ol></section>
-<section class="container-site home-section"><div class="section-intro"><div><p class="kicker">02 / FIND YOUR WAY IN</p><h2>An open project.<br/>A place to contribute.</h2></div><a class="text-link" href="/participate">All ways to get involved ↗</a></div><div class="path-grid"><a href="/learn"><span>FOR CURIOUS MINDS</span><h3>Understand the technology</h3><p>Start with an accessible guide to the marketplace.</p><b aria-hidden="true">↗</b></a><a href="/participate#developers"><span>FOR DEVELOPERS</span><h3>Help improve the project</h3><p>Explore code, review documentation, and raise an issue.</p><b aria-hidden="true">↗</b></a><a href="/providers"><span>FOR INFRASTRUCTURE OPERATORS</span><h3>Prepare for participation</h3><p>Review requirements before a future test network.</p><b aria-hidden="true">↗</b></a></div></section>
-<section class="container-site home-section journal-section"><div class="section-intro"><div><p class="kicker">03 / FROM THE JOURNAL</p><h2>The thinking behind the protocol.</h2></div><a class="text-link" href="/blog">Read all notes ↗</a></div><div class="journal-grid">{CURRENT_POSTS.slice(0,3).map((post,i)=><article><div class:list={["journal-cover",`cover-${i}`]}><span>FIELD NOTES / 0{i+1}</span><strong>{["An open\nmarketplace.","Trust in\nthe agreement.","Identity with\nprivacy."][i]}</strong><span>VIRTENGINE JOURNAL</span></div><p class="date">{new Date(post.publishedAt).toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})} · {post.readingTime}</p><h3><a href={`/blog/${post.slug}`}>{post.title} <span aria-hidden="true">↗</span></a></h3><p>{post.description}</p></article>)}</div><p class="archive-note">Earlier work is preserved in the <a href="/blog/archive">2015–2016 historical archive</a>, separately from current technical guidance.</p></section>
-<section class="container-site final-cta"><div><p class="kicker">LET’S BUILD SOMETHING USEFUL</p><h2>Public-benefit infrastructure<br/>starts with participation.</h2></div><a class="button primary" href="/contact">Talk to the Foundation ↗</a></section>
+<Base
+  title="Open Cloud & Services Marketplace | VirtEngine"
+  description="Order cloud infrastructure and services from providers you choose — direct at published prices, open to bids, or matched by specification. Identity, escrow and settlement on-chain."
+  image="/og.png"
+>
+  <!-- 1 — HERO -->
+  <section class="home-hero">
+    <FieldBackdrop />
+    <div class="container-site home-hero-grid">
+      <div class="home-hero-copy">
+        <p class="home-eyebrow">OPEN INFRASTRUCTURE MARKETPLACE</p>
+        <h1>The open market for infrastructure and services.</h1>
+        <p class="home-hero-lede">Buy from providers you choose, let providers compete for your workload, or match by requirements. Identity, escrow and settlement remain verifiable protocol state.</p>
+        <div class="action-row">
+          <a class="btn-solid" href="/marketplace">
+            Explore the marketplace
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"></path></svg>
+          </a>
+          <a class="btn-outline-night" href="/providers">For providers <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="home-hero-how"><a href="/learn/how-the-marketplace-works">See how the marketplace works <span aria-hidden="true">→</span></a></p>
+      </div>
+      <div class="home-hero-visual">
+        <figure class="market-overview" aria-labelledby="market-overview-title">
+          <div class="market-overview-head"><span>MARKETPLACE OVERVIEW</span><span>01 — 04</span></div>
+          <figcaption id="market-overview-title">One clear path from need to verified service.</figcaption>
+          <div class="market-overview-flow" role="img" aria-label="A buyer sets requirements, VirtEngine records an escrow-backed lease, a provider delivers capacity, and verified usage settles payment.">
+            <div class="market-overview-node"><span class="market-overview-icon" aria-hidden="true">⌕</span><strong>Set requirements</strong><small>Choose, bid or match</small></div>
+            <span class="market-overview-connector" aria-hidden="true"></span>
+            <div class="market-overview-node market-overview-node--core"><span class="market-overview-icon" aria-hidden="true">◇</span><strong>Record a lease</strong><small>Identity · escrow · terms</small></div>
+            <span class="market-overview-connector" aria-hidden="true"></span>
+            <div class="market-overview-node"><span class="market-overview-icon" aria-hidden="true">↗</span><strong>Deliver service</strong><small>Provider fulfils the order</small></div>
+          </div>
+          <div class="market-overview-settlement"><span class="market-overview-check" aria-hidden="true">✓</span><p><strong>Verify usage</strong><span>Settlement follows recorded service.</span></p><span class="market-overview-arrow" aria-hidden="true">→</span></div>
+          <div class="market-overview-foot"><span>Protocol in development</span><a href="/learn/how-the-marketplace-works">Explore the flow <span aria-hidden="true">↗</span></a></div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 — THREE WAYS IN, ONE RAIL OUT -->
+  <section class="home-buy" id="buy">
+    <div class="container-site">
+      <BuyingMethods />
+    </div>
+  </section>
+
+  <!-- 3 — SUPPLY / DEMAND NETWORK -->
+  <section class="home-philosophy band-night">
+    <div class="container-site">
+      <p class="tag">Why it exists</p>
+      <h2>Infrastructure should be an open market.</h2>
+      <div class="home-market-visual"><InfrastructureMarket /></div>
+    </div>
+  </section>
+
+  <!-- 4 — SERVICE ATLAS -->
+  <section class="home-catalog" id="catalog">
+    <SurfaceWash />
+    <div class="container-site"><ServiceModelShowcase /></div>
+  </section>
+
+  <!-- 5 — TRUST -->
+  <section class="home-trust band-night">
+    <div class="container-site">
+      <p class="tag">Guarantees</p>
+      <h2>Trust built into every transaction</h2>
+      <div class="home-trust-grid">
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 4l12 5v10c0 8-5 13-12 17C13 32 8 27 8 19V9z"/><path d="M14.5 20.5l4 4 7.5-8"/></svg></span>
+          <p class="eyebrow">Identity</p><h3>VEID</h3><p>Verified counterparties without exposing unnecessary identity data.</p><a class="btn-quiet" href="/veid">Identity <span aria-hidden="true">→</span></a>
+        </article>
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 4h14l6 6v26H10z"/><path d="M24 4v6h6"/><path d="M15 18h10M15 23h10M15 28h6"/></svg></span>
+          <p class="eyebrow">Evidence</p><h3>Audit · benchmark · attestation</h3><p>Evidence travels with providers and capacity.</p><a class="btn-quiet" href="/providers">Providers <span aria-hidden="true">→</span></a>
+        </article>
+        <article>
+          <span class="home-trust-fig" aria-hidden="true"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="12" width="22" height="16" rx="3"/><path d="M27 20h8M31 16l4 4-4 4"/><circle cx="11" cy="20" r="2.5"/></svg></span>
+          <p class="eyebrow">Money</p><h3>Escrow · usage · dispute · payout</h3><p>Payment follows recorded service.</p><a class="btn-quiet" href="/learn/escrow-and-settlement-explained">Settlement <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+      <p class="home-arch-strip"><strong>Want the architecture?</strong> Client → Protocol → Provider daemon → Infrastructure <a class="btn-quiet" href="/protocol">Explore the protocol <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <!-- 6 — OPEN + STATUS + STEWARDSHIP -->
+  <section class="home-dev" id="source">
+    <SurfaceWash />
+    <div class="container-site home-dev-grid home-dev-grid--slim">
+      <div>
+        <p class="tag">Source</p>
+        <h2>Built in the open</h2>
+        <ul class="home-facts tri-list">
+          <li><code>27 modules</code>Consensus-executed protocol surfaces.</li>
+          <li><code>One repository</code>Chain, client and provider tooling.</li>
+          <li><code>Apache 2.0</code>Inspect and build the implementation.</li>
+        </ul>
+        <div class="action-row">
+          <a class="btn-solid" href={SITE.github} target="_blank" rel="noopener">Browse source</a>
+          <a class="btn-quiet" href={SITE.docs} target="_blank" rel="noopener">Read docs</a>
+        </div>
+      </div>
+      <div class="home-side-stack">
+        <p class="eyebrow">Network status</p>
+        <p><strong>Protocol development</strong> · Active<br /><strong>Public TestNet</strong> · Planned<br /><strong>Production MainNet</strong> · Not live</p>
+        <p class="text-xs">Last updated {NETWORK_STATUS.lastUpdated}</p>
+        <a class="btn-quiet" href="/network">View network status <span aria-hidden="true">→</span></a>
+        <hr />
+        <p class="text-sm">VirtEngine is stewarded by {foundationDetails.name}, {foundationDetails.structure} ({foundationDetails.acn}), supporting open infrastructure, privacy-preserving identity and public-interest technology.</p>
+        <p><a class="btn-quiet" href="/about">About the Foundation</a> <a class="btn-quiet" href="https://det.io" target="_blank" rel="noopener noreferrer">DET.io ↗</a></p>
+      </div>
+    </div>
+    <div class="container-site home-support">
+      <p class="eyebrow">Supported by and working with</p>
+      <ul>
+        {SUPPORT.map((org) => (
+          <li>
+            <a href={org.href} target={org.href.startsWith("http") ? "_blank" : undefined} rel={org.href.startsWith("http") ? "noopener" : undefined} aria-label={org.name} title={org.name}>
+              <img src={org.logo} alt={org.logoAlt} width="120" height="32" loading="lazy" decoding="async" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="btn-quiet" href="/about#support">Project partners &amp; support <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- 7 — JOURNAL (slim, max 2) -->
+  <section class="home-journal band-night">
+    <div class="container-site">
+      <div class="folio-head folio-head--journal folio-head--night">
+        <div class="folio-coord"><span>Journal</span><a class="journal-readall" href="/blog">All notes <span aria-hidden="true">→</span></a></div>
+        <h2>The thinking behind the protocol.</h2>
+      </div>
+      <div class="journal-slim">
+        {journalPair.map((post) => (
+          <article>
+            <p class="journal-meta">{new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })} · {post.readingTime}</p>
+            <h3><a href={`/blog/${post.slug}`}>{post.title} <span aria-hidden="true">→</span></a></h3>
+            <p>{post.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
 </Base>

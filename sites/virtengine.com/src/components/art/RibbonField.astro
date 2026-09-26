@@ -1,0 +1,409 @@
+---
+/**
+ * RibbonField — Cerebrium-inspired cinematic backdrop for the home hero.
+ *
+ * Lightweight Canvas2D alternative to a WebGL drape scene: a set of tall,
+ * translucent green ribbons that drift slowly, bend toward the pointer, and
+ * dolly with scroll — plus a sparse dust field for depth. Deliberately subtle
+ * (low alpha, brand greens only) so the protocol instrument stays legible.
+ *
+ * The ribbon parameters, geometry and painters live in
+ * `src/scripts/ribbons.ts` and are shared with the live glass cards, so the
+ * streaks inside white cards are the SAME field — same positions, same
+ * clock — never a static copy. Widths run ~15% wider and sway ~15%
+ * quicker/further than the original drapes.
+ *
+ * Zero dependencies. Pauses offscreen / when hidden. Renders one static
+ * frame under `prefers-reduced-motion`. Also publishes pointer tilt as CSS
+ * vars (--veil-*) on the enclosing `.home-hero` for the 3D tilt polish, and
+ * publishes the field clock on `window.__veilState` for glass subscribers.
+ */
+interface Props {
+  class?: string;
+  /**
+   * Fixed full-viewport continuous veil: one field behind the whole page that
+   * dark sections reveal and light sections cover — the same ribbons continue
+   * instead of respawning per section.
+   */
+  fixed?: boolean;
+}
+const { class: className, fixed = false } = Astro.props;
+---
+
+<div class:list={["ribbon-veil", fixed && "ribbon-veil--fixed", className]} aria-hidden="true">
+  <canvas class="ribbon-veil-canvas"></canvas>
+  <span class="ribbon-veil-grain"></span>
+  <span class="ribbon-veil-fade"></span>
+</div>
+
+<style>
+  .ribbon-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* keep the left copy column readable; ribbons bloom on the right */
+    mask-image: linear-gradient(90deg, #000 0%, #000 30%, rgba(0, 0, 0, 0.98) 62%, rgba(0, 0, 0, 0.9) 100%);
+  }
+  .ribbon-veil-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+  }
+  /* full-bleed band variant — even veil for dark sections without a copy
+     column (kinds / source / launch / close / footer). Must sit after the
+     base rule so it wins the specificity tie. */
+  .ribbon-veil--band {
+    mask-image: radial-gradient(
+      115% 95% at 50% 38%,
+      #000 0%,
+      rgba(0, 0, 0, 0.88) 62%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
+  /* fixed continuous veil — viewport-anchored, behind page content; opaque
+     light sections cover it, transparent dark sections reveal the same field.
+     z-index 0 (not negative): sections paint above in DOM order, so every
+     light ground hides it while dark grounds let it through. */
+  .ribbon-veil--fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    mask-image: radial-gradient(
+      115% 95% at 50% 38%,
+      #000 0%,
+      rgba(0, 0, 0, 0.9) 62%,
+      rgba(0, 0, 0, 0.62) 100%
+    );
+  }
+  .ribbon-veil--fixed .ribbon-veil-fade {
+    display: none;
+  }
+  /* film grain — static SVG noise, cheap depth like Cerebrium's grain pass */
+  .ribbon-veil-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+  }
+  /* bottom fade into the next band + top legibility vignette */
+  .ribbon-veil-fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(10, 16, 12, 0.55) 0%, transparent 22%, transparent 62%, rgba(10, 16, 12, 0.72) 100%),
+      radial-gradient(90% 70% at 18% 30%, rgba(10, 16, 12, 0.5) 0%, transparent 55%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon-veil-canvas { opacity: 0.75; }
+  }
+</style>
+
+<script>
+  import {
+    RIBBONS,
+    NARROW_RIBBONS,
+    ribbonCenterX,
+    paintRibbon,
+  } from "../../scripts/ribbons";
+
+  function initVeil(root) {
+    const canvas = root.querySelector("canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    const hero = root.closest(".home-hero") || root.parentElement;
+    // fixed continuous veil: measure against the viewport, not a section rect
+    const isFixed = root.classList.contains("ribbon-veil--fixed");
+    // The fixed field is the single source of truth: it publishes the clock
+    // and its canvas, and every secondary field (section bands) shows the
+    // exact viewport-locked slice of it so transparent sections continue the
+    // background ribbons pixel-for-pixel instead of diverging.
+    if (isFixed) window.__veilCanvas = canvas;
+    // the single global field carries every dark section, so give it more
+    // presence — except on narrow screens, where it stays calm
+    const gain = () => (isFixed && !narrow ? 1.7 : 1);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let raf = 0;
+    let running = false;
+    let inView = true;
+    let t = Math.random() * 100;
+
+    // lerped pointer in [-1, 1]
+    const ptr = { x: 0, y: 0, tx: 0, ty: 0, active: false };
+    // lerped scroll dolly 0..1
+    let scrollP = 0;
+    let scrollT = 0;
+
+    // Shared field definition (see src/scripts/ribbons.ts): five drapes
+    // spread across the full width so the field balances the page — the
+    // leftmost stays soft and far so copy stays crisp over it.
+    // depth 0..1 drives parallax + alpha so nearer bands move more.
+    const ribbons = RIBBONS;
+
+    // Narrow screens get 3 calm drapes spread across the hero instead of 5 —
+    // five bands across ~390px merge into one washed blob. Re-evaluated
+    // live (rotation-safe).
+    const narrowMQ = window.matchMedia("(max-width: 640px)");
+    let narrow = narrowMQ.matches;
+    narrowMQ.addEventListener?.("change", (e) => {
+      narrow = e.matches;
+      buildDust();
+      if (reduce.matches) { draw(t); publishState(); }
+    });
+    const narrowRibbons = NARROW_RIBBONS;
+    const activeRibbons = () => (narrow ? narrowRibbons : ribbons);
+
+    let dust = [];
+    function buildDust() {
+      const n = w < 640 || narrow ? 26 : 64;
+      dust = Array.from({ length: n }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        z: 0.25 + Math.random() * 0.75,
+        r: 0.5 + Math.random() * 1.4,
+        tw: Math.random() * Math.PI * 2,
+      }));
+    }
+
+    function resize() {
+      const rect = root.getBoundingClientRect();
+      w = Math.max(1, rect.width);
+      h = Math.max(1, rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildDust();
+      if (reduce.matches) { draw(0); publishState(); }
+    }
+
+    function centerX(r, y, time) {
+      return ribbonCenterX(r, y, { w, h, time, scrollP, ptrX: ptr.x, ptrY: ptr.y });
+    }
+
+    function publishState() {
+      // Only the fixed field publishes: a single clock/geometry authority, so
+      // glass subscribers always mirror the background — never a band's copy.
+      if (!isFixed) return;
+      // Shared clock for live glass cards: same time/scroll/pointer, so the
+      // streaks inside white cards continue the veil instead of copying it.
+      window.__veilState = {
+        t,
+        scrollP,
+        ptrX: ptr.x,
+        ptrY: ptr.y,
+        narrow,
+        vw: w,
+        vh: h,
+      };
+    }
+
+    function drawRibbon(r, time) {
+      paintRibbon(
+        ctx,
+        r,
+        { w, h, time, scrollP, ptrX: ptr.x, ptrY: ptr.y, narrow, gain: gain() },
+        "dark",
+      );
+    }
+
+    function drawPulse(r, time, soft = false) {
+      // travelling light streak down the spine of near ribbons
+      const span = 1.5;
+      const p = ((time * 0.07 * r.speed * 4 + r.phase * 0.13) % span) - 0.25;
+      if (p < 0 || p > 1) return;
+      const y = p * h;
+      const x = centerX(r, y, time);
+      const len = h * 0.16;
+      const k = soft ? 0.45 : 1;
+      const g = ctx.createLinearGradient(0, y - len, 0, y + len * 0.25);
+      g.addColorStop(0, "rgba(233, 240, 234, 0)");
+      g.addColorStop(0.72, `rgba(233, 240, 234, ${(0.75 * k).toFixed(2)})`);
+      g.addColorStop(1, `rgba(255, 255, 255, ${(0.95 * k).toFixed(2)})`);
+      ctx.save();
+      ctx.strokeStyle = g;
+      ctx.lineWidth = soft ? 2 : 3.2;
+      ctx.lineCap = "round";
+      ctx.shadowColor = "rgba(125, 221, 122, 0.9)";
+      ctx.shadowBlur = soft ? 8 : 16;
+      ctx.beginPath();
+      const y0 = Math.max(0, y - len);
+      ctx.moveTo(centerX(r, y0, time), y0);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw(time) {
+      // Secondary fields (section bands): blit the fixed field's slice in
+      // viewport-locked coordinates — same pixels, same moment, same mask of
+      // geometry — so the band continues the background ribbons seamlessly.
+      const fixedCanvas = window.__veilCanvas;
+      const shared = window.__veilState;
+      if (!isFixed && fixedCanvas && fixedCanvas.width > 0 && shared) {
+        ctx.clearRect(0, 0, w, h);
+        const rect = root.getBoundingClientRect();
+        ctx.drawImage(
+          fixedCanvas,
+          0,
+          0,
+          fixedCanvas.width,
+          fixedCanvas.height,
+          -rect.left,
+          -rect.top,
+          shared.vw,
+          shared.vh,
+        );
+        return;
+      }
+
+      ctx.clearRect(0, 0, w, h);
+      // soft emerald wash behind the drapes
+      const wash = ctx.createRadialGradient(w * 0.68, h * 0.42, 0, w * 0.68, h * 0.42, Math.max(w, h) * 0.55);
+      wash.addColorStop(0, `rgba(96, 204, 93, ${(0.1 * gain()).toFixed(3)})`);
+      wash.addColorStop(1, "rgba(96, 204, 93, 0)");
+      ctx.fillStyle = wash;
+      ctx.fillRect(0, 0, w, h);
+
+      for (const r of activeRibbons()) drawRibbon(r, time);
+      // pulses on the nearest visible bands — one streak at a time (a single
+      // softer streak on narrow screens so it never blows out)
+      const vis = activeRibbons();
+      if (narrow) {
+        drawPulse(vis[vis.length - 1] ?? vis[0], time, true);
+      } else {
+        drawPulse(vis[vis.length - 2] ?? vis[0], time);
+        drawPulse(vis[vis.length - 1] ?? vis[0], time + 9);
+      }
+
+      // dust
+      for (const d of dust) {
+        const x = d.x * w + ptr.x * 22 * d.z;
+        const y = ((d.y * h + scrollP * -60 * d.z) % (h + 20) + h + 20) % (h + 20) - 10;
+        const tw = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(time * 1.4 + d.tw));
+        ctx.fillStyle = `rgba(190, 240, 188, ${(0.1 + d.z * 0.3 * tw).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, d.r * d.z + 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function frame() {
+      if (!running) return;
+      t += 0.016;
+      ptr.x += (ptr.tx - ptr.x) * 0.055;
+      ptr.y += (ptr.ty - ptr.y) * 0.055;
+      scrollP += (scrollT - scrollP) * 0.08;
+      publishState();
+      // publish tilt for the CSS 3D polish (subtle: ±4° / ±6°)
+      if (hero instanceof HTMLElement) {
+        hero.style.setProperty("--veil-tiltx", `${(-ptr.y * 3.2).toFixed(2)}deg`);
+        hero.style.setProperty("--veil-tilty", `${(ptr.x * 4.6).toFixed(2)}deg`);
+        hero.style.setProperty("--veil-px", `${(ptr.x * 10).toFixed(1)}px`);
+        hero.style.setProperty("--veil-py", `${(ptr.y * 8).toFixed(1)}px`);
+      }
+      draw(t);
+      raf = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running || !inView || document.hidden || reduce.matches) return;
+      running = true;
+      raf = requestAnimationFrame(frame);
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    function onPointer(e) {
+      if (isFixed) {
+        const vw = window.innerWidth || 1;
+        const vh = window.innerHeight || 1;
+        ptr.tx = Math.max(-1, Math.min(1, (e.clientX / vw) * 2 - 1));
+        ptr.ty = Math.max(-1, Math.min(1, (e.clientY / vh) * 2 - 1));
+        ptr.active = true;
+        return;
+      }
+      if (!(hero instanceof HTMLElement)) return;
+      const rect = hero.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
+      ptr.tx = Math.max(-1, Math.min(1, nx));
+      ptr.ty = Math.max(-1, Math.min(1, ny));
+      ptr.active = true;
+    }
+
+    function onScroll() {
+      if (isFixed) {
+        // page progress 0 → 1 so the single field drifts as you travel it
+        const max = Math.max(
+          1,
+          document.documentElement.scrollHeight - (window.innerHeight || 1)
+        );
+        scrollT = Math.max(0, Math.min(1, window.scrollY / max));
+        return;
+      }
+      if (!(hero instanceof HTMLElement)) return;
+      const rect = hero.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // 0 when hero top hits viewport top grows as you scroll through it
+      const p = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height * 0.9)));
+      // also ease back when hero is above the fold
+      const gone = rect.bottom < 0 ? 1 : 0;
+      scrollT = Math.max(p, gone);
+    }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("scroll", () => { onScroll(); }, { passive: true });
+    onScroll();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+    if ("IntersectionObserver" in window && hero instanceof Element) {
+      new IntersectionObserver(
+        (entries) => {
+          inView = entries[0]?.isIntersecting ?? true;
+          if (inView) start();
+          else stop();
+        },
+        { rootMargin: "160px" }
+      ).observe(hero);
+    }
+    reduce.addEventListener?.("change", (e) => {
+      if (e.matches) { stop(); draw(t); publishState(); }
+      else start();
+    });
+
+    // Reduced motion: no rAF loop, but a secondary field's blit is anchored
+    // to its live position — keep the slice aligned while scrolling.
+    if (!isFixed) {
+      window.addEventListener(
+        "scroll",
+        () => { if (reduce.matches) draw(t); },
+        { passive: true },
+      );
+    }
+
+    // Paint and publish immediately so secondary fields init'd later in the
+    // same pass already have a slice to blit (no first-frame blank flash).
+    publishState();
+    draw(t);
+    if (!reduce.matches) start();
+  }
+
+  document.querySelectorAll(".ribbon-veil").forEach(initVeil);
+</script>

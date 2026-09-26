@@ -1,0 +1,42 @@
+---
+/**
+ * FulfilmentFlow — the listing → order → lease → provider → backend → usage →
+ * settlement rail used by the service pages and the atlas.
+ *
+ * Nodes are plain text so the flow stays crawlable and works without CSS;
+ * arrows are decorative and hidden from assistive technology. The optional
+ * `kinds` map marks protocol nodes and provider-side nodes.
+ */
+interface Props {
+  nodes: string[];
+  caption?: string;
+  /** Label → tone. Defaults to neutral for every node. */
+  kinds?: Record<string, "protocol" | "provider">;
+  class?: string;
+}
+
+const { nodes, caption, kinds = {}, class: className } = Astro.props;
+---
+
+<div class:list={["mk-flow", className]}>
+  <ol class="mk-flow-nodes" aria-label="Fulfilment flow">
+    {
+      nodes.map((node, index) => (
+        <>
+          {index > 0 && <li class="mk-flow-arrow" aria-hidden="true">→</li>}
+          <li
+            class:list={[
+              "mk-flow-node",
+              kinds[node] === "protocol" && "mk-flow-node--protocol",
+              kinds[node] === "provider" && "mk-flow-node--provider",
+            ]}
+          >
+            <small>{String(index + 1).padStart(2, "0")}</small>
+            <span>{node}</span>
+          </li>
+        </>
+      ))
+    }
+  </ol>
+  {caption && <p class="mk-flow-note">{caption}</p>}
+</div>
