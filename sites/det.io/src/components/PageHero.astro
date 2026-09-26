@@ -1,29 +1,26 @@
 ---
-import FieldSeal from "@components/motifs/FieldSeal.astro";
+import RegisterMark from "@components/brand/RegisterMark.astro";
 
 interface Props {
   eyebrow: string;
   title: string;
   lede?: string;
-  /** Show the foundation seal motif (decorative). Defaults to true. */
+  /** Unused. The seal motif was decorative and is not part of The Record. */
   seal?: boolean;
 }
 
-const { eyebrow, title, lede, seal = true } = Astro.props;
+const { eyebrow, title, lede } = Astro.props;
 ---
 
 <div class="q-hero">
-  <div class="lattice-backdrop absolute inset-0" aria-hidden="true"></div>
-  {seal && (
-    <div class="q-hero-motif" aria-hidden="true">
-      <FieldSeal size={132} />
-    </div>
-  )}
-  <div class="container-site relative grid gap-5 py-16 md:py-24">
-    <p><span class="f-kicker f-kicker--sm">{eyebrow}</span></p>
-    <h1 class="q-hero-title max-w-3xl text-4xl font-bold md:text-[3.25rem]">{title}</h1>
-    {lede && <p class="prose-inst max-w-2xl text-lg md:text-xl">{lede}</p>}
+  <div class="container-site relative grid gap-4 py-14 md:py-20">
+    <p class="folio">
+      <RegisterMark />
+      <span>{eyebrow}</span>
+    </p>
+    <span class="record-rule" aria-hidden="true"></span>
+    <h1 class="q-hero-title max-w-3xl">{title}</h1>
+    {lede && <p class="prose-inst max-w-2xl text-lg">{lede}</p>}
     <slot />
   </div>
-</div>
 </div>

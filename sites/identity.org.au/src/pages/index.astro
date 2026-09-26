@@ -10,7 +10,7 @@ import ServiceFigure from "@components/ServiceFigure.astro";
 import ServiceHero from "@components/ServiceHero.astro";
 import Steps from "@components/Steps.astro";
 import TableScroll from "@components/TableScroll.astro";
-import CredentialScreen from "@components/phone/CredentialScreen.astro";
+import ProofCard from "@components/ProofCard.astro";
 import ZkShareScreen from "@components/phone/ZkShareScreen.astro";
 import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { SITE } from "@data/site";
@@ -37,9 +37,8 @@ const setupSteps = [
   <ServiceHero
     eyebrow="The Identity Wallet service"
     title="Prove what matters. Keep the rest private."
-    lede="The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an answer — are you over 18, are you verified — it gets the answer, never your documents."
-    statusTone="info"
-    statusLabel="Open source · free to use"
+    lede="The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an answer, such as whether you are over 18, it gets the answer, never your documents."
+    guilloche="IDAU-HOME-001"
   >
     <div slot="actions">
       <a href={SITE.walletPortal} class="btn-primary">
@@ -55,13 +54,10 @@ const setupSteps = [
       Australian Government.
     </p>
     <div slot="media">
-      <ServiceFigure
-        rail="Reference screen"
-        railRight="Illustrated"
-        caption="Wallet home: a Standard credential, the proofs it can share, and the consent activity where every grant can be reviewed or revoked."
-      >
-        <CredentialScreen />
-      </ServiceFigure>
+      <ProofCard seed="IDAU-HOME-001" />
+      <p class="mt-3 mb-0 text-[0.8rem] text-muted">
+        Specimen card. The foil marks a genuine proof. The service receives the claim, not the document.
+      </p>
     </div>
   </ServiceHero>
 
@@ -110,38 +106,62 @@ const setupSteps = [
       eyebrow="Everyday uses"
       title="What you can do with the Identity Wallet"
     >
-      <div class="grid gap-4 md:grid-cols-2">
-        <CardLink
-          href="/get-started/set-up-your-wallet"
-          title="Verify your identity once"
-          description="Complete a guided verification on your phone — document, selfie, liveness — and reuse it everywhere the wallet is accepted."
-        />
-        <CardLink
-          href="/help/proving-your-age-without-your-documents"
-          title="Prove your age without your documents"
-          description="Answer “are you over 18?” with a cryptographic yes — your birth date and documents stay private."
-        />
-        <CardLink
-          href="/help/using-your-wallet-with-a-service"
-          title="Share with services on your terms"
-          description="See exactly what a service is asking for, approve or decline, and set consent to expire automatically."
-        />
-        <CardLink
-          href="/help/revoking-consent"
-          title="Change your mind, any time"
-          description="Every consent you grant can be revoked. Every use of your data is recorded where you can see it."
-        />
-        <CardLink
-          href="/get-started/verification-levels"
-          title="Build a stronger verification level"
-          description="Four levels — from Basic to Trusted — unlock more as your identity evidence gets stronger."
-        />
-        <CardLink
-          href="/help/deleting-your-identity"
-          title="Leave, completely"
-          description="Delete your identity data on a published timeline. Encryption keys are destroyed — deletion is real."
-        />
-      </div>
+      <ol class="credential-index">
+        <li>
+          <a href="/get-started/set-up-your-wallet">
+            <span>01</span>
+            <span>
+              <strong>Verify your identity once</strong>
+              <em>Complete a guided verification on your phone, then reuse it everywhere the wallet is accepted.</em>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="/help/proving-your-age-without-your-documents">
+            <span>02</span>
+            <span>
+              <strong>Prove your age without your documents</strong>
+              <em>Answer whether you are over 18 with a cryptographic yes. Your birth date and documents stay private.</em>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="/help/using-your-wallet-with-a-service">
+            <span>03</span>
+            <span>
+              <strong>Share with services on your terms</strong>
+              <em>See exactly what a service is asking for, approve or decline, and set consent to expire.</em>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="/help/revoking-consent">
+            <span>04</span>
+            <span>
+              <strong>Change your mind, any time</strong>
+              <em>Every consent you grant can be revoked. Every use of your data is recorded where you can see it.</em>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="/get-started/verification-levels">
+            <span>05</span>
+            <span>
+              <strong>Build a stronger verification level</strong>
+              <em>Four levels, from Basic to Trusted, unlock more as your identity evidence gets stronger.</em>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="/help/deleting-your-identity">
+            <span>06</span>
+            <span>
+              <strong>Leave, completely</strong>
+              <em>Delete your identity data on a published timeline. Encryption keys are destroyed, so deletion is real.</em>
+            </span>
+          </a>
+        </li>
+      </ol>
     </Section>
   </div>
 

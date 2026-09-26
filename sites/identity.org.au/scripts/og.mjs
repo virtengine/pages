@@ -15,9 +15,9 @@ if (!existsSync(src)) {
 const logo = await sharp(src).resize({ width: 940, withoutEnlargement: true }).png().toBuffer();
 const card = Buffer.from(`
   <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1200" height="630" fill="#fbf8f5"/>
-    <rect y="0" width="1200" height="16" fill="#28205b"/>
-    <text x="130" y="455" fill="#28205b" font-family="Public Sans, Arial, sans-serif" font-size="34" font-weight="600">The Identity Wallet for the VirtEngine ecosystem</text>
+    <rect width="1200" height="630" fill="#ffffff"/>
+    <rect y="0" width="1200" height="16" fill="#17293a"/>
+    <text x="130" y="455" fill="#17293a" font-family="Public Sans, Arial, sans-serif" font-size="34" font-weight="600">The Identity Wallet for the VirtEngine ecosystem</text>
   </svg>
 `);
 

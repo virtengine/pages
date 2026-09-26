@@ -1,0 +1,75 @@
+---
+/**
+ * ID-1 specimen card. One foil means genuine. Fields show a checkable claim,
+ * never a document. The MRZ is a specimen, not a person.
+ */
+import Guilloche from "./Guilloche.astro";
+
+interface Props {
+  seed?: string;
+  claim?: string;
+  result?: string;
+  level?: string;
+  record?: string;
+}
+
+const {
+  seed = "IDAU-SPECIMEN-0001",
+  claim = "Over 18",
+  result = "Yes",
+  level = "Standard",
+  record = "IDAU-0001",
+} = Astro.props;
+---
+
+<article class="proof-card" data-proof-card aria-label="Specimen proof card. A sample of what a service receives: the claim, not the document.">
+  <div class="proof-card-ground" aria-hidden="true">
+    <Guilloche seed={seed} />
+  </div>
+  <div class="foil" aria-hidden="true"></div>
+  <div class="proof-card-top">
+    <p class="proof-kicker">identity.org.au · specimen</p>
+    <p class="level-chip">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 6.2 4.6 8.8 10 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>Verified · {level}</span>
+    </p>
+  </div>
+  <dl class="proof-fields">
+    <div>
+      <dt>Claim</dt>
+      <dd>{claim}</dd>
+    </div>
+    <div>
+      <dt>Result</dt>
+      <dd>{result}</dd>
+    </div>
+    <div>
+      <dt>Record</dt>
+      <dd>{record}</dd>
+    </div>
+    <div>
+      <dt>Documents</dt>
+      <dd>Not shared</dd>
+    </div>
+  </dl>
+  <p class="mrz" aria-label="Specimen machine-readable zone. Not a real identity document. It records a sample claim and that documents were not shared.">
+    <span>IDAUASPECIMEN&lt;&lt;PROOF</span><span>CLAIM&lt;OVER18</span><br />
+    <span>{record.replace("-", "")}&lt;AUS</span><span>RESULT&lt;YES&lt;&lt;DOCS&lt;NONE</span>
+  </p>
+</article>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) {
+    for (const card of document.querySelectorAll<HTMLElement>("[data-proof-card]")) {
+      card.addEventListener("pointermove", (event) => {
+        const point = event as PointerEvent;
+        const box = card.getBoundingClientRect();
+        const x = ((point.clientX - box.left) / box.width) * 100;
+        card.style.setProperty("--x", `${Math.min(100, Math.max(0, x))}%`);
+      });
+    }
+  }
+</script>

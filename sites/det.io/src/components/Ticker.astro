@@ -1,9 +1,7 @@
 ---
 /**
- * Ticker — a retro marquee ribbon (Hermes-style motion, Mozilla-style
- * plain-language claims). Pure CSS animation; pauses on hover and
- * collapses under prefers-reduced-motion. Content duplicated for a
- * seamless loop; the repeat is aria-hidden.
+ * Static credit line. The auto-scrolling marquee was removed (impeccable:
+ * auto-scrolling text makes people read at the page's pace).
  */
 interface Props {
   items: string[];
@@ -11,27 +9,13 @@ interface Props {
   label?: string;
 }
 
-const { items, variant = "sand", label = "Foundation record" } = Astro.props;
-const loop = [...items, ...items];
+const { items, label = "Foundation record" } = Astro.props;
 ---
-<div
-  class:list={["ticker", variant === "sky" && "ticker--sky"]}
-  role="marquee"
-  aria-label={label}
->
-  <div class="ticker-track" aria-hidden="true">
-    {loop.map((item) => <span>{item} <b>✦</b></span>)}
-  </div>
-  <span class="sr-only">{items.join(" · ")}</span>
-</div>
 
-<style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-</style>
+<div class="ticker" aria-label={label}>
+  <div class="container-site">
+    <p class="ticker-track">
+      {items.map((item) => <span>{item}</span>)}
+    </p>
+  </div>
+</div>
