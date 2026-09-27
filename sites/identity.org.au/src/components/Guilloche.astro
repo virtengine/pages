@@ -47,13 +47,23 @@ function ring(id: string, n: number) {
 }
 
 const rings = [0, 1, 2].map((n) => ring(seed, n));
-/** Only emitted when the falloff is actually in use, so plain grounds stay
- *  free of ids and two components on one page cannot collide. */
+/** Ids are derived from the seed so a build stays byte-stable. They are only
+ *  emitted when the falloff is in use, so plain grounds add no ids to the
+ *  document at all. Two inked rosettes sharing a seed on one page would still
+ *  collide, so the id set stays per-seed: give each inked rosette its own seed
+ *  (the homepage uses one ProofCard, and ClosingBand's ground is un-inked). */
 const uid = hash(`${seed}:${ink}`).toString(36);
 const fade = ink > 0;
 ---
 
-<svg class={className} viewBox="-80 -80 160 160" fill="none" aria-hidden="true" focusable="false">
+<svg
+  class={className}
+  viewBox="-80 -80 160 160"
+  preserveAspectRatio="xMidYMid slice"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
   {
     fade && (
       <defs>

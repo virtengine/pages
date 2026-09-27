@@ -24,7 +24,7 @@ const {
 
 <article class="proof-card" data-proof-card aria-label="Specimen proof card. A sample of what a service receives: the claim, not the document.">
   <div class="proof-card-ground" aria-hidden="true">
-    <Guilloche seed={seed} ink={0.9} focus="72% 46%" />
+    <Guilloche seed={seed} ink={0.55} focus="50% 48%" />
   </div>
   <div class="foil foil-wash" aria-hidden="true"></div>
   <div class="foil foil-core" aria-hidden="true"></div>
@@ -63,9 +63,11 @@ const {
 
 <script>
   /**
-   * The card is lit by two things: where the pointer is, and how far the page
-   * has scrolled. Both feed the same two custom properties, so the sheen is one
-   * light source rather than two effects fighting each other.
+   * The light is treated as fixed in the room, not glued to the card. That one
+   * decision gives both behaviours the brief asks for and keeps them from
+   * fighting: scrolling carries the card past the light so the sheen travels
+   * down it, and the pointer nudges that position locally. Both feed the same
+   * two custom properties, so there is one light source, not two effects.
    *
    * Everything here is decoration. Every value on the card is already in the
    * DOM as text, so the card reads identically with no pointer, no script, or
@@ -73,52 +75,70 @@ const {
    */
   const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
   const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 
   for (const card of document.querySelectorAll<HTMLElement>("[data-proof-card]")) {
     if (card.dataset.proofCardWired === "true") continue;
     card.dataset.proofCardWired = "true";
 
-    // Where the light sits, and where it is heading. The card eases from
-    // `from` to `to` each frame, which is what makes it lag the pointer
-    // instead of snapping to it.
+    /** Where the pointer is asking the light to be, in card percent. */
     const to = { x: 50, y: 50 };
+    /** Where the light actually is. Eases toward `to`, which is the lag. */
     const from = { x: 50, y: 50 };
-    let tilt = { x: 0, y: 0 };
+    const tilt = { x: 0, y: 0 };
+    /** Scroll contribution, in mask percent. Additive, so it never cancels
+     *  the pointer the way an absolute scroll aim would. */
+    let drift = 0;
     let frame = 0;
 
     const paint = () => {
       frame = 0;
-      const ease = calm.matches ? 1 : 0.14;
+      const ease = calm.matches ? 1 : 0.16;
       from.x += (to.x - from.x) * ease;
       from.y += (to.y - from.y) * ease;
+      // Tilt reads the same pair, so the card leans away from the light the
+      // way a physical card does.
       tilt.x += (to.y / 50 - 1 - tilt.x) * ease;
       tilt.y += (1 - to.x / 50 - tilt.y) * ease;
 
-      // Tilt is derived from the same pair, so the card leans away from the
-      // light the way a physical card does.
+      // Snap once the gap stops being visible, so the glide lands on a real
+      // resting value instead of asymptoting forever.
+      const near = (a: number, b: number) => Math.abs(a - b) < 0.05;
+      if (near(from.x, to.x)) from.x = to.x;
+      if (near(from.y, to.y)) from.y = to.y;
+      if (near(tilt.x, to.y / 50 - 1)) tilt.x = to.y / 50 - 1;
+      if (near(tilt.y, 1 - to.x / 50)) tilt.y = 1 - to.x / 50;
+
       card.style.setProperty("--tilt-x", `${(tilt.x * 3.4).toFixed(2)}deg`);
       card.style.setProperty("--tilt-y", `${(tilt.y * 3.4).toFixed(2)}deg`);
-      card.style.setProperty("--shift-x", `${((to.x - 50) / 50 * -3).toFixed(2)}px`);
-      card.style.setProperty("--shift-y", `${((to.y - 50) / 50 * -2).toFixed(2)}px`);
+      card.style.setProperty("--shift-x", `${(((to.x - 50) / 50) * -3).toFixed(2)}px`);
+      card.style.setProperty("--shift-y", `${(((to.y - 50) / 50) * -2).toFixed(2)}px`);
 
-      // The mask is oversized, so its position has to be expressed in the
-      // mask's own coordinate space, not the card's.
+      // The mask is larger than the card, so its position is expressed in the
+      // mask's own space, not the card's, and can run past either edge to let
+      // the band leave the card entirely.
       card.style.setProperty("--lx", `${(50 - (from.x - 50) * 1.15).toFixed(2)}%`);
-      card.style.setProperty("--ly", `${(50 - (from.y - 50) * 1.15).toFixed(2)}%`);
+      card.style.setProperty("--ly", `${(50 - (from.y - 50) * 1.15 + drift).toFixed(2)}%`);
+
+      // Pointer events stop when the pointer stops, so input alone cannot
+      // finish the glide. Hold the frame loop open until it lands.
+      if (from.x !== to.x || from.y !== to.y) schedule();
     };
 
-    const schedule = () => {
+    function schedule() {
       if (!frame) frame = requestAnimationFrame(paint);
-    };
+    }
 
-    /** Light falls off with distance, so the far side of the card dims. */
     const aim = (clientX: number, clientY: number) => {
       const box = card.getBoundingClientRect();
       if (!box.width || !box.height) return;
-      const dx = (clientX - (box.left + box.width / 2)) / (window.innerWidth / 2 + box.width);
-      const dy = (clientY - (box.top + box.height / 2)) / (window.innerHeight / 2 + box.height);
-      to.x = Math.min(108, Math.max(-8, 50 + dx * 46));
-      to.y = Math.min(108, Math.max(-8, 50 + dy * 46));
+      // Gain is set so a pointer anywhere near the card sweeps the sheen right
+      // across it, and a pointer further out keeps travelling until the band
+      // is off the card rather than parking at the border.
+      const dx = (clientX - (box.left + box.width / 2)) / (box.width * 0.75);
+      const dy = (clientY - (box.top + box.height / 2)) / (box.height * 0.75);
+      to.x = clamp(50 + dx * 46, -22, 122);
+      to.y = clamp(50 + dy * 46, -22, 122);
       schedule();
     };
 
@@ -130,8 +150,10 @@ const {
 
     const onScroll = () => {
       const box = card.getBoundingClientRect();
+      // Off screen: leave the last value alone rather than thrash the vars.
       if (box.bottom < -80 || box.top > window.innerHeight + 80) return;
-      aim(window.innerWidth / 2, box.top + box.height / 2);
+      drift = ((box.top + box.height / 2 - window.innerHeight / 2) / window.innerHeight) * 90;
+      schedule();
     };
 
     // Stable references: removeEventListener only matches the same function
@@ -144,6 +166,7 @@ const {
       card.addEventListener("pointermove", onMove);
       card.addEventListener("pointerleave", rest);
       window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
     };
 
     const detach = () => {
@@ -152,6 +175,7 @@ const {
       card.removeEventListener("pointermove", onMove);
       card.removeEventListener("pointerleave", rest);
       window.removeEventListener("scroll", onScroll);
+      drift = 0;
       rest();
     };
 

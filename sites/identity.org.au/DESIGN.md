@@ -211,6 +211,38 @@ status facts, statement bands, and one accessible demonstration pattern.
 | Data lifecycle strip | `components/diagrams/DataLifecycle.astro` | Five-stage "what happens to your data" strip (captured → encrypted → attested enclave → destroyed → result only); optional `withTable` companion `.table-gov` table. Reused on /, /privacy, /privacy/trusted-processing, /wallet/security and the biometrics help article |
 | Browser mockup | `components/phone/WebPortalFrame.astro` | Desktop-browser frame of the my.identity.org.au portal (credential, proofs, consents, session security) |
 | Phone mockups | `components/phone/*` | See below |
+| Proof card | `ProofCard.astro` | ID-1 specimen card. The credential artefact, and the only foil on the site. Static guilloché ground, one light source, fields printed over it |
+| Guilloché rosette | `Guilloche.astro` | Seeded build-time hypotrochoid. `ink` sets line-density falloff; `focus` sets where the ink is heaviest. Decorative, never meaningful |
+
+## 6b. The credential: ground, foil, and light
+
+`ProofCard` is built from three stacked layers under the printed fields, and the
+separation is the whole point. Confusing them is what produced the first round
+of hero bugs.
+
+- **Ground** (`.proof-card-ground`) — the guilloché rosette at ~18% opacity,
+  `preserveAspectRatio="slice"` so it overruns the card and reads as a
+  full-bleed security ground rather than a motif floating in the middle. It is
+  *static*: it carries the seed, not the light. Line density falls off from a
+  focal point via an SVG mask, so the ink thins away from the type instead of
+  sitting evenly under it. **The field values must stay the darkest thing on
+  the card.** If the ground ever competes with the type, drop the opacity
+  before you touch anything else.
+- **Light** (`.foil-wash`, `.foil-core`) — the only gradients permitted outside
+  the duotone map. Two layers, one light source: a wide spectral wash that
+  disperses (`color-dodge`) and a tight specular core inside it (`screen`).
+  Both masks are larger than the card so the band can travel in two axes and
+  leave the card entirely rather than parking at an edge.
+- **Fields** — `.proof-card > :not(.proof-card-ground):not(.foil)`, pinned to
+  `z-index: 2` so no painted layer can ever out-rank a value.
+
+`Guilloche` is also used as a full-hero ground via `ServiceHero`'s `guilloche`
+prop (`.hero-ground`). It is centred and clipped by the hero at a low tint so
+it cannot run off the page or collide with the media column. **Do not pass
+`guilloche` to a hero that already carries a `ProofCard`** — that is what put
+two rosettes in the home hero, one of them hanging off the right edge of the
+viewport and cutting through the card. The card is the credential; the hero
+ground is for heroes without one.
 
 ## 7. Phone mockup system
 
@@ -224,7 +256,7 @@ reference capture app (`mobile/veid-capture-app`):
 | --- | --- | --- |
 | `DocScanScreen` | Guided document capture: corner brackets, edge/glare checks, on-device processing note | set-up-your-wallet, mobile-wallet |
 | `LivenessScreen` | Active liveness: blink ✓ / head-turn in progress / smile next | set-up-your-wallet, mobile-wallet |
-| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | home hero, wallet overview |
+| `CredentialScreen` | Wallet home: Standard-level credential card, shareable proofs, consent activity | wallet overview |
 | `ZkShareScreen` | Zero-knowledge share: locked fields stay, one proof leaves | home, credentials |
 | `WebPortalFrame` | Browser portal: credential, proofs, consents, session security | wallet overview, web wallet |
 
@@ -341,13 +373,44 @@ rendered with `TableScroll` + `table-gov`.
 
 ## 9. Motion
 
-Near zero. The only scripted behaviour on the site is the mobile menu toggle;
-FAQ accordions are native `<details>`, and the sharing demonstration uses CSS-only
-radio state. Transitions are 140–160ms colour/border eases on hover; the demo's
-flow line is the only looping keyframe animation. There are no scroll animations,
-no parallax, no animated SVG beyond these restrained diagram cues.
-`prefers-reduced-motion: reduce` collapses all remaining transition durations
-to 0.01ms globally and disables looping demonstration/diagram motion.
+Near zero. The scripted behaviour on the site is the mobile menu toggle and the
+proof card's light; FAQ accordions are native `<details>`, and the sharing
+demonstration uses CSS-only radio state. Transitions are 140–160ms
+colour/border eases on hover; the demo's flow line is the only looping keyframe
+animation. There are no scroll animations and no animated SVG beyond these
+restrained diagram cues. `prefers-reduced-motion: reduce` collapses all
+remaining transition durations to 0.01ms globally and disables looping
+demonstration/diagram motion.
+
+### The one sanctioned exception: the proof card's light
+
+`ProofCard` treats the light source as **fixed in the room rather than glued to
+the card**, and that single decision produces both of its behaviours without
+them fighting:
+
+- **Scroll** carries the card past the light, so the sheen travels down the card
+  as the page moves. This is additive (`drift`) and never overrides the pointer.
+- **Pointer** nudges that position locally, and the card tilts up to ~3.4° and
+  drifts a few pixels away from the light. The light position eases toward the
+  pointer's request, which is what makes the card *lag* the pointer instead of
+  snapping to it.
+
+Rules, because this is the only place on the site that moves:
+
+1. **The easing loop must outlive the input.** `pointermove` stops when the
+   pointer stops, so a frame loop keyed only to input freezes the card
+   mid-glide. Keep scheduling frames until the light lands, then snap.
+2. **It is decoration, so it must be optional.** The effect is gated on
+   `(prefers-reduced-motion: no-preference)` *and* `(hover: hover) and (pointer:
+   fine)`. Under reduced motion the script never runs, no transform is applied
+   (it only exists inside the `no-preference` block), and the foil mask is
+   pinned to `50% 50%`.
+3. **It conveys nothing.** Every value is already in the DOM as text, so the
+   card is complete and correct with no pointer, no script, and no motion. That
+   is why it needs no keyboard equivalent.
+4. **Keep it to one card.** Pointer parallax is a garnish on a single hero
+   artefact. It does not scale to a grid of cards and must not be extended to
+   them.
 
 ## 10. Honesty locks
 
