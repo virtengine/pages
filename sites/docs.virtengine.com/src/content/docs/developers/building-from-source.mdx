@@ -1,11 +1,12 @@
 ---
 title: Building from Source
-description: Compiling the virtengine binary — Go 1.25 toolchain, C dependencies, Makefile targets, and platform support.
+description: Compiling the virtengine binary — Go 1.26 toolchain, C dependencies, Makefile targets, and platform support.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 
-VirtEngine is developed against **Go 1.25.5**. The build is Makefile-driven
+VirtEngine is developed against **Go 1.26.8** (`go.mod:3`, and `GO_VERSION`
+in `.github/workflows/ci.yaml`). The build is Makefile-driven
 and produces a single binary, `virtengine`, containing the full node and
 client functionality.
 
@@ -13,10 +14,10 @@ client functionality.
 
 | Requirement | Notes |
 | --- | --- |
-| Go 1.25.5 | With `GOPATH` set and `$GOPATH/bin` in `$PATH` |
+| Go 1.26.8 | With `GOPATH` set and `$GOPATH/bin` in `$PATH` |
 | C/C++ compiler | `gcc` or `clang` — required for C dependencies (`libusb`, `libhid`) |
 | GNU make 4+ | macOS ships an ancient make; install via Homebrew (keg-only — prepend its gnubin to `PATH`) |
-| direnv ≥ 2.32.x | The repo uses direnv extensively for environment setup |
+| direnv | Required on non-Windows: `make/init.mk` fails without it unless `VE_DIRENV_SET` is exported (see `.envrc`) |
 
 ## Supported platforms
 
@@ -40,7 +41,7 @@ client functionality.
 
    # Debian-based Linux
    sudo apt update
-   sudo apt install -y jq curl wget build-essentials ca-certificates npm direnv gcc
+   sudo apt install -y jq curl wget build-essential libudev-dev ca-certificates npm direnv gcc
    ```
 
 2. **Clone and build.**
@@ -75,21 +76,23 @@ Set `VE_DEVCACHE` to relocate it. Tool versions and install rules live in
 
 ## Installing releases instead
 
-For published release tags, installation paths exist via Homebrew and an
-install script:
+There is no release-based install path today. This repository has **no
+published releases** — the only release record is `0.1.0`, a draft from
+2021 — so neither route below can resolve an artifact:
 
-```sh
-brew tap virtengine/tap
-brew install virtengine
-```
+- `virtengine/homebrew-tap` does not exist (GitHub returns 404), so
+  `brew tap virtengine/tap` fails.
+- `install.sh` on `main` declares `OWNER="virtengine-network"` and
+  `REPO="node"` (`install.sh:351-352`); that repository does not resolve, so
+  the one-liner cannot download anything built from this repository.
 
-```sh
-curl -sSfL https://raw.githubusercontent.com/virtengine/virtengine/main/install.sh | sh
-```
+{/* UNVERIFIED: a Homebrew tap and a release `install.sh` were previously
+    documented here as live install paths. Neither could be verified against
+    GitHub on 2026-09-26 (tap 404; install.sh on main points at another
+    OWNER/REPO). Re-verify both when the first release is published. */}
 
-Before production use, verify the tag is actually published and the network
-posture matches your deployment — see
-[Network Launch Schedule](/validators/mainnet-launch/).
+Until releases exist, build from source with `make virtengine` (above). For
+network posture, see [Network Launch Schedule](/validators/mainnet-launch/).
 
 ## Next steps
 
