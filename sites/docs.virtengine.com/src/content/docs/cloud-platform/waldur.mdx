@@ -32,8 +32,12 @@ upstream **[Waldur documentation](https://docs.waldur.com)**.
 The VE–Waldur API connects Waldur's catalogue and service-management model to
 the VirtEngine protocol. Waldur handles the user-facing catalogue,
 organization/project context, provisioning hand-off and service accounting.
-VirtEngine supplies the decentralized parts: VEID-gated participation,
-orders and bids, leases, escrow, signed usage and settlement.
+VirtEngine supplies the decentralized parts: identity and access controls,
+orders and bids, leases, escrow, signed usage and settlement. VEID is not the
+intended universal gate for marketplace participation. The current chain and
+client implementation may still apply identity checks to specific actions;
+offer-specific buyer requirements depend on protocol and client support and
+must be disclosed before ordering.
 
 After a listing is selected or matched, fulfilment can be handed to a
 Kubernetes deployment, an HPC scheduler such as SLURM, or a custom provider

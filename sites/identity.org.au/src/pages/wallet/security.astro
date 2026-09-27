@@ -57,15 +57,16 @@ const crumbs = [
       Verification itself runs inside hardware-sealed enclaves — AMD SEV-SNP confidential VMs,
       Intel SGX, AWS Nitro — whose attestation the chain verifies before any data is released
       to them. The decryption key is derived inside the hardware and never exists outside it,
-      so no operator, provider or foundation staff member has an access path. Raw data is
-      destroyed when scoring ends; only the result leaves.
+      so no operator, provider or foundation staff member has an access path. Original document
+      images never leave your device; only approved derived data is processed, and transient
+      processing data follows the scope lifecycle.
     </p>
   </div>
 
   <ServiceFigure
     rail="Data lifecycle"
     railRight="Five stages"
-    caption="Captured on your phone, encrypted before it moves, processed in a sealed vault, destroyed after scoring — leaving only the result."
+    caption="Original document images stay on your phone. Only minimum approved derived data may leave encrypted for VEID processing."
     class="mt-6"
   >
     <DataLifecycle />

@@ -56,7 +56,7 @@ full set of options.
    window; corrections create new records referencing the original.
 
 7. **Escrow pays out.** `x/escrow` transfers the agreed funds from the
-   tenant's escrow account to the provider with **0% marketplace commission**.
+   tenant's escrow account to the provider at the full agreed amount in ACT.
    Validator transaction fees apply only to the chain messages. If escrow runs
    dry, the lease closes.
 
@@ -72,9 +72,10 @@ full set of options.
 - **Reputation on-chain** — audits (`x/audit`), benchmarks (`x/benchmark`),
   and reviews (`x/review`) give tenants verifiable signals when choosing
   providers.
-- **Identity-gated participation** — VEID identity verification
-  (see [VEID Overview](/veid/overview/)) raises the cost of Sybil attacks on
-  both sides of the market.
+- **Optional identity signals** — VEID is not a universal marketplace
+  prerequisite. A supported offer may disclose a specific proof requirement;
+  buyers can choose offers that do not require it (see
+  [VEID Overview](/veid/overview/)).
 
 ## Related reading
 

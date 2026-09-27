@@ -725,7 +725,7 @@ export const MARKETPLACE_STAGES: MarketplaceStage[] = [
     sentence: "Validated usage releases the corresponding escrowed funds.",
     icon: "transfer",
     tenant: "Can raise corrections during the dispute window; unspent escrow returns when the deployment closes.",
-    provider: "Receives the agreed amount from escrow under the governed settlement fee policy.",
+    provider: "Receives the agreed amount from escrow at the full agreed amount.",
     protocol: "<code>Settlement</code> converts validated records into priced line items and releases escrow.",
     offchain: "Provider and project reporting views remain operational; they do not override the lease price or authorise payout.",
     next: "Renewal, scale, or close — any remaining escrow returns to the tenant.",

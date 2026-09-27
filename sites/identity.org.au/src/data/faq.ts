@@ -177,13 +177,13 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         question: "Where are my documents stored?",
         answer:
-          "Encrypted, with encryption starting on your own device before anything is transmitted. The network stores encrypted payloads it cannot browse. Services you share with never receive documents at all — they receive verification results.",
+          "Original document images remain on your device and are never uploaded. The wallet performs OCR and document checks locally. If you separately approve a VEID scope, only minimum derived fields or verification features may be sent encrypted for that purpose.",
         more: { label: "Privacy", href: "/privacy" },
       },
       {
         question: "What does a service actually see when I share?",
         answer:
-          "Your verification level and the specific answer you approved — for example, “over 18: yes”. Never your document scans, never your photos, never your biometric data. This is enforced by the protocol, not just promised in a policy.",
+          "Your verification level and the specific answer you approved — for example, “over 18: yes”. The wallet never sends your original document scans to the service; it returns only the approved proof or result.",
         more: { label: "Who can see your data", href: "/help/who-can-see-your-data" },
       },
       {
@@ -201,19 +201,19 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         question: "When is my data deleted?",
         answer:
-          "At several points, automatically. Working copies inside the processing enclave are destroyed the moment scoring ends. Retained encrypted evidence is destroyed automatically at the end of its legal retention period — at most 7 years from last use, under know-your-customer law. If you request deletion, data leaves active systems within 30 days and backups within the rotation period (typically 90 days), and encryption keys are destroyed, which makes any remaining encrypted copy permanently unreadable. You can withdraw consent any time via dpo@virtengine.com.",
+          "Original document images never enter the network, so VirtEngine has no copy to delete. Any derived data you choose to submit follows the lifecycle stated in that scope's notice; on-chain records may be immutable. You can withdraw scope consent through the available controls.",
         more: { label: "How and when data is discarded", href: "/privacy/trusted-processing" },
       },
       {
         question: "What exactly is stored on the blockchain?",
         answer:
-          "Verification results — your score, tier and pass/fail outcomes — plus encrypted references, consent records and enclave attestation records. Never your documents, photos or biometric data in readable form. The chain's job is to make results and consents tamper-proof, not to hold evidence; the raw material stays encrypted on your device and is destroyed after processing.",
+          "Verification results, consent records, and the encrypted references or derived evidence required by the scopes you approved. Original document images are never uploaded or written to the chain. Public results and metadata may be permanent, so review the scope notice before submitting derived data.",
         more: { label: "Privacy — what exists and where it lives", href: "/privacy" },
       },
       {
         question: "Can I delete my data?",
         answer:
-          "Yes. Deletion removes data from active systems within 30 days, then from backups within the rotation period (typically 90 days). Encryption keys are destroyed, which makes any on-chain encrypted references permanently unreadable. Some records carry legally mandated retention (for example 7-year know-your-customer rules) before automatic destruction.",
+          "Original document images remain on your device and are not held by VirtEngine. For derived data you submitted, use the relevant scope controls and review the deletion limits, including any immutable on-chain record. The applicable scope notice describes its lifecycle.",
         more: { label: "Deleting your identity", href: "/help/deleting-your-identity" },
       },
       {

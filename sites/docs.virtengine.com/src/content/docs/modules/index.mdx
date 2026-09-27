@@ -48,14 +48,13 @@ control.
 
 ## Economics & settlement
 
-Escrow-backed payments, governed settlement fees, validator transaction fees,
+Escrow-backed payments, full agreed provider payouts, validator transaction fees,
 VEID-led issuance, staking, delegation, and oracles.
 
 | Module | Purpose |
 | --- | --- |
 | [`x/escrow`](/modules/escrow/) | Funds held on-chain against active leases, released only by settlement rules. |
 | [`x/settlement`](/modules/settlement/) | Converts signed usage records into billable line items and provider payouts. |
-| [`x/take`](/modules/take/) | Governed marketplace settlement policy; validator transaction fees remain separate. |
 | [`x/bme`](/modules/bme/) | Burn-and-mint equilibrium mechanics linking token supply to marketplace demand. |
 | [`x/staking`](/modules/staking/) | Validator staking extensions over Cosmos SDK staking, tuned for the dual validator role. |
 | [`x/delegation`](/modules/delegation/) | The full delegation lifecycle for token holders and staking partners. |

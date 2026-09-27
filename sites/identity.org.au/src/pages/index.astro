@@ -38,7 +38,6 @@ const setupSteps = [
     eyebrow="The Identity Wallet service"
     title="Prove what matters. Keep the rest private."
     lede="The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an answer, such as whether you are over 18, it gets the answer, never your documents."
-    guilloche="IDAU-HOME-001"
   >
     <div slot="actions">
       <a href={SITE.walletPortal} class="btn-primary">
@@ -56,7 +55,8 @@ const setupSteps = [
     <div slot="media">
       <ProofCard seed="IDAU-HOME-001" />
       <p class="mt-3 mb-0 text-[0.8rem] text-muted">
-        Specimen card. The foil marks a genuine proof. The service receives the claim, not the document.
+        Specimen card. The guilloché is the printed ground; the foil catches the light and moves
+        with you. The service receives the claim, not the document.
       </p>
     </div>
   </ServiceHero>
@@ -82,7 +82,7 @@ const setupSteps = [
           href="/wallet/mobile-wallet"
           tag="Capture + wallet"
           title="Mobile wallet"
-          description="Guided document capture, liveness, hardware biometrics — encrypted on your phone before anything moves."
+          description="Guided local document capture and OCR. Original scans stay on your phone; only separately approved derived data may be encrypted for submission."
         />
         <CardLink
           href="/wallet/web-wallet"
@@ -244,12 +244,12 @@ const setupSteps = [
         index="05"
         eyebrow="Your data, in plain terms"
         title="Locked on your device. Processed in a vault no one can open."
-        lede="Your evidence is encrypted before it moves, processed only inside hardware-sealed trusted processing units, and destroyed when scoring ends. Only the result — a score and tier — ever remains."
+        lede="Original document images stay on your device. The wallet processes them locally; only minimum, user-approved derived data may leave, encrypted for VEID verification."
       >
         <ServiceFigure
           rail="Data lifecycle"
           railRight="Five stages"
-          caption="Captured on your phone, encrypted on your device, processed inside a sealed hardware vault, destroyed after scoring — leaving only the result."
+          caption="Original document images stay on your phone. Only minimum, user-approved derived data may leave, encrypted for VEID verification."
         >
           <DataLifecycle />
         </ServiceFigure>
@@ -273,8 +273,8 @@ const setupSteps = [
               <tbody>
                 <tr>
                   <th scope="row">Document scans and photos</th>
-                  <td>Encrypted on your device, then as encrypted payloads the network cannot browse</td>
-                  <td>You. Verification runs inside sealed, attested enclaves; results are recorded, not images.</td>
+                  <td>Original images stay on your device; only approved derived data may be submitted encrypted</td>
+                  <td>You control the image. The network receives no document scan.</td>
                 </tr>
                 <tr>
                   <th scope="row">Biometric templates</th>

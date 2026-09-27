@@ -67,7 +67,7 @@ const paths = [
 <div class="pp">
   <input type="radio" name="participation-path" id="pp-all" checked class="sr-only" />
   {paths.map((p) => <input type="radio" name="participation-path" id={`pp-${p.id}`} class="sr-only" />)}
-  <nav class="route-tabs" role="tablist" aria-label="Choose your participation path">
+  <nav class="route-tabs" aria-label="Choose your participation path">
     <label for="pp-all">Show all paths</label>
     {paths.map((p) => <label for={`pp-${p.id}`}>{p.tab}</label>)}
   </nav>

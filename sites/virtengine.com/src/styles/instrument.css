@@ -2635,6 +2635,11 @@
   position: relative;
   overflow: hidden;
 }
+/* footer — instrument footer with lattice watermark.
+   The lattice is blurred on purpose: at full sharpness its strokes are thin,
+   bright and hard-edged, so wherever one crosses a link it drops that link to
+   ~1.8:1. Diffusing it keeps the ambient mark and returns the worst-case
+   background under body text to ~5.1:1. */
 .site-footer .footer-lattice {
   position: absolute;
   left: 50%;
@@ -2642,6 +2647,7 @@
   top: -34%;
   width: min(120rem, 160%);
   opacity: 0.16;
+  filter: blur(4px);
   pointer-events: none;
 }
 .site-footer .footer-status {
@@ -4515,7 +4521,7 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .learn-progress i{display:block;height:100%;background:#1c6838;transform:scaleX(0);transform-origin:left}
 .learn-editorial{padding-top:36px}
 .learn-crumbs{font-size:13px;color:#4a5a4e;margin-bottom:14px}
-.learn-crumbs a{color:#1c5632}
+.learn-crumbs a{color:#1c5632;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .learn-kicker{font:12px var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:#54725d}
 .learn-title{font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.01em;margin:10px 0}
 .learn-lede{font-size:18px;line-height:1.65;color:#2b3a30;max-width:65ch}

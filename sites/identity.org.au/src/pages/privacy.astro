@@ -34,6 +34,14 @@ const crumbs = [
   </PageHeader>
 
   <div class="container-site max-w-[62rem] py-12">
+    <Alert tone="info" title="Design commitments; service not live" class="mb-8 max-w-[72ch]">
+      <p>
+        The Identity Wallet and VEID verification service are not live. This page explains the
+        published privacy design and policy; it is not a claim that every described control has
+        been deployed or independently verified. Before launch, the actual client, network,
+        recipients, retention and deletion behavior must be checked against these commitments.
+      </p>
+    </Alert>
     <section>
       <h2 class="mt-0 text-[1.6rem]">This website collects nothing</h2>
       <p class="text-body measure">
@@ -46,13 +54,14 @@ const crumbs = [
     <section class="mt-12">
       <h2 class="mt-0 text-[1.6rem]">The life of your data, in five stages</h2>
       <p class="text-body measure">
-        Captured on your phone, encrypted before it moves, processed only inside hardware-sealed
-        trusted processing units, destroyed when scoring ends — leaving only the result.
+        Original document images stay on your device and never enter the network. The client
+        processes the document locally; only minimum, user-approved derived data may leave, encrypted
+        before transmission and processed under the relevant VEID scope.
       </p>
       <ServiceFigure
         rail="Data lifecycle"
         railRight="Five stages"
-        caption="Captured on your phone, encrypted before it moves, processed only inside hardware-sealed trusted processing units, destroyed when scoring ends — leaving only the result."
+        caption="Original document images stay on your device. Only minimum, user-approved derived data may leave, encrypted for VEID processing."
         class="mt-6"
       >
         <DataLifecycle />
@@ -77,10 +86,10 @@ const crumbs = [
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Document scans (licence, passport)</th>
-              <td>Encrypted on your device; encrypted payloads in the network vault</td>
-              <td>You. Processing happens only inside sealed, attested enclaves — no operator can look in; results, not images, are recorded</td>
-              <td>7 years (know-your-customer law), then destroyed</td>
+              <th scope="row">Original document images (licence, passport)</th>
+              <td>On your device only; not uploaded to the network</td>
+              <td>You, through the local wallet client</td>
+              <td>Under your device's controls; VirtEngine does not retain a copy</td>
             </tr>
             <tr>
               <th scope="row">Biometric templates (face, fingerprint, iris)</th>
@@ -90,9 +99,9 @@ const crumbs = [
             </tr>
             <tr>
               <th scope="row">OCR-extracted details (name, date of birth)</th>
-              <td>Encrypted identity scopes on the network</td>
+              <td>Only if you approve submission: minimum derived fields in an encrypted, consent-scoped payload</td>
               <td>You; services only per explicitly consented claim</td>
-              <td>With your account, subject to the document retention rule</td>
+              <td>According to the approved scope's lifecycle notice; original document images are not included</td>
             </tr>
             <tr>
               <th scope="row">Verification results (level, pass/fail)</th>
@@ -154,9 +163,10 @@ const crumbs = [
             </tr>
           </thead>
           <tbody>
-            <tr><th scope="row">Blockchain records</th><td>Permanent</td><td>Immutability — but never readable personal data</td></tr>
-            <tr><th scope="row">Biometric templates</th><td>Active account + 3 years</td><td>Fraud and re-registration prevention, KYC/AML</td></tr>
-            <tr><th scope="row">Identity documents</th><td>7 years</td><td>Regulatory (KYC/AML) requirements</td></tr>
+            <tr><th scope="row">Blockchain records</th><td>May be permanent</td><td>Immutable history can include public metadata and encrypted references; deletion of submitted records cannot be promised</td></tr>
+            <tr><th scope="row">Biometric data submitted for an approved scope</th><td>As described by the scope notice and Biometric Data Addendum; the published schedule allows up to 7 years from last use, subject to applicable law</td><td>The stated scope purpose and retention schedule; no universal KYC/AML basis is assumed</td></tr>
+            <tr><th scope="row">Original document images</th><td>Not received or retained by the protocol</td><td>Remain on your device under your control</td></tr>
+            <tr><th scope="row">Derived document fields, if submitted</th><td>As stated in the scope notice</td><td>Only the minimum fields needed for the approved purpose</td></tr>
             <tr><th scope="row">Usage metrics</th><td>3 years</td><td>Billing and audit</td></tr>
             <tr><th scope="row">Support communications</th><td>3 years</td><td>Customer service</td></tr>
             <tr><th scope="row">Security logs</th><td>12 months</td><td>Incident investigation</td></tr>
@@ -166,9 +176,10 @@ const crumbs = [
       </TableScroll>
       <Callout title="At the end of retention" class="mt-6 max-w-[72ch]">
         <p>
-          Destruction is automatic: deletion from active systems, removal from backups within the
-          rotation schedule, and destruction of encryption keys — which makes any on-chain
-          encrypted material permanently unreadable.
+          The applicable scope notice describes deletion timing and backup handling for data the
+          service controls. Consent withdrawal stops future authorized processing or sharing where
+          applicable, but does not erase immutable blockchain history or independent copies. This
+          policy does not promise cryptographic erasure unless the deployed key lifecycle supports it.
         </p>
       </Callout>
     </section>

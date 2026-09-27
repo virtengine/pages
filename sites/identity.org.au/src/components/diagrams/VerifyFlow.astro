@@ -1,6 +1,6 @@
 ---
 /**
- * House-style flow diagram: wallet → VEID chain modules → marketplace approval.
+ * House-style flow diagram: wallet → VEID scopes → optional offer-specific proof.
  * Flat duotone, no gradients; matches the gov-service design system.
  */
 interface Props {
@@ -12,7 +12,7 @@ const { class: className } = Astro.props;
 <svg
   viewBox="0 0 880 430"
   role="img"
-  aria-label="Diagram: your wallet encrypts identity evidence on your device and submits it to the VEID modules on the VirtEngine chain, which verify it and record a score and tier. The marketplace reads only the tier and score — never documents — and approves you as a client for deployments and leases."
+  aria-label="Diagram: original identity document images and full OCR stay on your device. Only minimum derived data you separately approve may be submitted in an encrypted VEID scope. A provider may request a specific proof for an individual offer where supported; the marketplace does not require VEID for everyone."
   class:list={["block w-full h-auto", className]}
   font-family="Public Sans, sans-serif"
 >
@@ -109,25 +109,25 @@ const { class: className } = Astro.props;
     <rect x="634" y="76" width="232" height="14" fill="var(--color-navy)" />
     <text x="654" y="73" font-size="14.5" font-weight="700" fill="#ffffff">VirtEngine marketplace</text>
 
-    <text x="650" y="116" font-size="11" font-weight="700" letter-spacing="1" fill="var(--color-steel)">WHAT PROVIDERS SEE</text>
+    <text x="650" y="116" font-size="11" font-weight="700" letter-spacing="1" fill="var(--color-steel)">ONLY IF THE OFFER ASKS</text>
 
     <g font-size="12" fill="var(--color-body)">
       <rect x="650" y="128" width="200" height="56" rx="5" fill="var(--color-alt)" />
-      <text x="662" y="147" font-weight="700" fill="var(--color-ink)">Tier: Standard</text>
-      <text x="662" y="163">Score band met for the offering</text>
-      <text x="662" y="177" font-size="11" fill="var(--color-muted)">No name, no documents</text>
+      <text x="662" y="147" font-weight="700" fill="var(--color-ink)">Requested claim only</text>
+      <text x="662" y="163">Proof meets the stated condition</text>
+      <text x="662" y="177" font-size="11" fill="var(--color-muted)">No source image or full OCR</text>
 
       <!-- approved tick -->
       <rect x="650" y="196" width="200" height="52" rx="5" fill="var(--color-success-bg)" stroke="var(--color-success-rule)" stroke-width="1.2" />
       <circle cx="672" cy="222" r="11" fill="none" stroke="var(--color-success-rule)" stroke-width="2" />
       <path d="m666.5 222 4 4 7.5-8.5" fill="none" stroke="var(--color-success-rule)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-      <text x="692" y="219" font-weight="700" fill="var(--color-ink)">Approved client</text>
-      <text x="692" y="236" font-size="11.2">Eligible for the action</text>
+      <text x="692" y="219" font-weight="700" fill="var(--color-ink)">Proof matches offer</text>
+      <text x="692" y="236" font-size="11.2">You choose whether to proceed</text>
 
       <rect x="650" y="260" width="200" height="64" rx="5" fill="var(--color-alt)" />
-      <text x="662" y="279" font-weight="700" fill="var(--color-ink)">Unlocked actions</text>
-      <text x="662" y="296">Deployments and leases</text>
-      <text x="662" y="311">gated by required tier</text>
+      <text x="662" y="279" font-weight="700" fill="var(--color-ink)">Offer-specific request</text>
+      <text x="662" y="296">Other listings can remain open</text>
+      <text x="662" y="311">No universal VEID gate</text>
     </g>
   </g>
 
@@ -135,9 +135,9 @@ const { class: className } = Astro.props;
   <g>
     <path d="M750 356 V386 H120 V352" stroke="var(--color-hairline-strong)" stroke-width="2" fill="none" stroke-dasharray="6 5" />
     <path d="m114 358 6-8 6 8" fill="none" stroke="var(--color-hairline-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-    <text x="440" y="378" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--color-muted)">If an action needs a higher tier, your wallet shows exactly what evidence would raise it — you choose whether to provide it</text>
+    <text x="440" y="378" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--color-muted)">If an offer asks for proof, your wallet explains it — you choose to share it or select another listing</text>
   </g>
 
   <!-- caption row -->
-  <text x="440" y="418" text-anchor="middle" font-size="11.5" fill="var(--color-muted)">Evidence stays encrypted · the chain records results · the marketplace reads tiers</text>
+  <text x="440" y="418" text-anchor="middle" font-size="11.5" fill="var(--color-muted)">Source images stay local · submitted data is scoped · proofs disclose only the requested claim</text>
 </svg>

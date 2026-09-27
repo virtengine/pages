@@ -29,7 +29,7 @@ const { visual, id, class: className } = Astro.props;
 const groupId = `visual-${visual.kind}${id ? `-${id}` : ""}`;
 ---
 
-<figure class:list={["mk-visual reveal", className]} role="group" aria-label={visual.label}>
+<figure class:list={["mk-visual reveal", className]} aria-label={visual.label}>
   {
     visual.kind === "lifecycle" && <MarketplaceLifecycle id={groupId} />
   }

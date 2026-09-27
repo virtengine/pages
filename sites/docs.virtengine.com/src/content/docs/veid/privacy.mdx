@@ -3,34 +3,45 @@ title: Privacy Model
 description: What VEID stores where — encrypted vaults, on-chain references, zero-knowledge proofs, and the data-minimization rules that govern the identity layer.
 ---
 
-The shortest accurate description of VEID's privacy model: **the chain never
-sees your face.** This page spells out what that means in practice.
+The privacy design keeps original identity document images and full OCR output
+on the user's device. Selected, separately approved data may be encrypted into
+a VEID scope; encryption limits who can read a payload but does not make it
+anonymous or erase its metadata and immutable chain references.
+
+The capture client must clear temporary document-processing copies after local
+checks. If a user chooses to save a source image, that copy remains only in the
+user's local device storage under the user's control.
 
 ## The data placement rules
 
 | Data | Where it lives | Who can read it |
 | --- | --- | --- |
-| Raw document images, selfies | Never persisted beyond processing | — |
-| Biometric templates | Encrypted vault (VEID envelope) | Approved verification services only |
-| Device attestation payloads | Encrypted vault | Approved verification services only |
+| Original identity document images | User's device only; never uploaded | The user, through the local wallet client |
+| User-reviewed OCR fields and verification features | Encrypted VEID scope, only if the user approves submission | Processed only for the consented purpose under the scope notice |
+| Biometric templates | Encrypted VEID scope, only where separately consented | As described in the biometric scope and trusted-processing design |
+| Device attestation payloads | Encrypted VEID scope only where separately approved | As stated in the scope notice |
 | Identity scope records | On-chain, referencing vault payloads | Public (ciphertext references + metadata) |
 | Verification results | On-chain, signed | Public (result, not the data) |
 | Consent settings | On-chain (encrypted) + off-chain index | User-controlled |
 
-The chain stores **references and evidence** — encrypted payload pointers,
-key fingerprints, scope IDs, signed verification attestations — never
-plaintext identity data.
+The public ledger does not carry source document images or plaintext identity
+documents. It can carry encrypted payloads or references, key fingerprints,
+scope identifiers, signed attestations, and results. Designated verification
+recipients may process data in a submitted scope as described by its notice.
+Public chain metadata and records are immutable; revoking consent stops future
+authorized sharing but does not erase existing chain history or copies.
 
 ## Data minimization
 
-The protocol stores only what verification requires: templates plus
-integrity metadata. Notable deliberate exclusions:
+The design calls for data minimization: submit only the minimum data needed for
+the purpose the user approved. Original identity document images and full OCR
+output are excluded from VEID submissions. Notable deliberate exclusions:
 
 - `veid.geo_location` covers country and region, **not precise GPS**.
 - Derived-feature sharing (feature hashes) is off unless the user grants
   `AllowDerivedFeatureSharing`.
-- Attestation payloads follow lifecycle policies — they expire and can be
-  revoked, rather than accumulating forever.
+- Other submitted data follows its own scope lifecycle; chain records and
+  independent copies may persist after consent is revoked.
 
 ## Zero-knowledge proofs
 

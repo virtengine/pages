@@ -42,7 +42,7 @@ export const GLOSSARY: GlossaryGroup[] = [
         id: "tenant",
         term: "Tenant",
         definition:
-          "The buyer: an organisation or individual that orders services through the marketplace and operates the leased resources. Tenants are identity-gated before matching, exactly as providers are.",
+          "The buyer: an organisation or individual that orders services through the marketplace and operates the leased resources. VEID is not required for general participation; a provider may disclose an identity-proof requirement for an individual offer.",
         href: "/tenants",
         hrefLabel: "Tenant overview",
         see: ["order", "lease"],
@@ -199,7 +199,7 @@ export const GLOSSARY: GlossaryGroup[] = [
         id: "settlement",
         term: "Settlement",
         definition:
-          "The conversion of validated usage records into priced line items and the release of the agreed amount from escrow to the provider under the governed settlement fee policy.",
+          "The conversion of validated usage records into priced line items and the release of the agreed amount from escrow to the provider at the full agreed amount.",
         href: "/modules/settlement",
         hrefLabel: "x/settlement module",
         see: ["escrow", "usage-record"],

@@ -1,11 +1,11 @@
 ---
 title: x/veidregistry — VEID Registry module
-description: The x/veidregistry module is the ledger's index of identity records and scopes, the canonical answer identity-gating modules resolve against.
+description: The x/veidregistry module indexes identity records and scopes for protocol actions that explicitly require a VEID proof.
 ---
 
-The `x/veidregistry` module is the ledger's index of identity state: which
-accounts hold verified records, which scopes those records comprise, and how
-identity state is looked up by the modules that enforce identity gates.
+The `x/veidregistry` module indexes identity state: which accounts hold
+verification records, which scopes those records comprise, and how protocol
+actions with an explicit identity requirement can resolve that state.
 
 Splitting the registry from the scoring engine keeps long-lived identity
 records cleanly separated from the verification workflow — scoring logic can
@@ -19,18 +19,19 @@ records consensus-committed scores and scope outcomes produced by the
 scoring engine, binds each account to its verification outcomes and verified
 scopes, and exposes that state for lookup.
 
-Every identity gate on the chain resolves through it: marketplace identity
-gates, provider registration checks, and role conditions all query the
-registry rather than the machinery that produces the state. Because
-long-lived records are kept addressable separately, scoring machinery can
-change underneath without disturbing the address of truth.
+Protocol actions that explicitly require an identity proof can query the
+registry rather than the machinery that produces the state. The registry does
+not impose a universal VEID gate on marketplace participation; any
+offer-specific requirement must be disclosed to users. Because records are
+kept addressable separately, scoring machinery can change without disturbing
+the identity lookup interface.
 
 ## Why it exists
 
-Every identity-gated action on the chain — registering a provider, creating
-a deployment, casting an identity-weighted vote — needs a fast, canonical
-answer to "what is this account's verified identity state?". The registry is
-that answer, kept apart from the machinery that produces it.
+An action with an explicit identity requirement needs a fast, canonical answer
+to "what proof has this account presented?". The registry provides identity
+state for those scoped checks without making VEID a prerequisite for every
+marketplace action.
 
 ## Primary objects
 
@@ -78,7 +79,7 @@ that answer, kept apart from the machinery that produces it.
 | Module | How they interact |
 | --- | --- |
 | [x/veid](/modules/veid/) | Consensus-committed scores and scope outcomes are recorded into the registry. |
-| [x/market](/modules/market/) | Marketplace identity gates resolve accounts through the registry. |
+| [x/market](/modules/market/) | Supported offer-specific checks can resolve VEID proofs; no universal marketplace gate is implied. |
 | [x/provider](/modules/provider/) | Provider registration checks registry state before admitting operators. |
 | [x/roles](/modules/roles/) | Role assignments can be conditioned on registry-verified identity. |
 
@@ -93,8 +94,7 @@ that answer, kept apart from the machinery that produces it.
 ### Why split the registry from scoring?
 
 So verification workflows can evolve without breaking the stable record
-interface that every gated module depends on — production machinery changes,
-the address of truth doesn't.
+interface used by protocol actions that explicitly require identity proofs.
 
 ### What does an identity record contain?
 

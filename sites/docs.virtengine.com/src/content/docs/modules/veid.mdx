@@ -3,10 +3,11 @@ title: x/veid — VEID module
 description: The x/veid module captures identity evidence on-device, seals it into encrypted scopes, scores by validator consensus, and offers ZK proof tiers.
 ---
 
-The `x/veid` module is the protocol's identity layer. Users capture identity
-evidence on-device — documents with OCR, a selfie with active liveness,
-biometric hardware attestation, and device integrity attestation — then seal
-it into encrypted, signed identity scopes and submit it on-chain.
+The `x/veid` module is the protocol's identity layer. Identity document images
+and full OCR output stay on the user's device. The user reviews local results;
+only minimum derived fields or verification features may be submitted in an
+encrypted scope after separate approval. Other evidence, such as biometric or
+device-attestation data, follows its own scope notice and consent choice.
 
 Validators — the same set that secures consensus — decrypt submitted scopes
 with their keys, score them with shared machine-learning models, and commit
@@ -38,11 +39,10 @@ evidence capture, sealing, scoring, and disclosure:
 
 ## Why it exists
 
-An open compute marketplace without identity is an invitation to fraud and
-abuse: providers need to know a tenant is real before workloads land on
-their hardware, and tenants need to know a provider is accountable. `x/veid`
-makes verification a protocol function — decentralized like the chain
-itself, private by construction — rather than an outsourced KYC checkbox.
+VEID provides a way to create and present scoped identity proofs while
+minimizing disclosure. It is one possible trust signal for a marketplace
+offer, not a universal participation gate and not proof that a provider,
+listing, hardware, or service is genuine or safe.
 
 ## Primary objects
 
@@ -61,8 +61,9 @@ itself, private by construction — rather than an outsourced KYC checkbox.
    keys and signed by both an approved client and the user.
 3. **Score — Validators score.** Decryption, shared-model scoring, and a
    consensus-committed trust score recorded through the registry.
-4. **Gate — Scores gate the market.** Marketplace participation, provider
-   registration, and deployment creation all check VEID standing.
+4. **Present — Use a scoped proof where requested.** VEID is not a universal
+   marketplace or deployment prerequisite. A provider may request a specific
+   proof for an individual offer, where supported and disclosed before ordering.
 
 ## Messages
 
@@ -143,7 +144,7 @@ itself, private by construction — rather than an outsourced KYC checkbox.
 | [x/veidregistry](/modules/veidregistry/) | Scores and scope records are registered and resolved through the registry. |
 | [x/encryption](/modules/encryption/) | Identity scopes are sealed with validator-targeted public-key encryption. |
 | [x/config](/modules/config/) | Only governance-approved clients may submit identity data. |
-| [x/market](/modules/market/) | Marketplace access is gated on VEID trust scores in both directions. |
+| [x/market](/modules/market/) | VEID is optional for general access; supported offers may disclose their own proof requirements. |
 | [x/mfa](/modules/mfa/) | Sensitive account operations layer on-chain MFA over identity. |
 
 ## Related documentation

@@ -229,7 +229,7 @@ export const DEFINITIONS_TIER_A: DefinitionEntry[] = [
       {
         heading: "Why identity and escrow belong in the definition",
         paragraphs: [
-          "Matching strangers is the easy part; the hard part is money and accountability. A compute marketplace without escrow asks the provider to serve on a promise, and asks the tenant to prepay a party with no track record. A marketplace without verified counterparties has no way to act when a dispute turns on who actually placed an order. Both problems are structural rather than cosmetic, which is why <a href=\"/definitions/what-is-decentralized-cloud\">decentralised cloud</a> designs put identity checks before matching and committed funds before the first hour of service.",
+          "Matching strangers is the easy part; the hard part is money and accountability. Escrow can reduce payment risk, while signed orders and leases record who entered an agreement. VEID is an optional, offer-specific trust signal; it does not replace clear terms, transaction evidence, or dispute handling. <a href=\"/definitions/what-is-decentralized-cloud\">Decentralised cloud</a> designs must make those protections understandable before a user commits.",
         ],
       },
       {
@@ -259,7 +259,7 @@ export const DEFINITIONS_TIER_A: DefinitionEntry[] = [
       {
         question: "How does VirtEngine implement the compute marketplace concept?",
         answer:
-          "As an open-source protocol: on-chain orders and leases, identity-verified counterparties, a provider daemon that matches, deploys and meters, and a settlement pipeline that converts signed usage records into payouts from escrow.",
+          "As an open-source protocol: on-chain orders and leases, optional scoped identity proofs, a provider daemon that matches, deploys and meters, and a settlement pipeline that converts signed usage records into payouts from escrow.",
       },
     ],
     related: [
@@ -351,7 +351,7 @@ export const DEFINITIONS_TIER_A: DefinitionEntry[] = [
       {
         question: "How does VirtEngine fit the decentralized cloud category?",
         answer:
-          "It supplies the protocol layer: on-chain orders and leases, identity-verified counterparties, escrow, a provider daemon that meters and signs usage, and settlement that pays out under governed rules. The machines and the operations remain with independent providers.",
+          "It supplies the protocol layer: on-chain orders and leases, provider-disclosed identity requirements where supported, escrow, a provider daemon that meters and signs usage, and settlement that pays out under governed rules. The machines and the operations remain with independent providers.",
       },
     ],
     related: [
@@ -504,7 +504,7 @@ export const DEFINITIONS_TIER_A: DefinitionEntry[] = [
         heading: "Metering both sides can read",
         paragraphs: [
           "On VirtEngine the sequence starts before any usage exists: the tenant funds an escrow account when the deployment is created, so the balance is provably committed and provably not yet transferred. The provider's collector then runs on a schedule - gathering per-workload metrics, turning them into records, screening them for anomalies, and submitting signed batches whose origin cannot be denied.",
-          "Nothing settles immediately. Each reading waits out a window during which either party can dispute or correct it, after which the settlement module prices surviving records by the lease terms and draws them down from escrow under a governed fee policy; unspent balance returns to the tenant. The full sequence, including the pipeline defaults, is written up in <a href=\"/learn/escrow-and-settlement-explained\">escrow and settlement explained</a>. The result is a bill neither party had to trust the other to produce.",
+          "Nothing settles immediately. Each reading waits out a window during which either party can dispute or correct it, after which the settlement module prices surviving records by the lease terms and draws them down from escrow at the full agreed amount; unspent balance returns to the tenant. The full sequence, including the pipeline defaults, is written up in <a href=\"/learn/escrow-and-settlement-explained\">escrow and settlement explained</a>. The result is a bill neither party had to trust the other to produce.",
         ],
       },
     ],

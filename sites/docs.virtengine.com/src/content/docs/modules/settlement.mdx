@@ -24,7 +24,7 @@ Every reported record sits in a 24-hour dispute window during which either
 party can raise corrections — anomaly detection on the provider side flags
 outliers before they ever reach the chain. After the window closes, line
 items settle against lease escrow and the agreed funds transfer to the
-provider under the governed fee policy. Reconciliation against platform
+provider in full in ACT. Reconciliation against platform
 metrics (default every 6 hours) cross-checks reported usage.
 
 ## Why it exists
@@ -108,7 +108,6 @@ protocol guarantees for both sides.
 | Module | How they interact |
 | --- | --- |
 | [x/escrow](/modules/escrow/) | Settled line items draw provider payouts from lease escrow. |
-| [x/take](/modules/take/) | The governed settlement-fee policy is applied at payout time. |
 | [x/market](/modules/market/) | Usage records are validated against the lease they bill. |
 | [x/fraud](/modules/fraud/) | Disputed or anomalous usage escalates before settlement completes. |
 | [x/oracle](/modules/oracle/) | Price feeds inform fiat-referenced pricing where leases use it. |
