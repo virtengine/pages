@@ -83,6 +83,17 @@ jobs:
       - name: Install from lockfile
         run: pnpm install --frozen-lockfile
 
+      - name: Type check (astro check, ratcheted against scripts/types-baseline.json)
+        run: |
+          set -o pipefail
+          pnpm run check:types 2>&1 | tee typecheck.log
+          # scripts/check-types.mjs is a ratchet, the same shape as check-a11y.mjs: it fails when a
+          # site exceeds its budget in scripts/types-baseline.json AND when the baseline is looser
+          # than reality, so the budget can only move down. It hard-fails when astro check inspected
+          # nothing, and prints TYPECHECK-OK only after a real run — assert the marker so a checker
+          # that silently did nothing cannot look green.
+          grep -q '^TYPECHECK-OK' typecheck.log
+
       - name: Build
         run: pnpm run build
 
