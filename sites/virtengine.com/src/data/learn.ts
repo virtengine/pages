@@ -177,7 +177,7 @@ export const LEARN: LearnEntry[] = [
         heading: "Stage 5 — Settlement: usage becomes payment",
         paragraphs: [
           "The settlement module (x/settlement) validates each record against its lease and converts it into priced line items. Records sit in a 24-hour dispute window where either party can raise corrections; after it closes, line items settle against the lease's escrow.",
-          "Funds transfer to the provider at the agreed lease price under the governed settlement fee policy — protocol parameters set by governance, not a private platform margin. When the deployment closes, unspent escrow returns to the tenant.",
+          "Funds transfer to the provider at the agreed lease price at the full agreed amount — with no protocol deduction. When the deployment closes, unspent escrow returns to the tenant.",
         ],
       },
       {
@@ -190,7 +190,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Why this design holds up",
         paragraphs: [
-          "Each stage hands off with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. Both counterparties are VEID-verified before any of it starts.",
+          "Each stage hands off with a verifiable artifact: orders backed by escrow, matches validated against requirements, leases binding funds, usage signed and disputable, settlement rule-bound. VEID is optional for general participation; any provider-set proof requirement should be disclosed on the individual offer before an order.",
         ],
       },
     ],
@@ -206,7 +206,7 @@ export const LEARN: LearnEntry[] = [
       "Five stages, one lifecycle: order → match → lease → usage → settlement.",
       "Match runs three ways: direct at a listed price, open to competing bids, or resolved by attributes.",
       "Every stage produces a verifiable artifact — orders backed by escrow, signed usage, rule-bound settlement.",
-      "Both counterparties are VEID-verified before anything starts.",
+      "A provider may set a clearly disclosed VEID requirement for an individual offer; other marketplace offers can be used without VEID.",
       "Settlement fees are governance-set protocol parameters; unspent escrow returns to the tenant.",
     ],
     faqs: [
@@ -262,7 +262,7 @@ export const LEARN: LearnEntry[] = [
       {
         label: "Settlement",
         title: "Records become payment",
-        body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout under the governed fee policy — and unspent funds return.",
+        body: "Line items priced by lease terms, a 24-hour dispute window, escrow payout at the full agreed amount — and unspent funds return.",
         href: "#stage-5-settlement-usage-becomes-payment",
       },
     ],
@@ -302,7 +302,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Settlement and payout",
         paragraphs: [
-          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount under the governed fee policy — protocol parameters set by governance, not a private platform take. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
+          "After the window closes, the settlement module converts validated records into line items priced by lease terms and draws them down from escrow. The provider receives the agreed settlement amount at the full agreed amount — protocol parameters set by governance, not a private platform take. Validator transaction fees apply to chain messages and are designed to be approximately 90% lower than standard network transaction fees. The provider's revenue arrives as settled chain state, with a complete audit trail from meter to payment.",
         ],
       },
       {
@@ -324,7 +324,7 @@ export const LEARN: LearnEntry[] = [
       "Escrow is commitment without transfer — provably funded, movable only under settlement rules.",
       "Meters collect hourly; records are signed, anomaly-screened, and reconciled every six hours.",
       "Every record waits out a 24-hour dispute window before it can settle.",
-      "Payout follows the governed settlement fee policy; unspent escrow returns to the tenant.",
+      "Payout transfers the full agreed ACT amount to the provider; unspent escrow returns to the tenant.",
     ],
     faqs: [
       {
@@ -347,7 +347,7 @@ export const LEARN: LearnEntry[] = [
       {
         question: "What does the provider actually receive?",
         answer:
-          "The agreed settlement amount from escrow under the governed fee policy — protocol parameters, not a private platform take. Only chain-message transaction fees otherwise apply, proposed at approximately 90% below standard network transaction fees.",
+          "The agreed settlement amount from escrow at the full agreed amount — with no protocol deduction. Only chain-message transaction fees otherwise apply, proposed at approximately 90% below standard network transaction fees.",
       },
     ],
     journey: [
@@ -372,7 +372,7 @@ export const LEARN: LearnEntry[] = [
       {
         label: "Settle",
         title: "Line items become payout",
-        body: "Validated records price into line items and draw down escrow under the governed fee policy — full audit trail from meter to payment.",
+        body: "Validated records price into line items and draw down escrow at the full agreed amount — full audit trail from meter to payment.",
         href: "#settlement-and-payout",
       },
     ],
@@ -521,7 +521,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Why a marketplace needs this",
         paragraphs: [
-          "Marketplace access on VirtEngine is identity-gated in both directions: providers verify tenants before workloads land on their hardware, and tenants verify providers before trusting them with workloads. Reviews bind to real leases between verified counterparties, making reputation farming structurally expensive. Sensitive account operations — recovery above all — layer on-chain MFA (x/mfa) over the identity foundation.",
+          "VEID is not a universal marketplace gate. Providers may choose a clearly disclosed proof requirement for an individual offer, while tenants can choose offers that do not require VEID. Reviews bind to protocol leases, and escrow and dispute processes address transaction risk; identity verification alone does not prove that a listing or service is genuine. Sensitive account operations — recovery above all — layer on-chain MFA (x/mfa) over the identity foundation.",
           "The consumer-facing identity program is presented at identity.org.au; the protocol-side documentation lives at docs.virtengine.com.",
         ],
       },
@@ -686,10 +686,10 @@ export const LEARN: LearnEntry[] = [
     title: "Provider Economics: Revenue & Pricing",
     label: "Provider economics",
     metaDescription:
-      "The revenue model for VirtEngine providers: listing and bid pricing, escrow-backed leases, governed settlement fees, low chain fees, plus how benchmarks and audits lift prices.",
+      "The revenue model for VirtEngine providers: listing and bid pricing, escrow-backed leases, full agreed provider payouts, low chain fees, plus how benchmarks and audits lift prices.",
     kicker: "Economics",
     intro:
-      "A provider's business on VirtEngine reduces to three questions: what does capacity earn, what does the protocol charge, and what raises realized prices over time? The answers are unusually legible, because every term is chain state.",
+      "A provider's business on VirtEngine reduces to three questions: what does capacity earn, what do chain actions cost, and what raises realized prices over time? The answers are unusually legible, because every term is chain state.",
     sections: [
       {
         heading: "Revenue: prices you set, escrow that pays",
@@ -699,9 +699,9 @@ export const LEARN: LearnEntry[] = [
         ],
       },
       {
-        heading: "Costs: validator fees and operations",
+        heading: "Costs: transaction fees and operations",
         paragraphs: [
-          "Settlement fees are protocol parameters set by governance — not a private platform deduction — and the agreed lease amount releases from escrow under that policy. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
+          "Lease settlements have no platform or validator fee deduction: the full agreed amount is paid to the provider in ACT. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
         ],
       },
       {
@@ -725,7 +725,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "A worked lifecycle",
         paragraphs: [
-          "A tenant posts an order; a direct order matches your published price, or your daemon bids your configured price and the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount under the governed fee policy. Your track record grows by one more served lease, and the next order prices a little better.",
+          "A tenant posts an order; a direct order matches your published price, or your daemon bids your configured price and the tenant accepts. The workload runs on your Kubernetes cluster or HPC scheduler. Hourly usage records — signed, anomaly-screened — accumulate against the lease. Each clears its dispute window and settles: escrow pays the agreed lease amount at the full agreed amount. Your track record grows by one more served lease, and the next order prices a little better.",
         ],
       },
     ],
@@ -800,7 +800,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "The rest of the assurance stack",
         paragraphs: [
-          "Confidential workloads inherit the marketplace's full trust apparatus: VEID-verified counterparties, chain-anchored mTLS (x/cert) on every off-chain connection, auditor-signed provider attributes (x/audit), and fraud enforcement with dispute intake if conduct fails. For enterprises, this is the difference between a confidentiality feature and a confidentiality argument that survives procurement review.",
+          "Confidential workloads can use attested execution, chain-anchored mTLS (x/cert) on supported off-chain connections, auditor-signed provider attributes (x/audit), and fraud/dispute processes. VEID may be an offer-specific risk signal, but it does not establish workload confidentiality or service quality by itself.",
         ],
       },
       {
@@ -840,7 +840,7 @@ export const LEARN: LearnEntry[] = [
       {
         question: "What can we show procurement?",
         answer:
-          "On-chain attestations, auditor-signed provider attributes, VEID-verified counterparties, mTLS channels, and signed metered usage — a confidentiality argument built from protocol state that survives review.",
+          "On-chain attestations, auditor-signed provider attributes, optional VEID proofs where an offer requires them, mTLS channels, and signed metered usage — evidence to examine as part of a confidentiality review.",
       },
       {
         question: "Which workloads fit this pattern?",
@@ -1009,7 +1009,7 @@ export const LEARN: LearnEntry[] = [
         links: [{ label: "About the foundation", href: "/about" }],
       },
       {
-        question: "What is the marketplace commission?",
+        question: "Are settlement fees deducted from provider payouts?",
         answer:
           "Settlement fees are governed protocol parameters, set and changed only by stakeholder vote — not a private platform margin.",
       },

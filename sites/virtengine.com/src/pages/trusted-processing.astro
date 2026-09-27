@@ -35,7 +35,7 @@ const stages = [
   {
     step: "01",
     title: "Captured",
-    body: "Documents, a selfie with active liveness, and biometric hardware attestation are read on the handset. Raw evidence never leaves the device unencrypted.",
+    body: "Identity documents and OCR are processed locally; original images and full OCR output stay on the user's device. Other evidence follows its own consent notice, and only separately approved scope data may be submitted.",
   },
   {
     step: "02",
@@ -199,12 +199,12 @@ const related = [
   <Section
     eyebrow="The whole journey"
     title="One scope, start to finish"
-    lede="An identity scope is sealed on your device, opaque everywhere in between, opened only inside a vault whose key was forged in the silicon, and destroyed once the answer exists. What the network keeps is evidence that the right steps happened — attestation records, envelope references, and results."
+    lede="Only minimum derived identity data that you separately approve may enter an encrypted scope for protected processing. Original document images and full OCR output stay on your device. The scope notice explains lifecycle and deletion limits; source scans are never part of network records."
   >
     <PlateFigure
       rail="Fig. 01 — the lock and the key"
       railRight="Attested enclaves"
-      label="Trusted processing drawn as a lock-and-key flow. On the left, encrypted identity scopes — documents, liveness, biometric attestation — are sealed in the wallet with x/encryption. They reach an attestation gate: the enclave signs a measurement of its exact code, verified on-chain by x/enclave using SGX, SEV-SNP and Nitro verifiers, including the AMD KDS certificate chain from VCEK through ASK to ARK with TCB checks. No proof, no data. Only after proof does data enter the trusted processing unit — a confidential VM on AMD SEV-SNP, Intel SGX or AWS Nitro, drawn as a vault with a lock — where the VEID scoring service and its machine-learning models run as measured code, with keys derived and sealed in hardware via vTPM and memory encrypted by the CPU. Below the vault, three blocked access paths marked with crosses: operator, provider, and foundation — no inspection path into the enclave for anyone. Out of the vault, only results leave: a trust score and pass or fail written to chain state — never raw biometric data."
+      label="Trusted processing flow. Original identity document images and full OCR output remain on the user's device and are never uploaded. The user reviews local results; only minimum derived fields or features may be submitted in a separately approved encrypted scope. Other evidence follows its own consent notice. Approved scope data can be checked by an attested processing environment; the network records results and required references, never source document images."
       caption="fig 01 — sealed in the wallet → attested gate → measured code → destroyed → results only"
       class="reveal"
     >
@@ -366,7 +366,7 @@ const related = [
     lede="The chain is a coordination and audit layer, not a data lake. Outside your device and an attested enclave, confidential material exists only as ciphertext."
     class="border-t border-line"
   >
-    <div class="tp-table-wrap reveal">
+    <div class="tp-table-wrap reveal" tabindex="0" role="group" aria-label="Processing stages table, scrollable">
       <table class="tp-table">
         <caption class="sr-only">
           For each category of data, who can read it — you, the counterparty, providers and

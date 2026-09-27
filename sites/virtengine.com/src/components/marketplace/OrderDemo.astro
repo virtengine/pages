@@ -177,9 +177,11 @@ const BID_PROVIDERS = [
     </div>
     <p class="odemo-count" id="od-count" role="status" aria-live="polite">6 listings</p>
     <div class="odemo-grid" id="od-grid" role="listbox" aria-label="Listings">
+      {/* role="option" is not permitted on <article>, so the cards are neutral
+          elements: the listbox/option pattern still carries selection state. */}
       {
         OFFERS.map((o) => (
-          <article
+          <div
             class="odemo-card"
             role="option"
             tabindex="0"
@@ -196,7 +198,7 @@ const BID_PROVIDERS = [
             </ul>
             <p class="odemo-price">{o.rateNote}</p>
             <p class="odemo-pick" aria-hidden="true">Select ›</p>
-          </article>
+          </div>
         ))
       }
     </div>
@@ -1075,7 +1077,7 @@ const BID_PROVIDERS = [
     head.textContent = "Lease " + state.lease.id + " — active";
     box.appendChild(head);
     box.appendChild(kv([
-      ["Tenant", "Demo tenant (VEID-verified in production)"],
+      ["Tenant", "Demo tenant (VEID not required by every offer)"],
       ["Provider", state.order.provider],
       ["Term", state.order.periods + " " + o.periodLabel],
       ["Escrow", money(state.order.escrow) + " locked"],

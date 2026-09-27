@@ -16,8 +16,8 @@ const whyProvide = [
     body: "Usage is metered, reported, and settled by the protocol. Payment releases from escrow automatically after the dispute window — no accounts receivable, no chasing customers.",
   },
   {
-    title: "Verified counterparties",
-    body: "VEID identity scoring means you know tenants are verified before workloads land on your hardware, and tenants can verify you — cutting fraud in both directions.",
+    title: "Choose your counterparty requirements",
+    body: "VEID can provide a privacy-preserving trust signal. Providers may choose a clearly disclosed verification requirement for an individual offer; buyers can compare requirements and provider evidence before committing.",
   },
   {
     title: "Reputation that compounds",
@@ -36,7 +36,7 @@ const onboarding = [
   {
     step: "01",
     title: "Verify your identity",
-    body: "Complete VEID verification. Marketplace access is identity-gated so tenants and providers can trust the other side of every lease.",
+    body: "VEID is optional for general marketplace participation. Where a provider chooses a specific verification requirement for an offer, disclose it before the order so each side can make an informed choice.",
   },
   {
     step: "02",
@@ -63,7 +63,7 @@ const onboarding = [
 
 <Base
   title="Sell GPU & Cloud Capacity: Provider Guide | VirtEngine"
-  description="Lease GPU, datacenter or HPC capacity into VirtEngine's DePIN marketplace. Escrow-backed pay under governed settlement fees, daemon setup and onboarding steps."
+  description="Lease GPU, datacenter or HPC capacity into VirtEngine's DePIN marketplace. Escrow-backed pay with full agreed ACT payouts, daemon setup and onboarding steps."
   path="/providers"
   image="/media/provider-datacenter-1200.webp"
   breadcrumbs={[
@@ -101,7 +101,7 @@ const onboarding = [
   >
     <p class="max-w-3xl text-sm leading-relaxed text-muted">
       Usage is metered hourly as signed records, passes a 24-hour dispute window, then settles from lease escrow
-      under the governed fee policy. <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/escrow-and-settlement-explained">Escrow & settlement →</a>
+      at the full agreed amount. <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/escrow-and-settlement-explained">Escrow & settlement →</a>
       <a class="font-semibold text-green-deep underline underline-offset-4" href="/learn/provider-economics">Provider economics →</a>
     </p>
   </Section>
@@ -158,7 +158,7 @@ const onboarding = [
       <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> Infrastructure: a Kubernetes cluster, or an HPC cluster behind SLURM / MOAB / Open OnDemand.</li>
       <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> A Linux (amd64/arm64) or macOS host for the <code>virtengine</code> binary and provider daemon.</li>
       <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> A funded chain account and provider key for registration, bidding, and gas.</li>
-      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> VEID identity verification, since marketplace participation is identity-gated.</li>
+      <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> VEID is optional for general participation; any offer-specific verification requirement should be clear before an order.</li>
       <li class="reveal flex gap-3"><span class="font-mono text-green-deep" aria-hidden="true">—</span> Network reachability for tenants to consume the services you host.</li>
     </ul>
   </Section>

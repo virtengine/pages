@@ -124,8 +124,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
     modules: [
       { name: "escrow", role: "Funds held against active leases" },
       { name: "settlement", role: "Usage-record settlement into payments" },
-      { name: "take", role: "Zero-rate marketplace settlement policy" },
-      { name: "bme", role: "Burn-and-mint equilibrium mechanics" },
+            { name: "bme", role: "Burn-and-mint equilibrium mechanics" },
       { name: "staking", role: "Validator staking extensions" },
       { name: "delegation", role: "Delegation lifecycle management" },
       { name: "issuancepolicy", role: "Token issuance policy controls" },
@@ -180,7 +179,7 @@ export const LIFECYCLE = [
     step: "05",
     name: "Settlement",
     detail:
-      "After a 24-hour dispute window, the settlement module converts usage into billable line items and releases the agreed escrowed funds to the provider under the governed fee policy.",
+      "After a 24-hour dispute window, the settlement module converts usage into billable line items and releases the agreed escrowed funds to the provider at the full agreed amount.",
     short: "Funds release after the dispute window.",
   },
 ] as const;

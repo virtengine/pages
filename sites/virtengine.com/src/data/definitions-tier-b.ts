@@ -55,7 +55,7 @@ export const DEFINITIONS_TIER_B: DefinitionEntry[] = [
         heading: "Infrastructure capacity on an open market",
         paragraphs: [
           "On VirtEngine, infrastructure appears as a published offering rather than a negotiated contract. A provider lists the instance shapes it will serve with their region, network characteristics and price, and a tenant funds an escrow account when placing the order. The provider can confirm committed budget before handing over a machine, and the tenant is not paying ahead for capacity it has not received.",
-          "The order can match at the listed price, through competing bids, or by selecting listings that satisfy stated attributes; either way it becomes a lease binding tenant, provider and escrow. The provider's control plane fulfils the request, records what was consumed and signs those readings. After the dispute window, validated line items are drawn from escrow and anything left over returns to the tenant, with both sides identity-verified before the sequence starts.",
+          "The order can match at the listed price, through competing bids, or by selecting listings that satisfy stated attributes; either way it becomes a lease binding tenant, provider and escrow. The provider's control plane fulfils the request, records what was consumed and signs those readings. Any VEID condition is specific to a supported offer and disclosed before ordering; it is not required for every marketplace transaction.",
         ],
       },
     ],
@@ -142,7 +142,7 @@ export const DEFINITIONS_TIER_B: DefinitionEntry[] = [
         heading: "Platforms published as offerings",
         paragraphs: [
           "On VirtEngine a PaaS is something a provider can put on sale. The listing states what the platform includes - runtime versions, backing services, quotas, the size of the machines behind it - so a buyer can compare offers on contents rather than on marketing language. Placing the order opens an escrow account, which the provider can inspect before provisioning anything.",
-          "Fulfilment routes the matched lease into the provider's control plane, where the project is created and its resource allocations are metered. Usage arrives as signed records, and once the dispute window closes the validated line items are taken from escrow, with unspent balance returning to the tenant. Neither party starts anonymously: identity verification precedes matching on both sides.",
+          "Fulfilment routes the matched lease into the provider's control plane, where the project is created and its resource allocations are metered. Usage arrives as signed records, and once the dispute window closes the validated line items are taken from escrow, with unspent balance returning to the tenant. A provider may disclose a VEID requirement for a particular offer; many marketplace actions do not require VEID.",
         ],
       },
     ],
@@ -308,7 +308,7 @@ export const DEFINITIONS_TIER_B: DefinitionEntry[] = [
         heading: "Execution capacity as a listing",
         paragraphs: [
           "On VirtEngine, a serverless-style offering is published with its runtimes, limits and price per unit of execution spelled out, so a buyer can see what an event-heavy workload will cost before deploying it. The tenant funds an escrow account when ordering; the provider can verify that the budget exists before accepting the lease.",
-          "Metering then follows the executions themselves: each invocation contributes a signed usage record, those records accumulate over the lease, and validated line items are taken from escrow once the dispute window closes. Spending is bounded by the escrow balance rather than by an open account, and identity verification on both sides happens before the first invocation.",
+          "Metering then follows the executions themselves: each invocation contributes a signed usage record, those records accumulate over the lease, and validated line items are taken from escrow once the dispute window closes. Spending is bounded by the escrow balance rather than by an open account. Any identity proof requirement depends on the selected offer and is disclosed before commitment.",
         ],
       },
     ],
@@ -393,7 +393,7 @@ export const DEFINITIONS_TIER_B: DefinitionEntry[] = [
         heading: "Training demand taken to the market",
         paragraphs: [
           "On an open market, training reaches providers as a stated requirement: how many accelerators, for how long, with what interconnect, and where the data may sit. The tenant funds an escrow account when placing that demand, so a provider can see real budget behind the request before it reserves devices for it.",
-          "The matched lease binds tenant, provider and escrow, and fulfilment runs through the provider's control plane into its scheduler. Utilisation is reported as signed records, disputed if either side disagrees, and settled from escrow after the window closes with any unused balance returned. Both counterparties are identity-verified before matching begins. The procurement side of this - what to plan for when buying such runs - is covered in <a href=\"/solutions/ai-ml-workloads\">AI and ML workloads</a>.",
+          "The matched lease binds tenant, provider and escrow, and fulfilment runs through the provider's control plane into its scheduler. Utilisation is reported as signed records, disputed if either side disagrees, and settled from escrow after the window closes with any unused balance returned. Any VEID requirement is specific to the selected offer, not a universal condition. The procurement side of this - what to plan for when buying such runs - is covered in <a href=\"/solutions/ai-ml-workloads\">AI and ML workloads</a>.",
         ],
       },
     ],
@@ -566,7 +566,7 @@ export const DEFINITIONS_TIER_B: DefinitionEntry[] = [
         heading: "Capacity traded in the open",
         paragraphs: [
           "Cloud computing does not have to be bought from a single vendor with a single account. On VirtEngine, capacity from independent operators is published in one place where it can be compared on stated attributes: what hardware is offered, where it sits, what it costs, and what the provider is able to serve.",
-          "Orders are backed by escrow, matches become leases binding tenant, provider and funds, and the resulting usage is reported as signed records that settle after a dispute window under governance-set parameters rather than a private platform margin. Both sides verify identity before any of that begins. The full sequence is described in <a href=\"/learn/how-the-marketplace-works\">how the marketplace works</a>.",
+          "Orders are backed by escrow, matches become leases binding tenant, provider and funds, and the resulting usage is reported as signed records that settle after a dispute window under governance-set parameters rather than a private platform margin. VEID may be requested for an individual offer, but it is not a prerequisite for every marketplace transaction. The full sequence is described in <a href=\"/learn/how-the-marketplace-works\">how the marketplace works</a>.",
         ],
       },
     ],

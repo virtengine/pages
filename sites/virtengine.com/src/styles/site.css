@@ -7,8 +7,10 @@
 @media(max-width:760px){.strip-detail{display:none}.review-strip{font-size:10px}.review-strip>.container-site{gap:12px}.header-row{min-height:73px}.home-hero{grid-template-columns:1fr;padding-top:43px;padding-bottom:40px;gap:35px}.hero-copy h1{font-size:clamp(36px,8.2vw,53px)}.hero-lede{font-size:20px}.network-plate{max-width:560px}.plate-heading{font-size:29px}.network-art{max-height:310px;overflow:hidden}.network-art svg{max-height:310px}.plate-top{font-size:10px}.plate-tag{font-size:9px}.program-grid,.path-grid,.journal-grid,.contact-grid{grid-template-columns:1fr}.program-grid article+article{border-left:none;border-top:1px solid #dce4de}.section-intro{display:block}.section-intro>p,.section-intro>.text-link{display:block;margin-top:22px;max-width:none}.section-intro h2,.status-block h2{font-size:31px}.home-section{padding-top:48px}.status-block{grid-template-columns:1fr;gap:35px;margin-top:44px;width:calc(100% - 40px);padding:28px}.mission-band>.container-site{gap:10px}.mission-band span{font-size:11px;padding-left:10px}.final-cta{display:block;margin-top:50px}.final-cta h2{font-size:28px}.final-cta .button{margin-top:25px}.journal-cover{min-height:220px}.editorial-grid{grid-template-columns:1fr;gap:32px}.content-hero{padding-top:35px}.content-hero h1{font-size:38px}.review-summary{align-items:start;padding:24px;flex-direction:column;gap:14px}.review-detail{grid-template-columns:1fr;gap:10px}.review-item summary{padding:18px 16px;gap:9px;flex-wrap:wrap}.review-title{font-size:16px;min-width:170px}.status-tag{font-size:10px}.review-detail{padding:0 18px 20px}.review-check{grid-column:auto}.filter-row .reset-button{margin-left:0}.phase-note{font-size:12px}.action-row{gap:18px}.contact-card{padding:24px}.path-grid h3{max-width:none}.path-grid p{max-width:none}.home-hero .hero-footnote{font-size:12px}}
 @media print{header,.review-strip,.filter-row,footer{display:none}.review-item{break-inside:avoid}.review-item .review-detail{display:grid}.container-site{max-width:none}}
 
-/* Prevent long contact addresses from widening the grid at enlarged text sizes. */
-footer .container-site>*{min-width:0}footer a,footer p{overflow-wrap:anywhere}
+/* Long contact addresses and URLs may break, but only when they must: `anywhere`
+   shatters them mid-token in the narrow nav columns. Track shrinking is handled by
+   the min-width reset above. */
+footer .container-site>*{min-width:0}footer a,footer p{overflow-wrap:break-word}
 
 .feedback-focus{border:1px solid #d6e1d8;background:white;padding:28px;border-radius:8px;margin-bottom:24px}.feedback-focus h2{font:500 25px var(--font-sans);margin-bottom:14px}.feedback-focus>p:not(.kicker){font-size:15px}.feedback-links{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}.feedback-links a{padding:15px;border:1px solid #ceddd2;border-radius:5px;font-size:14px;font-weight:600;color:#245735}.feedback-links a:hover{background:#edf4ee}.feedback-links span{display:block;font-size:12px;font-weight:400;margin-top:7px}.review-item{scroll-margin-top:105px}@media(max-width:900px){.feedback-links{grid-template-columns:1fr 1fr}}@media(max-width:450px){.feedback-links{grid-template-columns:1fr}.feedback-focus{padding:22px}}
 
@@ -131,7 +133,7 @@ section.home-trust{display:block;margin-top:0;padding-block:clamp(4.5rem,8vw,7.5
 .learn-progress i{display:block;height:100%;background:#1c6838;transform:scaleX(0);transform-origin:left}
 .learn-editorial{padding-top:36px}
 .learn-crumbs{font-size:13px;color:#4a5a4e;margin-bottom:14px}
-.learn-crumbs a{color:#1c5632}
+.learn-crumbs a{color:#1c5632;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .learn-kicker{font:12px var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:#54725d}
 .learn-title{font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.01em;margin:10px 0}
 .learn-lede{font-size:18px;line-height:1.65;color:#2b3a30;max-width:65ch}

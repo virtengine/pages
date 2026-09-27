@@ -22,7 +22,10 @@
   --color-ink-deep: #0d1c14;
   --color-slate: #4c5951;
   --color-muted: #5f6b62;
-  --color-faint: #7b857d;
+  /* Small supporting text. Must clear 4.5:1 on the *darkest* light ground it
+     lands on (--color-green-wash #eef7ee, L 0.908), which needs L <= 0.163.
+     The old #7b857d sat at L 0.225 and failed 53 nodes site-wide. */
+  --color-faint: #626c65;
 
   /* rules & hairlines */
   --color-line: #e2e7e2;
@@ -46,10 +49,12 @@
   --color-night-line-strong: #3a4a3c;
   --color-night-text: #e9f0ea;
   --color-night-muted: #a3b2a4;
-  --color-night-faint: #7d8d7e;
+  --color-night-faint: #9aa99b;
 
   /* semantic warning (slashing/risk callouts) */
-  --color-amber: #9a6700;
+  /* Status amber. #9a6700 measured 4.39:1 on --color-amber-soft; that ground
+     needs L <= 0.161, so the token steps down to #8a5c00 (5.26:1). */
+  --color-amber: #8a5c00;
   --color-amber-soft: #fdf3d7;
 
   --font-display: "Inter", "Segoe UI", sans-serif;
@@ -294,13 +299,17 @@ h3, h4 {
 .blog-prose strong { color: var(--color-ink); font-weight: 600; }
 .blog-prose ul,
 .blog-prose ol { display: grid; gap: 0.55rem; padding-left: 1.5rem; }
+/* Grid items default to min-width:auto, so a long code line inside a list item
+   used to stretch the item to its min-content (947px on a 390px viewport) and
+   drag the rest of the sentence under the page's dark edge. */
+.blog-prose :is(ul, ol) > li { min-width: 0; }
 .blog-prose ul { list-style: disc; }
 .blog-prose ol { list-style: decimal; }
 .blog-prose blockquote { padding: 1rem 1.4rem; border-left: 3px solid var(--color-green); background: var(--color-green-wash); color: var(--color-ink); }
 .blog-prose img { width: 100%; height: auto; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-panel); }
 .blog-prose figure { margin-inline: 0; }
 .blog-prose figcaption { margin-top: 0.65rem; color: var(--color-muted); font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.5; }
-.blog-prose pre { overflow-x: auto; padding: 1.25rem; border: 1px solid var(--color-night-line-strong); border-radius: var(--radius-card); background: var(--color-night-deep); color: var(--color-night-text); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; }
+.blog-prose pre { overflow-x: auto; max-width: 100%; padding: 1.25rem; border: 1px solid var(--color-night-line-strong); border-radius: var(--radius-card); background: var(--color-night-deep); color: var(--color-night-text); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; }
 .blog-prose :not(pre) > code { padding: 0.12em 0.35em; border: 1px solid var(--color-line); border-radius: 0.25rem; background: var(--color-paper-soft); color: var(--color-ink); font-family: var(--font-mono); font-size: 0.86em; }
 .blog-prose table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 0.9rem; }
 .blog-prose th,

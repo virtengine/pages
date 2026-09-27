@@ -27,7 +27,7 @@ const { class: className } = Astro.props;
         ))
       }
 
-      <div class="support-tabs" role="tablist" aria-label="Organisations that have supported the project">
+      <div class="support-tabs" role="group" aria-label="Organisations that have supported the project">
         {
           SUPPORT.map((org) => (
             <label class="support-tab" for={`support-${org.id}`} title={org.name}>

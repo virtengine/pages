@@ -20,7 +20,7 @@ const crumbs = [
 
 <Base
   title="Trusted Processing: The Lock & Key | identity.org.au"
-  description="How your data is processed in hardware-sealed enclaves no one can open: on-chain attestation, sealed keys, raw data destroyed after scoring."
+  description="How VEID processes only user-approved derived data: source document images remain on your device, with enclave attestation for protected processing."
   image="/media/vault-door-1440.webp"
   breadcrumbs={crumbs}
   ogType="article"
@@ -126,8 +126,8 @@ const crumbs = [
     <section class="mt-14">
       <h2 class="mt-0 text-[1.6rem]">What happens to your data, stage by stage</h2>
       <p class="text-body measure">
-        The same journey as a lifecycle. Raw evidence exists inside the vault only for the moments
-        scoring takes — then it is destroyed, and only the result remains.
+        Original document images stay on the user's device. The local client derives approved
+        verification data; only a minimum encrypted payload may enter VEID processing.
       </p>
       <DataLifecycle withTable class="mt-8" />
     </section>
@@ -141,21 +141,21 @@ const crumbs = [
         </p>
         <ul>
           <li>
-            <strong>Inside the vault:</strong> working copies of your documents and biometrics
-            exist only while scoring runs; the enclave retains nothing afterwards.
+            <strong>On your device:</strong> original document images remain local and are never
+            uploaded. Local OCR and document checks produce only the derived data you review.
           </li>
           <li>
-            <strong>Retained encrypted evidence:</strong> destroyed automatically at the end of
-            its legal retention period — at most 7 years from last use, driven by know-your-customer
-            and anti-money-laundering law.
+            <strong>Approved derived data:</strong> if you submit a scope, its notice states what
+            encrypted derived data is sent, who processes it, and the applicable lifecycle. It
+            never includes the original document image.
           </li>
           <li>
-            <strong>On deletion request:</strong> removed from active systems within 30 days, and
-            from backups within the rotation period (typically 90 days).
+            <strong>On deletion request:</strong> requests apply to data the network actually
+            received. Original document images remain on your device and are controlled there.
           </li>
           <li>
-            <strong>Keys are destroyed too</strong> — which makes any remaining encrypted copy,
-            anywhere, permanently unreadable. That is the permanent-destruction commitment.
+            <strong>Encrypted network data:</strong> deletion and key-destruction limits are
+            explained in the relevant scope notice, including any immutable on-chain records.
           </li>
           <li>
             <strong>Withdraw at any time</strong> by emailing
@@ -220,8 +220,8 @@ const crumbs = [
         </table>
       </TableScroll>
       <p class="mt-4 mb-0 text-[0.92rem] text-muted measure">
-        "Never" in this table is architectural: raw evidence is ciphertext everywhere outside
-        your device and the attested vault, and the vault has no door.
+        "Never" for raw documents is architectural: the source image remains on your device and
+        is not transmitted. The scope notice describes any derived data that is separately approved.
       </p>
     </section>
 

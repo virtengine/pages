@@ -71,7 +71,7 @@ them.
 | Module | How they interact |
 | --- | --- |
 | [x/market](/modules/market/) | Reviews attach to completed leases between real counterparties. |
-| [x/veid](/modules/veid/) | Identity gating makes review manipulation costly. |
+| [x/veid](/modules/veid/) | VEID may be an optional signal on a specific offer; it does not universally gate reviews or prevent manipulation. |
 | [x/marketplace](/modules/marketplace/) | Reputation signals inform offer presentation and choice. |
 
 ## Related documentation
@@ -80,8 +80,8 @@ them.
   offer presentation and selection.
 - [Choosing Providers](/tenants/choosing-providers/) — how tenants weigh
   provider standing when picking a bid.
-- [VEID Overview](/veid/overview/) — the identity layer behind review
-  gating.
+- [VEID Overview](/veid/overview/) — optional, scoped identity proofs and
+  their privacy model.
 - [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
 
 ## FAQ
@@ -93,9 +93,9 @@ constraint that anchors reputation to delivery.
 
 ### Can reputation be faked?
 
-Not at scale. Reviews require an underlying lease, and VEID identity gating
-makes review farming structurally expensive — repeat-game trust,
-protocol-enforced.
+Reviews require an underlying lease, which ties feedback to marketplace
+activity. That does not eliminate coordinated abuse. VEID is optional and may
+be required for a specific offer; it is not a universal anti-fraud guarantee.
 
 ### What does portable reputation mean?
 

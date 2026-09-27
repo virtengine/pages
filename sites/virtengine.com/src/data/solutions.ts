@@ -96,7 +96,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         heading: "Trust the counterparty before the workload lands",
         paragraphs: [
-          "Every tenant is VEID-verified before they can transact, and their lease is backed by funded escrow you can verify on-chain. Reviews and reputation (x/review) compound with every successfully served lease.",
+          "Providers may request a defined VEID proof on an individual offer; other listings can serve tenants without VEID. Funded escrow and lease-bound reviews provide transaction evidence, while identity verification alone does not guarantee delivery or performance.",
         ],
       },
     ],
@@ -107,7 +107,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       ],
     },
     gettingStarted: [
-      { step: "Complete VEID verification", detail: "Marketplace participation is identity-gated in both directions." },
+      { step: "Review offer requirements", detail: "VEID is optional for general participation; any provider-set proof requirement should be disclosed on the individual listing." },
       { step: "Register on-chain with GPU attributes", detail: "Create your provider record with accelerator classes, region, and certifications." },
       { step: "Publish benchmarks", detail: "Measured GPU performance data makes your offers stand out to tenants filtering on capability." },
       { step: "Deploy the provider daemon", detail: "Point it at your Kubernetes cluster, connect your chain key, and set pricing rules." },
@@ -125,7 +125,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         kicker: "Payout",
         title: "Hourly settlement from escrow",
-        body: "Usage meters hourly and releases from funded escrow after the 24-hour dispute window — no invoicing, no receivables, governed settlement fees.",
+        body: "Usage meters hourly and releases from funded escrow after the 24-hour dispute window — no invoicing, no receivables, full agreed provider payouts.",
       },
       {
         kicker: "Discovery",
@@ -135,14 +135,14 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         kicker: "Trust",
         title: "Verified tenants, funded leases",
-        body: "Every counterparty is VEID-verified and every lease is backed by escrow you can verify on-chain before serving a single hour.",
+        body: "Review provider evidence and any stated VEID requirement before accepting an order. Leases use escrow where supported by the selected marketplace path.",
       },
     ],
     flow: [
       {
         label: "Verify",
-        title: "Complete VEID verification",
-        body: "Marketplace participation is identity-gated in both directions. Operator verification is the entry requirement for providing capacity.",
+        title: "Choose a trust level",
+        body: "VEID is not a general marketplace prerequisite. Any provider-set proof requirement belongs to a specific offer and should be disclosed before matching.",
       },
       {
         label: "Register",
@@ -223,9 +223,9 @@ export const SOLUTIONS: SolutionEntry[] = [
         ],
       },
       {
-        heading: "Identity-gated counterparties",
+        heading: "Provider-selected identity requirements",
         paragraphs: [
-          "VEID verification means workloads arriving on your hardware come from verified, accountable tenants — with fraud reporting and enforcement (x/fraud) behind the marketplace if conduct goes wrong.",
+          "A provider may use an offer-specific VEID proof requirement as one risk signal. Escrow, service terms, and order-linked dispute processes also matter; verification alone cannot establish that a tenant will behave safely or that a service will perform as promised.",
         ],
       },
     ],
@@ -310,12 +310,12 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "How do reviews and reputation work?",
         answer:
-          "Every completed lease can carry a review between the real counterparties, recorded on-chain (x/review). Because participation is VEID identity-gated, manufacturing reputation is costly — standing compounds honestly.",
+          "Completed leases can carry a review between the counterparties, recorded on-chain (x/review). Reviews are tied to marketplace activity; VEID is optional and does not by itself prevent reputation abuse.",
       },
       {
         question: "What if a tenant misbehaves on our hardware?",
         answer:
-          "Tenants are VEID-verified and accountable, with fraud reporting and enforcement behind the marketplace if conduct goes wrong. Lease closure — voluntary, for non-payment, or through enforcement — flows through the same auditable state machine.",
+          "A provider may disclose a VEID proof requirement for a specific offer. Fraud reporting and lease dispute processes address conduct concerns; lease closure — voluntary, for non-payment, or through protocol enforcement — follows the applicable state machine.",
         links: [{ label: "How the marketplace works", href: "/learn/how-the-marketplace-works" }],
       },
     ],
@@ -367,7 +367,7 @@ export const SOLUTIONS: SolutionEntry[] = [
     economics: {
       heading: "Economics",
       paragraphs: [
-        "Jobs are paid from tenant escrow like any lease, under the governed settlement fee policy. Facilities set their own pricing per partition and job class — spare-cycle monetization at prices you control, without disturbing allocation commitments to primary users. Validator transaction fees apply only to chain operations.",
+        "Jobs are paid from tenant escrow like any lease, at the full agreed amount. Facilities set their own pricing per partition and job class — spare-cycle monetization at prices you control, without disturbing allocation commitments to primary users. Validator transaction fees apply only to chain operations.",
       ],
     },
     gettingStarted: [
@@ -439,7 +439,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "How are HPC jobs priced?",
         answer:
-          "Facilities set their own pricing per partition and job class, offered through the same exchange economics as the rest of the marketplace. Jobs are paid from tenant escrow like any lease, under the governed settlement fee policy.",
+          "Facilities set their own pricing per partition and job class, offered through the same exchange economics as the rest of the marketplace. Jobs are paid from tenant escrow like any lease, at the full agreed amount.",
       },
       {
         question: "Will marketplace jobs disturb our primary allocations?",
@@ -966,10 +966,10 @@ export const SOLUTIONS: SolutionEntry[] = [
     label: "Confidential compute",
     title: "Confidential computing with proof, not promises",
     metaDescription:
-      "How enterprises run sensitive AI workloads on VirtEngine: enclave attestation, end-to-end encryption, mTLS and verified counterparties.",
+      "How enterprises run sensitive AI workloads on VirtEngine: enclave attestation, end-to-end encryption, mTLS and informed counterparty choice.",
     audience: "Enterprises with regulated data, proprietary models, or confidentiality obligations.",
     intro:
-      "Moving sensitive workloads to third-party infrastructure normally means trusting the operator. VirtEngine replaces that trust with verification: hardware enclave attestation recorded on-chain, payload encryption to attested targets, and identity-verified counterparties on both sides of every lease.",
+      "Moving sensitive workloads to third-party infrastructure requires examining the trust boundary. VirtEngine supports hardware enclave attestations and payload encryption for compatible workloads; VEID can be an offer-specific counterparty signal, not a guarantee that every lease is identity-verified or safe.",
     problem: {
       heading: "The problem: confidentiality claims you can't verify",
       paragraphs: [
@@ -992,7 +992,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         heading: "Counterparties you can underwrite",
         paragraphs: [
-          "Providers are VEID-verified, attribute-audited (x/audit), benchmarked, and reviewed on-chain. Fraud enforcement and dispute intake give conduct violations a rule-bound consequence path — the assurance stack procurement teams actually need.",
+          "Provider records can expose attributes, audits (x/audit), benchmarks, and lease-linked reviews. Buyers should check evidence and terms; fraud reporting and dispute processes do not guarantee a particular outcome.",
         ],
       },
     ],
@@ -1030,7 +1030,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         kicker: "Assurance",
         title: "Counterparties you can underwrite",
-        body: "VEID-verified providers with audited attributes, benchmarks, and on-chain reviews — plus fraud enforcement with a rule-bound consequence path.",
+        body: "Compare provider attributes, audits, benchmarks, and lease-linked reviews; check any disclosed VEID requirement and the applicable dispute process.",
       },
     ],
     flow: [
@@ -1057,7 +1057,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         label: "Scale",
         title: "Scale under the same guarantees",
-        body: "Every additional workload inherits the same verification: attested execution, sealed secrets, verified counterparties, disputable usage.",
+        body: "Workloads can use attested execution, sealed secrets, and disputable usage; each offer states its own counterparty requirements.",
       },
     ],
     faqs: [
@@ -1118,7 +1118,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         heading: "Protect the model itself",
         paragraphs: [
-          "For proprietary weights and sensitive training data, require attested enclave execution (x/enclave) and encrypted secret delivery (x/encryption). Counterparty risk is bounded by VEID verification and on-chain reputation in both directions.",
+          "For proprietary weights and sensitive training data, require attested enclave execution (x/enclave) and encrypted secret delivery (x/encryption). Assess counterparty evidence, any offer-specific VEID proof, escrow terms, and on-chain history together; none removes all risk.",
         ],
       },
     ],
@@ -1202,7 +1202,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "How are models and training data protected?",
         answer:
-          "Require attested enclave execution (x/enclave) and encrypted secret delivery (x/encryption), transact only with VEID-verified providers carrying audited attributes, and lean on lease-bound reviews for ongoing assurance.",
+          "Where the selected offer supports it, require attested enclave execution (x/enclave) and encrypted secret delivery (x/encryption); review provider attributes, audits, history, and any disclosed VEID proof requirement before committing.",
       },
       {
         question: "How is spend controlled?",
@@ -1317,7 +1317,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "Where do the savings actually come from?",
         answer:
-          "Three structural sources: a real market instead of one seller's menu — direct prices you can compare, capped matching, or open competition — governed settlement fees rather than a private platform margin, and no egress-fee ambush or commitment tiers. FinOps tooling optimizes within the menu; this changes the menu.",
+          "Three structural sources: a real market instead of one seller's menu — direct prices you can compare, capped matching, or open competition — full agreed provider payouts rather than a private platform margin, and no egress-fee ambush or commitment tiers. FinOps tooling optimizes within the menu; this changes the menu.",
       },
       {
         question: "How is cloud spend controlled here?",

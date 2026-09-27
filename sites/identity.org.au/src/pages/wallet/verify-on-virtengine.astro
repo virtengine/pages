@@ -38,13 +38,13 @@ const flowSteps = [
     ],
   },
   {
-    title: "You are an approved client",
-    body: "Marketplace actions carry tier requirements. When your tier meets an action's requirement, the network's eligibility check passes and the action proceeds — deployments, leases, marketplace participation.",
-    detail: ["Approval is mechanical: tier meets requirement, action allowed."],
+    title: "Choose whether to present a proof",
+    body: "VEID is not a universal marketplace gate. Where supported, an individual offer may ask for a clearly disclosed proof; you can choose to meet it or select another offer.",
+    detail: ["A proof request applies to that offer, not every marketplace action."],
   },
   {
-    title: "Present your tier — never your documents",
-    body: "Providers and services on the network see your tier and that your score met their threshold. They never see your name, documents or biometrics unless you explicitly consent to share a specific verified claim.",
+    title: "Present the requested claim — not your documents",
+    body: "When you choose an offer with a VEID requirement, present only the requested proof. The provider does not receive your original document image or full OCR output; do not assume every service uses VEID.",
   },
 ];
 ---
@@ -52,8 +52,8 @@ const flowSteps = [
 <Guide
   title="Verify on VirtEngine"
   metaTitle="Verify on VirtEngine: Tiers On-Chain | identity.org.au"
-  description="From wallet to approved client: complete levels, receive an on-chain VEID score and tier, present proofs providers accept. No documents shared."
-  lede="How verification in your wallet becomes approval on the VirtEngine network: evidence in, score and tier out, and marketplace actions unlocked — with providers seeing your tier, never your documents."
+  description="How VEID keeps source identity documents on your device and lets you choose whether to present an offer-specific proof on VirtEngine."
+  lede="VEID is an optional, privacy-preserving trust signal. Keep original identity document images on your device and choose whether to present a disclosed proof for a specific offer."
   eyebrow="The service"
   breadcrumbs={crumbs}
   sectionLabel="The wallet"
@@ -62,20 +62,19 @@ const flowSteps = [
   <div class="prose-service">
     <p>
       The VirtEngine network is a decentralised cloud marketplace: tenants deploy workloads,
-      providers lease capacity, and the chain settles between them. Because real money and real
-      infrastructure are involved, actions on the network are gated by identity assurance — and
-      the Identity Wallet is how you provide it. Verifying makes you an
-      <strong>approved client</strong>: an account whose verification tier satisfies the
-      requirements of the actions it takes.
+      providers lease capacity, and the chain settles between them. VEID is not a general
+      participation requirement. Where a deployed protocol and client support it, a provider
+      may request a specific proof for an individual offer. You decide whether to provide that
+      proof or choose another listing.
     </p>
   </div>
 
   <ServiceFigure
     rail="Wallet to marketplace"
-    railRight="Verified flow"
+    railRight="Offer-specific proof"
     scroll
     class="mt-8"
-    caption="Verification becomes approval: evidence stays encrypted, the network scores and records a tier, and marketplace actions unlock by tier — never by documents."
+    caption="Original document images stay on your device; only separately approved data may be submitted, and any proof request is specific to an offer."
   >
     <VerifyFlow />
   </ServiceFigure>
@@ -86,55 +85,54 @@ const flowSteps = [
   <Steps steps={flowSteps} class="mt-6" />
 
   <div class="prose-service mt-10">
-    <h2>What providers see — and never see</h2>
+    <h2>What a provider can learn from a proof</h2>
   </div>
-  <TableScroll label="What providers and the marketplace see and never see" class="mt-5">
+  <TableScroll label="What an offer-specific proof shares and keeps private" class="mt-5">
     <table class="table-gov">
-      <caption class="sr-only">What providers and the marketplace see about a verified client, and what they never see</caption>
+      <caption class="sr-only">The limited information a provider may receive from a proof requested by an individual offer</caption>
       <thead>
         <tr>
-          <th scope="col">Providers and the marketplace see</th>
-          <th scope="col">They never see</th>
+          <th scope="col">Only if you present the requested proof</th>
+          <th scope="col">Not included in that proof</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Your verification tier (Basic, Standard, Trusted)</td>
-          <td>Your identity documents or any images of them</td>
+          <td>The claim or threshold result requested by that offer</td>
+          <td>Your original document images and full OCR output</td>
         </tr>
         <tr>
-          <td>That your score meets the threshold their offering requires</td>
-          <td>Your exact score history or the signals behind it</td>
+          <td>A proof that the requested threshold is met</td>
+          <td>Your exact score history and unrelated attributes</td>
         </tr>
         <tr>
-          <td>Zero-knowledge proof results they requested (for example, score above threshold)</td>
-          <td>Your biometric data — in any form, at any tier, ever</td>
+          <td>A zero-knowledge result for the specific question, where supported</td>
+          <td>Biometric templates or raw biometric evidence</td>
         </tr>
         <tr>
-          <td>Verified claims you explicitly consent to share, one by one</td>
-          <td>Anything from scopes you did not consent to</td>
+          <td>Only the claim you separately approved for presentation</td>
+          <td>Data from scopes you did not approve for that purpose</td>
         </tr>
       </tbody>
     </table>
   </TableScroll>
 
   <div class="prose-service mt-10">
-    <h2>How tiers gate marketplace actions</h2>
+    <h2>When an individual offer asks for a proof</h2>
     <p>
-      Every offering type on the network carries a required tier, and the chain's eligibility
-      check compares your recorded tier against it before the action executes. Low-risk activity
-      needs little; sensitive roles need a lot — the
-      <a href="/insights/verification-tiers-and-proportionality">proportionality principle</a>
-      applied mechanically.
+      VEID does not gate the marketplace as a whole. Where the active protocol and client
+      support offer-specific requirements, a provider must disclose the requested claim and
+      purpose before you commit. You can satisfy that request or choose a different listing.
+      Sensitive protocol roles may have separate requirements from marketplace offers.
     </p>
   </div>
-  <TableScroll label="Verification tiers and unlocked marketplace activity" class="mt-5">
+  <TableScroll label="Verification levels and possible scoped proofs" class="mt-5">
     <table class="table-gov">
-      <caption class="sr-only">Verification tiers and the marketplace activity each typically unlocks</caption>
+      <caption class="sr-only">Examples of proofs that may be supported at each verification level; these are not universal marketplace permissions</caption>
       <thead>
         <tr>
           <th scope="col">Your tier</th>
-          <th scope="col">Typically unlocks</th>
+          <th scope="col">Possible scoped use</th>
         </tr>
       </thead>
       <tbody>
@@ -150,11 +148,11 @@ const flowSteps = [
     </table>
   </TableScroll>
 
-  <Callout title="If an action needs a higher tier" class="mt-8">
+  <Callout title="If an offer requests a higher-assurance proof" class="mt-8">
     <p>
-      Nothing fails silently. Your wallet shows which level the action requires and exactly what
-      evidence would raise yours — and climbing is always your choice, made when something you
-      want actually requires it. See <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
+      A supported offer must show its requested proof before you commit. Your wallet should
+      explain what the proof means and what data it uses; you can decline and choose an offer
+      without that requirement. See <a href="/get-started/verification-levels" class="link-plain">verification levels</a>
       for the evidence behind each tier.
     </p>
   </Callout>
@@ -162,8 +160,8 @@ const flowSteps = [
   <Alert tone="info" title="Network status honesty" class="mt-8">
     <p>
       The VirtEngine network and the wallet are open-source infrastructure rolling out together.
-      Tier requirements for specific offerings are set on-chain and may evolve through network
-      governance — this page describes the mechanism, and the
+      Offer-specific proof support depends on the active protocol and client; requirements may
+      evolve through network governance. This page describes the policy model, and the
       <a href="https://docs.virtengine.com/veid/overview" rel="noopener" class="link-plain" target="_blank">technical documentation</a>
       tracks the current parameters.
     </p>
