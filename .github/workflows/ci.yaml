@@ -5,12 +5,19 @@ name: ci
 # so a broken Astro build or a dead internal link could reach production unnoticed.
 #
 # Site list is discovered, not hardcoded, so a new site under sites/ is built too.
+#
+# Both integration branches are gated. `develop` is where every PR lands in the
+# two-tier model, so a gate that only watched `main` left the branch that actually
+# receives work unverified: #19 (the OrderDemo type fix) had to be proven green by a
+# manual `workflow_dispatch`, and a regression merged to `develop` would first be
+# reported by a `main` push, after the fact. Gating `develop` moves the report to
+# the PR that introduced it.
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   push:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
