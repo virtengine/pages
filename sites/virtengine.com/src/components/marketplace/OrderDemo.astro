@@ -694,9 +694,22 @@ const BID_PROVIDERS = [
     maxPrice: 0,
     bids: [],
     acceptedBid: null,
-    match: null, // { provider, price, via }
-    order: null,
-    lease: null,
+    match: null as null | { provider: string; price: number; via: string },
+    order: null as
+      | null
+      | {
+          id: string;
+          offerId: string;
+          qty: number;
+          periods: number;
+          region: string;
+          project: string;
+          path: string;
+          provider: string;
+          price: number;
+          escrow: number;
+        },
+    lease: null as null | { id: string },
     funded: 0,
     elapsed: 0,
     accrued: 0,
@@ -817,7 +830,7 @@ const BID_PROVIDERS = [
   var planSub = document.getElementById("od-plan-sub");
   var estEl = document.getElementById("od-est");
   var escrowEl = document.getElementById("od-escrow");
-  var projectSelect = document.getElementById("od-project");
+  var projectSelect = document.getElementById("od-project") as HTMLSelectElement | null;
   if (projectSelect) projectSelect.addEventListener("change", function () { state.project = projectSelect.value; });
   function pillGroup(name, label, options, current, format) {
     var html = '<div class="odemo-opt-group"><p>' + label + "</p>" + '<div class="odemo-pills" role="radiogroup" aria-label="' + label + '">';
