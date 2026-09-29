@@ -55,7 +55,7 @@ Three things stop your money; monitor all three.
    `provider_daemon_active_disputes`, and respond quickly:
 
    ```bash
-   virtengine query settlement disputes --status pending --provider <your-address>
+   virtengine query settlement disputes
    ```
 
 2. **Reconciliation discrepancies.** Provider metrics are cross-checked
@@ -64,7 +64,8 @@ Three things stop your money; monitor all three.
    `provider_daemon_reconciliation_score` (alert below 50) and:
 
    ```bash
-   virtengine query settlement reconciliation-status --allocation-id <alloc-id>
+   # No CLI query exists for reconciliation status — monitor the
+   # provider_daemon_reconciliation_score metric instead.
    ```
 
 3. **Submission failures.** Failed submissions retry 3 times, then
@@ -83,5 +84,5 @@ Three things stop your money; monitor all three.
 - **You need to force a settlement** (e.g., after resolving a blocker):
 
   ```bash
-  virtengine tx settlement settle-order --order-id order-1234567890 --from provider
+  virtengine tx settlement settle-order order-1234567890 --from provider
   ```
