@@ -77,7 +77,10 @@ for (const file of walk(".")) {
   }
 }
 
-const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y", "check:types"];
+// check:schema and audit:seo are site-local scripts the build job runs per site (see
+// .github/workflows/ci.yaml). Requiring them here is the ratchet: dropping one from a site's
+// package.json would otherwise turn that site's gate off without any workflow noticing.
+const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y", "check:types", "check:schema", "audit:seo"];
 const sitesDir = "sites";
 const siteNames = new Set();
 if (!existsSync(sitesDir)) {
