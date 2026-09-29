@@ -4,7 +4,7 @@ reference brand media by slug with typed srcset/alt metadata."""
 import json
 import pathlib
 
-SITE = pathlib.Path(r"D:\source\repos\DET-IO FOUNDATION\pages\sites\virtengine.com")
+SITE = pathlib.Path(__file__).resolve().parent.parent
 man = json.loads((SITE / "public" / "media" / "manifest.json").read_text(encoding="utf-8"))
 
 ALT = {
@@ -48,6 +48,10 @@ lines = [
     "  halftone: boolean;",
     "  /** provenance (all CC0 / public domain) */",
     "  credit: string;",
+    "  /** canonical URL the asset was harvested from (empty when unknown) */",
+    "  source: string;",
+    "  /** SPDX-style license id as recorded by the harvest pipeline (e.g. cc0) */",
+    "  license: string;",
     "}",
     "",
     "export const media = {",
