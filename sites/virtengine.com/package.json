@@ -15,6 +15,7 @@
     "astro": "astro",
     "check:schema": "node ./scripts/check-structured-data.mjs dist",
     "check:duplication": "node ./scripts/check-duplication.mjs dist",
+    "check:media-reuse": "python ./scripts/check-static-media-reuse.py",
     "audit:seo": "node ./scripts/audit-seo-meta.mjs .",
     "check:types": "node ../../scripts/check-types.mjs"
   },

@@ -10,7 +10,7 @@ Rules:
     (10 px at 1200 px, matching the existing screens);
   * ink is the brand screen green #153723, paper is #fafcf9;
   * dot coverage tracks luminance, so the mean tone of each image is preserved;
-  * `network-earth` is the closing/footer image and is intentionally left alone.
+  * every photographic asset, including `network-earth`, receives the screen.
 
 Run:  python scripts/halftone-media.py
 """
@@ -48,7 +48,7 @@ FINE_DIVISOR = 185.0
 FINE_MIN = 4.5
 FINE_SOFTEN = 0.55
 QUALITY = 70
-EXCLUDE = {"network-earth"}  # the closing band / footer image stays untouched
+EXCLUDE: set[str] = set()
 
 
 def _box9(a: np.ndarray) -> np.ndarray:

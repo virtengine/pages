@@ -1,7 +1,6 @@
 ---
 import Base from "@layouts/Base.astro";
 import CTA from "@components/CTA.astro";
-import MediaFigure from "@components/media/MediaFigure.astro";
 ---
 
 <Base
@@ -11,7 +10,7 @@ import MediaFigure from "@components/media/MediaFigure.astro";
   noindex
 >
   <div class="grid-backdrop border-b border-line">
-    <div class="container-site grid min-h-[60vh] items-center gap-10 py-24 md:grid-cols-[1.05fr_0.85fr]">
+    <div class="container-site grid min-h-[60vh] items-center gap-10 py-24">
       <div>
         <p class="eyebrow">404 - order unmatched</p>
         <h1 class="mt-4 max-w-2xl font-display text-4xl md:text-6xl">
@@ -26,7 +25,6 @@ import MediaFigure from "@components/media/MediaFigure.astro";
           <CTA href="/protocol" variant="secondary">Protocol overview</CTA>
         </div>
       </div>
-      <MediaFigure slug="network-earth" ratio="4 / 3" sizes="(min-width: 768px) 28rem, 90vw" />
     </div>
   </div>
 </Base>
