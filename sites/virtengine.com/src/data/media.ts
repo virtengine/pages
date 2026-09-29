@@ -21,6 +21,10 @@ export interface MediaAsset {
   halftone: boolean;
   /** provenance (all CC0 / public domain) */
   credit: string;
+  /** canonical URL the asset was harvested from (empty when unknown) */
+  source: string;
+  /** SPDX-style license id as recorded by the harvest pipeline (e.g. cc0) */
+  license: string;
 }
 
 export const media = {
