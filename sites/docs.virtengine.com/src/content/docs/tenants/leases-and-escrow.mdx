@@ -37,10 +37,8 @@ Reconcile against that lag, not against wall-clock usage.
 Every usage record is disputable within the window:
 
 ```bash
-virtengine tx settlement dispute-usage \
-  --usage-id usage-1234567890 \
-  --reason "CPU usage appears inflated" \
-  --expected-cpu-hours 10 \
+virtengine tx settlement open-dispute <escrow-id> \
+  "CPU usage appears inflated" \
   --from customer
 ```
 

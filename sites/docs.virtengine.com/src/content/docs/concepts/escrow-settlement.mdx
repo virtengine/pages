@@ -44,10 +44,8 @@ window has elapsed and no dispute is open.
 A tenant who believes a record is wrong can dispute it inside the window:
 
 ```bash
-virtengine tx settlement dispute-usage \
-  --usage-id usage-1234567890 \
-  --reason "CPU usage appears inflated" \
-  --expected-cpu-hours 10 \
+virtengine tx settlement open-dispute <escrow-id> \
+  "CPU usage appears inflated" \
   --from customer
 ```
 
@@ -83,11 +81,8 @@ covered in [Settlement & BME](/concepts/settlement-and-bme/).
 
 ```bash
 # Force settlement for an order
-virtengine tx settlement settle-order --order-id order-1234567890 --from provider
+virtengine tx settlement settle-order order-1234567890 --from provider
 
-# Check reconciliation status
-virtengine query settlement reconciliation-status --allocation-id alloc-1234567890
-
-# List active disputes
-virtengine query settlement disputes --status pending --provider provider-address
+# List disputed escrows (this command takes no status/provider filters)
+virtengine query settlement disputes
 ```

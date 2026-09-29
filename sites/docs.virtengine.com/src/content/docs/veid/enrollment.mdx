@@ -57,13 +57,12 @@ nothing leaves the device unencrypted.
 Enrollment can also be driven from the command line with explicit consent
 flags:
 
-```bash
-virtengine veid enroll \
-  --consent-biometric=true \
-  --consent-document=true \
-  --consent-purpose="Marketplace identity verification" \
-  --consent-expiration="2027-01-29T00:00:00Z"
-```
+{/* UNVERIFIED: this block previously documented a `virtengine veid enroll`
+    command with `--consent-*` flags. No such command exists — the repository
+    has no `x/veid/client` package and no `enroll` command is registered under
+    `cmd/` (`grep -rn 'enroll' cmd/ --include=*.go` returns nothing). The VEID
+    module's message and keeper surface lives in `x/veid/`. Re-verify when a
+    VEID CLI lands. */}
 
 ## Verification tiers in practice
 

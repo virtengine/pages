@@ -100,15 +100,16 @@ workloads — with signing and governance approval as guardrails.
 3. **Submit for governance approval.** New templates require an on-chain
    proposal and vote before they can be used:
 
-   ```bash
-   virtengine tx hpc submit-template-proposal \
-       --template-file=my-simulation.json \
-       --title="Add My Simulation Workload" \
-       --description="Custom physics simulation workload for our HPC cluster" \
-       --deposit=1000uvirt \
-       --from=provider
+   {/* UNVERIFIED: the exact approval path could not be established from source.
+       The command previously documented here (`tx hpc submit-template-proposal`)
+       does not exist. `virtengine tx hpc template approve [template-id] [version]`
+       does exist (x/hpc/client/cli/tx_template.go:191), as does the generic x/gov
+       route below, but which one governs a newly created template is unverified. */}
 
-   # Validators and delegators vote
+   ```bash
+   virtengine tx hpc template create my-simulation.json --from provider
+
+   # Validators and delegators vote (if the template is routed through x/gov)
    virtengine tx gov vote <proposal-id> yes --from=validator
 
    # Track status
@@ -130,8 +131,8 @@ sloppy template can't become an escape hatch onto provider infrastructure.
 Tenants discover and use templates through the CLI:
 
 ```bash
-virtengine hpc templates list
-virtengine hpc templates show my-simulation
+virtengine hpc template list
+virtengine hpc template show my-simulation
 virtengine tx hpc submit-from-template my-simulation params.yaml --from tenant
 ```
 
