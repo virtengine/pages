@@ -15,16 +15,15 @@ namespaced per module — the pattern is consistent across the protocol:
 ```bash
 # Transactions: virtengine tx <module> <action> [flags]
 virtengine tx hpc submit-job job.yaml --from tenant
-virtengine tx settlement dispute-usage --usage-id usage-123 --from customer
+virtengine tx settlement open-dispute 42 "usage report does not match meter" --from customer
 virtengine tx gov vote 42 yes --from validator
 
 # Queries: virtengine query <module> <query> [flags]
-virtengine query settlement disputes --status pending
+virtengine query settlement disputes
 virtengine query gov proposal 42
 
-# Some modules also expose top-level helpers
-virtengine hpc templates list
-virtengine veid enroll --consent-biometric=true ...
+# Some modules also expose top-level command groups
+virtengine hpc template list
 ```
 
 Spec-file-driven commands (HPC job submission, provider registration, queue

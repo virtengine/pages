@@ -657,8 +657,14 @@ const BID_PROVIDERS = [
 <script>
 (function () {
   "use strict";
-  var root = document.getElementById("order-demo");
-  if (!root || root.dataset.booted === "true") return;
+  // The runtime guards below are kept as-is; a non-nullable alias is bound next to each one
+  // because TypeScript drops the narrowing of a `var` as soon as the reference sits inside a
+  // nested callback or a hoisted function, and reports every such use as possibly null
+  // (ts18047). The alias's declared type excludes null, so the closures can use it safely.
+  // Same shape as art/FieldBackdrop.astro's canvas/ctx aliases.
+  var maybeRoot = document.getElementById("order-demo");
+  if (!maybeRoot || maybeRoot.dataset.booted === "true") return;
+  const root: HTMLElement = maybeRoot;
   root.dataset.booted = "true";
 
   var dataEl = document.getElementById("od-data");
@@ -694,9 +700,22 @@ const BID_PROVIDERS = [
     maxPrice: 0,
     bids: [],
     acceptedBid: null,
-    match: null, // { provider, price, via }
-    order: null,
-    lease: null,
+    match: null as null | { provider: string; price: number; via: string },
+    order: null as
+      | null
+      | {
+          id: string;
+          offerId: string;
+          qty: number;
+          periods: number;
+          region: string;
+          project: string;
+          path: string;
+          provider: string;
+          price: number;
+          escrow: number;
+        },
+    lease: null as null | { id: string },
     funded: 0,
     elapsed: 0,
     accrued: 0,
@@ -817,8 +836,11 @@ const BID_PROVIDERS = [
   var planSub = document.getElementById("od-plan-sub");
   var estEl = document.getElementById("od-est");
   var escrowEl = document.getElementById("od-escrow");
-  var projectSelect = document.getElementById("od-project");
-  if (projectSelect) projectSelect.addEventListener("change", function () { state.project = projectSelect.value; });
+  var projectSelect = document.getElementById("od-project") as HTMLSelectElement | null;
+  if (projectSelect) {
+    const projectEl: HTMLSelectElement = projectSelect;
+    projectEl.addEventListener("change", function () { state.project = projectEl.value; });
+  }
   function pillGroup(name, label, options, current, format) {
     var html = '<div class="odemo-opt-group"><p>' + label + "</p>" + '<div class="odemo-pills" role="radiogroup" aria-label="' + label + '">';
     options.forEach(function (opt, i) {
@@ -845,7 +867,10 @@ const BID_PROVIDERS = [
       r.addEventListener("change", function () { state.periods = Number(r.value); paintEstimate(); });
     });
     var reg = document.getElementById("od-region");
-    if (reg) reg.addEventListener("change", function () { state.region = reg.value; paintEstimate(); });
+    if (reg) {
+      const regEl: HTMLElement = reg;
+      regEl.addEventListener("change", function () { state.region = regEl.value; paintEstimate(); });
+    }
     paintEstimate();
   }
   function paintEstimate() {
@@ -950,7 +975,8 @@ const BID_PROVIDERS = [
   });
   function renderBids() {
     if (!bidsList) return;
-    bidsList.innerHTML = "";
+    const bidListEl: HTMLElement = bidsList;
+    bidListEl.innerHTML = "";
     state.bids.forEach(function (b, i) {
       var li = document.createElement("li");
       li.className = "odemo-bid" + (i === 0 ? " is-best" : "");
@@ -974,7 +1000,7 @@ const BID_PROVIDERS = [
       btn.textContent = "Accept bid";
       btn.addEventListener("click", function () { acceptBid(b); });
       li.appendChild(btn);
-      bidsList.appendChild(li);
+      bidListEl.appendChild(li);
     });
   }
   function acceptBid(b) {
@@ -999,7 +1025,8 @@ const BID_PROVIDERS = [
       return a.minTotal - b2.minTotal;
     });
     if (!matchesList) return;
-    matchesList.innerHTML = "";
+    const matchListEl: HTMLElement = matchesList;
+    matchListEl.innerHTML = "";
     rows.forEach(function (row) {
       var li = document.createElement("li");
       li.className = "odemo-match";
@@ -1023,7 +1050,7 @@ const BID_PROVIDERS = [
       } else {
         li.setAttribute("aria-disabled", "true");
       }
-      matchesList.appendChild(li);
+      matchListEl.appendChild(li);
     });
     var hits = rows.filter(function (r) { return r.ok; }).length;
     announce(hits === 1 ? "1 eligible listing found." : hits + " eligible listings found.");
@@ -1103,34 +1130,37 @@ const BID_PROVIDERS = [
       ["Demo escrow amount", money(state.order.escrow)],
     ]));
   }
-  if (deployBtn) deployBtn.addEventListener("click", function () {
-    if (!state.order) renderSummary();
-    if (!state.order) return;
-    deployBtn.disabled = true;
-    if (logWrap) logWrap.removeAttribute("hidden");
-    if (logEl) logEl.innerHTML = "";
-    var lines = [
-      "Demo order " + state.order.id + " prepared — no chain transaction submitted.",
-      "Simulated escrow amount: " + money(state.order.escrow) + " (estimated cost + 10% buffer).",
-      "Match confirmed — " + state.order.provider + " at " + money(state.order.price) + ".",
-      "Lease binding tenant, provider and escrow…",
-      "Simulated provider request routed to " + state.order.provider + "…",
-    ];
-    var i = 0;
-    function next() {
-      if (i < lines.length) {
-        var li = document.createElement("li");
-        li.textContent = "› " + lines[i];
-        if (logEl) logEl.appendChild(li);
-        i++;
-        if (!reduceMotion) setTimeout(next, 550);
-        else next();
-      } else {
-        finishDeploy();
+  if (deployBtn) {
+    const deployEl: HTMLElement = deployBtn;
+    deployEl.addEventListener("click", function () {
+      if (!state.order) renderSummary();
+      if (!state.order) return;
+      deployEl.disabled = true;
+      if (logWrap) logWrap.removeAttribute("hidden");
+      if (logEl) logEl.innerHTML = "";
+      var lines = [
+        "Demo order " + state.order.id + " prepared — no chain transaction submitted.",
+        "Simulated escrow amount: " + money(state.order.escrow) + " (estimated cost + 10% buffer).",
+        "Match confirmed — " + state.order.provider + " at " + money(state.order.price) + ".",
+        "Lease binding tenant, provider and escrow…",
+        "Simulated provider request routed to " + state.order.provider + "…",
+      ];
+      var i = 0;
+      function next() {
+        if (i < lines.length) {
+          var li = document.createElement("li");
+          li.textContent = "› " + lines[i];
+          if (logEl) logEl.appendChild(li);
+          i++;
+          if (!reduceMotion) setTimeout(next, 550);
+          else next();
+        } else {
+          finishDeploy();
+        }
       }
-    }
-    next();
-  });
+      next();
+    });
+  }
   function finishDeploy() {
     var li = document.createElement("li");
     li.innerHTML = "";
@@ -1198,18 +1228,19 @@ const BID_PROVIDERS = [
   function startTicker() {
     stopTicker();
     if (!state.order) return;
-    state.funded = state.order.escrow;
+    const order = state.order;
+    state.funded = order.escrow;
     state.elapsed = 0;
     state.accrued = 0;
     if (receiptEl) receiptEl.innerHTML = "";
     if (settleBtn) settleBtn.disabled = false;
-    var ratePer = state.order.price / state.order.periods;
+    var ratePer = order.price / order.periods;
     paintManage();
     announce("Simulated usage running.");
     state.timer = setInterval(function () {
       var t = perTick();
       state.elapsed = Math.min(t.total, state.elapsed + t.per);
-      state.accrued = Math.min(state.order.price, ratePer * state.elapsed);
+      state.accrued = Math.min(order.price, ratePer * state.elapsed);
       paintManage();
       if (state.elapsed >= t.total) {
         stopTicker();
@@ -1217,33 +1248,36 @@ const BID_PROVIDERS = [
       }
     }, 1000);
   }
-  if (settleBtn) settleBtn.addEventListener("click", function () {
-    if (!state.order) return;
-    stopTicker();
-    settleBtn.disabled = true;
-    var refund = Math.max(0, state.funded - state.accrued);
-    if (!receiptEl) return;
-    receiptEl.innerHTML = "";
-    var box = document.createElement("div");
-    box.className = "odemo-receipt";
-    var head = document.createElement("p");
-    head.className = "odemo-est-label";
-    head.textContent = "Settlement receipt " + uid("STL") + " — simulated";
-    box.appendChild(head);
-    box.appendChild(kv([
-      ["Lease", state.lease ? state.lease.id : "—"],
-      ["Usage billed", money(state.accrued)],
-      ["Escrow simulated", money(state.funded)],
-      ["Refunded to tenant", money(refund)],
-      ["Dispute window", "24 hours (simulated as closed)"],
-    ]));
-    var note = document.createElement("p");
-    note.className = "odemo-note";
-    note.textContent = "In production, signed usage records settle from escrow after the dispute window. Nothing moved here.";
-    box.appendChild(note);
-    receiptEl.appendChild(box);
-    announce("Settled. " + money(refund) + " refunded in this simulation.");
-  });
+  if (settleBtn) {
+    const settleEl: HTMLElement = settleBtn;
+    settleEl.addEventListener("click", function () {
+      if (!state.order) return;
+      stopTicker();
+      settleEl.disabled = true;
+      var refund = Math.max(0, state.funded - state.accrued);
+      if (!receiptEl) return;
+      receiptEl.innerHTML = "";
+      var box = document.createElement("div");
+      box.className = "odemo-receipt";
+      var head = document.createElement("p");
+      head.className = "odemo-est-label";
+      head.textContent = "Settlement receipt " + uid("STL") + " — simulated";
+      box.appendChild(head);
+      box.appendChild(kv([
+        ["Lease", state.lease ? state.lease.id : "—"],
+        ["Usage billed", money(state.accrued)],
+        ["Escrow simulated", money(state.funded)],
+        ["Refunded to tenant", money(refund)],
+        ["Dispute window", "24 hours (simulated as closed)"],
+      ]));
+      var note = document.createElement("p");
+      note.className = "odemo-note";
+      note.textContent = "In production, signed usage records settle from escrow after the dispute window. Nothing moved here.";
+      box.appendChild(note);
+      receiptEl.appendChild(box);
+      announce("Settled. " + money(refund) + " refunded in this simulation.");
+    });
+  }
   function fullReset() {
     stopTicker();
     state.step = 1;

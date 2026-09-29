@@ -16,6 +16,11 @@
  *    marked-up content to be visible on the page)
  *
  * Exit code 1 when any ERROR is found. Warnings do not fail the build.
+ *
+ * A checker that exits 0 while checking nothing is worse than no checker, so this
+ * script hard-fails when the dist holds no HTML or when no page carried JSON-LD, and
+ * prints a STRUCTURED-OK marker that CI asserts on (`grep -q '^STRUCTURED-OK'`). Both
+ * markers are covered by scripts/check-structured-data.test.mjs.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -223,7 +228,18 @@ function checkNode(node, page, ids, siteHost, crossRefs) {
   }
 }
 
-for (const file of walk(distDir)) {
+let htmlFiles;
+try {
+  htmlFiles = walk(distDir);
+} catch (error) {
+  console.error(
+    `STRUCTURED-FAIL ${distDir}: ` +
+      (error.code === "ENOENT" ? "dist directory does not exist" : error.message),
+  );
+  process.exit(1);
+}
+
+for (const file of htmlFiles) {
   const html = readFileSync(file, "utf8");
   const page = relative(distDir, file).replace(/\\/g, "/");
   const blocks = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)];
@@ -271,6 +287,14 @@ for (const file of walk(distDir)) {
   }
 }
 
+// A checker that exits 0 while checking nothing is worse than no checker: an empty dist, or a
+// dist whose pages carry no markup at all, is a broken build or a broken checker — not a pass.
+if (htmlFiles.length === 0) {
+  errors.push(`${distDir}: no HTML in dist — checker did nothing`);
+} else if (pagesChecked === 0) {
+  errors.push(`${distDir}: no page carried JSON-LD — checker did nothing`);
+}
+
 const report = {
   pages_checked: pagesChecked,
   json_ld_blocks: jsonLdBlocks,
@@ -291,4 +315,13 @@ if (errors.length) {
   if (errors.length > 40) console.log(`  ... ${errors.length - 40} more`);
 }
 console.log(`\n${JSON.stringify(report, null, 2)}`);
-process.exit(errors.length > 0 ? 1 : 0);
+
+if (errors.length > 0) {
+  console.error(`STRUCTURED-FAIL ${distDir}: ${errors.length} error(s)`);
+  process.exit(1);
+}
+console.log(
+  `STRUCTURED-OK ${distDir} pages=${pagesChecked} blocks=${jsonLdBlocks} ` +
+    `nodes=${nodesChecked} warnings=${warnings.length}`,
+);
+process.exit(0);

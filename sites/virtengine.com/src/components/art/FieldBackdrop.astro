@@ -64,10 +64,17 @@ const { tone = "night", density = 1, class: className } = Astro.props;
   };
 
   function initField(root: HTMLElement) {
-    const canvas = root.querySelector<HTMLCanvasElement>("canvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
+    // TypeScript does not carry flow narrowing from the two guards above into the hoisted
+    // function declarations ("resize", "draw", ...) further down — a hoisted function can
+    // run before the guard, so it uses the declared type and reports every `canvas`/`ctx`
+    // use there as possibly null (ts18047). Binding non-nullable aliases keeps the runtime
+    // guards and gives the closures a type that cannot be null.
+    const maybeCanvas = root.querySelector<HTMLCanvasElement>("canvas");
+    if (!maybeCanvas) return;
+    const maybeCtx = maybeCanvas.getContext("2d", { alpha: true });
+    if (!maybeCtx) return;
+    const canvas: HTMLCanvasElement = maybeCanvas;
+    const ctx: CanvasRenderingContext2D = maybeCtx;
     let inView = true;
 
     const tone = root.classList.contains("field-backdrop--paper") ? "paper" : "night";
