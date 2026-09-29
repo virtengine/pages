@@ -125,6 +125,22 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^A11Y-OK' a11y.log
 
+      - name: Structured data (JSON-LD) check
+        run: |
+          set -o pipefail
+          pnpm run check:schema | tee schema.log
+          # Guard against a checker that silently checks nothing: it hard-fails on an empty dist
+          # or on a dist where no page carried JSON-LD, and only then prints the marker.
+          grep -q '^STRUCTURED-OK' schema.log
+
+      - name: SEO meta gate (titles and descriptions)
+        run: |
+          set -o pipefail
+          pnpm run audit:seo | tee seo.log
+          # Guard against a checker that silently checks nothing: it hard-fails on a dist with no
+          # indexable page, and only then prints the marker.
+          grep -q '^SEO-OK' seo.log
+
       - name: Markdown negotiation check
         run: |
           set -o pipefail
