@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { gzipSync } from "node:zlib";
@@ -239,11 +239,54 @@ test("regression: the real det.io CI failure passes under the 5% band", () => {
   assert.equal(hypotheticalVerdict(budgetFromWindows, 43503 * 0.5), "loose");
 });
 
-// The verdict rule, mirrored from check-perf.mjs. Duplicated rather than imported on purpose:
-// this asserts the CONTRACT as a pure function, so a change to the script that breaks the
-// contract is caught here even if the script's own tests were rewritten to match it.
+// The tolerance the gate actually ships with, asserted rather than assumed.
+//
+// This exists because the fixture below is deliberately coarse: it pins the *shape* of the band
+// (+2.26% in, 1.5x out, 0.5x out) and not its width, so the suite passed unchanged at 0.05 and at
+// 0.06 alike. Nothing in the tests therefore held the shipped number in place — PERF_TOLERANCE
+// could be widened to 50% and, apart from two incidental failures, the "budget" gate would have
+// stopped meaning anything while still reporting green. This single assertion is the tie between
+// the measured Windows-vs-Linux spread in the header table and the constant the gate uses.
+//
+// 0.05 is the sized value: the worst observed platform spread is +2.2550% (det.io largest-asset,
+// sharp/libvips emitting a different og.png on Linux), and the band is roughly double that. Change
+// it only with a fresh measurement, and update the header table in check-perf.mjs in the same
+// commit, because a wider band is a weaker budget.
+test("the shipped band is the sized +/-5%, not a value that drifted", () => {
+  const src = readFileSync(CHECKER, "utf8");
+  const m = src.match(/const PERF_TOLERANCE = ([0-9.]+);/);
+  assert.ok(m, "PERF_TOLERANCE must stay a plain numeric const in check-perf.mjs");
+  assert.equal(
+    Number(m[1]),
+    0.05,
+    "PERF_TOLERANCE changed. The band is sized from the measured platform spread; re-measure " +
+      "and update the header table in check-perf.mjs in the same commit.",
+  );
+});
+
+// The verdict rule, mirrored from check-perf.mjs. The mirroring is deliberate: this asserts the
+// CONTRACT as a pure function, so a change to the script that breaks the contract is caught here
+// even if the script's own tests were rewritten to match it.
+//
+// The tolerance is NOT re-typed here. It is read out of the checker's own source, because a
+// hand-copied 0.05 is a second source of truth: widen PERF_TOLERANCE in the gate and this helper
+// would keep asserting the old band, so the suite could pass while the shipped gate did something
+// else — the tests would be asserting a rule that no longer exists. Reading the constant keeps the
+// contract assertion honest about the band the gate actually applies.
+const PERF_TOLERANCE = readSourceConstant(CHECKER, "PERF_TOLERANCE");
+
+// Pull `const <NAME> = <number>;` out of a source file. Asserts on the shape, so a refactor that
+// turns the constant into something else fails loudly here rather than silently falling back to a
+// stale literal baked into this file.
+function readSourceConstant(file, name) {
+  const src = readFileSync(file, "utf8");
+  const m = src.match(new RegExp(`const ${name} = ([0-9.]+);`));
+  assert.ok(m, `${name} must stay a plain numeric const in ${basename(file)}`);
+  return Number(m[1]);
+}
+
 function hypotheticalVerdict(cap, value) {
-  const tolerance = 0.05;
+  const tolerance = PERF_TOLERANCE;
   const ceiling = Math.floor(cap * (1 + tolerance));
   const floor = Math.ceil(cap * (1 - tolerance));
   if (value > ceiling) return "over";
