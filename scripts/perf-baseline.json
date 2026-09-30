@@ -1,0 +1,30 @@
+{
+  "virtengine.com": {
+    "max-page-js": 10672,
+    "max-page-css": 63816,
+    "largest-asset": 4281061,
+    "total-gzip": 22339776,
+    "unresolved-assets": 0
+  },
+  "docs.virtengine.com": {
+    "max-page-js": 8589,
+    "max-page-css": 31959,
+    "largest-asset": 72252,
+    "total-gzip": 2605418,
+    "unresolved-assets": 0
+  },
+  "det.io": {
+    "max-page-js": 2753,
+    "max-page-css": 16308,
+    "largest-asset": 44484,
+    "total-gzip": 798835,
+    "unresolved-assets": 0
+  },
+  "identity.org.au": {
+    "max-page-js": 1435,
+    "max-page-css": 10584,
+    "largest-asset": 1240030,
+    "total-gzip": 4462965,
+    "unresolved-assets": 0
+  }
+}

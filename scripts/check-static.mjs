@@ -80,7 +80,15 @@ for (const file of walk(".")) {
 // check:schema and audit:seo are site-local scripts the build job runs per site (see
 // .github/workflows/ci.yaml). Requiring them here is the ratchet: dropping one from a site's
 // package.json would otherwise turn that site's gate off without any workflow noticing.
-const REQUIRED_SCRIPTS = ["build", "check:links", "check:a11y", "check:types", "check:schema", "audit:seo"];
+const REQUIRED_SCRIPTS = [
+  "build",
+  "check:links",
+  "check:a11y",
+  "check:perf",
+  "check:types",
+  "check:schema",
+  "audit:seo",
+];
 const sitesDir = "sites";
 const siteNames = new Set();
 if (!existsSync(sitesDir)) {
@@ -134,6 +142,62 @@ if (existsSync(a11yBaselinePath)) {
   }
 } else {
   failures.push(`${a11yBaselinePath}: missing — the accessibility gate has no ledger`);
+}
+
+// The performance ledger gets the same per-site integrity treatment, plus one check the a11y
+// ledger does not need: every metric key must be a NON-NEGATIVE NUMBER. A metric that is a
+// string, null or missing does not fail the per-site checker loudly — the comparison inside
+// check-perf.mjs treats an unseeded metric as "hold it to zero" — so a typo in the ledger would
+// quietly turn a site's budget off rather than break the build, and nobody would notice until the
+// regression it exists to catch had shipped. The per-site checker cannot see any of this: it only
+// ever runs against one site's dist.
+const PERF_METRICS = [
+  "max-page-js",
+  "max-page-css",
+  "largest-asset",
+  "total-gzip",
+  "unresolved-assets",
+];
+const perfBaselinePath = join("scripts", "perf-baseline.json");
+if (existsSync(perfBaselinePath)) {
+  try {
+    const ledger = JSON.parse(readFileSync(perfBaselinePath, "utf8"));
+    const keys = Object.keys(ledger);
+    if (keys.length === 0) {
+      failures.push(`${perfBaselinePath}: empty ledger — the performance gate would be vacuous`);
+    }
+    for (const site of keys) {
+      if (!siteNames.has(site)) {
+        failures.push(`${perfBaselinePath}: entry "${site}" has no matching directory under sites/`);
+      }
+    }
+    for (const site of siteNames) {
+      if (!keys.includes(site)) {
+        failures.push(`${perfBaselinePath}: no budget entry for site "${site}"`);
+        continue;
+      }
+      const ledgerEntry = ledger[site] ?? {};
+      for (const metric of Object.keys(ledgerEntry)) {
+        if (!PERF_METRICS.includes(metric)) {
+          failures.push(
+            `${perfBaselinePath}: site "${site}" has unknown metric "${metric}" — check-perf.mjs will never compare it`,
+          );
+        }
+      }
+      for (const metric of PERF_METRICS) {
+        const value = ledgerEntry[metric];
+        if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+          failures.push(
+            `${perfBaselinePath}: site "${site}" metric "${metric}" is ${JSON.stringify(value)} — must be a non-negative number`,
+          );
+        }
+      }
+    }
+  } catch (err) {
+    failures.push(`${perfBaselinePath}: invalid JSON — ${err.message}`);
+  }
+} else {
+  failures.push(`${perfBaselinePath}: missing — the performance gate has no ledger`);
 }
 
 for (const failure of failures) console.error(`FAIL ${failure}`);
