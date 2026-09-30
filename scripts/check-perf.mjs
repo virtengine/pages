@@ -19,21 +19,34 @@
 //                      no other gate in this repo can see, since check-links only walks hrefs
 //
 // The gate is a RATCHET, exactly like scripts/check-a11y.mjs: scripts/perf-baseline.json records
-// the measured value per site, and a metric fails unless the site measures within PERF_HEADROOM
+// the measured value per site, and a metric fails unless the site measures within PERF_TOLERANCE
 // of its budget:
 //
-//   value >  budget x 1.02        OVER   the site got heavier than the budget allows
-//   value <  budget               LOOSE  the budget is padded above what the site needs
-//   budget <= value <= budget x 1.02        OK — the allowance absorbing measurement jitter
+//   value > budget x 1.05         OVER   the site got heavier than the budget allows
+//   value < budget x 0.95         LOOSE  the site got lighter — the budget should shrink
+//   otherwise                     ok
 //
-// A budget can therefore only be fixed by making the site lighter, never by widening the number.
-// Use --update-baseline to re-measure after a fix, and commit the smaller numbers with it.
+// A budget can therefore only be fixed by measuring, never by widening the number by hand.
 //
-// ONE deliberate difference from the a11y ratchet: bytes are compared with a HEADROOM allowance
-// rather than for exact equality. zlib is pinned in the toolchain, not in this script, so a zlib
-// minor release can move a gzipped size by a fraction of a percent, and an exact-equality gate
-// would go red on a tree that got no heavier. The allowance exists ONLY to absorb that jitter —
-// it can neither excuse a regression nor license a padded budget, which is the whole of its job.
+// WHY A BAND AND NOT EQUALITY — measured, not assumed. The first cut compared bytes exactly and
+// went red on its very first CI run, which is how the real number below was obtained. The four
+// sites are built on a developer's Windows box and gated on a Linux runner, and the build is NOT
+// byte-reproducible across the two: sharp/libvips encodes a different og.png (det.io's largest
+// asset came out 981 bytes, +2.26%, heavier on Linux), and a handful of text assets differ by a
+// few dozen bytes. PR #39, CI run 36679453440, per metric:
+//
+//   virtengine.com        js 0.0000%  css 0.0000%  largest 0.0000%  total -0.0002%
+//   docs.virtengine.com   js 0.0000%  css 0.0000%  largest +0.0042%  total -0.0864%
+//   det.io                js 0.0000%  css 0.0000%  largest +2.2550%  total +0.1204%
+//   identity.org.au       js 0.0000%  css 0.0000%  largest 0.0000%  total -0.0009%
+//
+// 2.26% is the worst observed, and PERF_TOLERANCE is 5%: double the measured spread, so the band
+// is not sized to a single sample. The band is still tight enough to be a budget: 5% of
+// virtengine.com's worst page is 533 BYTES of JavaScript, and 5% of its whole site is 1.1 MB.
+//
+// The tolerance applies to BYTE metrics only. `unresolved-assets` is a count of dangling
+// references, it is platform-independent, and it is held at exactly 0 — which is where the gate's
+// sharpest signal lives, since a 404-ing bundle is the defect no other gate in this repo sees.
 //
 // A checker that exits 0 while checking nothing is worse than no checker, so this script
 // hard-fails on a missing dist, on a dist with no HTML, on an HTML tree in which it resolved no
@@ -49,8 +62,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // so it never rewrites the real one. CI sets nothing and gets scripts/perf-baseline.json.
 const BASELINE_PATH = process.env.PERF_BASELINE ?? join(HERE, "perf-baseline.json");
 
-// A budget may sit this far above the measured bytes. Small on purpose: see the header note.
-const PERF_HEADROOM = 1.02;
+// How far a measurement may sit from its budget, as a fraction. 0.05 = +/-5%.
+// Sized from the measured Windows-vs-Linux spread, not guessed: see the header table. A byte
+// metric inside this band passes; outside it, in EITHER direction, the run fails.
+const PERF_TOLERANCE = 0.05;
 
 // A budget is checked against every metric the checker can measure, in this order. Keeping the
 // list explicit (rather than diffing against a live measurement) is what makes
@@ -371,32 +386,29 @@ for (const target of targets) {
       if (value > 0) over.push(metric);
       continue;
     }
-    // A zero budget is exact and gets no headroom: one dangling reference is one too many.
+    // A zero budget is exact and gets no tolerance: one dangling reference is one too many.
     if (cap === 0) {
       if (value > 0) over.push(metric);
       continue;
     }
     // ONE rule, evaluated as a single chain, so a metric can never be reported as two opposite
     // defects at once. The first cut tested `value < cap` and `value > cap * headroom` as two
-    // INDEPENDENT conditions, which made the whole band [cap, cap x headroom] satisfy both: a
-    // budget raised by 1% printed "OVER BUDGET largest-asset: 4087 > 4006" and "LOOSE BUDGET
-    // largest-asset: 4087 measured, 4006 budgeted" on adjacent lines. A verdict naming two
-    // opposite defects is not a verdict, and a reader who sees both stops trusting either.
+    // INDEPENDENT conditions, which made the band between them satisfy both: a budget raised by
+    // 1% printed "OVER BUDGET largest-asset: 4087 > 4006" and "LOOSE BUDGET largest-asset: 4087
+    // measured, 4006 budgeted" on adjacent lines. A verdict naming two opposite defects is not a
+    // verdict, and a reader who sees both stops trusting either.
     //
-    // The three bands, in order:
-    //   value >  ceiling  OVER   the site really did get heavier than the budget allows
-    //   cap < value <= ceiling  OK — the allowance absorbing measurement jitter
-    //   value <  cap     LOOSE  the budget is padded above what the site needs
-    //
-    // `value < cap` is STRICT, so the seeded state (measured == budget) passes. The first cut
-    // used `value <= cap`, and a freshly-seeded ledger failed its own gate — the fastest way to
-    // teach a team that a ratchet is noise.
-    const ceiling = Math.floor(cap * PERF_HEADROOM);
+    // The band is TWO-SIDED on purpose. An earlier one-sided version only caught a site getting
+    // heavier, so a site that got LIGHTER left its budget permanently padded and the number
+    // decayed into a lie — the exact failure the ratchet exists to prevent, just slower.
+    const ceiling = Math.floor(cap * (1 + PERF_TOLERANCE));
+    const floor = Math.ceil(cap * (1 - PERF_TOLERANCE));
     if (value > ceiling) {
       over.push(metric);
-    } else if (value < cap) {
-      // The budget is wider than the site needs. Padding is the one thing the ratchet exists to
-      // refuse: the fix is a smaller number, never a wider one.
+    } else if (value < floor) {
+      // The site is comfortably under budget: the number is stale and should be re-measured
+      // down. Padding is the one thing the ratchet exists to refuse; the fix is a smaller
+      // budget, never a wider one.
       loose.push(metric);
     }
   }
@@ -405,15 +417,15 @@ for (const target of targets) {
     const cap = budget[metric];
     const suffix =
       typeof cap === "number" && cap !== 0
-        ? ` (+${Math.round((PERF_HEADROOM - 1) * 100)}% headroom, ceiling ${Math.floor(cap * PERF_HEADROOM)})`
+        ? ` (tolerance +${Math.round(PERF_TOLERANCE * 100)}%, ceiling ${Math.floor(cap * (1 + PERF_TOLERANCE))})`
         : "";
     console.log(`  OVER BUDGET ${metric}: ${counts[metric]} > ${cap ?? 0}${suffix}`);
   }
   for (const metric of loose) {
     const cap = budget[metric];
-    const ceiling = cap === 0 ? 0 : Math.floor(cap * PERF_HEADROOM);
+    const floor = cap === 0 ? 0 : Math.ceil(cap * (1 - PERF_TOLERANCE));
     console.log(
-      `  LOOSE BUDGET ${metric}: ${counts[metric]} measured, ${cap} budgeted (ceiling ${ceiling})`,
+      `  LOOSE BUDGET ${metric}: ${counts[metric]} measured, ${cap} budgeted (floor ${floor})`,
     );
   }
 

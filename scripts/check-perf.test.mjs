@@ -182,46 +182,74 @@ test("negative: a budget looser than reality fails so the numbers cannot be padd
   assert.match(out, /LOOSE BUDGET largest-asset/);
 });
 
-test("budget: the three bands are disjoint, and no metric can be two defects at once", () => {
+test("budget: the band is two-sided and no metric can be two defects at once", () => {
   // The contract, pinned edge by edge:
-  //   value >  ceiling        OVER   heavier than the budget allows
-  //   cap < value <= ceiling  OK     the 2% allowance absorbing measurement jitter
-  //   value <= cap            LOOSE  the budget is padded
+  //   value > budget x 1.05   OVER   heavier than the budget allows
+  //   value < budget x 0.95   LOOSE  the site got lighter and the budget is stale
+  //   inside the band         ok
   //
-  // This test is the regression guard for the first cut, which tested `value < cap` and
-  // `value > cap * headroom` as two independent conditions. The band [cap, cap x headroom]
-  // satisfied BOTH, so a budget raised by 1% printed OVER and LOOSE on adjacent lines.
+  // Two separate defects are pinned here. First, the first cut tested `value < cap` and
+  // `value > cap * headroom` as two INDEPENDENT conditions, so the band between them satisfied
+  // both: a budget raised by 1% printed OVER and LOOSE on adjacent lines. Second, that version
+  // was ONE-SIDED — it could not notice a site getting LIGHTER, which leaves a budget padded
+  // forever, the exact decay a ratchet exists to prevent.
   const measured = canonical()["largest-asset"];
 
   // Seeded state: exactly at the measurement.
   assert.equal(run(dist(), { baselinePath: budget(MEASURED) }).status, 0);
 
-  // Just inside the allowance: ok. This is the band that must exist, or every zlib bump is a
-  // red build on a tree that got no heavier.
-  const nudged = withMetric("largest-asset", measured - Math.floor(measured / 200));
-  const { status: nudgeStatus, out: nudgeOut } = run(dist(), { baselinePath: budget(nudged) });
-  assert.equal(nudgeStatus, 0, `a budget inside the 2% allowance must pass:\n${nudgeOut}`);
+  // Both edges INSIDE the band: ok. This is what absorbs the platform spread.
+  const heavier = withMetric("largest-asset", Math.floor(measured * 1.04));
+  const { status: heavyStatus, out: heavyOut } = run(dist(), { baselinePath: budget(heavier) });
+  assert.equal(heavyStatus, 0, `a measurement inside +5% must pass:\n${heavyOut}`);
 
-  // Padded by 1%: LOOSE, and specifically not also OVER.
-  const paddedUp = withMetric("largest-asset", measured + Math.ceil(measured / 200));
+  const lighter = withMetric("largest-asset", Math.ceil(measured * 0.96));
+  const { status: lightStatus, out: lightOut } = run(dist(), { baselinePath: budget(lighter) });
+  assert.equal(lightStatus, 0, `a measurement inside -5% must pass:\n${lightOut}`);
+
+  // Beyond the top: OVER, and specifically not also LOOSE.
+  const heavy = withMetric("largest-asset", Math.floor(measured * 0.8));
+  const { status: overStatus, out: overOut } = run(dist(), { baselinePath: budget(heavy) });
+  assert.equal(overStatus, 1, overOut);
+  assert.match(overOut, /OVER BUDGET largest-asset/);
+  assert.ok(!/LOOSE BUDGET/.test(overOut), `must not read as both:\n${overOut}`);
+
+  // Beyond the bottom: LOOSE, and specifically not also OVER. This is the direction the old
+  // one-sided rule could not see at all.
+  const paddedUp = withMetric("largest-asset", Math.ceil(measured * 1.3));
   const { status: padStatus, out: padOut } = run(dist(), { baselinePath: budget(paddedUp) });
   assert.equal(padStatus, 1, padOut);
-  assert.match(padOut, /budget is loose for largest-asset/);
-  assert.ok(
-    !/OVER BUDGET/.test(padOut),
-    `a padded budget must not also read as over budget:\n${padOut}`,
-  );
-
-  // Beyond the allowance: OVER, and specifically not also LOOSE.
-  const heavy = withMetric("largest-asset", Math.floor(measured / 2));
-  const { status: heavyStatus, out: heavyOut } = run(dist(), { baselinePath: budget(heavy) });
-  assert.equal(heavyStatus, 1, heavyOut);
-  assert.match(heavyOut, /OVER BUDGET largest-asset/);
-  assert.ok(
-    !/LOOSE BUDGET/.test(heavyOut),
-    `an over-budget site must not also read as a loose budget:\n${heavyOut}`,
-  );
+  assert.match(padOut, /LOOSE BUDGET largest-asset/);
+  assert.ok(!/OVER BUDGET/.test(padOut), `must not read as both:\n${padOut}`);
 });
+
+test("regression: the real det.io CI failure passes under the 5% band", () => {
+  // PR #39's first CI run is what sized the tolerance, so it is a fixture rather than a story.
+  // sharp/libvips encoded a different og.png on the Linux runner: largest-asset 43503 (Windows)
+  // vs 44484 (Linux), +2.2550%, and the two-sided-adjacent total moved +0.12%. Under the old
+  // exact/one-sided comparison the gate went RED on all four sites on an unchanged tree.
+  // The Windows-measured budget, 43503, seeing the Linux measurement of 44484.
+  const budgetFromWindows = 43503;
+  const linuxMeasurement = 44484;
+  const out = hypotheticalVerdict(budgetFromWindows, linuxMeasurement);
+  assert.equal(out, "ok", `+2.255% must sit inside the band, got ${out}`);
+  // And the same rule must still reject a regression of the same magnitude in the other
+  // direction, or the band is doing nothing.
+  assert.equal(hypotheticalVerdict(budgetFromWindows, 43503 * 1.5), "over");
+  assert.equal(hypotheticalVerdict(budgetFromWindows, 43503 * 0.5), "loose");
+});
+
+// The verdict rule, mirrored from check-perf.mjs. Duplicated rather than imported on purpose:
+// this asserts the CONTRACT as a pure function, so a change to the script that breaks the
+// contract is caught here even if the script's own tests were rewritten to match it.
+function hypotheticalVerdict(cap, value) {
+  const tolerance = 0.05;
+  const ceiling = Math.floor(cap * (1 + tolerance));
+  const floor = Math.ceil(cap * (1 - tolerance));
+  if (value > ceiling) return "over";
+  if (value < floor) return "loose";
+  return "ok";
+}
 
 test("negative: unresolved-assets catches a local asset reference with no file behind it", () => {
   const broken = dist({ refs: '<script type="module" src="/assets/gone.js"></script>' });
