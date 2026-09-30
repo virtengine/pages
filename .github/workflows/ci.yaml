@@ -125,6 +125,18 @@ jobs:
           # Guard against a checker that silently checks nothing.
           grep -q '^A11Y-OK' a11y.log
 
+      - name: Performance budget
+        run: |
+          set -o pipefail
+          pnpm run check:perf | tee perf.log
+          # scripts/check-perf.mjs is a ratchet over scripts/perf-baseline.json, the same shape as
+          # check-a11y.mjs: it fails when a site ships more gzipped bytes than budgeted AND when the
+          # budget is looser than reality, so a budget can only be fixed by making the site lighter.
+          # It hard-fails on a missing dist, a dist with no HTML, and a dist whose asset references
+          # resolve to nothing, and prints PERF-OK only after a real run — so a checker that
+          # silently measured nothing cannot look green.
+          grep -q '^PERF-OK' perf.log
+
       - name: Structured data (JSON-LD) check
         run: |
           set -o pipefail
