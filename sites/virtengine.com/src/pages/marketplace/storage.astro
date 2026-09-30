@@ -60,8 +60,14 @@ const moreListings = [
     </div>
   </PageHero>
 
-  <Section eyebrow="Catalogue" title="Example storage listings">
-    <MediaFigure slug="storage-drive" ratio="16 / 9" sizes="(min-width: 1024px) 72vw, 100vw" caption="Illustrative CC0 image of a hard disk drive." class="mb-6" />
+  <Section eyebrow="Catalogue">
+    <div class="storage-catalogue-intro">
+      <div class="storage-catalogue-copy">
+        <h2 class="max-w-3xl font-display text-3xl md:text-[2.6rem]">Example storage listings</h2>
+        <p class="mk-buyer-note">Buyer view: compare standalone storage and capacity attached to compute.</p>
+      </div>
+      <MediaFigure slug="storage-drive" ratio="4 / 3" sizes="(min-width: 1024px) 18rem, 40vw" caption="Illustrative storage hardware." class="storage-catalogue-figure" />
+    </div>
     <figure class="mk-viz">
       <div class="mk-viz-split">
         <div class="mk-viz-col">
@@ -156,3 +162,45 @@ const moreListings = [
     />
   </Section>
 </Base>
+
+<style>
+  .storage-catalogue-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(10rem, 18rem);
+    gap: clamp(1.25rem, 4vw, 3rem);
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .storage-catalogue-copy h2 {
+    line-height: 1.15;
+  }
+
+  .storage-catalogue-copy .mk-buyer-note {
+    max-width: 42rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+
+  .storage-catalogue-figure {
+    width: 100%;
+    max-width: 18rem;
+    justify-self: end;
+  }
+
+  @media (max-width: 640px) {
+    .storage-catalogue-intro {
+      grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 9rem);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .storage-catalogue-copy h2 {
+      font-size: 1.8rem;
+    }
+
+    .storage-catalogue-figure {
+      max-width: 9rem;
+    }
+  }
+</style>
