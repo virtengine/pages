@@ -182,6 +182,39 @@ jobs:
           grep -qE '^# tests [1-9][0-9]*' selftest.log
           grep -qE '^# fail 0' selftest.log
 
+  bypass:
+    name: branch bypass guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Full history: the guard compares refs, and a shallow clone has no merge-base.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # Only meaningful once both branches exist on the remote. The very first run of a
+      # brand-new repo has one of them missing, and that is not a bypass.
+      - name: Fetch both integration branches
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin \
+            "+refs/heads/main:refs/remotes/origin/main" \
+            "+refs/heads/develop:refs/remotes/origin/develop" || true
+          for ref in origin/main origin/develop; do
+            git rev-parse --verify --quiet "${ref}^{commit}" >/dev/null \
+              && echo "resolved ${ref}" \
+              || echo "::notice::${ref} does not exist yet on this remote — guard compares nothing"
+          done
+
+      - name: No commit reached main without passing develop
+        run: |
+          set -o pipefail
+          node scripts/check-branch-bypass.mjs | tee bypass.log
+          # Guard against a guard that silently skipped itself.
+          grep -qE '^BYPASS-(OK|FAIL|SKIPPED)' bypass.log
+
   static:
     name: static checks
     runs-on: ubuntu-latest
@@ -221,7 +254,7 @@ jobs:
   ci:
     name: ci
     if: always()
-    needs: [discover, build, selftest, static, worker]
+    needs: [discover, build, selftest, static, bypass, worker]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -233,6 +266,7 @@ jobs:
             "build=${{ needs.build.result }}" \
             "selftest=${{ needs.selftest.result }}" \
             "static=${{ needs.static.result }}" \
+            "bypass=${{ needs.bypass.result }}" \
             "worker=${{ needs.worker.result }}"
           do
             echo "$result"
