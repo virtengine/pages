@@ -2,8 +2,8 @@
  * Brand media manifest — generated from `public/media/manifest.json` by
  * scripts/build-media-data.py. Do not edit by hand: re-run the harvest instead.
  *
- * Every image is public-domain / CC0 (Openverse, filtered to cc0 + pdm) and has
- * been rendered through the brand duotone treatment — see DESIGN.md §12.
+ * Every image is public-domain or CC0 and has been rendered through the
+ * brand halftone treatment — see DESIGN.md §12. Provenance is in the manifest.
  */
 
 export interface MediaAsset {
@@ -21,9 +21,7 @@ export interface MediaAsset {
   halftone: boolean;
   /** provenance (all CC0 / public domain) */
   credit: string;
-  /** canonical URL the asset was harvested from (empty when unknown) */
   source: string;
-  /** SPDX-style license id as recorded by the harvest pipeline (e.g. cc0) */
   license: string;
 }
 
@@ -38,6 +36,30 @@ export const media = {
     halftone: true,
     credit: "Kristin Hardwick",
     source: "https://stocksnap.io/photo/work-business-J5LXKNDREC",
+    license: "cc0",
+  },
+  "developer-workstation": {
+    src: "/media/developer-workstation-1200.webp",
+    srcset: "/media/developer-workstation-720.webp 720w, /media/developer-workstation-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "A laptop open on a desk in a work setting.",
+    kind: "paper",
+    halftone: true,
+    credit: "Radek Grzybowski",
+    source: "https://commons.wikimedia.org/wiki/File:Laptop_on_a_desk.jpg",
+    license: "cc0",
+  },
+  "gpu-card": {
+    src: "/media/gpu-card-1200.webp",
+    srcset: "/media/gpu-card-720.webp 720w, /media/gpu-card-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "A graphics card being installed in a compact computer.",
+    kind: "night",
+    halftone: true,
+    credit: "Keijiro Takahashi",
+    source: "https://commons.wikimedia.org/wiki/File:Graphics_Card_Upgrading_-_49259431802.jpg",
     license: "cc0",
   },
   "hero-infrastructure": {
@@ -131,9 +153,21 @@ export const media = {
     height: 1080,
     alt: "An operations room with wall displays.",
     kind: "night",
-    halftone: false,
+    halftone: true,
     credit: "UrusHyby",
     source: "https://commons.wikimedia.org/w/index.php?curid=175250226",
+    license: "cc0",
+  },
+  "network-switch": {
+    src: "/media/network-switch-1200.webp",
+    srcset: "/media/network-switch-720.webp 720w, /media/network-switch-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "An Ethernet switch connected to coloured network cables.",
+    kind: "night",
+    halftone: true,
+    credit: "Raysonho @ Open Grid Scheduler / Grid Engine",
+    source: "https://commons.wikimedia.org/wiki/File:EthernetSwitch.jpg",
     license: "cc0",
   },
   "open-source-screen": {
@@ -148,6 +182,18 @@ export const media = {
     source: "https://stocksnap.io/photo/developer-code-NT1Q3GZVFI",
     license: "cc0",
   },
+  "platform-board": {
+    src: "/media/platform-board-1200.webp",
+    srcset: "/media/platform-board-720.webp 720w, /media/platform-board-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "A close view of a computer motherboard and its components.",
+    kind: "night",
+    halftone: true,
+    credit: "Lenharth Systems",
+    source: "https://commons.wikimedia.org/wiki/File:Computer_Motherboard_Closeup.jpg",
+    license: "cc0",
+  },
   "provider-datacenter": {
     src: "/media/provider-datacenter-1200.webp",
     srcset: "/media/provider-datacenter-720.webp 720w, /media/provider-datacenter-1200.webp 1200w",
@@ -156,8 +202,8 @@ export const media = {
     alt: "Server racks in a provider data centre.",
     kind: "night",
     halftone: true,
-    credit: "rawpixel",
-    source: "https://www.rawpixel.com/image/5912401/image-public-domain-black-technology",
+    credit: "Derrick Coetzee from Berkeley, CA, USA",
+    source: "https://commons.wikimedia.org/wiki/File:Rear_of_rack_at_NERSC_data_center_-_closeup.jpg",
     license: "cc0",
   },
   "provider-technician": {
@@ -170,6 +216,18 @@ export const media = {
     halftone: true,
     credit: "Derrick Coetzee from Berkeley, CA, USA",
     source: "https://commons.wikimedia.org/w/index.php?curid=17445570",
+    license: "cc0",
+  },
+  "saas-workstation": {
+    src: "/media/saas-workstation-1200.webp",
+    srcset: "/media/saas-workstation-720.webp 720w, /media/saas-workstation-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "A person working at a computer.",
+    kind: "paper",
+    halftone: true,
+    credit: "PxHere",
+    source: "https://commons.wikimedia.org/wiki/File:Woman_working_behind_computer.jpg",
     license: "cc0",
   },
   "settlement-ledger": {
@@ -194,6 +252,30 @@ export const media = {
     halftone: true,
     credit: "rawpixel",
     source: "https://www.rawpixel.com/image/10136242/padlock-with-key-1650-1700-baroque-scandinavian-and-german",
+    license: "cc0",
+  },
+  "storage-drive": {
+    src: "/media/storage-drive-1200.webp",
+    srcset: "/media/storage-drive-720.webp 720w, /media/storage-drive-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "A hard disk drive with its cover removed.",
+    kind: "paper",
+    halftone: true,
+    credit: "Shams948",
+    source: "https://commons.wikimedia.org/wiki/File:Hard_drive_06.jpg",
+    license: "cc0",
+  },
+  "tenant-laptop": {
+    src: "/media/tenant-laptop-1200.webp",
+    srcset: "/media/tenant-laptop-720.webp 720w, /media/tenant-laptop-1200.webp 1200w",
+    width: 1200,
+    height: 800,
+    alt: "Hands using a laptop beside an open notebook.",
+    kind: "paper",
+    halftone: true,
+    credit: "Pixel.la Free Stock Photos",
+    source: "https://commons.wikimedia.org/wiki/File:Hands-woman-laptop-notebook_(24217008462).jpg",
     license: "cc0",
   },
 } as const satisfies Record<string, MediaAsset>;

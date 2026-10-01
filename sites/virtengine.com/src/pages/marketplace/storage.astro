@@ -8,6 +8,7 @@ import FulfilmentFlow from "@components/marketplace/FulfilmentFlow.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
 import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
+import MediaFigure from "@components/media/MediaFigure.astro";
 
 const title = "Storage & Data Services on VirtEngine";
 const description =
@@ -35,7 +36,7 @@ const moreListings = [
   title={title}
   description={description}
   path="/marketplace/storage"
-  image="/media/provider-datacenter-1200.webp"
+  image="/media/storage-drive-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHero
@@ -60,6 +61,7 @@ const moreListings = [
   </PageHero>
 
   <Section eyebrow="Catalogue" title="Example storage listings">
+    <MediaFigure slug="storage-drive" ratio="16 / 9" sizes="(min-width: 1024px) 72vw, 100vw" caption="Illustrative CC0 image of a hard disk drive." class="mb-6" />
     <figure class="mk-viz">
       <div class="mk-viz-split">
         <div class="mk-viz-col">

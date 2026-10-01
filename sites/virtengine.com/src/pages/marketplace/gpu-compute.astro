@@ -9,6 +9,7 @@ import MeterAnimation from "@components/marketplace/MeterAnimation.astro";
 import RelatedMarketplacePages from "@components/marketplace/RelatedMarketplacePages.astro";
 import LifecycleRail from "@components/marketplace/LifecycleRail.astro";
 import { NETWORK_STATUS } from "@data/status";
+import MediaFigure from "@components/media/MediaFigure.astro";
 
 const title = "GPU & AI Compute on VirtEngine";
 const description =
@@ -36,7 +37,7 @@ const moreProducts = [
   title={title}
   description={description}
   path="/marketplace/gpu-compute"
-  image="/media/provider-datacenter-1200.webp"
+  image="/media/gpu-card-1200.webp"
   breadcrumbs={crumbs}
 >
   <PageHero
@@ -62,6 +63,7 @@ const moreProducts = [
 
   <Section eyebrow="Product types" title="How GPU capacity is listed">
     <p class="mk-buyer-note">Buyer view: what GPU capacity can you source? (Provider economics live on the provider solution page, not here.)</p>
+    <MediaFigure slug="gpu-card" ratio="16 / 9" sizes="(min-width: 1024px) 72vw, 100vw" caption="Illustrative CC0 image of a graphics card being installed." class="mt-6" />
     <div class="mk-buyer-selector" aria-label="Illustrative workload selector">
       <ul class="mk-chip-row">
         <li>Workload: Training / Inference / Batch</li>
