@@ -102,14 +102,16 @@ workloads — with signing and governance approval as guardrails.
 
    :::note
    The CLI subcommand `virtengine tx hpc template approve [template-id] [version]`
-   exists (`x/hpc/client/cli/tx_template.go:191`) but **cannot be signed by a
-   user key**. It sets `Authority` to the *signing* address
-   (`tx_template.go:206`), while the keeper requires the caller to equal the
-   module authority or it returns `only authority can approve templates`
-   (`x/hpc/keeper/workload_template.go:158-159`). That authority is the x/gov
-   module account (`app/types/app.go:606`), which holds no private key. So the
-   message is only reachable carried inside a governance proposal, voted on by
-   validators and delegators.
+   exists (`x/hpc/client/cli/tx_template.go:191`) but **cannot succeed when
+   signed by a user key**. It sets `Authority` to the *signing* address
+   (`tx_template.go:206`) and the signer is that same address
+   (`x/hpc/types/msg_template.go:188-194`), while the keeper requires the caller
+   to equal the module authority or it returns `only authority can approve
+   templates` (`x/hpc/keeper/workload_template.go:158-159`). That authority is
+   the x/gov module account (`app/types/app.go:606`), which holds no private
+   key. A user-signed invocation therefore still broadcasts — it fails at
+   execution and pays gas. The message is only reachable carried inside a
+   governance proposal, voted on by validators and delegators.
    :::
 
    ```bash
