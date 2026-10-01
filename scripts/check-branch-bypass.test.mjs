@@ -194,6 +194,40 @@ test("a ledger entry with no reason is rejected: no silent pardons", (t) => {
   assert.match(r.stderr, /no stated reason/);
 });
 
+// A shallow clone is the real-world way this guard gets run against history it cannot
+// compare: `git clone --depth=1` plus a `--depth=1` fetch of each branch leaves both tips
+// parentless, so merge-base finds nothing. That happened to this script's own first CI
+// run (run 36827242376), which failed with "unrelated histories". The guard refusing is
+// correct — the WORKFLOW step that caused it was the bug — so this case pins that a
+// shallow history fails loudly instead of reading as "no bypasses found".
+test("a shallow history fails loudly rather than reporting zero bypasses", (t) => {
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  // Rewrite main and develop as single parentless commits, which is exactly what a
+  // --depth=1 fetch produces as far as merge-base is concerned.
+  const mainTip = git(dir, ["rev-parse", "main"]).trim();
+  const devTip = git(dir, ["rev-parse", "develop"]).trim();
+  git(dir, ["checkout", "-q", "--orphan", "shallow-main"]);
+  git(dir, ["rm", "-rq", "--cached", "."]);
+  writeFileSync(join(dir, "m.txt"), "m\n");
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "shallow main tip"]);
+  git(dir, ["branch", "-f", "main", "HEAD"]);
+  git(dir, ["checkout", "-q", "--orphan", "shallow-develop"]);
+  git(dir, ["rm", "-rq", "--cached", "."]);
+  writeFileSync(join(dir, "d.txt"), "d\n");
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "shallow develop tip"]);
+  git(dir, ["branch", "-f", "develop", "HEAD"]);
+  void mainTip;
+  void devTip;
+  const r = runChecker(dir);
+  assert.equal(r.code, 1, `expected failure, got ${r.code}`);
+  assert.match(r.stderr, /no common ancestor/);
+  // And it must NOT claim to have found zero bypasses.
+  assert.doesNotMatch(`${r.stdout}${r.stderr}`, /unjudged=0/);
+});
+
 test("a missing or malformed ledger fails instead of reading as clean", (t) => {
   const dir = makeRepo();
   t.after(() => rmSync(dir, { recursive: true, force: true }));

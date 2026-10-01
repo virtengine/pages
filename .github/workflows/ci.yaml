@@ -194,19 +194,29 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
-      # Only meaningful once both branches exist on the remote. The very first run of a
-      # brand-new repo has one of them missing, and that is not a bypass.
-      - name: Fetch both integration branches
+      # The guard needs real history, not just the two tips. A --depth=1 fetch gives each
+      # branch a single commit with no parents, so `git merge-base origin/main
+      # origin/develop` finds nothing and the guard reports "unrelated histories" — which
+      # is exactly what CI run 36827242376 did to this PR's first push. fetch-depth: 0
+      # above already gives full history, so this step unshallows only if something left
+      # the clone shallow, and is a no-op otherwise.
+      - name: Ensure full history is available for both branches
         run: |
           set -euo pipefail
-          git fetch --no-tags --depth=1 origin \
-            "+refs/heads/main:refs/remotes/origin/main" \
-            "+refs/heads/develop:refs/remotes/origin/develop" || true
-          for ref in origin/main origin/develop; do
-            git rev-parse --verify --quiet "${ref}^{commit}" >/dev/null \
-              && echo "resolved ${ref}" \
-              || echo "::notice::${ref} does not exist yet on this remote — guard compares nothing"
-          done
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --no-tags --unshallow origin
+          else
+            git fetch --no-tags origin \
+              "+refs/heads/main:refs/remotes/origin/main" \
+              "+refs/heads/develop:refs/remotes/origin/develop"
+          fi
+          # Prove the comparison is possible before the guard runs, so a broken history
+          # is reported as a broken history instead of a bypass.
+          if git merge-base origin/main origin/develop >/dev/null 2>&1; then
+            echo "merge-base: $(git merge-base origin/main origin/develop)"
+          else
+            echo "::notice::origin/main and origin/develop share no history yet — guard compares nothing"
+          fi
 
       - name: No commit reached main without passing develop
         run: |
