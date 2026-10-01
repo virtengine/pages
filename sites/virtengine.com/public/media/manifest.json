@@ -91,7 +91,7 @@
       "/media/network-earth-1920.webp 1920w"
     ],
     "kind": "night",
-    "halftone": false,
+    "halftone": true,
     "aspect": 1.7778
   },
   "identity-document": {
@@ -209,18 +209,130 @@
     "aspect": 1.5
   },
   "provider-datacenter": {
-    "title": "Free computer server room image",
-    "creator": null,
+    "title": "Rear of rack at NERSC data center - closeup.jpg",
+    "creator": "Derrick Coetzee from Berkeley, CA, USA",
+    "alt": "Network and power connections at the back of a computing rack.",
     "license": "cc0",
-    "source": "https://www.rawpixel.com/image/5912401/image-public-domain-black-technology",
-    "provider": "rawpixel",
-    "query": "server room",
+    "source": "https://commons.wikimedia.org/wiki/File:Rear_of_rack_at_NERSC_data_center_-_closeup.jpg",
+    "provider": "wikimedia",
     "file": "/media/provider-datacenter-1200.webp",
     "srcset": [
       "/media/provider-datacenter-720.webp 720w",
       "/media/provider-datacenter-1200.webp 1200w"
     ],
     "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "gpu-card": {
+    "title": "Graphics Card Upgrading - 49259431802.jpg",
+    "creator": "Keijiro Takahashi",
+    "alt": "A graphics card being installed in a compact computer.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Graphics_Card_Upgrading_-_49259431802.jpg",
+    "provider": "wikimedia",
+    "file": "/media/gpu-card-1200.webp",
+    "srcset": [
+      "/media/gpu-card-720.webp 720w",
+      "/media/gpu-card-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "storage-drive": {
+    "title": "Hard drive 06.jpg",
+    "creator": "Shams948",
+    "alt": "A hard disk drive with its cover removed.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hard_drive_06.jpg",
+    "provider": "wikimedia",
+    "file": "/media/storage-drive-1200.webp",
+    "srcset": [
+      "/media/storage-drive-720.webp 720w",
+      "/media/storage-drive-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "network-switch": {
+    "title": "EthernetSwitch.jpg",
+    "creator": "Raysonho @ Open Grid Scheduler / Grid Engine",
+    "alt": "An Ethernet switch connected to coloured network cables.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:EthernetSwitch.jpg",
+    "provider": "wikimedia",
+    "file": "/media/network-switch-1200.webp",
+    "srcset": [
+      "/media/network-switch-720.webp 720w",
+      "/media/network-switch-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "platform-board": {
+    "title": "Computer Motherboard Closeup.jpg",
+    "creator": "Lenharth Systems",
+    "alt": "A close view of a computer motherboard and its components.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Computer_Motherboard_Closeup.jpg",
+    "provider": "wikimedia",
+    "file": "/media/platform-board-1200.webp",
+    "srcset": [
+      "/media/platform-board-720.webp 720w",
+      "/media/platform-board-1200.webp 1200w"
+    ],
+    "kind": "night",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "saas-workstation": {
+    "title": "Woman working behind computer.jpg",
+    "creator": "PxHere",
+    "alt": "A person working at a computer.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Woman_working_behind_computer.jpg",
+    "provider": "wikimedia",
+    "file": "/media/saas-workstation-1200.webp",
+    "srcset": [
+      "/media/saas-workstation-720.webp 720w",
+      "/media/saas-workstation-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "tenant-laptop": {
+    "title": "Hands-woman-laptop-notebook (24217008462).jpg",
+    "creator": "Pixel.la Free Stock Photos",
+    "alt": "Hands using a laptop beside an open notebook.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Hands-woman-laptop-notebook_(24217008462).jpg",
+    "provider": "wikimedia",
+    "file": "/media/tenant-laptop-1200.webp",
+    "srcset": [
+      "/media/tenant-laptop-720.webp 720w",
+      "/media/tenant-laptop-1200.webp 1200w"
+    ],
+    "kind": "paper",
+    "halftone": true,
+    "aspect": 1.5
+  },
+  "developer-workstation": {
+    "title": "Laptop on a desk.jpg",
+    "creator": "Radek Grzybowski",
+    "alt": "A laptop open on a desk in a work setting.",
+    "license": "cc0",
+    "source": "https://commons.wikimedia.org/wiki/File:Laptop_on_a_desk.jpg",
+    "provider": "wikimedia",
+    "file": "/media/developer-workstation-1200.webp",
+    "srcset": [
+      "/media/developer-workstation-720.webp 720w",
+      "/media/developer-workstation-1200.webp 1200w"
+    ],
+    "kind": "paper",
     "halftone": true,
     "aspect": 1.5
   }

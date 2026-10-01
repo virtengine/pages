@@ -4,7 +4,7 @@ reference brand media by slug with typed srcset/alt metadata."""
 import json
 import pathlib
 
-SITE = pathlib.Path(__file__).resolve().parent.parent
+SITE = pathlib.Path(__file__).resolve().parents[1]
 man = json.loads((SITE / "public" / "media" / "manifest.json").read_text(encoding="utf-8"))
 
 ALT = {
@@ -22,6 +22,13 @@ ALT = {
     "network-earth": "An operations room with wall displays.",
     "staking-security": "A padlock and key — bonded stake under slash conditions.",
     "closing-hands": "Two people shaking hands across a table.",
+    "gpu-card": "A graphics card being installed in a compact computer.",
+    "storage-drive": "A hard disk drive with its cover removed.",
+    "network-switch": "An Ethernet switch connected to coloured network cables.",
+    "platform-board": "A close view of a computer motherboard and its components.",
+    "saas-workstation": "A person working at a computer.",
+    "tenant-laptop": "Hands using a laptop beside an open notebook.",
+    "developer-workstation": "A laptop open on a desk in a work setting.",
 }
 
 lines = [
@@ -29,8 +36,8 @@ lines = [
     " * Brand media manifest — generated from `public/media/manifest.json` by",
     " * scripts/build-media-data.py. Do not edit by hand: re-run the harvest instead.",
     " *",
-    " * Every image is public-domain / CC0 (Openverse, filtered to cc0 + pdm) and has",
-    " * been rendered through the brand duotone treatment — see DESIGN.md §12.",
+    " * Every image is public-domain or CC0 and has been rendered through the",
+    " * brand halftone treatment — see DESIGN.md §12. Provenance is in the manifest.",
     " */",
     "",
     "export interface MediaAsset {",
@@ -48,9 +55,7 @@ lines = [
     "  halftone: boolean;",
     "  /** provenance (all CC0 / public domain) */",
     "  credit: string;",
-    "  /** canonical URL the asset was harvested from (empty when unknown) */",
     "  source: string;",
-    "  /** SPDX-style license id as recorded by the harvest pipeline (e.g. cc0) */",
     "  license: string;",
     "}",
     "",
@@ -72,7 +77,7 @@ for slug in sorted(man):
         f'    srcset: "{", ".join(srcset)}",',
         f"    width: {largest},",
         f"    height: {height},",
-        f'    alt: "{ALT.get(slug, slug.replace("-", " "))}",',
+        f'    alt: "{ALT.get(slug, m.get("alt", slug.replace("-", " ")))}",',
         f'    kind: "{m.get("kind", "paper")}",',
         f'    halftone: {str(bool(m.get("halftone"))).lower()},',
         f'    credit: "{credit.replace(chr(34), chr(39))}",',
