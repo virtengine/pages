@@ -1,0 +1,23 @@
+{
+  "$comment": [
+    "Commits that reached main without passing develop, which a human reviewed and accepted",
+    "in writing. scripts/check-branch-bypass.mjs fails on any unjudged commit NOT listed here,",
+    "so a NEW bypass still turns the gate red. An entry here is not a pardon: the perf gate",
+    "still measures the weight these commits added, and the guard prints every accepted entry",
+    "on every run so it cannot rot into being forgotten.",
+    "",
+    "Adding an entry is a content decision with a real cost, so it must carry a reason and the",
+    "author who accepted it. Do not add a sha to make a red gate go away without saying what",
+    "the commit shipped and why shipping it is acceptable."
+  ],
+  "accepted": [
+    {
+      "sha": "92fc1c5",
+      "author": "jaeko44 <pavilion.vps@gmail.com>",
+      "subject": "Media Update",
+      "date": "2026-09-29",
+      "reason": "Per-service marketplace imagery (7 media keys x 720w/1200w, +2,232,680 raw) plus 5 re-encodes. Every image is referenced from src/data/media.ts and rendered by marketplace/{gpu-compute,iaas,paas,storage}.astro, so it is live content, not leftovers. Reverting it would break four production pages. It is NOT accepted as free weight: the perf budget is still red on this weight and a separate decision on forward-porting or re-encoding is owed.",
+      "accepted_by": "web-frontend, 2026-10-01"
+    }
+  ]
+}
