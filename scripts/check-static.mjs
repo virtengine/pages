@@ -154,6 +154,8 @@ if (existsSync(a11yBaselinePath)) {
 const PERF_METRICS = [
   "max-page-js",
   "max-page-css",
+  "max-page-fonts",
+  "max-page-images",
   "largest-asset",
   "total-gzip",
   "unresolved-assets",
