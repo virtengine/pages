@@ -5,5 +5,10 @@
 /learn/who-controls-what  /waldur#responsibilities  301
 /learn/from-listing-to-running-resource  /learn/how-the-marketplace-works#fulfilment  301
 
-# Archived 2018 Waldur documentation: root PDF is canonical, the old repo path redirects to it.
-/new/VirtEngine_Waldur_Documentation.pdf  /VirtEngine_Waldur_Documentation.pdf  301
+# Archived 2018 Waldur documentation. The scanned PDF it used to point at has been removed from
+# the served tree: it carried no text layer (285 page images, zero fonts), so it was neither
+# searchable nor screen-reader accessible, and it was 4,281,061 gzipped bytes -- 19% of every
+# byte this site ships -- for a document nothing linked to. The live, accessible equivalent is
+# /waldur here and /cloud-platform/waldur on docs.virtengine.com.
+/new/VirtEngine_Waldur_Documentation.pdf  /waldur  301
+/VirtEngine_Waldur_Documentation.pdf  /waldur  301

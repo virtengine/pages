@@ -140,6 +140,8 @@ function budgetFor(tree, site = "site") {
 const METRIC_LABELS = {
   "max-page-js": "js",
   "max-page-css": "css",
+  "max-page-fonts": "fonts",
+  "max-page-images": "images",
   "largest-asset": "largest",
   "total-gzip": "total",
   "unresolved-assets": "unresolved",
@@ -376,6 +378,178 @@ test("false positive: a source map is not a byte the reader downloads", () => {
   );
 });
 
+// ---------------------------------------------------------------------------
+// max-page-fonts / max-page-images: the two per-page metrics added after the
+// gate shipped. Each case below drives the real script, so an edit that turns
+// either metric into a decorative zero fails this group rather than shipping.
+// ---------------------------------------------------------------------------
+
+test("positive: the two new metrics are present in the ledger and are measured, not zero", () => {
+  // The anti-vacuity case. A metric added to METRICS and to the ledger but never
+  // computed would satisfy check-static.mjs and pass CI forever while pricing
+  // nothing, which is the failure this suite exists to make impossible.
+  assert.ok("max-page-fonts" in canonical(), "max-page-fonts must be a ledger key");
+  assert.ok("max-page-images" in canonical(), "max-page-images must be a ledger key");
+  const { out } = run(dist());
+  assert.match(out, /\bfonts=\d+\(/, `the summary must report fonts=:\n${out}`);
+  assert.match(out, /\bimages=\d+\(/, `the summary must report images=:\n${out}`);
+});
+
+test("negative: a page over its image budget fails and names the metric", () => {
+  const root = dist();
+  // The fixture page already references assets/hero.png, so the baseline carries
+  // whatever that costs; add a second image that is deliberately enormous.
+  writeFileSync(join(root, "assets", "huge.png"), padded(120000));
+  writeFileSync(
+    join(root, "index.html"),
+    PAGE(`<link rel="stylesheet" href="/assets/site.css">
+    <img src="/assets/huge.png" alt="Huge">`),
+  );
+  const tight = budget(withMetric("max-page-images", 600));
+  const { status, out } = run(root, { baselinePath: tight });
+  assert.equal(status, 1, out);
+  // The summary line lists EVERY metric that is over, comma-separated after the site name, so
+  // the metric has to be matched inside the list rather than immediately after `site:` -- which is
+  // what a naive anchor would do, and it would pass for the wrong reason on a tree with one fault.
+  assert.match(out, /PERF-FAIL site:.*max-page-images \d+>600/);
+});
+
+test("negative: a page over its font budget fails and names the metric", () => {
+  const root = dist();
+  writeFileSync(join(root, "assets", "fat.woff2"), padded(70000));
+  // Astro emits asset URLs site-absolute, so the fixture must too -- resolving
+  // the font relative to the stylesheet's own directory would find nothing and
+  // quietly measure 0.
+  writeFileSync(
+    join(root, "assets", "site.css"),
+    `@font-face{font-family:F;src:url(/assets/fat.woff2) format("woff2")}`,
+  );
+  const tight = budget(withMetric("max-page-fonts", 500));
+  const { status, out } = run(root, { baselinePath: tight });
+  assert.equal(status, 1, out);
+  assert.match(out, /PERF-FAIL site:.*max-page-fonts \d+>500/);
+});
+
+test("positive: a font only the CSS references still counts toward the page", () => {
+  // This is the case the metric exists for. Nothing in the HTML names the font
+  // file -- it is reached only through an @font-face url() -- which is exactly
+  // how @fontsource ships and how a multi-family stack stays invisible to a gate
+  // that only reads tags.
+  const bare = dist();
+  const withFont = dist();
+  writeFileSync(join(withFont, "assets", "fat.woff2"), padded(70000));
+  writeFileSync(
+    join(withFont, "assets", "site.css"),
+    `@font-face{font-family:F;src:url(/assets/fat.woff2) format("woff2")}`,
+  );
+  const before = metricOf(bare, "max-page-fonts");
+  const after = metricOf(withFont, "max-page-fonts");
+  assert.ok(after > before, `@font-face weight must raise the page's fonts (${before} -> ${after})`);
+  // And it must not be double-counted into JavaScript: the stylesheet's own
+  // bytes are page CSS, the font it pulls is page FONT.
+  assert.equal(
+    metricOf(withFont, "max-page-js"),
+    metricOf(bare, "max-page-js"),
+    "a @font-face url must not be charged to the JavaScript budget",
+  );
+});
+
+test("positive: one image named by several srcset densities is charged once", () => {
+  // A srcset is one download chosen by viewport width. Charging every candidate
+  // would report 3x the weight the reader actually pays and train everyone to
+  // ignore the number.
+  const root = dist();
+  writeFileSync(
+    join(root, "index.html"),
+    `<!doctype html><html lang="en-AU"><head><title>t</title>
+    <link rel="stylesheet" href="/assets/site.css">
+    </head><body><h1>Title</h1>
+    <img src="/assets/hero.png" alt="Hero"
+      srcset="/assets/hero.png 400w, /assets/hero.png 800w, /assets/hero.png 1200w">
+    </body></html>`,
+  );
+  assert.equal(
+    metricOf(root, "max-page-images"),
+    metricOf(dist(), "max-page-images"),
+    "the same file in three srcset densities is one download, not three",
+  );
+});
+
+test("false positive: an image URL in CSS is page weight only once per page", () => {
+  const root = dist();
+  writeFileSync(join(root, "assets", "hero.png"), padded(500));
+  writeFileSync(
+    join(root, "assets", "site.css"),
+    `.a{background:url(/assets/hero.png)}.b{background:url(/assets/hero.png)}`,
+  );
+  assert.equal(
+    metricOf(root, "max-page-images"),
+    metricOf(dist(), "max-page-images"),
+    "two rules naming one image must not bill the reader twice",
+  );
+});
+
+test("mutation: removing the @font-face scan must turn the checker RED", () => {
+  // If the CSS-scanning loop were deleted, the font cases above would go quiet and
+  // the budget would admit any font weight forever. Deleting the loop has to turn
+  // this suite red, which is what makes the coverage a property of the script.
+  const stripped = join(scratch(), "stripped-perf.mjs");
+  const original = readFileSync(CHECKER, "utf8");
+  const src = original.replace(
+    /for \(const sheet of pageStylesheets\) \{[\s\S]*?\n    \}\n/,
+    "",
+  );
+  assert.notEqual(src, original, "the mutation must actually remove the @font-face loop");
+  writeFileSync(stripped, src);
+  const root = dist();
+  writeFileSync(join(root, "assets", "fat.woff2"), padded(70000));
+  writeFileSync(
+    join(root, "assets", "site.css"),
+    `@font-face{font-family:F;src:url(/assets/fat.woff2) format("woff2")}`,
+  );
+  const before = run(root).out;
+  const after = spawnSync(process.execPath, [stripped, `site=${root}`], {
+    encoding: "utf8",
+    env: { ...process.env, PERF_BASELINE: join(scratch(), "absent.json") },
+  });
+  const afterOut = `${after.stdout}${after.stderr}`;
+  assert.match(before, /OVER BUDGET max-page-fonts: \d+ > 0/, `the shipped checker must charge the font:\n${before}`);
+  assert.ok(
+    !/OVER BUDGET max-page-fonts/.test(afterOut),
+    "with the @font-face scan removed the font budget must stop charging -- which is why this test exists",
+  );
+});
+
+test("mutation: removing the image charging must turn the checker RED", () => {
+  // Empty the charge() body rather than redeclaring it -- a second `const charge`
+  // is a SyntaxError and `() => {}` drops its parameter, so either version dies
+  // before it measures anything and the test would assert nothing.
+  const stripped = join(scratch(), "stripped-images.mjs");
+  const original = readFileSync(CHECKER, "utf8");
+  const src = original.replace(
+    /const charge = \(abs\) => \{[\s\S]*?\n    \};/,
+    "const charge = () => {};",
+  );
+  assert.notEqual(src, original, "the mutation must actually empty the charge() body");
+  writeFileSync(stripped, src);
+  const result = spawnSync(process.execPath, [stripped, `site=${dist()}`], {
+    encoding: "utf8",
+    env: { ...process.env, PERF_BASELINE: join(scratch(), "absent.json") },
+  });
+  const mutated = `${result.stdout}${result.stderr}`;
+  // Polarity, stated explicitly because it is the whole point of this test: the
+  // SHIPPED checker must charge the page's <img>, and the MUTATED one must stop
+  // doing so -- which is why the image budget's coverage is a property of the
+  // script rather than of this file. With the charge() body gone the metric
+  // reads a cheerful zero and no budget can catch it again.
+  assert.match(run(dist()).out, /images=[1-9]\d*\(/, "the shipped checker must charge images");
+  assert.match(mutated, /images=0\(\)/, `the mutation must zero the image metric:\n${mutated}`);
+  assert.ok(
+    !/OVER BUDGET max-page-images/.test(mutated),
+    "with charge() emptied the image budget must stop charging -- which is why this test exists",
+  );
+});
+
 test("vacuous: a dist with no HTML hard-fails instead of passing", () => {
   const { status, out } = run(dist({}, { withHtml: false }), { baselinePath: budget(MEASURED) });
   assert.equal(status, 1, out);
@@ -429,10 +603,21 @@ test("update-baseline: writes the measured ledger", () => {
   const written = JSON.parse(readFileSync(path, "utf8"));
   assert.deepEqual(
     Object.keys(written.site).sort(),
-    ["largest-asset", "max-page-css", "max-page-js", "total-gzip", "unresolved-assets"],
+    [
+      "largest-asset",
+      "max-page-css",
+      "max-page-fonts",
+      "max-page-images",
+      "max-page-js",
+      "total-gzip",
+      "unresolved-assets",
+    ],
   );
   assert.equal(written.site["unresolved-assets"], 0);
   assert.ok(written.site["max-page-js"] > 0);
+  // The fixture page carries an <img>, so the image metric must be written as a
+  // real number rather than a structural zero.
+  assert.ok(written.site["max-page-images"] > 0);
 });
 
 test("update-baseline: refuses to write when a site could not be measured", () => {
@@ -447,7 +632,15 @@ test("update-baseline: refuses to write when a site could not be measured", () =
 
 test("the repo's own baseline matches the checker's metric set", () => {
   const real = JSON.parse(readFileSync(join(HERE, "perf-baseline.json"), "utf8"));
-  const metrics = ["max-page-js", "max-page-css", "largest-asset", "total-gzip", "unresolved-assets"];
+  const metrics = [
+    "max-page-js",
+    "max-page-css",
+    "max-page-fonts",
+    "max-page-images",
+    "largest-asset",
+    "total-gzip",
+    "unresolved-assets",
+  ];
   assert.ok(Object.keys(real).length > 0, "the ledger must not be empty");
   for (const [site, budget_] of Object.entries(real)) {
     assert.deepEqual(Object.keys(budget_).sort(), [...metrics].sort(), `${site} budget keys drifted`);
