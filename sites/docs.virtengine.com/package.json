@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Canonical documentation for the VirtEngine Protocol \u2014 docs.virtengine.com",
+  "description": "Canonical documentation for the VirtEngine Protocol — docs.virtengine.com",
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/build.mjs",
@@ -18,7 +18,7 @@
     "check:types": "node ../../scripts/check-types.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/starlight": "^0.36.0",
     "@fontsource/inter": "^5.2.0",
     "@fontsource/jetbrains-mono": "^5.2.0",
