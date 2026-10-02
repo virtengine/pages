@@ -49,10 +49,9 @@ runtimes and security policy — the fastest safe path for common patterns:
 
 ```bash
 virtengine hpc template list
-virtengine hpc template list --limit 20
-virtengine hpc template list-by-type gpu
-virtengine hpc template list-approved
-virtengine hpc template get mpi-standard 1
+virtengine hpc template list --type gpu
+virtengine hpc template show mpi-standard
+virtengine hpc template list --status approved
 ```
 
   </TabItem>
