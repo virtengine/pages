@@ -140,7 +140,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       {
         heading: "Shared substrate with DSEMA",
         body: [
-          "DSEMA's containment layer is a consumer of the same research: gVisor-style syscall interception, WASM/WASI capability sandboxes, verified model loading, and sidecar-enforced egress control are confidential-computing techniques applied to autonomous agents instead of tenant workloads. The specification names VirtEngine as the underlying decentralized compute layer a DSEMA collective would autonomously purchase resources from — making attestation the trust bridge between the two programs.",
+          "DSEMA's containment research and VirtEngine's confidential-computing research address complementary threats. Sandboxes and egress policies restrict what a workload can do; confidential execution and attestation address a different question about protecting workloads on provider-owned hardware. A gVisor-style sandbox does not by itself establish confidentiality against its host. Verified model loading, containment, and hardware evidence each need their own enforcement and testing. The proposed relationship is for DSEMA collectives to acquire resources through VirtEngine, with these controls composing across the boundary rather than substituting for one another.",
         ],
       },
     ],
@@ -148,6 +148,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       { label: "x/enclave, x/encryption, x/cert, x/audit", detail: "on-chain modules in the open repository", href: "https://github.com/virtengine/virtengine" },
       { label: "HPC operations documentation", detail: "docs/hpc-provider-operations.md, docs/hpc-node-agent.md, docs/hpc-workload-publishing.md" },
       { label: "DSEMA containment specification", detail: "secure execution environments and syscall policy, spec §2.2.3" },
+      { label: "gVisor security architecture", detail: "workload isolation and its limits; distinct from a confidential-computing guarantee", href: "https://gvisor.dev/docs/architecture_guide/intro/" },
     ],
     related: ["multi-agent-safety", "decentralized-identity", "privacy-preserving-verification"],
   },
@@ -191,7 +192,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
     title: "Incentive mechanism design",
     question: "What economic mechanisms keep a decentralized marketplace honest — pricing, escrow, settlement, reputation — when every participant is anonymous and self-interested?",
     summary:
-      "Mechanism design across the VirtEngine marketplace (escrow, settlement, burn-mint equilibrium, fraud and review modules) and DSEMA's trustless meritocracy (algorithmic reputation, ensemble consensus thresholds, adversarial evolution).",
+      "Mechanism design across the VirtEngine marketplace (escrow, settlement, proposed service-credit conversion, fraud and review modules) and DSEMA's reputation architecture (algorithmic standing, ensemble consensus thresholds, adversarial evolution). Conversion integration and a permanent net consumption loop are not established by the current BME handlers.",
     programs: ["VirtEngine", "DSEMA"],
     sections: [
       {
@@ -215,7 +216,7 @@ export const RESEARCH_TOPICS: ResearchTopic[] = [
       },
     ],
     artifacts: [
-      { label: "Tokenomics analysis", detail: "docs/tokenomics-analysis.md — burn-mint equilibrium, issuance, take parameters", href: "https://github.com/virtengine/virtengine" },
+      { label: "Proposed tokenomics policy", detail: "identity-led issuance and governed eligibility; proposed policy, not live parameters", href: "https://docs.virtengine.com/concepts/tokenomics/" },
       { label: "Usage reporting & settlement design", detail: "docs/usage-reporting-settlement.md in the open repository" },
       { label: "DSEMA reputation & ensemble analysis", detail: "Condorcet ensemble bounds and adversarial evolution — spec §2.2.1.1, §2.10" },
     ],

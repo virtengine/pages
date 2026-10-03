@@ -1,0 +1,38 @@
+---
+import { SEQUENCES } from "@data/learning";
+interface Props { kind: string }
+const { kind } = Astro.props;
+const lesson = SEQUENCES[kind] ?? SEQUENCES.compute;
+---
+<figure class="teach-figure sequence" data-sequence data-preserve-acronym>
+  <div class="teach-top"><span class="teach-kicker">Trace the process</span><span>{lesson.scope}</span></div>
+  <h3>{lesson.title}</h3><p>Select a stage to see who acts, what changes, and what evidence remains.</p>
+  <ol class="sequence-track">{lesson.steps.map((step,i)=><li><button type="button" data-step={i} aria-pressed={i===0?'true':'false'}><span>{String(i+1).padStart(2,'0')}</span><strong>{step.label}</strong><small>{step.evidence}</small></button></li>)}</ol>
+  <label class="failure-toggle"><input type="checkbox" data-failure/> Test a failure: {lesson.failure.label}</label>
+  <div class="sequence-detail" aria-live="polite" aria-atomic="true"><div class="sequence-art" aria-hidden="true"><span data-stage>01</span><span class="sequence-arrow">→</span><span class="evidence-stamp" data-evidence>{lesson.steps[0].evidence}</span></div><div><span class="teach-kicker" data-actor>{lesson.steps[0].actor}</span><h4 data-action>{lesson.steps[0].action}</h4><p data-result>{lesson.steps[0].result}</p></div></div>
+  <div class="lesson-actions"><button type="button" data-previous disabled>← Previous</button><span data-progress>Stage 1 of {lesson.steps.length}</span><button type="button" data-next>Next stage →</button></div>
+  <figcaption>Stages explain a design and its evidence; a highlighted stage is not proof of real execution. Sources: <a href={kind==='bosun'?'https://github.com/virtengine/bosun':kind==='identity'?'https://docs.virtengine.com/veid/overview/':kind==='compute'?'https://docs.virtengine.com/concepts/marketplace/':kind==='governance'?'/constitution':'/research/incentive-mechanism-design'}>underlying documentation</a>.</figcaption>
+  <noscript><ol>{lesson.steps.map(s=><li><strong>{s.label}: {s.actor}.</strong> {s.action} {s.result}</li>)}</ol><p>Interactive stage selection requires JavaScript.</p></noscript>
+  <script type="application/json" data-sequence-data set:html={JSON.stringify(lesson).replace(/</g,'\\u003c')}/>
+</figure>
+<script>
+document.querySelectorAll<HTMLElement>('[data-sequence]').forEach(root=>{
+  const lesson=JSON.parse(root.querySelector('[data-sequence-data]')!.textContent!);
+  let index=0;
+  const failure=root.querySelector<HTMLInputElement>('[data-failure]')!;
+  const render=()=>{
+    const step=lesson.steps[index], blocked=failure.checked&&index>=lesson.failure.at;
+    root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b,i)=>{b.setAttribute('aria-pressed',String(i===index));b.classList.toggle('reached',i<index);b.classList.toggle('stopped',failure.checked&&i>=lesson.failure.at);});
+    const set=(key:string,text:string)=>{root.querySelector(`[data-${key}]`)!.textContent=text;};
+    set('stage',String(index+1).padStart(2,'0'));set('evidence',blocked?'Gate blocked':step.evidence);
+    set('actor',blocked?'Failure scenario':step.actor);set('action',blocked?'This path cannot proceed as designed.':step.action);set('result',blocked?lesson.failure.result:step.result);
+    set('progress',`Stage ${index+1} of ${lesson.steps.length}`);
+    root.querySelector<HTMLButtonElement>('[data-previous]')!.disabled=index===0;
+    root.querySelector<HTMLButtonElement>('[data-next]')!.disabled=index===lesson.steps.length-1;
+  };
+  root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach(b=>b.addEventListener('click',()=>{index=Number(b.dataset.step);render();}));
+  root.querySelector('[data-previous]')!.addEventListener('click',()=>{index=Math.max(0,index-1);render();});
+  root.querySelector('[data-next]')!.addEventListener('click',()=>{index=Math.min(lesson.steps.length-1,index+1);render();});
+  failure.addEventListener('change',()=>{if(failure.checked)index=lesson.failure.at;render();});
+});
+</script>

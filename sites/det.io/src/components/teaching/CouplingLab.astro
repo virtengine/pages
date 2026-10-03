@@ -1,0 +1,59 @@
+---
+const conditions = [
+  {name:'Resource dependence', role:'Some machine activity must use the governed resource market.', failure:'Agents can choose private hardware, outside infrastructure, or another currency. A rule on this network does not bind those systems.'},
+  {name:'Recurring net consumption', role:'Activity must create recurring demand after refunds, reminting, and reserves.', failure:'Payments may circulate between agents and providers. A gross burn offset by reissuance does not establish a permanent monetary sink.'},
+  {name:'Human-rooted primary issuance', role:'New primary allocations must remain reserved for eligible humans and the defined public-benefit share.', failure:'If machines can originate equivalent primary allocations by copying themselves, personhood no longer anchors this distribution mechanism.'},
+  {name:'Control of entitlement', role:'People must retain meaningful control of their future eligibility and benefits.', failure:'A genuine person can be coerced or paid to surrender key control. Proving uniqueness alone does not prevent reward capture.'},
+  {name:'Protection against rule capture', role:'The rules must resist changes that concentrate economic rights or authority.', failure:'Transferable tokens can accumulate as bonded stake. The Foundation’s asset lock does not automatically protect chain voting or issuance parameters.'},
+];
+---
+<figure class="teach-figure coupling-lab" data-coupling-lab aria-label="Economic coupling experiments">
+  <figcaption class="teach-heading"><p class="teach-kicker">Three interactive thought experiments · Fictional units</p><h3>Where does the human–machine link hold?</h3><p>Change one mechanism and follow the consequence. These experiments expose assumptions; they do not measure VirtEngine’s economy or predict token prices.</p></figcaption>
+  <section class="coupling-experiment" aria-label="Burn and reissuance accounting">
+    <h4>1. A burn is only half the ledger.</h4><p>Start with 100 native units. Compare gross destruction with units issued back. Transfers to a provider change ownership, not total supply.</p>
+    <div class="teach-actions"><button type="button" data-policy="transfer" aria-pressed="true">Transfer only</button><button type="button" data-policy="remint" aria-pressed="false">Burn + full reissue</button><button type="button" data-policy="sink" aria-pressed="false">Permanent net burn</button></div>
+    <div class="coupling-controls"><label>Gross units burned <output data-burn-value>0</output><input type="range" min="0" max="100" value="0" step="10" data-gross-burn /></label><label>Units issued back <output data-remint-value>0</output><input type="range" min="0" max="200" value="0" step="10" data-reissue /></label></div>
+    <div class="coupling-ledger" aria-live="polite"><div><span>Starting supply</span><strong>100</strong></div><div><span>Gross burn</span><strong data-burn-result>−0</strong></div><div><span>Reissuance</span><strong data-remint-result>+0</strong></div><div><span>Ending supply</span><strong data-ending>100</strong></div></div>
+    <div class="coupling-bars" aria-hidden="true"><div class="coupling-bar"><span style="width:33.333%">Before</span></div><div class="coupling-bar"><span data-supply-bar style="width:33.333%">After</span></div></div>
+    <label class="coupling-check"><input type="checkbox" data-same-owner /> The paying agent also owns the provider</label>
+    <p data-ledger-explanation aria-live="polite">Supply stays at 100. Payment can reward a provider without permanently consuming the asset.</p>
+    <p class="teach-kicker">Reality check: conversion handlers currently return pending; BME billing transfers the payment and defaults to zero settlement-fee burn. No permanent consumption loop is established by those paths.</p>
+  </section>
+  <section class="coupling-experiment" aria-label="Human entitlement capture">
+    <h4>2. One person can still lose control.</h4><p>Illustrate one proposed 15-unit primary allocation: 14 to the eligible human and 1 to public-benefit stewardship. Keep the person genuine and change who controls the human share.</p>
+    <label class="coupling-range">Human share controlled by an outside actor <output data-capture-value>0%</output><input type="range" min="0" max="100" step="10" value="0" data-capture /></label>
+    <div class="coupling-allocation" aria-hidden="true"><span data-retained-bar style="width:93.333%"></span><span data-captured-bar style="width:0%"></span><span style="width:6.667%"></span></div>
+    <p data-capture-explanation aria-live="polite">Human-controlled: 14 units. Captured: 0 units. Foundation allocation: 1 unit. The person remains unique in every scenario.</p>
+    <p>Transferring received money and surrendering control of future eligibility are different actions. Preventing coercion, key custody abuse, and contractual capture requires separate research; this slider assumes capture rather than demonstrating an attack.</p>
+  </section>
+  <section class="coupling-experiment" aria-label="Conditions for economic coupling">
+    <h4>3. Remove a condition from the hypothesis.</h4><p>Each switch represents a condition to investigate. They are conceptual assumptions, not measured probabilities or a validated economic formula.</p>
+    <div class="coupling-conditions">{conditions.map((c,i)=><label><input type="checkbox" checked data-condition={i} /><span><strong>{c.name}</strong><small>{c.role}</small></span></label>)}</div>
+    <div class="teach-detail" aria-live="polite"><h4 data-condition-title>All five assumptions are present.</h4><p data-condition-explanation>The proposed coupling is worth investigating under these assumptions. It still does not establish adequate purchasing power, beneficial agent behaviour, or a stable equilibrium.</p></div>
+  </section>
+  <details class="teach-assumptions"><summary>What the experiments leave out</summary><p>Prices, oracle errors, redemption obligations, external money, accumulated reserves, provider costs, demand substitution, distribution within households, and enforcement of eligibility. A falling token stock can also restrict access or raise costs. Net burning alone is neither a distribution guarantee nor an AI safety mechanism.</p><p><a href="/research/human-machine-symbiosis#implementation">See the implementation evidence and research gaps →</a></p></details>
+  <noscript><p>Accounting: ending supply = 100 − gross burn + reissuance. A full reissue offsets the gross burn. A person’s uniqueness does not establish control of their reward. All five conditions above require separate evaluation.</p></noscript>
+  <script type="application/json" data-conditions set:html={JSON.stringify(conditions).replace(/</g,'\\u003c')}/>
+</figure>
+<style>
+  .coupling-experiment{padding:1.4rem 0;border-top:1px solid var(--color-ink);margin-top:1.5rem}.coupling-experiment h4{font-size:1.2rem;margin-bottom:.6rem}.coupling-controls,.coupling-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1rem 0}.coupling-controls label,.coupling-range{display:block;font-weight:600}.coupling-lab input[type=range]{display:block;width:100%;margin:.7rem 0;accent-color:var(--color-spot)}.coupling-lab output{float:right;font-variant-numeric:tabular-nums}.coupling-ledger div{border:1px solid var(--color-ink);padding:.8rem}.coupling-ledger span{display:block;font-size:.8rem}.coupling-ledger strong{font-size:1.7rem;font-variant-numeric:tabular-nums}.coupling-bar{height:2rem;background:var(--color-sheet-inset);margin:.4rem 0}.coupling-bar span{display:block;height:100%;background:var(--color-ink);color:var(--color-stock);font-size:.8rem;padding:.3rem;min-width:0}.coupling-check,.coupling-conditions label{display:flex;align-items:flex-start;gap:.7rem;padding:.7rem 0;min-height:44px}.coupling-lab input[type=checkbox]{width:1.2rem;height:1.2rem;flex-shrink:0;accent-color:var(--color-spot)}.coupling-conditions small{display:block;line-height:1.5;font-size:.85rem;margin-top:.25rem}.coupling-allocation{display:flex;height:2rem;margin:1rem 0}.coupling-allocation span:first-child{background:var(--color-ink)}.coupling-allocation span:nth-child(2){background:var(--color-spot)}.coupling-allocation span:last-child{background:#999}.coupling-lab [data-supply-bar]{white-space:nowrap}.coupling-lab .teach-detail{margin-top:.7rem}@media(min-width:700px){.coupling-ledger{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:480px){.coupling-controls{grid-template-columns:1fr}}
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-coupling-lab]').forEach(root=>{
+    const get=<T extends Element>(s:string)=>root.querySelector<T>(s)!;
+    const set=(s:string,v:string)=>{get<HTMLElement>(s).textContent=v;};
+    const burn=get<HTMLInputElement>('[data-gross-burn]'), reissue=get<HTMLInputElement>('[data-reissue]'), owner=get<HTMLInputElement>('[data-same-owner]'), capture=get<HTMLInputElement>('[data-capture]');
+    const ledger=()=>{
+      const b=Number(burn.value),r=Number(reissue.value),ending=100-b+r;
+      set('[data-burn-value]',String(b));set('[data-remint-value]',String(r));set('[data-burn-result]',`−${b}`);set('[data-remint-result]',`+${r}`);set('[data-ending]',String(ending));get<HTMLElement>('[data-supply-bar]').style.width=`${ending/300*100}%`;
+      set('[data-ledger-explanation]',`${ending<100?`Net supply falls by ${100-ending}. This creates a possible replenishment requirement, subject to reserves, alternatives, and the chosen issuance rules.`:ending>100?`Net supply grows by ${ending-100}. Reissuance exceeds the burn; gross destruction alone would hide this expansion.`:'Supply stays at 100. Payment or a fully offset burn does not permanently consume the asset.'} ${owner.checked?'Common ownership can recirculate payments within the same economic actor. It cannot recover units permanently burned without reissuance.':'Separate ownership can reward an independent provider. A transfer still changes ownership rather than supply.'}`);
+    };
+    [burn,reissue].forEach(input=>input.addEventListener('input',()=>{root.querySelectorAll('[data-policy]').forEach(b=>b.setAttribute('aria-pressed','false'));ledger();}));owner.addEventListener('change',ledger);
+    root.querySelectorAll<HTMLButtonElement>('[data-policy]').forEach(button=>button.addEventListener('click',()=>{burn.value=button.dataset.policy==='transfer'?'0':'100';reissue.value=button.dataset.policy==='remint'?'100':'0';root.querySelectorAll('[data-policy]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));ledger();}));
+    capture.addEventListener('input',()=>{const fraction=Number(capture.value)/100,c=14*fraction,h=14-c;set('[data-capture-value]',`${capture.value}%`);get<HTMLElement>('[data-retained-bar]').style.width=`${h/15*100}%`;get<HTMLElement>('[data-captured-bar]').style.width=`${c/15*100}%`;set('[data-capture-explanation]',`Human-controlled: ${Number(h.toFixed(1))} units. Captured: ${Number(c.toFixed(1))} units. Foundation allocation: 1 unit. The person remains unique in every scenario.`);});
+    const conditions=JSON.parse(get<HTMLScriptElement>('[data-conditions]').textContent||'[]') as {name:string;failure:string}[];
+    root.querySelectorAll<HTMLInputElement>('[data-condition]').forEach(input=>input.addEventListener('change',()=>{const missing=Array.from(root.querySelectorAll<HTMLInputElement>('[data-condition]')).filter(c=>!c.checked);set('[data-condition-title]',missing.length?`${missing.length} condition${missing.length===1?'':'s'} removed.`:'All five assumptions are present.');set('[data-condition-explanation]',missing.length?missing.map(c=>conditions[Number(c.dataset.condition)].failure).join(' '):'The proposed coupling is worth investigating under these assumptions. It still does not establish adequate purchasing power, beneficial agent behaviour, or a stable equilibrium.');}));
+    ledger();
+  });
+</script>
+

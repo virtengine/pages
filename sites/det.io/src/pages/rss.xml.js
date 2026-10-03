@@ -1,6 +1,7 @@
 import { CONSTITUTION_TOPICS } from "@data/constitution";
 import { FOUNDATION_PAGES } from "@data/foundation";
 import { RESEARCH_TOPICS } from "@data/research";
+import { GUIDES } from "@data/learning";
 import { SITE } from "@data/site";
 
 /**
@@ -22,6 +23,8 @@ const escapeXml = (value) =>
   })[character]);
 
 const entries = [
+  { group: "Research synthesis", title: "Human–machine symbiosis", href: "/research/human-machine-symbiosis", description: "The connected DET.io research hypothesis: human agency, identity, agents, compute, stewardship, assumptions, and a testable agenda." },
+  ...GUIDES.map((guide) => ({ group: "Learning", title: guide.title, href: `/learn/${guide.slug}`, description: guide.summary })),
   ...RESEARCH_TOPICS.map((topic) => ({
     group: "Research",
     title: topic.title,

@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import PageHero from "@components/PageHero.astro";
 import Section from "@components/Section.astro";
+import TeachingVisual from "@components/teaching/TeachingVisual.astro";
 import ProgramCard from "@components/ProgramCard.astro";
 import ProgramVirtArt from "@components/diagrams/ProgramVirtArt.astro";
 import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
@@ -42,6 +43,11 @@ const researchListSchema = itemListNode(
     title="Open research, grounded in working systems"
     lede="The foundation's education purpose (constitution clause 6.1.1) obliges public research, open specifications, and safety materials. Everything here is grounded in the actual artifacts — the open VirtEngine repository, granted patent AU2024203136B2 (in force until 12 May 2044), the 103-page DSEMA specification, and the signed constitution. Questions and approaches are stated as such; we do not invent results."
   />
+
+  <Section eyebrow="Connected research" title="How the whole portfolio fits together." lede="Explore the proposed relationships between people, identity, productive agents, physical compute, and stewardship.">
+    <TeachingVisual kind="atlas" />
+    <p class="record-actions"><a class="btn-press" href="/research/human-machine-symbiosis">Human–machine symbiosis: the research synthesis →</a><a class="record-link" href="/learn">Interactive learning library</a></p>
+  </Section>
 
   <Section
     number="01"

@@ -1,0 +1,59 @@
+---
+const nodes = [
+  { id: "people", x: 180, y: 90, title: "People", role: "Objectives & agency", status: "Intended beneficiaries", body: "People choose goals, question results, and need meaningful access to services. The economic hypothesis asks whether participation can remain possible when human labour is less in demand.", sends: "Objectives and demand → agents", receives: "Useful services ← agents", href: "/research/human-machine-symbiosis" },
+  { id: "identity", x: 510, y: 90, title: "Identity / VEID", role: "Verify with less disclosure", status: "Protocol design", body: "Identity research examines scoped verification, uniqueness, consent, and recovery. Eligible identity-led issuance is a proposed policy, distinct from general marketplace access.", sends: "Eligibility evidence → protocol", receives: "Purpose-specific consent ← people", href: "/learn/identity-and-personhood" },
+  { id: "agents", x: 180, y: 270, title: "DSEMA", role: "Coordinate useful agents", status: "Research architecture", body: "DSEMA studies performance-based coordination and controlled evolution. Agents need authority, useful evaluation, and physical resources; intelligence alone grants none of these.", sends: "Workload demand → compute", receives: "Goals ← people; controls ← oversight", href: "/learn/agent-safety" },
+  { id: "compute", x: 510, y: 270, title: "VirtEngine", role: "Acquire physical resources", status: "In development", body: "Independent providers would supply computation through the marketplace. Orders, leases, usage evidence, and settlement mediate an agreement; they do not create unlimited hardware.", sends: "Delivered resources → workloads", receives: "Requests and payment ← tenants / agents", href: "/learn/compute-and-settlement" },
+  { id: "bosun", x: 180, y: 450, title: "Bosun", role: "Test engineering workflows", status: "Experimental software", body: "Bosun is an applied engineering track for agent orchestration, review, and recovery. Reproducible operating lessons can inform DSEMA; the two are not equivalent implementations.", sends: "Engineering evidence → DSEMA research", receives: "Scoped tasks and review ← maintainers", href: "/learn/bosun-and-applied-research" },
+  { id: "governance", x: 510, y: 450, title: "Stewardship", role: "Purpose, rules & challenge", status: "Institution + research", body: "The Foundation constitution, network governance, and proposed DSEMA oversight have different authority. Accountability requires effective enforcement and independent scrutiny at each layer.", sends: "Rules and oversight → controlled systems", receives: "Records and challenges ← participants", href: "/learn/governance-and-public-benefit" },
+];
+const edges = [
+  { from: "people", to: "identity", d: "M290 90H400", label: "consent" },
+  { from: "people", to: "agents", d: "M180 135V225", label: "goals" },
+  { from: "identity", to: "compute", d: "M510 135V225", label: "proofs" },
+  { from: "agents", to: "compute", d: "M290 270H400", label: "resources" },
+  { from: "bosun", to: "agents", d: "M180 405V315", label: "lessons" },
+  { from: "governance", to: "compute", d: "M510 405V315", label: "rules" },
+  { from: "governance", to: "agents", d: "M400 430L280 315", label: "oversight" },
+];
+---
+<figure class="teach-figure atlas" data-atlas data-preserve-acronym>
+  <div class="teach-top"><span class="teach-kicker">Interactive research map</span><span>Choose a participant</span></div>
+  <div class="atlas-layout">
+    <div class="atlas-map">
+      <svg viewBox="0 0 690 540" role="group" aria-label="Interactive dependency map. Choose a participant to explore its connections.">
+        <defs><marker id="atlas-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="context-stroke"/></marker></defs>
+        {edges.map(e => <path d={e.d} class="atlas-edge" data-from={e.from} data-to={e.to} marker-end="url(#atlas-arrow)"/>)}
+        {nodes.map((n,i) => <g class="atlas-node" data-node={n.id} role="button" tabindex="0" aria-label={`Explore ${n.title}: ${n.role}`} aria-pressed={i===0?'true':'false'}><rect x={n.x-110} y={n.y-45} width="220" height="90"/><text x={n.x} y={n.y-4} text-anchor="middle">{n.title}</text><text class="atlas-role" x={n.x} y={n.y+20} text-anchor="middle">{n.role}</text></g>)}
+      </svg>
+      <div class="atlas-controls" aria-label="Explore a participant">{nodes.map((n,i) => <button type="button" data-select={n.id} aria-pressed={i===0?"true":"false"}>{n.title}</button>)}</div>
+    </div>
+    <div class="atlas-detail" aria-live="polite" aria-atomic="true">
+      <span class="teach-kicker" data-status>{nodes[0].status}</span><h3 data-title>{nodes[0].title}</h3><p data-body>{nodes[0].body}</p>
+      <dl><div><dt>Contributes</dt><dd data-sends>{nodes[0].sends}</dd></div><div><dt>Depends on</dt><dd data-receives>{nodes[0].receives}</dd></div></dl>
+      <a data-link href={nodes[0].href}>Explore this relationship →</a>
+    </div>
+  </div>
+  <figcaption>Arrows show proposed dependencies, not completed integrations. Sources: <a href="/research">program records</a> and <a href="/research/human-machine-symbiosis#evidence">synthesis evidence</a>.</figcaption>
+  <noscript><p>The full participant descriptions are available in the <a href="/learn/connected-research">connected research guide</a>. Interactive selection requires JavaScript.</p></noscript>
+  <script type="application/json" data-atlas-data set:html={JSON.stringify(nodes).replace(/</g,'\\u003c')} />
+</figure>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-atlas]').forEach(root => {
+    const nodes = JSON.parse(root.querySelector('[data-atlas-data]')!.textContent!);
+    const select = (id: string) => {
+      const node = nodes.find((n: {id:string}) => n.id === id);
+      root.querySelectorAll<SVGElement>('[data-node]').forEach(n => {n.classList.toggle('active', n.dataset.node === id);n.setAttribute('aria-pressed',String(n.dataset.node===id));});
+      root.querySelectorAll<HTMLElement>('[data-from]').forEach(e => e.classList.toggle('active', e.dataset.from === id || e.dataset.to === id));
+      root.querySelectorAll('[data-select]').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute('data-select') === id)));
+      ['status','title','body','sends','receives'].forEach(key => { root.querySelector(`[data-${key}]`)!.textContent = node[key]; });
+      root.querySelector('a[data-link]')!.setAttribute('href', node.href);
+    };
+    root.querySelectorAll<HTMLButtonElement>('[data-select]').forEach(b => b.addEventListener('click', () => select(b.dataset.select!)));
+    root.querySelectorAll<SVGElement>('[data-node]').forEach(node=>{
+      node.addEventListener('click',()=>select(node.dataset.node!));
+      node.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();select(node.dataset.node!);}});
+    });
+    select('people');
+  });
+</script>

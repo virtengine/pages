@@ -13,10 +13,14 @@ import { existsSync } from 'node:fs';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 await import('./og.mjs');
 
-const env = {
-  ...process.env,
-  PATH: join(root, 'scripts') + delimiter + (process.env.PATH ?? ''),
-};
+const env = { ...process.env };
+// Windows treats Path/PATH as one key. Avoid passing duplicate spellings or
+// an oversized inherited PATH to cmd.exe when Starlight invokes the local shim.
+const inheritedPath = process.env.PATH ?? process.env.Path ?? '';
+for (const key of Object.keys(env)) if (key.toLowerCase() === 'path') delete env[key];
+env.PATH = process.platform === 'win32'
+  ? [join(root, 'scripts'), dirname(process.execPath), join(process.env.SystemRoot ?? 'C:\\Windows', 'System32')].join(delimiter)
+  : join(root, 'scripts') + delimiter + inheritedPath;
 
 const astroEntry = join(root, 'node_modules', 'astro', 'astro.js');
 if (!existsSync(astroEntry)) {
@@ -28,4 +32,12 @@ const child = spawn(process.execPath, [astroEntry, 'build', ...process.argv.slic
   stdio: 'inherit',
   env,
 });
-child.on('close', (code) => process.exit(code ?? 1));
+child.on('error', (error) => { console.error(error); process.exit(1); });
+child.on('close', (code) => {
+  if (code !== 0) process.exit(code ?? 1);
+  if (!existsSync(join(root, 'dist', 'pagefind', 'pagefind.js'))) {
+    console.error('build.mjs: Pagefind search index was not generated');
+    process.exit(1);
+  }
+  process.exit(0);
+});

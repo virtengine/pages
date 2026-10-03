@@ -1,0 +1,46 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import Section from '@components/Section.astro';
+import TeachingVisual from '@components/teaching/TeachingVisual.astro';
+import { GUIDES } from '@data/learning';
+import { itemListNode } from '@lib/schema';
+const breadcrumbs=[{name:'Home',href:'/'},{name:'Learn',href:'/learn'}];
+const categories=['All',...new Set(GUIDES.map(g=>g.category))];
+---
+<Base title="Learn: Interactive Research Guides | det.io" description="Explore DET.io through nine interactive guides: identity, human–AI economics, economic safeguards, agent safety, compute, reputation, governance, and Bosun engineering." path="/learn" breadcrumbs={breadcrumbs} pageType="CollectionPage" schema={[itemListNode('https://det.io/learn','DET.io learning library',GUIDES.map(g=>({name:g.title,href:`/learn/${g.slug}`,description:g.summary})))]}>
+  <div class="learning-page">
+    <Breadcrumbs crumbs={breadcrumbs}/>
+    <PageHero eyebrow="DET.io learning library" title="See the idea. Try the mechanism." lede="Start with a visual explanation, change a condition, and see why the result changes. Nine guides connect the research to the questions people actually ask.">
+      <p class="record-actions"><a class="btn-press" href="/learn/connected-research">Start with the whole system →</a><a class="record-link" href="#guides">Find a guide</a></p>
+    </PageHero>
+    <Section number="01" eyebrow="The big picture" title="Different programs. Shared dependencies." lede="Select a participant to follow what it contributes and what it needs from the others."><TeachingVisual kind="atlas"/></Section>
+    <section id="guides" class="container-site record-section" aria-labelledby="library-title">
+      <p class="folio">02 · Choose your question</p><h2 id="library-title">Understand one mechanism at a time.</h2>
+      <div data-library>
+        <label class="library-search">Search the guides<input type="search" data-guide-search placeholder="Try privacy, compute, or oversight" /></label>
+        <div class="library-filters" aria-label="Filter guides by topic">{categories.map((c,i)=><button type="button" data-filter={c} aria-pressed={i===0?'true':'false'}>{c}</button>)}</div>
+        <p data-guide-count role="status">8 guides</p>
+        <div class="library-grid">{GUIDES.map((g,i)=><article class="guide-card" data-guide data-category={g.category} data-search={`${g.title} ${g.summary} ${g.category}`.toLowerCase()}><span class="guide-kind">{String(i+1).padStart(2,'0')} / {g.category} / Interactive</span><h3><a href={`/learn/${g.slug}`}>{g.title}</a></h3><p>{g.summary}</p><p class="guide-kind">{g.status}</p><a href={`/learn/${g.slug}`}>Try the explanation →</a></article>)}</div>
+        <p data-empty hidden>No guide matches. Clear your search or choose another topic.</p>
+        <noscript><p>All guides are listed above. Searching and filtering require JavaScript.</p></noscript>
+      </div>
+    </section>
+    <Section number="03" eyebrow="Go deeper" title="From understanding to evidence." lede="Each guide links to its source material and includes a question to check what you learned."><div class="library-grid"><article class="guide-card"><h3><a href="/research/human-machine-symbiosis">Human–machine symbiosis</a></h3><p>The portfolio-wide hypothesis, its limits, and a testable research agenda.</p></article><article class="guide-card"><h3><a href="/research">Research and technical records</a></h3><p>Explore six research streams, four program overviews, source repositories, and detailed external documentation.</p></article></div></Section>
+  </div>
+</Base>
+<script>
+document.querySelectorAll<HTMLElement>('[data-library]').forEach(root=>{
+  const input=root.querySelector<HTMLInputElement>('[data-guide-search]')!;
+  let category='All';
+  const filter=()=>{
+    let count=0;
+    root.querySelectorAll<HTMLElement>('[data-guide]').forEach(card=>{card.hidden=!(category==='All'||card.dataset.category===category)||!card.dataset.search!.includes(input.value.trim().toLowerCase());if(!card.hidden)count++;});
+    root.querySelector('[data-guide-count]')!.textContent=`${count} ${count===1?'guide':'guides'}`;
+    root.querySelector<HTMLElement>('[data-empty]')!.hidden=count!==0;
+  };
+  input.addEventListener('input',filter);
+  root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{category=button.dataset.filter!;root.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));filter();}));
+});
+</script>

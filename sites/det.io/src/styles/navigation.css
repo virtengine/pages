@@ -6,3 +6,17 @@
 @media(prefers-reduced-motion:reduce){.mega-trigger,.mega-trigger>svg,.mega-category,.mega-links li>a{transition:none}}
 
 [hidden]{display:none!important}.site-header{position:sticky;top:0;z-index:50;background:var(--color-paper);border-bottom:1px solid var(--color-hairline)}.header-row{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:88px}.mega-header a{text-decoration:none}.mega-header ul{list-style:none;padding-left:0}.mega-header button{font-family:inherit}.mega-header .nav-brand{max-width:60%}.nav-brand img{max-width:100%;object-fit:contain}.mega-header .mega-feature{background:var(--color-vellum)}
+/* Keep the mobile menu below the sticky header instead of expanding it to a full screen. */
+@media(max-width:1099px){
+ .nav-enhanced .mega-navigation{position:absolute;top:100%;left:0;right:0;width:auto;margin:0;padding:8px max(20px,4vw) 16px;background:var(--color-paper);border-bottom:1px solid var(--color-hairline);max-height:calc(100dvh - var(--menu-top,110px) - 12px);}
+ .nav-enhanced .mega-panel-head{padding-block:14px;}
+ .nav-enhanced .mega-panel-head p,.nav-enhanced .mega-feature{display:none;}
+ .nav-enhanced .mega-topic{grid-template-columns:minmax(0,1fr);}
+ .nav-enhanced .mega-links li>a{min-height:0;}
+}
+@media(max-width:650px){
+ .nav-enhanced .mega-links small{display:none;}
+ .nav-enhanced .mega-links li>a{padding-block:12px;}
+ .nav-enhanced .mega-categories{gap:5px;}
+ .nav-enhanced .mega-category{min-height:44px;padding:10px;}
+}
