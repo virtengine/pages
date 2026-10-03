@@ -182,6 +182,49 @@ jobs:
           grep -qE '^# tests [1-9][0-9]*' selftest.log
           grep -qE '^# fail 0' selftest.log
 
+  bypass:
+    name: branch bypass guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Full history: the guard compares refs, and a shallow clone has no merge-base.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # The guard needs real history, not just the two tips. A --depth=1 fetch gives each
+      # branch a single commit with no parents, so `git merge-base origin/main
+      # origin/develop` finds nothing and the guard reports "unrelated histories" — which
+      # is exactly what CI run 36827242376 did to this PR's first push. fetch-depth: 0
+      # above already gives full history, so this step unshallows only if something left
+      # the clone shallow, and is a no-op otherwise.
+      - name: Ensure full history is available for both branches
+        run: |
+          set -euo pipefail
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --no-tags --unshallow origin
+          else
+            git fetch --no-tags origin \
+              "+refs/heads/main:refs/remotes/origin/main" \
+              "+refs/heads/develop:refs/remotes/origin/develop"
+          fi
+          # Prove the comparison is possible before the guard runs, so a broken history
+          # is reported as a broken history instead of a bypass.
+          if git merge-base origin/main origin/develop >/dev/null 2>&1; then
+            echo "merge-base: $(git merge-base origin/main origin/develop)"
+          else
+            echo "::notice::origin/main and origin/develop share no history yet — guard compares nothing"
+          fi
+
+      - name: No commit reached main without passing develop
+        run: |
+          set -o pipefail
+          node scripts/check-branch-bypass.mjs | tee bypass.log
+          # Guard against a guard that silently skipped itself.
+          grep -qE '^BYPASS-(OK|FAIL|SKIPPED)' bypass.log
+
   static:
     name: static checks
     runs-on: ubuntu-latest
@@ -221,7 +264,7 @@ jobs:
   ci:
     name: ci
     if: always()
-    needs: [discover, build, selftest, static, worker]
+    needs: [discover, build, selftest, static, bypass, worker]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -233,6 +276,7 @@ jobs:
             "build=${{ needs.build.result }}" \
             "selftest=${{ needs.selftest.result }}" \
             "static=${{ needs.static.result }}" \
+            "bypass=${{ needs.bypass.result }}" \
             "worker=${{ needs.worker.result }}"
           do
             echo "$result"

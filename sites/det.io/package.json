@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "det.io \u2014 DETIO FOUNDATION LTD, a not-for-profit technical research organization for decentralized technologies",
+  "description": "det.io — DETIO FOUNDATION LTD, a not-for-profit technical research organization for decentralized technologies",
   "scripts": {
     "dev": "astro dev",
     "build": "node ./scripts/og.mjs && astro build",
@@ -19,7 +19,7 @@
     "check:types": "node ../../scripts/check-types.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/instrument-serif": "^5.3.0",

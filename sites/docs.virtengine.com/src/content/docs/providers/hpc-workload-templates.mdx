@@ -100,16 +100,24 @@ workloads — with signing and governance approval as guardrails.
 3. **Submit for governance approval.** New templates require an on-chain
    proposal and vote before they can be used:
 
-   {/* UNVERIFIED: the exact approval path could not be established from source.
-       The command previously documented here (`tx hpc submit-template-proposal`)
-       does not exist. `virtengine tx hpc template approve [template-id] [version]`
-       does exist (x/hpc/client/cli/tx_template.go:191), as does the generic x/gov
-       route below, but which one governs a newly created template is unverified. */}
+   :::note
+   The CLI subcommand `virtengine tx hpc template approve [template-id] [version]`
+   exists (`x/hpc/client/cli/tx_template.go:191`) but **cannot succeed when
+   signed by a user key**. It sets `Authority` to the *signing* address
+   (`tx_template.go:206`) and the signer is that same address
+   (`x/hpc/types/msg_template.go:188-194`), while the keeper requires the caller
+   to equal the module authority or it returns `only authority can approve
+   templates` (`x/hpc/keeper/workload_template.go:158-159`). That authority is
+   the x/gov module account (`app/types/app.go:606`), which holds no private
+   key. A user-signed invocation therefore still broadcasts — it fails at
+   execution and pays gas. The message is only reachable carried inside a
+   governance proposal, voted on by validators and delegators.
+   :::
 
    ```bash
    virtengine tx hpc template create my-simulation.json --from provider
 
-   # Validators and delegators vote (if the template is routed through x/gov)
+   # Validators and delegators vote on the proposal carrying the approval
    virtengine tx gov vote <proposal-id> yes --from=validator
 
    # Track status

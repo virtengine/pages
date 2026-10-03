@@ -21,7 +21,7 @@
     "check:types": "node ../../scripts/check-types.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource/inter": "^5.2.0",
     "@fontsource/jetbrains-mono": "^5.2.0",
     "@fontsource/questrial": "^5.2.0",
