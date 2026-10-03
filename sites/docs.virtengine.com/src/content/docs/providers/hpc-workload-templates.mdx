@@ -115,7 +115,9 @@ workloads — with signing and governance approval as guardrails.
    :::
 
    ```bash
-   virtengine tx hpc template create my-simulation.json --from provider
+   This command is not yet exposed on the CLI: `tx hpc` registers only
+   # cancel-job, create-offering, deregister-cluster, register-cluster,
+   # submit-job and update-cluster.
 
    # Validators and delegators vote on the proposal carrying the approval
    virtengine tx gov vote <proposal-id> yes --from=validator
@@ -141,7 +143,6 @@ Tenants discover and use templates through the CLI:
 ```bash
 virtengine hpc template list
 virtengine hpc template show my-simulation
-virtengine tx hpc submit-from-template my-simulation params.yaml --from tenant
 ```
 
 See [Submitting HPC Jobs](/tenants/hpc-jobs/) for the parameter-file format.

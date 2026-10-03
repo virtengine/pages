@@ -57,11 +57,14 @@ with the decisions you actually make at each step.
   looks wrong, dispute it inside the window — afterward it settles and
   pays.
 
-```bash
-virtengine tx settlement open-dispute <escrow-id> \
-  "CPU usage appears inflated" \
-  --from customer
-```
+<!-- UNVERIFIED: the settlement and provider-queue commands below are
+defined in the module trees (`x/settlement/client/cli/`,
+`x/hpc/client/cli/`) but are NOT registered on the CLI. Nothing calls
+`BasicManager.AddTxCommands` in this repo, and
+`virtengine tx --help` / `virtengine tx hpc --help` do not list them.
+Verified against the built binary on 2026-10-03. They are pending a
+wiring change, so no invocation is shown here. -->
+
 
 - **Constraints trade against price.** Requiring audits, specific regions,
   or high benchmark scores shrinks the bidder pool. Demand the assurance
