@@ -36,13 +36,21 @@ Reconcile against that lag, not against wall-clock usage.
 
 Every usage record is disputable within the window:
 
-<!-- UNVERIFIED: the settlement and provider-queue commands below are
+{/* UNVERIFIED: the settlement and provider-queue commands below are
 defined in the module trees (`x/settlement/client/cli/`,
 `x/hpc/client/cli/`) but are NOT registered on the CLI. Nothing calls
 `BasicManager.AddTxCommands` in this repo, and
 `virtengine tx --help` / `virtengine tx hpc --help` do not list them.
 Verified against the built binary on 2026-10-03. They are pending a
-wiring change, so no invocation is shown here. -->
+wiring change, so no invocation is shown here. */}
+
+:::caution
+No CLI command exists for this yet. The message types are defined in
+`x/settlement/client/cli/`, but nothing in this repo calls
+`BasicManager.AddTxCommands`, so they are never registered on `virtengine tx`
+— `virtengine tx --help` does not list a `settlement` group. The dispute
+window below is still enforced on-chain; only the command is missing.
+:::
 
 
 Guarantees the protocol gives you:

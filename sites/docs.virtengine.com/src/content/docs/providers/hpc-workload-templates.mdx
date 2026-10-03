@@ -114,11 +114,13 @@ workloads — with signing and governance approval as guardrails.
    governance proposal, voted on by validators and delegators.
    :::
 
-   ```bash
-   This command is not yet exposed on the CLI: `tx hpc` registers only
-   # cancel-job, create-offering, deregister-cluster, register-cluster,
-   # submit-job and update-cluster.
+   :::caution
+   Creating a template from the CLI is not exposed. `virtengine tx hpc`
+   registers only `cancel-job`, `create-offering`, `deregister-cluster`,
+   `register-cluster`, `submit-job` and `update-cluster`.
+   :::
 
+   ```bash
    # Validators and delegators vote on the proposal carrying the approval
    virtengine tx gov vote <proposal-id> yes --from=validator
 

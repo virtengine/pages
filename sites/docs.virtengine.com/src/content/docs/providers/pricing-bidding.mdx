@@ -66,11 +66,12 @@ min_duration: 3600
 max_duration: 86400
 ```
 
-```bash
-This command is not yet exposed on the CLI: `tx hpc` registers only
-# cancel-job, create-offering, deregister-cluster, register-cluster,
-# submit-job and update-cluster.
-```
+:::caution
+Queue creation is not exposed on the CLI. `virtengine tx hpc` registers only
+`cancel-job`, `create-offering`, `deregister-cluster`, `register-cluster`,
+`submit-job` and `update-cluster`. Publish an offering with
+`virtengine tx hpc create-offering` instead.
+:::
 
 Queue design levers:
 

@@ -43,17 +43,20 @@ window has elapsed and no dispute is open.
 
 A tenant who believes a record is wrong can dispute it inside the window.
 
-<!-- UNVERIFIED: the settlement and provider-queue commands below are
+{/* UNVERIFIED: the settlement and provider-queue commands below are
 defined in the module trees (`x/settlement/client/cli/`,
 `x/hpc/client/cli/`) but are NOT registered on the CLI. Nothing calls
 `BasicManager.AddTxCommands` in this repo, and
 `virtengine tx --help` / `virtengine tx hpc --help` do not list them.
 Verified against the built binary on 2026-10-03. They are pending a
-wiring change, so no invocation is shown here. -->
+wiring change, so no invocation is shown here. */}
 
-:::note
-The dispute window is enforced on-chain, so the record is correctable even
-while no CLI command exists to submit the dispute.
+:::caution
+No CLI command exists for this yet. The message types are defined in
+`x/settlement/client/cli/`, but nothing in this repo calls
+`BasicManager.AddTxCommands`, so they are never registered on `virtengine tx`
+— `virtengine tx --help` does not list a `settlement` group. The dispute
+window below is still enforced on-chain; only the command is missing.
 :::
 
 Dispute lifecycle: **Created → Pending → Reviewing → Resolved / Rejected /
@@ -86,13 +89,21 @@ covered in [Settlement & BME](/concepts/settlement-and-bme/).
 
 ## Operator commands
 
-<!-- UNVERIFIED: the settlement and provider-queue commands below are
+{/* UNVERIFIED: the settlement and provider-queue commands below are
 defined in the module trees (`x/settlement/client/cli/`,
 `x/hpc/client/cli/`) but are NOT registered on the CLI. Nothing calls
 `BasicManager.AddTxCommands` in this repo, and
 `virtengine tx --help` / `virtengine tx hpc --help` do not list them.
 Verified against the built binary on 2026-10-03. They are pending a
-wiring change, so no invocation is shown here. -->
+wiring change, so no invocation is shown here. */}
+
+:::caution
+No CLI command exists for this yet. The message types are defined in
+`x/settlement/client/cli/`, but nothing in this repo calls
+`BasicManager.AddTxCommands`, so they are never registered on `virtengine tx`
+— `virtengine tx --help` does not list a `settlement` group. The dispute
+window below is still enforced on-chain; only the command is missing.
+:::
 
 Neither forcing a settlement nor listing disputed escrows is available
 from the CLI today. `virtengine query escrow` is the reachable group
