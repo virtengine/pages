@@ -74,9 +74,13 @@ batch_config:
   job_name: "demo-job"
 ```
 
-```bash
-virtengine tx hpc submit-from-template mpi-standard params.yaml --from tenant
-```
+:::caution
+Submitting a job from a saved template is not exposed on the CLI.
+`virtengine tx hpc` registers only `cancel-job`, `create-offering`,
+`deregister-cluster`, `register-cluster`, `submit-job` and
+`update-cluster`. Submit jobs with
+`virtengine tx hpc submit-job <offering-id> <job-script>`.
+:::
 
   </TabItem>
 </Tabs>

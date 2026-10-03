@@ -66,9 +66,12 @@ min_duration: 3600
 max_duration: 86400
 ```
 
-```bash
-virtengine tx hpc create-queue queue.yaml --from provider
-```
+:::caution
+Queue creation is not exposed on the CLI. `virtengine tx hpc` registers only
+`cancel-job`, `create-offering`, `deregister-cluster`, `register-cluster`,
+`submit-job` and `update-cluster`. Publish an offering with
+`virtengine tx hpc create-offering` instead.
+:::
 
 Queue design levers:
 
