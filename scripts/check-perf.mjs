@@ -576,12 +576,48 @@ if (updateBaseline) {
     );
     process.exit(1);
   }
-  const merged = {};
+  // MERGE into the existing ledger, never REPLACE it. The first cut built `merged` from the sites
+  // on the command line alone, so re-seeding ONE site rewrote a four-site ledger into a one-site
+  // ledger: the other three were deleted wholesale and the log still read "updated ... for
+  // <site>", which describes a targeted edit. Since a site with no entry is held to zero
+  // (check-perf.mjs:484) the deletion did not go unnoticed at run time — it turned three
+  // production sites red — but it destroyed every budget for them, and the fix for that red was
+  // as destructive as the bug. A budget ledger that can lose three of four entries by a
+  // documented command is the same class as a check that passes while checking nothing.
+  //
+  // Merge is by SITE, never by file: the command line is the set of sites being re-measured, so
+  // those are overwritten, and everything else is carried through byte-for-byte.
+  const merged = { ...baseline };
   for (const [site, counts] of Object.entries(measured)) {
     merged[site] = Object.fromEntries(METRICS.map((m) => [m, counts[m]]));
   }
+  const kept = Object.keys(merged).filter((s) => !(s in measured));
+  if (kept.length) {
+    console.log(`PERF-BASELINE carried over ${kept.length} unmeasured site(s): ${kept.join(", ")}`);
+  }
   writeFileSync(BASELINE_PATH, `${JSON.stringify(merged, null, 2)}\n`);
-  console.log(`PERF-BASELINE updated ${rel(BASELINE_PATH)} for ${Object.keys(merged).join(", ")}`);
+  // Falsify the merge by READING BACK what landed, not by trusting the object built above. The
+  // bug being fixed was invisible in the in-memory ledger and only appeared on disk, so the
+  // assertion has to be made against the file. Comparing keys by value (not `in`) is what makes
+  // "carried through" mean "present with its old numbers", not merely "mentioned".
+  const written = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+  const lost = Object.keys(baseline).filter((s) => !(s in written));
+  if (lost.length) {
+    console.error(
+      `PERF-FAIL update-baseline dropped ${lost.length} site(s) from the ledger: ${lost.join(", ")}`,
+    );
+    process.exit(1);
+  }
+  for (const site of kept) {
+    if (JSON.stringify(written[site]) !== JSON.stringify(baseline[site])) {
+      console.error(`PERF-FAIL update-baseline altered carried-over site ${site}`);
+      process.exit(1);
+    }
+  }
+  console.log(
+    `PERF-BASELINE updated ${rel(BASELINE_PATH)} for ${Object.keys(measured).join(", ")}` +
+      (kept.length ? ` (${kept.length} carried over)` : ""),
+  );
   process.exit(0);
 }
 
