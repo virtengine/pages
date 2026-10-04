@@ -61,9 +61,14 @@ const moreProducts = [
     </div>
   </PageHero>
 
-  <Section eyebrow="Product types" title="How GPU capacity is listed">
-    <p class="mk-buyer-note">Buyer view: what GPU capacity can you source? (Provider economics live on the provider solution page, not here.)</p>
-    <MediaFigure slug="gpu-card" ratio="16 / 9" sizes="(min-width: 1024px) 72vw, 100vw" caption="Illustrative CC0 image of a graphics card being installed." class="mt-6" />
+  <Section eyebrow="Product types">
+    <div class="gpu-product-intro">
+      <div class="gpu-product-copy">
+        <h2 class="max-w-3xl font-display text-3xl md:text-[2.6rem]">How GPU capacity is listed</h2>
+        <p class="mk-buyer-note">Buyer view: what GPU capacity can you source? (Provider economics live on the provider solution page, not here.)</p>
+      </div>
+      <MediaFigure slug="gpu-card" ratio="4 / 3" sizes="(min-width: 1024px) 18rem, 40vw" caption="Illustrative GPU hardware." class="gpu-product-figure" />
+    </div>
     <div class="mk-buyer-selector" aria-label="Illustrative workload selector">
       <ul class="mk-chip-row">
         <li>Workload: Training / Inference / Batch</li>
@@ -168,3 +173,45 @@ const moreProducts = [
     />
   </Section>
 </Base>
+
+<style>
+  .gpu-product-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(10rem, 18rem);
+    gap: clamp(1.25rem, 4vw, 3rem);
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .gpu-product-copy h2 {
+    line-height: 1.15;
+  }
+
+  .gpu-product-copy .mk-buyer-note {
+    max-width: 42rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+
+  .gpu-product-figure {
+    width: 100%;
+    max-width: 18rem;
+    justify-self: end;
+  }
+
+  @media (max-width: 640px) {
+    .gpu-product-intro {
+      grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 9rem);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .gpu-product-copy h2 {
+      font-size: 1.8rem;
+    }
+
+    .gpu-product-figure {
+      max-width: 9rem;
+    }
+  }
+</style>

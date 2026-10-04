@@ -3,6 +3,7 @@ import Base from "@layouts/Base.astro";
 import Breadcrumbs from "@components/Breadcrumbs.astro";
 import PageHero from "@components/PageHero.astro";
 import CTA from "@components/CTA.astro";
+import TeachingVisual from "@components/teaching/TeachingVisual.astro";
 import { RESEARCH_TOPICS, getResearchTopic } from "@data/research";
 import { SITE } from "@data/site";
 import { articleNode } from "@lib/schema";
@@ -46,6 +47,11 @@ const topicSchema = articleNode({
   <PageHero eyebrow={`Research topic · ${topic.programs.join(" + ")}`} title={topic.title} lede={topic.question}>
     <p class="prose-inst max-w-3xl text-[1.02rem]">{topic.summary}</p>
   </PageHero>
+
+  <section class="container-site pb-12" aria-label="Interactive explanation"><h2 class="sr-only">Explore the mechanism</h2>
+    <TeachingVisual kind={topic.slug==='multi-agent-safety'?'safety':topic.slug==='incentive-mechanism-design'?'reputation':topic.slug==='protocol-governance-design'?'governance':topic.slug==='confidential-computing'?'compute':'identity'} />
+    <p class="record-actions"><a class="record-link" href="/learn">Explore the learning library →</a><a class="record-link" href="/research/human-machine-symbiosis">How this connects to the wider research</a></p>
+  </section>
 
   <div class="container-site grid gap-12 py-14 lg:grid-cols-[1fr_18rem] md:py-20">
     <article class="grid content-start gap-12">

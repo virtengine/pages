@@ -22,6 +22,7 @@ export interface NavItem {
 }
 
 export const NAV: NavItem[] = [
+  { label: "Learn", href: "/learn" },
   { label: "Mission", href: "/mission" },
   { label: "Our activities", href: "/activities" },
   { label: "Get involved", href: "/participate" },
@@ -35,6 +36,7 @@ export const NAV: NavItem[] = [
 
 /** Secondary links surfaced in the footer alongside NAV. */
 export const FOOTER_EXTRA: NavItem[] = [
+  { label: "Human–machine symbiosis", href: "/research/human-machine-symbiosis" },
   { label: "Transparency", href: "/transparency" },
   { label: "VirtEngine program", href: "/research/virtengine" },
   { label: "DSEMA program", href: "/research/dsema" },

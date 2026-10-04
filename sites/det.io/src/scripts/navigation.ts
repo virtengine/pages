@@ -1,6 +1,7 @@
 export function initNavigation() {
- const header=document.querySelector<HTMLElement>('#site-navigation');
- if(!header)return;
+ const navigation=document.querySelector<HTMLElement>('#site-navigation');
+ if(!navigation)return;
+ const header= navigation;
  const groups=Array.from(header.querySelectorAll<HTMLDetailsElement>('.mega-group'));
  const toggle=header.querySelector<HTMLButtonElement>('#nav-toggle')!;
  const scrim=document.querySelector<HTMLElement>('.nav-scrim')!;

@@ -1417,67 +1417,68 @@ export const MODULES: ModuleEntry[] = [
     path: "x/bme",
     name: "BME",
     domain: "Economics & settlement",
-    summary: "Burn-and-mint equilibrium mechanics linking token supply to marketplace demand.",
+    summary: "Burn/Mint Engine interfaces for VE and VirtEngine Compute Credit (VCC); conversion integration remains pending.",
     whatItDoes: [
-      "The bme module implements supply operations. The proposed issuance path is VEID-led: a 15-token batch is issued as eligible active verified humans accrue entitlement, with 14 tokens allocated to those humans and 1 token allocated to the Foundation-controlled genesis account. Staking rewards remain at a much lower proposed level.",
-      "Initial supply is zero and there is no fixed maximum supply. New issuance is conditional on verified human identities. The in-repo simulation framework (pkg/economics) contains legacy inflation assumptions and requires alignment before it can validate this policy.",
+      "BME exposes conversion interfaces between native VE (uve) and VirtEngine Compute Credit, VCC (uvcc). The conversion message handlers currently return pending without executing oracle-priced bank conversion. Generic bank mint/burn helpers exist, but a credit name does not establish a peg or redemption guarantee.",
+      "Primary human-led issuance is a separate proposed policy: zero initial supply, no fixed cap, and a 14:1 human/public-benefit batch split. Service-credit conversion is not a second personhood allocation. BME billing transfers funds to providers and burns only a configurable fee, which defaults to zero.",
     ],
     whyItExists:
-      "A pure fixed-supply token disconnects the asset from the service it prices; unconstrained inflation destroys holder trust. BME ties supply mechanics to real consumption of compute, aligning the token's monetary dynamics with the marketplace it exists to serve.",
+      "Separate monetary units from service accounting and make conversion flows inspectable. Net native burning must account for reissuance, refunds, and reserves before any recurring-demand or equilibrium claim can be evaluated.",
     interactions: [
-      { slug: "settlement", label: "x/settlement", how: "Pays the full agreed amount in ACT from escrow." },
+      { slug: "settlement", label: "x/settlement", how: "Pays the full agreed amount in VCC from escrow." },
       { slug: "issuancepolicy", label: "x/issuancepolicy", how: "Mint schedules operate under governed issuance policy." },
       { slug: "staking", label: "x/staking", how: "Issuance funds staking rewards alongside the inflation mechanism." },
     ],
     concepts: [
-      { term: "Burn-and-mint equilibrium", def: "A monetary design where service payments burn tokens and issuance mints them, equilibrating around real demand." },
+      { term: "VirtEngine Compute Credit", def: "VCC (uvcc), the service-accounting unit named by VirtEngine's conversion interfaces, distinct from native VE (uve)." },
+      { term: "Net native burning", def: "Native units destroyed minus native units reissued over a defined interval. A gross burn alone does not establish a permanent sink or an equilibrium." },
     ],
     media: "staking-security",
-    mediaCaption: "Supply mechanics that pay for security.",
+    mediaCaption: "Conversion, settlement, and primary issuance are separate flows.",
     glance: [
       {
         kicker: "Supply",
-        title: "Zero initial, no fixed max",
-        body: "New issuance is conditional on verified human identities — never pre-mined, never capped by fiat.",
+        title: "Two distinct units",
+        body: "Native VE (uve) and VirtEngine Compute Credit (uvcc) serve different accounting roles. Credit naming does not guarantee a peg.",
       },
       {
         kicker: "Batch",
-        title: "VEID-led 15-token path",
-        body: "Proposed: 14 tokens to eligible active verified humans and 1 to the Foundation genesis account, as entitlement accrues.",
+        title: "Conversion remains pending",
+        body: "BurnMint, MintVCC, and BurnVCC handlers return pending without executing the intended oracle-priced bank conversion.",
       },
       {
         kicker: "Bounds",
-        title: "Policy-governed minting",
-        body: "Mint schedules execute under issuance-policy bounds; the simulation framework still requires alignment to validate the policy.",
+        title: "Check the net ledger",
+        body: "Billing transfers provider payments; settlement-fee burning defaults to zero. Gross burns must be compared with reissuance.",
       },
     ],
     flow: [
       {
-        label: "Verify",
-        title: "Humans verify",
-        body: "Eligible active verified humans accrue entitlement through VEID — issuance follows identity, not speculation.",
+        label: "Specify",
+        title: "Define the conversion",
+        body: "A source amount and destination denomination describe intended conversion; primary personhood issuance is separate.",
       },
       {
-        label: "Batch",
-        title: "15-token batches issue",
-        body: "Fourteen tokens to humans, one to the genesis account, per the proposed path.",
+        label: "Integrate",
+        title: "Complete the missing execution",
+        body: "The handlers still require bank/oracle execution, authorization, collateral safeguards, and atomic failure tests.",
       },
       {
-        label: "Reward",
-        title: "Security gets funded",
-        body: "Issuance funds staking rewards alongside the inflation mechanism, at a much lower proposed level than the prior model.",
+        label: "Account",
+        title: "Track both sides",
+        body: "Measure native units burned and reissued, outstanding credits, redemptions, and actual provider transfers.",
       },
       {
         label: "Govern",
-        title: "Policy bounds everything",
-        body: "Schedules, safeguards, and parameters stay changeable only by governance.",
+        title: "Review policy and scope",
+        body: "Test governance protection, human benefit, reserves, and outside-market alternatives before claiming an equilibrium.",
       },
     ],
     faqs: [
       {
         question: "What is burn-and-mint equilibrium?",
         answer:
-          "A monetary design where service payments burn tokens and issuance mints them, equilibrating around real demand — connecting the asset to the service it prices.",
+          "A proposed supply-and-demand relationship to evaluate. Current BME handlers do not establish an equilibrium or a permanent monetary sink; net burning requires subtracting native reissuance from native destruction.",
         links: [{ label: "Tokenomics explained", href: "/learn/tokenomics-explained" }],
       },
       {
@@ -1488,7 +1489,7 @@ export const MODULES: ModuleEntry[] = [
       {
         question: "What still needs work here?",
         answer:
-          "The in-repo simulation framework (pkg/economics) carries legacy inflation assumptions and requires alignment before it can validate the proposed policy — stated openly so analysts price the uncertainty correctly.",
+          "Conversion execution, credit/redemption rules, oracle and collateral integration, failure atomicity, and policy-aligned simulations. Current pending handlers are not evidence that conversion or human–machine coupling works.",
       },
     ],
   },

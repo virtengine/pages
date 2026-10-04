@@ -1,0 +1,35 @@
+---
+import Base from '@layouts/Base.astro';
+import PageHero from '@components/PageHero.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import TeachingVisual from '@components/teaching/TeachingVisual.astro';
+import { GUIDES, LEARNING_SOURCES } from '@data/learning';
+import { articleNode } from '@lib/schema';
+export function getStaticPaths(){return GUIDES.map(guide=>({params:{slug:guide.slug},props:{guide}}));}
+const {guide}=Astro.props;
+const breadcrumbs=[{name:'Home',href:'/'},{name:'Learn',href:'/learn'},{name:guide.title,href:`/learn/${guide.slug}`}];
+const index=GUIDES.findIndex(g=>g.slug===guide.slug), next=GUIDES[(index+1)%GUIDES.length];
+---
+<Base title={`${guide.title} | det.io`} description={guide.summary} path={`/learn/${guide.slug}`} breadcrumbs={breadcrumbs} ogType="article" modifiedTime="2026-10-03" schema={[articleNode({canonical:`https://det.io/learn/${guide.slug}`,title:guide.title,description:guide.summary,section:'Learning',type:'TechArticle'})]}>
+  <div class="learning-page">
+    <Breadcrumbs crumbs={breadcrumbs}/><PageHero eyebrow={`Learn / ${guide.category}`} title={guide.title} lede={guide.summary}><p class="teach-kicker">{guide.status} · Reviewed 3 October 2026</p></PageHero>
+    <section class="container-site pb-14" aria-labelledby="try-title"><h2 id="try-title" class="sr-only">Explore the mechanism</h2><TeachingVisual kind={guide.kind}/></section>
+    <div class="container-site learning-body pb-14">
+      <article>
+        {guide.sections.map((s,i)=><section class="guide-section" id={`section-${i+1}`}><p class="teach-kicker">0{i+1} / Explanation</p><h2>{s.title}</h2><p>{s.text}</p></section>)}
+        <section class="quiz" data-quiz data-correct={guide.correct} data-explanation={guide.explanation} aria-labelledby="quiz-title"><span class="teach-kicker">Check your understanding</span><h2 id="quiz-title">{guide.question}</h2><div class="quiz-options">{guide.answers.map((a,i)=><button type="button" data-answer={i} aria-pressed="false">{a}</button>)}</div><p class="quiz-feedback" data-feedback role="status" hidden></p><noscript><p>Answer: {guide.answers[guide.correct]}. {guide.explanation}</p></noscript></section>
+        <p class="record-actions"><a class="btn-press" href={`/learn/${next.slug}`}>Next: {next.title} →</a><a href="/learn">All guides</a></p>
+      </article>
+      <aside class="learning-aside"><h2>In this guide</h2><ul>{guide.sections.map((s,i)=><li><a href={`#section-${i+1}`}>{s.title}</a></li>)}</ul><h2 class="mt-8">Check the sources</h2><ul>{guide.sources.map(key=><li><a href={LEARNING_SOURCES[key].href}>{LEARNING_SOURCES[key].label}</a></li>)}</ul><p class="mt-8">Program documentation describes the design. External research supplies context, rather than validation of DET.io’s integrated hypothesis.</p><a href="/research/human-machine-symbiosis">Read the synthesis and open questions →</a></aside>
+    </div>
+  </div>
+</Base>
+<script>
+document.querySelectorAll<HTMLElement>('[data-quiz]').forEach(root=>{
+  root.querySelectorAll<HTMLButtonElement>('[data-answer]').forEach(button=>button.addEventListener('click',()=>{
+    root.querySelectorAll('[data-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    const correct=button.dataset.answer===root.dataset.correct;
+    const feedback=root.querySelector<HTMLElement>('[data-feedback]')!;feedback.hidden=false;feedback.textContent=`${correct?'Correct.':'Try again.'} ${root.dataset.explanation}`;
+  }));
+});
+</script>

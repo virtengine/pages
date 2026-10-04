@@ -1,0 +1,42 @@
+---
+---
+<figure class="teach-figure economic-lab" data-economy>
+  <div class="teach-top"><span class="teach-kicker">Purchasing capacity experiment</span><span>Fictional credits • one period</span></div>
+  <h3>More units are not always more access.</h3>
+  <p>Change the allocation, service price, or supply. Watch the amount one person can actually purchase.</p>
+  <div class="economy-layout">
+    <div class="lab-controls">
+      <label>Allocation per person <output data-value="allocation">20 credits</output><input aria-label="Allocation per person" type="range" min="0" max="100" step="5" value="20" data-input="allocation"/></label>
+      <label>Price per compute hour <output data-value="price">2 credits</output><input aria-label="Price per compute hour" type="range" min="1" max="20" value="2" data-input="price"/></label>
+      <label>Available compute <output data-value="capacity">15 hours</output><input aria-label="Available compute" type="range" min="0" max="50" value="15" data-input="capacity"/></label>
+      <button type="button" data-reset>Reset experiment</button>
+    </div>
+    <div class="lab-result" aria-live="polite" aria-atomic="true">
+      <span class="teach-kicker">Accessible compute</span><p class="lab-number"><span data-hours>10</span> <small>hours</small></p>
+      <div class="hour-grid" aria-hidden="true">{Array.from({length:50},(_,i)=><span data-hour={i}/>)}</div>
+      <dl class="lab-metrics"><div><dt>Budget allows</dt><dd data-affordable>10 hours</dd></div><div><dt>Supply allows</dt><dd data-capacity>15 hours</dd></div><div><dt>Unused budget</dt><dd data-unspent>0 credits</dd></div></dl>
+      <p data-explanation>The budget limits access: 20 ÷ 2 = 10 hours, below the 15 hours available.</p>
+    </div>
+  </div>
+  <details><summary>Inspect the assumptions and calculation</summary><p>One buyer, one period, divisible compute hours, fixed posted price, no competing demand. Accessible hours = min(allocation ÷ price, available supply). Unspent credits = allocation − accessible hours × price. The grid shows up to 50 hours; partial cells represent fractional hours. Prices and supply do not respond automatically to issuance in this model.</p><p>This uses invented credits. It does not estimate living income, model VE/VCC conversion, or forecast token prices. Issuance cannot guarantee value; reserves, concentration, conversion, and outside financing need separate modelling.</p></details>
+  <figcaption>Teaching model, not an economic simulation or investment forecast. Source context: <a href="https://docs.virtengine.com/concepts/tokenomics/">proposed identity-led issuance</a>.</figcaption>
+  <noscript><p>The initial calculation is 20 credits ÷ 2 credits per hour = 10 hours. Interactive recalculation requires JavaScript.</p></noscript>
+</figure>
+<script>
+document.querySelectorAll<HTMLElement>('[data-economy]').forEach(root => {
+  const inputs = ['allocation','price','capacity'].map(key => root.querySelector<HTMLInputElement>(`[data-input="${key}"]`)!);
+  const render = () => {
+    const [allocation,price,capacity] = inputs.map(i=>Number(i.value));
+    const affordable = allocation/price, hours = Math.min(affordable,capacity);
+    const fmt = (n:number)=>n.toLocaleString('en-AU',{maximumFractionDigits:2});
+    const set = (key:string,value:string)=>{root.querySelector(`[data-${key}]`)!.textContent=value;};
+    ['allocation','price','capacity'].forEach((key,i)=>{root.querySelector(`[data-value="${key}"]`)!.textContent = `${inputs[i].value} ${i===2?'hours':'credits'}`;});
+    set('hours',fmt(hours)); set('affordable',`${fmt(affordable)} hours`); set('capacity',`${capacity} hours`); set('unspent',`${fmt(allocation-hours*price)} credits`);
+    set('explanation',capacity<affordable ? `Supply limits access: the budget could buy ${fmt(affordable)} hours, but only ${capacity} are available. Increasing issuance alone cannot deliver more compute.` : `The budget limits access: ${allocation} ÷ ${price} = ${fmt(affordable)} hours${capacity===affordable?', exactly the available supply':`, below the ${capacity} hours available`}.`);
+    root.querySelectorAll<HTMLElement>('[data-hour]').forEach((cell,i)=>{cell.style.setProperty('--filled', String(Math.max(0,Math.min(1,hours-i))));cell.classList.toggle('available',i<capacity);});
+  };
+  inputs.forEach(i=>i.addEventListener('input',render));
+  root.querySelector('[data-reset]')!.addEventListener('click',()=>{[20,2,15].forEach((v,i)=>inputs[i].value=String(v));render();});
+  render();
+});
+</script>

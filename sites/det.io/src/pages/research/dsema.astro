@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
+import TeachingVisual from "@components/teaching/TeachingVisual.astro";
 import Section from "@components/Section.astro";
 import ClauseRef from "@components/ClauseRef.astro";
 import CTA from "@components/CTA.astro";
@@ -181,6 +182,7 @@ const possibilities = [
       </div>
     </dl>
   </PageHero>
+  <section class="container-site pb-12" aria-label="Interactive agent safety explanation"><h2 class="sr-only">Explore agent safety</h2><TeachingVisual kind="safety" /><p class="record-actions"><a class="record-link" href="/learn/agent-safety">Read the agent safety guide →</a><a class="record-link" href="/research/human-machine-symbiosis">The connected research</a></p></section>
 
   <Section
     number="01"

@@ -324,7 +324,7 @@ export const LEARN: LearnEntry[] = [
       "Escrow is commitment without transfer — provably funded, movable only under settlement rules.",
       "Meters collect hourly; records are signed, anomaly-screened, and reconciled every six hours.",
       "Every record waits out a 24-hour dispute window before it can settle.",
-      "Payout transfers the full agreed ACT amount to the provider; unspent escrow returns to the tenant.",
+      "Payout transfers the full agreed VCC amount to the provider; unspent escrow returns to the tenant.",
     ],
     faqs: [
       {
@@ -701,7 +701,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "Costs: transaction fees and operations",
         paragraphs: [
-          "Lease settlements have no platform or validator fee deduction: the full agreed amount is paid to the provider in ACT. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
+          "Lease settlements have no platform or validator fee deduction: the full agreed amount is paid to the provider in VCC. Chain transaction fees for actions such as bidding and usage submission compensate validators and are proposed at approximately 90% below standard network transaction fees. The daemon can manage those fees with batching. Your real cost base remains power, hardware, bandwidth, and people.",
         ],
       },
       {
