@@ -18,6 +18,22 @@
       "date": "2026-09-29",
       "reason": "Per-service marketplace imagery (7 media keys x 720w/1200w, +2,232,680 raw) plus 5 re-encodes. Every image is referenced from src/data/media.ts and rendered by marketplace/{gpu-compute,iaas,paas,storage}.astro, so it is live content, not leftovers. Reverting it would break four production pages. It is NOT accepted as free weight: the perf budget is still red on this weight and a separate decision on forward-porting or re-encoding is owed.",
       "accepted_by": "web-frontend, 2026-10-01"
+    },
+    {
+      "sha": "e7a7eb7",
+      "author": "jaeko44 <pavilion.vps@gmail.com>",
+      "subject": "Additional Project Symbiosis Information",
+      "date": "2026-10-03",
+      "reason": "52 files across three sites. det.io gains the visual-teaching surface: 11 new pages (/learn, /learn/[slug] x9, /research/human-machine-symbiosis), 5 interactive teaching labs (ResearchAtlas, EconomicLab, SafetyLab, SequenceLesson, CouplingLab) plus TeachingVisual and teaching.css, and src/data/learning.ts. Also docs content edits and virtengine.com copy changes. Forward-ported to develop by PR (this repo's develop tip + the forward-port), so a reviewed build has now judged it. The perf weight is NOT accepted as free: scripts/perf-baseline.json was re-measured in the same PR and det.io total-gzip moved 797854 -> 1030258 (+232,404 gzipped, +11 pages), recorded at truth rather than widened, so the ratchet holds from the new number. Recorded here because the guard keys on SHA ANCESTRY (git rev-list origin/main --not origin/develop), and a cherry-pick carries new shas, so no forward-port can ever make this guard green: the original shas on main must be dispositioned here. 92fc1c5 is untouched.",
+      "accepted_by": "web-frontend, 2026-10-04"
+    },
+    {
+      "sha": "ef5012f",
+      "author": "jaeko44 <pavilion.vps@gmail.com>",
+      "subject": "fix image sizes",
+      "date": "2026-10-03",
+      "reason": "2 files, +100/-5: width/height attributes on images in virtengine.com marketplace/gpu-compute.astro and marketplace/storage.astro. This is a correctness/layout fix with no measurable weight change — virtengine.com re-measures at total-gzip 20607650 against an unchanged budget of 20606691, inside the 5% band, and PERF-OK. Forward-ported to develop in the same PR as e7a7eb7 so a reviewed build judged it. Recorded here for the same ancestry reason as e7a7eb7: the guard compares SHAs, so the original sha on main needs a disposition regardless of the content having been reviewed elsewhere.",
+      "accepted_by": "web-frontend, 2026-10-04"
     }
   ]
 }
