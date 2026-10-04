@@ -630,6 +630,68 @@ test("update-baseline: refuses to write when a site could not be measured", () =
   assert.deepEqual(kept, MEASURED, "the ledger must survive a failed run");
 });
 
+// The defect this pins: --update-baseline built the written ledger from the sites on the COMMAND
+// LINE alone, so re-seeding one site turned a four-site ledger into a one-site ledger and deleted
+// the other three budgets wholesale — while the log still read "updated ... for <site>", which
+// reads like a targeted edit. It is the same class as a check that passes while checking nothing:
+// the tool reported a scoped success and performed a global deletion.
+//
+// Two claims are kept apart on purpose. The FIRST is the measurement — the three other sites
+// survive. The SECOND is that the log stops lying: it must name what it carried over, so a future
+// regression that deletes a site cannot be read as an ordinary re-seed. A fix that deleted the
+// sites but kept the old wording would pass a key-count-only assertion, so the wording is pinned
+// too.
+test("update-baseline: re-seeding one site keeps the other sites' budgets", () => {
+  const ledger = {
+    // The named site carries a DELIBERATELY WRONG budget, so "was it re-measured?" is decidable:
+    // a run that copied the old numbers through would leave total-gzip at 1. This is the guard
+    // against a merge so eager it keeps everything and re-seeds nothing.
+    site: { ...canonical(), "total-gzip": 1 },
+    "virtengine.com": { ...canonical(), "total-gzip": 20606691, "largest-asset": 1395883 },
+    "docs.virtengine.com": { ...canonical(), "total-gzip": 2608275, "largest-asset": 72249 },
+    "identity.org.au": { ...canonical(), "total-gzip": 4462981, "largest-asset": 1240030 },
+  };
+  const path = budget(ledger);
+
+  const { status, out } = run(dist(), { baselinePath: path, args: ["--update-baseline"] });
+  assert.equal(status, 0, out);
+
+  const written = JSON.parse(readFileSync(path, "utf8"));
+  assert.deepEqual(
+    Object.keys(written).sort(),
+    Object.keys(ledger).sort(),
+    `the ledger lost entries: ${Object.keys(ledger).sort()} -> ${Object.keys(written).sort()}`,
+  );
+  // Byte-for-byte, not just "still present": a merge that zeroed or re-measured the untouched
+  // sites would still satisfy a key-count check, and would re-gate every production site.
+  for (const site of ["virtengine.com", "docs.virtengine.com", "identity.org.au"]) {
+    assert.deepEqual(written[site], ledger[site], `${site} budget must be carried through untouched`);
+  }
+  assert.deepEqual(
+    written.site,
+    canonical(),
+    "the named site must be re-measured, not carried over from the old ledger",
+  );
+
+  // The log must describe what actually happened.
+  assert.match(out, /carried over 3 unmeasured site\(s\): /, out);
+  assert.match(out, /carried over\)/, out);
+});
+
+// A site the operator did NOT name must never be silently deleted, even in the corner case where
+// the named site could not be measured. Pins the refusal path against a merge that writes anyway.
+test("update-baseline: a failed measurement leaves every other site's budget intact", () => {
+  const ledger = {
+    site: canonical(),
+    "virtengine.com": { ...canonical(), "total-gzip": 20606691 },
+    "det.io": { ...canonical(), "total-gzip": 1030258 },
+  };
+  const path = budget(ledger);
+  const { status, out } = run(join(scratch(), "not-built"), { baselinePath: path, args: ["--update-baseline"] });
+  assert.equal(status, 1, out);
+  assert.deepEqual(JSON.parse(readFileSync(path, "utf8")), ledger, "no site may be dropped by a failed run");
+});
+
 test("the repo's own baseline matches the checker's metric set", () => {
   const real = JSON.parse(readFileSync(join(HERE, "perf-baseline.json"), "utf8"));
   const metrics = [
