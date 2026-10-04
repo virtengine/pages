@@ -32,7 +32,7 @@ DET·IO wordmark — rebuilt as inline SVG in `src/components/brand/`
 | `/404` | Not-found page |
 
 Plus `robots.txt`, `sitemap-index.xml` (via `@astrojs/sitemap`), `favicon.svg`
-(cloud mark), and a rasterized OG image (`og.png`, generated from `og.svg` at
+(cloud mark), and a rasterized OG image (`og.jpg`, generated from `assets/social-card.jpg` at
 build time). Every page carries unique meta, canonical, OG/Twitter cards, and
 breadcrumbs (visible + BreadcrumbList JSON-LD on interior pages).
 
@@ -44,7 +44,7 @@ System npm is broken in this environment — use the pnpm shim directly:
 cd sites/det.io
 & "$env:LOCALAPPDATA\pnpm\bin\pnpm.CMD" install
 & "$env:LOCALAPPDATA\pnpm\bin\pnpm.CMD" run dev      # dev server
-& "$env:LOCALAPPDATA\pnpm\bin\pnpm.CMD" run build    # og.png prebuild + astro build → dist/
+& "$env:LOCALAPPDATA\pnpm\bin\pnpm.CMD" run build    # og.jpg prebuild + astro build → dist/
 & "$env:LOCALAPPDATA\pnpm\bin\pnpm.CMD" run preview  # serve dist/
 ```
 
@@ -52,7 +52,7 @@ Notes:
 
 - `pnpm-workspace.yaml` sets `allowBuilds` for `esbuild` and `sharp`
   (pnpm blocks postinstall scripts by default).
-- `scripts/og.mjs` rasterizes `public/og.svg` → `public/og.png` with sharp
+- `scripts/og.mjs` publishes `assets/social-card.jpg` → `public/og.jpg` with sharp
   before every build.
 - `build.format: "file"` pairs with `trailingSlash: "never"` so canonical
   URLs match emitted files.
@@ -100,4 +100,3 @@ See [DESIGN.md](DESIGN.md) for the design system.
 - `/rss.xml` is a feed of the research, constitution and foundation pages. Items
   carry no `pubDate` because the data has no dates — add an `updated` field to
   the data before adding dates to the feed or `dateModified` to the markup.
-
