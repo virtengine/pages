@@ -680,6 +680,55 @@ test("update-baseline: re-seeding one site keeps the other sites' budgets", () =
 
 // A site the operator did NOT name must never be silently deleted, even in the corner case where
 // the named site could not be measured. Pins the refusal path against a merge that writes anyway.
+//
+// A guard that fires AFTER the write is a report, not a guard.
+//
+// The first version of the drop check read the file back and compared, which looks like the
+// stronger check because it observes the real file. It is not: the write has already happened by
+// then. Reverting `merged` to a replace made that version print "dropped 3 site(s)" and exit 1
+// with the ledger on disk already reduced to ['det.io'] -- the check named the victims after
+// destroying them, and the operator's only recovery was the same re-seed-by-hand that was the
+// original hazard.
+//
+// This test pins the ORDERING, which is the whole point: when the merge would drop a site, the
+// run must fail AND the file must be byte-identical to what it was before. Asserting only the exit
+// code is what let the broken version pass a review.
+test("update-baseline: refusing to drop a site leaves the file untouched, not merely reported", () => {
+  const ledger = {
+    site: { ...canonical(), "total-gzip": 1 },
+    "virtengine.com": { ...canonical(), "total-gzip": 20606691 },
+    "det.io": { ...canonical(), "total-gzip": 1030258 },
+  };
+  const path = budget(ledger);
+  const before = readFileSync(path, "utf8");
+
+  // Run the checker with a copy of its source whose merge is reverted to a REPLACE. Building the
+  // mutant from the unmutated module by path (never by importing it) keeps the harness from
+  // serving a cached module and quietly testing the original.
+  const source = readFileSync(CHECKER, "utf8");
+  const anchor = "const merged = { ...baseline };";
+  assert.ok(source.includes(anchor), "the merge anchor moved; update this mutant");
+  const mutantDir = join(scratch(), "mutant");
+  mkdirSync(mutantDir, { recursive: true });
+  const mutantPath = join(mutantDir, "check-perf.mjs");
+  writeFileSync(mutantPath, source.replace(anchor, "const merged = {};"));
+
+  const result = spawnSync(process.execPath, [mutantPath, "--update-baseline", `site=${dist()}`], {
+    encoding: "utf8",
+    env: { ...process.env, PERF_BASELINE: path },
+  });
+  const out = `${result.stdout}${result.stderr}`;
+
+  assert.equal(result.status, 1, `a replace-merge must be refused:\n${out}`);
+  assert.match(out, /would drop 2 site\(s\)/, out);
+  // The load-bearing assertion: nothing was destroyed on the way to the error.
+  assert.equal(
+    readFileSync(path, "utf8"),
+    before,
+    "the ledger must be byte-identical after a refused update -- a guard that fires after the write reports the damage it already caused",
+  );
+});
+
 test("update-baseline: a failed measurement leaves every other site's budget intact", () => {
   const ledger = {
     site: canonical(),
