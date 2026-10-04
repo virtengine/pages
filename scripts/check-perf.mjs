@@ -1,6 +1,11 @@
 // Performance budget for the four built sites (build gate tooling).
 //
-// Usage: node scripts/check-perf.mjs [--update-baseline] <site>=<dist-dir> [<site>=<dist-dir> ...]
+// Usage: node scripts/check-perf.mjs [--dry-run] [--update-baseline] <site>=<dist-dir> [<site>=<dist-dir> ...]
+//
+// --dry-run answers "what WOULD a re-seed change?" without writing. It prints, per metric, the
+// current budget beside the measured value and the signed byte/delta, and leaves the ledger
+// byte-identical. --dry-run composes with --update-baseline: the same run previews the delta and
+// applies it, so the operator sees the effect and commits to it as one command.
 //
 // Zero dependencies on purpose, and measured STATICALLY from the built dist: Lighthouse and
 // bundle analysers need a browser, a network and a warm cache, so in CI they are slow, flaky
@@ -105,11 +110,13 @@ const IMAGE_EXT = new Set([
 
 const args = process.argv.slice(2);
 const updateBaseline = args.includes("--update-baseline");
+const dryRun = args.includes("--dry-run");
 const targets = args.filter((a) => !a.startsWith("--"));
 
 if (targets.length === 0) {
   console.error(
-    "usage: node scripts/check-perf.mjs [--update-baseline] <site>=<dist-dir> [<site>=<dist-dir> ...]",
+    "usage: node scripts/check-perf.mjs [--dry-run] [--update-baseline] " +
+      "<site>=<dist-dir> [<site>=<dist-dir> ...]",
   );
   process.exit(2);
 }
@@ -528,6 +535,36 @@ for (const target of targets) {
     );
   }
 
+  // --dry-run: the per-metric CURRENT-vs-BUDGETED delta, for every metric of a named site,
+  // including the ones that are currently fine.
+  //
+  // WHY THIS IS HERE AND NOT ONLY FOR FAILING METRICS. The gate's own verdict already names an
+  // over-budget metric, so printing the delta only on failure would add nothing. What the operator
+  // cannot get today is the delta for a metric that is currently WITHIN budget — which is exactly
+  // the one a re-seed would silently move. The failure mode this exists to stop is ratchet abuse:
+  // a site drifts slightly heavier, someone re-seeds, and the ledger becomes a record of whatever
+  // the last writer measured rather than of an agreed budget. With the delta visible, a
+  // total-gzip that would jump 4MB on a cosmetic change is a line an operator can read and refuse.
+  // The preview is therefore printed for every metric, and it marks which direction each moves.
+  if (dryRun) {
+    for (const metric of METRICS) {
+      const value = counts[metric];
+      const cap = budget[metric];
+      if (typeof cap !== "number") {
+        console.log(`  PREVIEW ${metric}: ${value} measured, no budget (would seed ${value})`);
+        continue;
+      }
+      const delta = value - cap;
+      const pct = cap === 0 ? (delta === 0 ? "0.0%" : "n/a") : `${(delta / cap * 100).toFixed(1)}%`;
+      const sign = delta > 0 ? "+" : "";
+      const dir = delta === 0 ? "unchanged" : delta > 0 ? "heavier" : "lighter";
+      console.log(
+        `  PREVIEW ${metric}: ${value} measured, ${cap} budgeted ` +
+          `(${sign}${delta}, ${pct}, ${dir})`,
+      );
+    }
+  }
+
   if (unresolved.length) {
     for (const item of unresolved.slice(0, 20)) console.log(`  UNRESOLVED ${item}`);
     if (unresolved.length > 20) console.log(`    ... and ${unresolved.length - 20} more`);
@@ -632,20 +669,35 @@ if (updateBaseline) {
       process.exit(1);
     }
   }
+  // Name the metrics that MOVED, not just the sites that were rewritten. "updated for det.io"
+  // reads identically whether the write moved one byte or the whole budget; the diff is what
+  // actually happened, and an operator who cannot see it from the log has no way to tell a
+  // justified re-seed from an inflationary one without a second command. The keys are compared
+  // by value because a re-seed that rewrites a site with identical numbers changed nothing.
+  const moved = Object.keys(measured).filter(
+    (site) => JSON.stringify(baseline[site]) !== JSON.stringify(merged[site]),
+  );
   console.log(
     `PERF-BASELINE updated ${rel(BASELINE_PATH)} for ${Object.keys(measured).join(", ")}` +
-      (kept.length ? ` (${kept.length} carried over)` : ""),
+      (kept.length ? ` (${kept.length} carried over)` : "") +
+      (moved.length ? `; moved ${moved.join(", ")}` : "; no metric moved"),
   );
   process.exit(0);
 }
 
+// --dry-run on its own writes nothing: the only write in this script is the one guarded by
+// `updateBaseline` above, and --dry-run never sets that flag. The exit code deliberately MIRRORS
+// the real verdict rather than inventing a milder one, because its whole purpose is to be usable
+// as a pre-commit check: a preview that exits 0 where the gate would exit 1 is a check that lies.
 if (unmeasurable.length || overBudget.length || looseBudget.length) {
   console.error(
-    `PERF-FAIL ${overBudget.length} site(s) over budget, ${looseBudget.length} with a loose budget, ${unmeasurable.length} unmeasurable`,
+    `PERF-FAIL ${overBudget.length} site(s) over budget, ${looseBudget.length} with a loose budget, ${unmeasurable.length} unmeasurable` +
+      (dryRun && !updateBaseline ? " (dry run: nothing written)" : ""),
   );
   process.exit(1);
 }
 
 console.log(
-  `PERF-OK sites=${targets.length} html=${docsTotal} refs=${refsTotal} assets=${assetsTotal}`,
+  `PERF-OK sites=${targets.length} html=${docsTotal} refs=${refsTotal} assets=${assetsTotal}` +
+    (dryRun && !updateBaseline ? " (dry run: nothing written)" : ""),
 );
