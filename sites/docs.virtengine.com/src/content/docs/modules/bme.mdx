@@ -1,115 +1,103 @@
 ---
-title: x/bme — BME module
-description: The x/bme module implements burn-and-mint supply operations, tying token issuance to verified human identities and demand.
+title: x/bme — Burn/Mint Engine
+description: VirtEngine Compute Credit naming, conversion interfaces, implementation limits, and net supply accounting.
 ---
 
-The `x/bme` module implements burn-and-mint equilibrium mechanics: service
-payments burn tokens and issuance mints them, so supply equilibrates around
-real marketplace demand rather than a fixed emission schedule.
+`x/bme` is the **Burn/Mint Engine**. It uses VirtEngine's own native asset
+and service credit; it does not require the Akash protocol or its compute token.
 
-Issuance itself is governed — mint schedules operate under issuance-policy
-bounds, and every parameter stays changeable only by governance.
+| Unit | Name | Minimal denomination | Role |
+| --- | --- | --- | --- |
+| VE | VirtEngine native asset | `uve` | Native monetary unit; fees and bonded stake. |
+| VCC | VirtEngine Compute Credit | `uvcc` | Service-accounting unit for the proposed conversion path. |
 
-## What it does
+Client display configurations use six decimal places. A denomination does not
+establish a peg, operational redemption, collateral adequacy, or a conversion rate.
 
-The bme module implements supply operations. The proposed issuance path is
-VEID-led: a 15-token batch is issued as eligible active verified humans
-accrue entitlement, with 14 tokens allocated to those humans and 1 token
-allocated to the Foundation-controlled genesis account. Staking rewards
-remain at a much lower proposed level.
+The oracle field is now `native_price_feed_id`, with no hard-coded default VE
+feed identifier. An unconfigured Pyth contract config fails validation. A valid
+native feed must be explicitly configured before a conversion can rely on it.
 
-Initial supply is zero and there is no fixed maximum supply. New issuance is
-conditional on verified human identities. The in-repo simulation framework
-(pkg/economics) contains legacy inflation assumptions and requires alignment
-before it can validate this policy.
+## Implementation status
 
-Keeper hooks into escrow settlement and fee collection (`escrow.go`,
-`fee_collection.go`, `settlement.go`) tie burns and mints to the payment
-flows they respond to.
+Reviewed against repository source on **3 October 2026**:
 
-## Why it exists
+- `BurnMint`, `MintVCC`, and `BurnVCC` in
+  [`msg_server.go`](https://github.com/virtengine/virtengine/blob/main/x/bme/keeper/msg_server.go)
+  return **pending** responses. They do not perform the proposed oracle-priced
+  bank conversion, persist a completed conversion, or enforce its complete
+  collateral/circuit-breaker flow. Pending is not evidence of executed conversion.
+- `MintTokens` and `BurnTokens` in
+  [`fee_collection.go`](https://github.com/virtengine/virtengine/blob/main/x/bme/keeper/fee_collection.go)
+  provide bank operations and cumulative accounting. Their existence does not
+  prove integration into every conversion or service-payment path.
+- `SettleBilling` in
+  [`settlement.go`](https://github.com/virtengine/virtengine/blob/main/x/bme/keeper/settlement.go)
+  transfers available escrow funds to providers, minus a configurable fee that
+  it burns. `DefaultSettleSpreadBps` is **0**. The default path burns none of the
+  payment. Any adopted configuration must reconcile this configurable path with
+  the provider-facing policy of full agreed payout and separate transaction fees.
 
-A pure fixed-supply token disconnects the asset from the service it prices;
-unconstrained inflation destroys holder trust. BME ties supply mechanics to
-real consumption of compute, aligning the token's monetary dynamics with the
-marketplace it exists to serve.
+## Primary issuance and conversion differ
 
-## Primary objects
+The [proposed issuance policy](/concepts/tokenomics/) starts with zero supply
+and no fixed cap. Eligible human participation originates proposed primary
+allocations: 14 units of each 15-unit batch to eligible humans and 1 to
+Foundation stewardship. Staking does not independently authorize new primary issuance.
 
-| Concept | Definition |
-| --- | --- |
-| Burn-and-mint equilibrium | A monetary design where service payments burn tokens and issuance mints them, equilibrating around real demand. |
+A service-credit conversion is **not another personhood allocation**. Refunds,
+redemption and native reissuance need separate specifications and accounting.
+The current conversion stubs do not implement the full human issuance policy.
+Transferable payments can also be received by providers and other economic actors.
 
-## Core flow
+## Messages and CLI
 
-1. **Verify — Humans verify.** Eligible active verified humans accrue
-   entitlement through VEID — issuance follows identity, not speculation.
-2. **Batch — 15-token batches issue.** Fourteen tokens to humans, one to the
-   genesis account, per the proposed path.
-3. **Reward — Security gets funded.** Issuance funds staking rewards alongside
-   the inflation mechanism, at a much lower proposed level than the prior
-   model.
-4. **Govern — Policy bounds everything.** Schedules, safeguards, and
-   parameters stay changeable only by governance.
+| Message | Intended operation | Current handler result |
+| --- | --- | --- |
+| `MsgBurnMint` | Paired denomination conversion | Pending; conversion unimplemented. |
+| `MsgMintVCC` | Convert native VE into VCC | Pending; conversion unimplemented. |
+| `MsgBurnVCC` | Redeem unused VCC toward native VE | Pending; conversion unimplemented. |
+| `MsgUpdateParams` | Authority-controlled parameter update | Validates and stores parameters. |
 
-## Messages
+```sh
+virtengine tx bme mint-vcc 1000000uve --from mykey
+virtengine tx bme burn-vcc 1000000uvcc --from mykey
+virtengine tx bme burn-mint 1000000uve uvcc --from mykey
+```
 
-| Message | Purpose |
-| --- | --- |
-| `MsgBurnMint` | Executes a paired burn-and-mint operation. |
-| `MsgMintACT` | Mints ACT through the module's issuance path. |
-| `MsgBurnACT` | Burns ACT out of circulation. |
-| `MsgUpdateParams` | Governance-only update of module parameters. |
+These illustrate the renamed command/API surface, not an operational conversion
+service. Queries include `Params`, `Status`, and `VaultState`.
 
-## Queries
+## Net consumption is a hypothesis to test
 
-| Query | Purpose |
-| --- | --- |
-| `Params` | Current module parameters. |
-| `Status` | The module's current issuance status. |
-| `VaultState` | The state of the module's token vault. |
+Track **native units burned minus native units reissued** over a defined
+interval, alongside outstanding credits, refunds, reserves, and provider payments.
+An equal reissue offsets a gross burn. A provider transfer changes ownership,
+not supply. Destroying a service credit does not itself prove net VE destruction.
 
-## Module interactions
+A permanent consumption link could create recurring demand for human-originated
+claims. The current conversion handlers do not establish it. Outside compute,
+reserves, common ownership, entitlement capture, scarcity, and governance changes
+can weaken that link. Try the [interactive economic experiments](https://det.io/learn/economic-invariants)
+and [research synthesis](https://det.io/research/human-machine-symbiosis).
 
-| Module | How they interact |
-| --- | --- |
-| [x/settlement](/modules/settlement/) | Settles escrow under the governed policy. |
-| [x/issuancepolicy](/modules/issuancepolicy/) | Mint schedules operate under governed issuance policy. |
-| [x/staking](/modules/staking/) | Issuance funds staking rewards alongside the inflation mechanism. |
+## Compatibility and adoption
 
-## Related documentation
+This rename changes messages, RPC methods, CLI commands, wallet metadata, and
+the service-credit denomination. Field numbers are retained, but renamed type
+URLs and RPC names are an **API-breaking change**. Rebuild old signed conversion
+transactions with the new SDK. Source naming does not migrate bank balances.
 
-- [Tokenomics](/concepts/tokenomics/) — the supply design explained in
-  context.
-- [Take & BME](/concepts/settlement-and-bme/) — settlement policy and supply
-  mechanics side by side.
-- [Governance Staking](/concepts/governance-staking/) — how issuance funds
-  staking rewards.
-- [On-Chain Module Map](/protocol/modules/) — all 27 modules at a glance.
+Fresh development genesis should use `uve` and `uvcc`. Existing networks require
+a coordinated upgrade and audited migration of bank supply/metadata/balances,
+escrow, BME records, configured limits and clients. No live migration is performed
+by this rename. Python and Rust outputs remain experimental under
+`sdk/generation/toolchain.json`.
 
-## FAQ
+## Remaining work
 
-### What is burn-and-mint equilibrium?
-
-A monetary design where service payments burn tokens and issuance mints them,
-equilibrating around real demand — connecting the asset to the service it
-prices. See [Tokenomics explained](/concepts/tokenomics/).
-
-### Is there a maximum supply?
-
-No fixed maximum and zero initial supply. New tokens issue only through
-verified human identities, with continued issuance as new identities are
-verified and the verified population grows.
-
-### What still needs work here?
-
-The in-repo simulation framework (pkg/economics) carries legacy inflation
-assumptions and requires alignment before it can validate the proposed
-policy — stated openly so analysts price the uncertainty correctly.
-
-:::note
-Message and query types are defined in `x/bme/types/` in the
-[virtengine repository](https://github.com/virtengine/virtengine). When this
-page and the code disagree, the code and its tests are authoritative — see
-[Clients & SDKs](/developers/sdk-and-clients/).
-:::
+Specify prices and units, rounding, collateral, oracle freshness, credit
+transferability, redemption, authorization and atomic failure. Implement and
+test the handlers, then align simulations with primary-issuance policy and test
+refunds, price shocks, reserves and provider/agent common ownership. “Equilibrium”
+describes a design aspiration, not an observed outcome.

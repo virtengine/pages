@@ -92,7 +92,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the VirtEngine network live?",
     answer:
-      "We state exactly what the public record supports: the open repository contains a checked-in go/no-go decision recording a GO for mainnet, reaffirmed 2026-08-03 and rescheduled to the January 2027 launch window after the original 18–19 April 2026 (UTC) window did not proceed. For current network status, consult the protocol site and repository rather than this FAQ, which is updated on a slower cadence.",
+      "The network is in development and is not live. The published roadmap plans public TestNet for January 2027 and MainNet for March 2027, subject to successful testing and separate production approval. Exact dates and final parameters must be confirmed through the official launch process. Check https://virtengine.com/network for current status rather than treating an earlier go/no-go record as production approval.",
     links: [{ label: "virtengine.com", href: "https://virtengine.com" }],
   },
   {

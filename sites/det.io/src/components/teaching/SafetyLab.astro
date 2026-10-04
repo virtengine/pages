@@ -1,0 +1,30 @@
+---
+const scenarios = [
+  { title: "Run an approved analysis", authority:true, budget:true, contained:true, result:"All three illustrative gates pass. The analysis may run within its approved scope. Passing these gates does not prove the output is correct or the system aligned." },
+  { title: "Spend beyond the resource ceiling", authority:true, budget:false, contained:true, result:"Resource gate blocks execution. Funding or reputation does not override the ceiling. The request must be reduced or authorised through the appropriate policy process." },
+  { title: "Copy the agent outside its sandbox", authority:true, budget:true, contained:false, result:"Containment gate blocks execution even with an available budget. Real enforcement must prevent external scheduling, credential use, and network escape." },
+  { title: "Use data without permission", authority:false, budget:true, contained:true, result:"Authority gate blocks execution. A useful or affordable task still requires permission to use the data and perform the action." },
+];
+---
+<figure class="teach-figure" data-safety>
+  <div class="teach-top"><span class="teach-kicker">Try an agent action</span><span>DSEMA design • illustrative gates</span></div>
+  <h3>Being able to pay is only one condition.</h3>
+  <div class="scenario-controls" aria-label="Choose an action">{scenarios.map((s,i)=><button type="button" data-scenario={i} aria-pressed={i===0?'true':'false'}>{s.title}</button>)}</div>
+  <ol class="safety-gates">{['Authority','Resource budget','Containment'].map((gate,i)=><li><span class="gate-number">0{i+1}</span><h4>{gate}</h4><span data-gate={i}>Pass</span></li>)}</ol>
+  <div class="safety-result" role="status" aria-live="polite" aria-atomic="true"><strong data-decision>May proceed within scope</strong><p data-result>{scenarios[0].result}</p></div>
+  <figcaption>Predetermined scenarios illustrate necessary checks; this does not execute an agent or verify enforcement. Source: <a href="/research/multi-agent-safety">DSEMA safety research</a>.</figcaption>
+  <noscript><p>Changing scenarios requires JavaScript. Authority, resource budget, and containment are independent requirements.</p></noscript>
+  <script type="application/json" data-safety-data set:html={JSON.stringify(scenarios).replace(/</g,'\\u003c')}/>
+</figure>
+<script>
+document.querySelectorAll<HTMLElement>('[data-safety]').forEach(root=>{
+  const scenarios=JSON.parse(root.querySelector('[data-safety-data]')!.textContent!);
+  root.querySelectorAll<HTMLButtonElement>('[data-scenario]').forEach(button=>button.addEventListener('click',()=>{
+    const s=scenarios[Number(button.dataset.scenario)];
+    root.querySelectorAll('[data-scenario]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    [s.authority,s.budget,s.contained].forEach((pass,i)=>{const el=root.querySelector<HTMLElement>(`[data-gate="${i}"]`)!;el.textContent=pass?'Pass':'Blocked';el.classList.toggle('blocked',!pass);});
+    root.querySelector('[data-decision]')!.textContent=s.authority&&s.budget&&s.contained?'May proceed within scope':'Execution blocked';
+    root.querySelector('[data-result]')!.textContent=s.result;
+  }));
+});
+</script>

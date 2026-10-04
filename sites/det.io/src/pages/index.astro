@@ -7,6 +7,7 @@ import ProgramDsemaArt from "@components/diagrams/ProgramDsemaArt.astro";
 import ProgramBosunArt from "@components/diagrams/ProgramBosunArt.astro";
 import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
 import { PURPOSES, SITE } from "@data/site";
+import TeachingVisual from "@components/teaching/TeachingVisual.astro";
 
 const programs = [
   {
@@ -84,7 +85,7 @@ const waysIn = [
         </p>
         <div class="record-actions">
           <a class="btn-press" href="/activities">See the work</a>
-          <a class="record-link" href="/mission">Why we exist</a>
+          <a class="record-link" href="/learn">Explore the ideas visually →</a>
         </div>
       </div>
       <aside class="evidence-col" aria-label="Record evidence">
@@ -113,6 +114,13 @@ const waysIn = [
         </figure>
       </aside>
     </div>
+  </section>
+
+  <section class="container-site record-section" aria-labelledby="visual-title">
+    <p class="folio">Explore the connections</p><h2 id="visual-title">See how the research works together.</h2>
+    <p class="record-stand">Choose a participant. Follow what it contributes, what it needs, and where the research remains open.</p>
+    <div class="mt-8"><TeachingVisual kind="atlas" /></div>
+    <p class="record-actions"><a class="btn-press" href="/learn">Eight interactive guides →</a><a class="record-link" href="/research/human-machine-symbiosis">Read the symbiosis research</a></p>
   </section>
 
   <section class="container-site record-section" aria-labelledby="f-what">
@@ -293,6 +301,7 @@ git clone {SITE.bosunGithub}.git</code></pre>
       · <a class="record-link" href="/transparency">Check the public record</a>
     </p>
   </section>
+
 
   <section class="container-site record-section" aria-labelledby="f-close">
     <p class="folio">Contact</p>

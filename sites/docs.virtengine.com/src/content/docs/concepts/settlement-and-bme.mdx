@@ -1,67 +1,58 @@
 ---
-title: Settlement & Issuance
-description: ACT provider payouts, validator transaction fees, and VEID-led issuance mechanics.
+title: Settlement, Credits & Issuance
+description: Distinguish VE primary issuance, VCC service credits, escrow payouts, and net burning.
 ---
 
-Lease settlements pay providers the full agreed amount in ACT from escrow.
-There is no take-rate or platform deduction on those payouts. Network
-transaction fees are separate costs of submitting on-chain actions and do not
-come out of lease settlement amounts.
+VE (`uve`) is VirtEngine's native asset. VirtEngine Compute Credit, VCC
+(`uvcc`), names the service-accounting unit. VirtEngine does not depend on
+Akash's compute token. Naming a credit does not establish a peg or redemption.
 
-## Burn-mint equilibrium (`x/bme`)
+## Four different flows
 
-The BME module implements token burn and mint operations. Its keeper exposes:
+| Flow | What changes | What it does not establish |
+| --- | --- | --- |
+| Primary issuance | New allocations under proposed human eligibility rules | Purchasing power or adequate resource supply. |
+| VE/VCC conversion | Intended conversion between monetary and service units | A new human entitlement or permanent VE destruction. |
+| Escrow settlement | Ownership of funds released under agreement rules | Correct computation or a supply reduction. |
+| Net burning | Native units destroyed after all reissuance | Beneficial agents or universal economic dependence. |
 
-- **`BurnTokens`** — burns tokens from an account, used for token
-  destruction and collateral burning; burn amounts must be positive and the
-  module tracks cumulative `TotalBurned` state in genesis and exports.
-- **`MsgBurnMint`** — a message-level burn/mint operation processed by the
-  module's message server.
+Provider-facing policy calls for the **full agreed amount from escrow**, with
+no platform deduction. Network transaction fees apply separately to chain
+actions. Actual payout uses the agreement's supported denomination; VE and
+service credits are not interchangeable units.
 
-Together with issuance controls in `x/issuancepolicy` (governance-managed
-policies with pause support), BME supports the supply rules. The proposed
-issuance path is VEID-led: every 15-token batch allocates 14 tokens to
-eligible active verified humans and 1 token to the Foundation-controlled
-genesis account. The Foundation allocation is part of the 15 tokens, not an
-additional mint. Initial supply is **0 tokens** and there is **no maximum
-supply cap**. New tokens are issued only when unique human identities are
-verified; issuance can continue with new verified identities and human
-population growth. Staking does not independently authorize new issuance.
+## What is implemented?
 
-:::note
-Transaction-fee and issuance parameters are defined by governance and genesis
-configuration. Consult `x/bme` and `x/issuancepolicy` in the repository for
-the authoritative current behavior.
-:::
+The checked BME conversion handlers return pending without executing bank/oracle
+conversion. Billing transfers funds to providers and can burn a configurable
+settlement fee, which defaults to zero. Generic mint/burn helpers and accounting
+exist. These paths do not establish a permanent consumption sink for every
+compute purchase. See [BME implementation evidence](/modules/bme/).
 
-## Why it matters per audience
+## Proposed human-led primary issuance
 
-| Audience | Relevance |
-| --- | --- |
-| Providers | The full agreed lease amount settles from escrow in ACT. |
-| Tenants | Settlement pays the agreed amount; transaction fees apply only to chain actions. |
-| Token holders | VEID-led issuance splits each 15-token batch: 14 to eligible humans and 1 to the Foundation genesis account. |
-| Validators | Transaction fees compensate validators and support spam resistance; fee parameters are governance-controlled. |
+Each proposed 15-unit batch allocates 14 to eligible active verified humans
+and 1 to Foundation stewardship. That share is part of the batch, not an
+additional mint. Initial supply is zero and there is no fixed cap. Staking
+does not independently authorize new primary issuance. See
+[tokenomics](/concepts/tokenomics/) and [issuance-policy authority](/modules/issuancepolicy/).
 
-## Queries
+## Why investigate the relationship?
 
-| Query | Purpose |
-| --- | --- |
-| `Params` | Current module parameters. |
-| `Status` | The module's current issuance status. |
-| `VaultState` | The state of the module's token vault. |
+Personhood-rooted primary allocations could provide claims on output when wage
+competition becomes less reliable. Recurring resource consumption could
+potentially connect machine activity to demand for those claims. Test net
+native burning, outside compute, reserves, entitlement control, purchasing
+capacity, inclusion and protection of the rules before claiming that effect.
 
-## Module interactions
-
-| Module | How they interact |
-| --- | --- |
-| [x/settlement](/modules/settlement/) | Settles the full agreed payout from escrow. |
-| [x/issuancepolicy](/modules/issuancepolicy/) | Mint schedules operate under governed issuance policy. |
-| [x/staking](/modules/staking/) | Issuance funds staking rewards alongside the inflation mechanism. |
+Foundation public-benefit restrictions, stake-weighted chain governance and
+proposed agent controls have different authority. Economic incentives alone
+do not establish safety or broad benefit. Explore the
+[interactive research conditions](https://det.io/learn/economic-invariants).
 
 ## Related documentation
 
-- [Tokenomics](/concepts/tokenomics/) — the supply design explained in
-  context.
-- [Governance Staking](/concepts/governance-staking/) — how issuance funds
-  security and network participation.
+- [Escrow & settlement](/concepts/escrow-settlement/)
+- [Burn/Mint Engine](/modules/bme/)
+- [Governance & staking](/concepts/governance-staking/)
+- [Human–machine symbiosis research](https://det.io/research/human-machine-symbiosis)

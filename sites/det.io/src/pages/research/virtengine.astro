@@ -1,6 +1,7 @@
 ---
 import Base from "@layouts/Base.astro";
 import PageHero from "@components/PageHero.astro";
+import TeachingVisual from "@components/teaching/TeachingVisual.astro";
 import Section from "@components/Section.astro";
 import ClauseRef from "@components/ClauseRef.astro";
 import CTA from "@components/CTA.astro";
@@ -84,7 +85,7 @@ const lifecycle = [
   },
   {
     title: "Settlement",
-    body: "Usage enters a time-windowed dispute workflow (24 hours by default): disputed records cannot settle until resolved or corrected. Clean records are converted to billable line items, escrow pays the agreed amount to the provider in full in ACT, and unused deposit returns to the tenant. Low validator transaction fees apply separately to on-chain actions.",
+    body: "Usage enters a time-windowed dispute workflow (24 hours by default): disputed records cannot settle until resolved or corrected. Clean records are converted to billable line items, escrow pays the agreed amount to the provider in full in VCC, and unused deposit returns to the tenant. Low validator transaction fees apply separately to on-chain actions.",
     modules: "x/settlement · x/escrow · x/fraud",
   },
 ];
@@ -176,6 +177,7 @@ const audiences = [
       </div>
     </dl>
   </PageHero>
+  <section class="container-site pb-12" aria-label="Interactive marketplace explanation"><h2 class="sr-only">Explore the marketplace</h2><TeachingVisual kind="compute" /><p class="record-actions"><a class="record-link" href="/learn/compute-and-settlement">Read the compute and settlement guide →</a><a class="record-link" href="/research/human-machine-symbiosis">The connected research</a></p></section>
 
   <Section
     number="01"
@@ -489,25 +491,24 @@ const audiences = [
       <div class="reveal rounded-card border border-hairline bg-surface p-7">
         <h3 class="text-xl font-bold">Mainnet posture</h3>
         <p class="prose-inst mt-3 text-[0.98rem]">
-          The repository's checked-in mainnet decision is <strong>GO</strong>, reaffirmed
-          <strong>2026-08-03</strong> and rescheduled to the <strong>January 2027</strong>
-          launch window after the original 2026-04-18 / 2026-04-19 UTC window did not
-          proceed. Final canonical allocations and the genesis publication bundle remain
-          checked in as a baseline. Per the project's own guidance, the network should
-          not be described as live before the approved window begins.
+          The current <a href="https://virtengine.com/network">published network roadmap</a>
+          plans public TestNet for <strong>January 2027</strong> and MainNet for
+          <strong>March 2027</strong>, subject to successful testing and a fresh production
+          approval. The network is in development and is not live. Exact dates and
+          final launch parameters must be confirmed through the official launch process.
         </p>
         <dl class="mt-4 grid gap-1.5 border-t border-hairline pt-4 font-mono text-xs text-text-soft">
           <div class="flex gap-4">
             <dt class="w-32 shrink-0 uppercase tracking-wide">Decision</dt>
-            <dd class="text-ink">GO — delayed, 2026-08-03</dd>
+            <dd class="text-ink">Preparing — production approval pending</dd>
           </div>
           <div class="flex gap-4">
             <dt class="w-32 shrink-0 uppercase tracking-wide">Launch window</dt>
-            <dd class="text-ink">2027-01-01 / 2027-01-31 UTC</dd>
+            <dd class="text-ink">TestNet: January 2027; MainNet: March 2027, subject to approval</dd>
           </div>
           <div class="flex gap-4">
             <dt class="w-32 shrink-0 uppercase tracking-wide">Source</dt>
-            <dd class="text-ink">_docs/operations/mainnet-go-no-go-decision.md</dd>
+            <dd class="text-ink"><a href="https://virtengine.com/network">Official network status</a> · reviewed 3 October 2026</dd>
           </div>
         </dl>
       </div>
