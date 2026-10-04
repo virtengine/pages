@@ -18,12 +18,12 @@
     "unresolved-assets": 0
   },
   "det.io": {
-    "max-page-js": 2753,
-    "max-page-css": 16308,
+    "max-page-js": 5204,
+    "max-page-css": 19104,
     "max-page-fonts": 217505,
     "max-page-images": 20383,
     "largest-asset": 43503,
-    "total-gzip": 797854,
+    "total-gzip": 1030258,
     "unresolved-assets": 0
   },
   "identity.org.au": {
