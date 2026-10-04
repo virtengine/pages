@@ -34,20 +34,21 @@
     <rect x="286" y="60" width="152" height="180" rx="9" fill="var(--color-sky-wash)" stroke="var(--color-blue-deep)" stroke-width="2"></rect>
     <text x="362" y="88" text-anchor="middle" font-family="var(--font-display)" font-size="12.5" font-weight="600" fill="var(--color-ink)">Attestation gate</text>
     <g font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">
-      <text x="362" y="110" text-anchor="middle">enclave produces a signed</text>
-      <text x="362" y="124" text-anchor="middle">measurement of its exact code</text>
-      <text x="362" y="146" text-anchor="middle" fill="var(--color-blue-deep)">verified on-chain — x/enclave</text>
-      <text x="362" y="162" text-anchor="middle">SGX · SEV-SNP · Nitro verifiers</text>
-      <text x="362" y="178" text-anchor="middle">AMD KDS cert chain</text>
-      <text x="362" y="192" text-anchor="middle">VCEK → ASK → ARK · TCB checks</text>
+      <text x="362" y="110" text-anchor="middle">Signed measurement</text>
+      <text x="362" y="124" text-anchor="middle">of the enclave's exact code</text>
+      <text x="362" y="146" text-anchor="middle" fill="var(--color-blue-deep)">On-chain: x/enclave</text>
+      <text x="362" y="162" text-anchor="middle">SGX · SEV-SNP · Nitro</text>
+      <text x="362" y="178" text-anchor="middle">AMD KDS certificate chain</text>
+      <text x="362" y="192" text-anchor="middle">VCEK → ASK → ARK</text>
+      <text x="362" y="206" text-anchor="middle">TCB checks</text>
     </g>
     <text x="362" y="222" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.8" fill="var(--color-blue-deep)">NO PROOF → NO DATA</text>
   </g>
 
   <path d="M240 144 H282" stroke="var(--color-blue-mid)" stroke-width="1.7" class="flow-dash" marker-end="url(#tp-arrow)"></path>
   <path d="M438 144 H484" stroke="var(--color-blue-mid)" stroke-width="1.7" class="flow-dash" marker-end="url(#tp-arrow)"></path>
-  <text x="443" y="132" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">released only</text>
-  <text x="443" y="145" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">after proof</text>
+  <text x="462" y="128" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">Released</text>
+  <text x="462" y="164" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--color-text-soft)">after proof</text>
 
   <!-- the vault: confidential VM -->
   <g>

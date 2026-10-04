@@ -27,7 +27,7 @@
 // Rule 5 and 6 are read as intent, not letter: a 999px/50% circle is a deliberate
 // dot or pill (step numbers, status dots), and hover transitions stay free — only
 // looping keyframes must be gated by reduced motion.
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import { join, relative, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -195,6 +195,13 @@ function firstFamily(value) {
 
 for (const site of SITES) {
   const base = join(ROOT, site);
+  const globalCss = join(base, "src/styles/global.css");
+  const displayToken = existsSync(globalCss)
+    ? readFileSync(globalCss, "utf8").match(/--font-display\s*:\s*([^;\n]+)/)
+    : null;
+  const displayIs400Only = displayToken
+    ? firstFamily(displayToken[1]) === "Instrument Serif"
+    : true;
   for (const file of walk(base)) {
     const text = readFileSync(file, "utf8");
     const rel = relative(ROOT, file).replaceAll("\\", "/");
@@ -263,7 +270,7 @@ for (const site of SITES) {
         }
         // Instrument Serif ships weight 400 only: anything heavier renders as a
         // synthesised faux bold, which is the kind of slop that hides in CSS.
-        if (isDet && /var\(--font-display\)/.test(decl)) {
+        if (isDet && displayIs400Only && /var\(--font-display\)/.test(decl)) {
           const weight = decl.match(/font-weight\s*:\s*(\d+)/i);
           if (weight && Number(weight[1]) > 400) {
             fail(file, "faux-bold", `${sel.trim().slice(-60)} font-weight ${weight[1]} on a 400-only display face`);

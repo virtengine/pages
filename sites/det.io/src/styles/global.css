@@ -3,7 +3,7 @@
 /*
   det.io — Amendment B, "The Record".
   Two-colour press: ink + spot blue, annotation red for status only.
-  Instrument Serif / Archivo / IBM Plex Mono. The logo is brand, not a design
+  Archivo throughout. The logo is brand, not a design
   surface: it ships exactly as it is.
   See DESIGN.md Amendment B. Legacy token names are aliases so existing
   utilities keep resolving.
@@ -46,9 +46,9 @@
   --color-night-hairline: #2c343d;
   --color-night-muted: #b7c0c8;
 
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-sans: "Archivo Variable", Archivo, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: "Archivo Variable", Archivo, "Segoe UI", sans-serif;
+  --font-mono: "Archivo Variable", Archivo, "Segoe UI", sans-serif;
 
   --radius-card: 0px;
   --radius-frame: 0px;

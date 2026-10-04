@@ -36,7 +36,7 @@ its governance and financials alongside advocacy.
 - Astro site inside the `pages` monorepo; shares the VirtEngine brand system but
   has its own editorial voice and palette.
 - `DESIGN.md` is normative for surface and type (Amendment B, 2026-09-25).
-- Editorial type: Instrument Serif display over warm paper surfaces
+- Consistent Archivo Variable typography over warm paper surfaces
   (`#f1efe9`, `#e7e4db`, `#fbfaf7`), ink `#14171c`.
 - Registration documents and examination reports are part of the evidence base.
 
