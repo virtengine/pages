@@ -19,7 +19,7 @@ export const WEBSITE_ID = `${SITE.url}/#website`;
 export const LOGO_ID = `${SITE.url}/#logo`;
 
 export const LOGO_URL = new URL("/images/detio-logo.png", SITE.url).href;
-export const DEFAULT_IMAGE = new URL("/og.png", SITE.url).href;
+export const DEFAULT_IMAGE = new URL("/og.jpg", SITE.url).href;
 
 export const IN_LANGUAGE = "en-AU";
 
