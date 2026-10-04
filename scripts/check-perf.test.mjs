@@ -763,6 +763,132 @@ test("the repo's own baseline matches the checker's metric set", () => {
   }
 });
 
+// --- --dry-run: what a re-seed WOULD change, without writing it -------------------------------
+//
+// The defect this pins is not a crash, it is a blind write. Before --dry-run the only way to see
+// the effect of a re-seed was to perform it and read `git diff`, so every re-baseline was
+// invisible until it was on disk. The failure mode that leaves is ratchet abuse: a site drifts
+// over budget, someone re-seeds, and the ledger becomes a record of whatever the last writer
+// measured instead of an agreed budget. The ratchet exists to refuse that, so the write has to be
+// readable BEFORE it happens.
+
+test("dry-run: previews per-metric deltas and writes nothing", () => {
+  // A budget the site is comfortably inside, so the preview has to report "unchanged" for the
+  // metrics that are fine rather than only the one that moved. A preview limited to failing
+  // metrics would add nothing over the gate's own verdict.
+  const ledger = { site: { ...canonical(), "total-gzip": canonical()["total-gzip"] } };
+  const path = budget(ledger);
+  const before = readFileSync(path, "utf8");
+
+  const { status, out } = run(dist(), { baselinePath: path, args: ["--dry-run"] });
+  assert.equal(status, 0, out);
+
+  // The load-bearing assertion: the preview is a READ. Byte-identical, not merely parse-equal,
+  // because a re-serialising read would reorder keys and produce a diff no one asked for.
+  assert.equal(readFileSync(path, "utf8"), before, "--dry-run must leave the ledger byte-identical");
+
+  // Every metric of the site's budget must appear, named, with its measured and budgeted values.
+  for (const metric of Object.keys(canonical())) {
+    assert.match(out, new RegExp(`PREVIEW ${metric}: `), `${metric} missing from the preview:\n${out}`);
+  }
+  // The numbers, not just the labels: one metric is stated with both sides of the comparison.
+  const total = canonical()["total-gzip"];
+  assert.match(
+    out,
+    new RegExp(`PREVIEW total-gzip: ${total} measured, ${total} budgeted \\(0, 0\\.0%, unchanged\\)`),
+    out,
+  );
+});
+
+test("dry-run: an over-budget metric is named with the measured value and the budget", () => {
+  // The wording must match the gate's existing OVER BUDGET format so an operator reading the log
+  // sees one format, not two. This asserts the preview carries the same three facts the gate does:
+  // which metric, what was measured, what was allowed.
+  const path = budget(withMetric("max-page-js", 1));
+  const { status, out } = run(dist(), { baselinePath: path, args: ["--dry-run"] });
+  assert.equal(status, 1, out);
+
+  const measured = canonical()["max-page-js"];
+  assert.match(out, new RegExp(`OVER BUDGET max-page-js: ${measured} > 1`), out);
+  const preview = out.split("\n").find((l) => l.includes("PREVIEW max-page-js"));
+  assert.ok(preview, `no preview line for max-page-js:\n${out}`);
+  assert.match(preview, new RegExp(`${measured} measured, 1 budgeted`), preview);
+  // A site that is over budget exits non-zero under --dry-run too: a preview that exited 0 where
+  // the gate exits 1 would be a check that lies, which defeats its only purpose (pre-commit use).
+  assert.match(out, /dry run: nothing written/, out);
+});
+
+test("dry-run + --update-baseline writes exactly what --update-baseline alone writes", () => {
+  // Composition, not interference: the flag pair has to preview AND apply in one command, and the
+  // bytes it lands must be indistinguishable from the bare command's. Compared by BYTES, not by
+  // parsed value, so a key reorder cannot pass as equality.
+  const tree = dist();
+  const ledger = { "other-site": { ...canonical(), "total-gzip": 999 } };
+
+  const barePath = budget(ledger);
+  const bare = run(tree, { baselinePath: barePath, args: ["--update-baseline"] });
+  assert.equal(bare.status, 0, bare.out);
+
+  const composedPath = budget(ledger);
+  const composed = run(tree, { baselinePath: composedPath, args: ["--dry-run", "--update-baseline"] });
+  assert.equal(composed.status, 0, composed.out);
+
+  assert.equal(
+    readFileSync(composedPath, "utf8"),
+    readFileSync(barePath, "utf8"),
+    "--dry-run --update-baseline must land the same bytes as --update-baseline alone",
+  );
+  // It still previews, which is the entire point of composing the two.
+  assert.match(composed.out, /PREVIEW total-gzip: /, composed.out);
+  // And the untouched site is still carried through — composing must not weaken the merge guard.
+  assert.deepEqual(JSON.parse(readFileSync(composedPath, "utf8"))["other-site"], ledger["other-site"]);
+});
+
+// A preview of a site with no ledger entry is the shape an unseeded gate produces, and it must
+// still be a READ: an operator previewing a brand-new site's seed must not create its budget.
+test("dry-run: a site with no budget entry previews a seed without creating one", () => {
+  const path = budget({});
+  const { status, out } = run(dist(), { baselinePath: path, args: ["--dry-run"] });
+  assert.equal(status, 1, out); // an absent budget holds every metric to zero, so it is over
+  assert.match(out, /no budget \(would seed \d+\)/, out);
+  assert.equal(readFileSync(path, "utf8"), "{}", "the preview must not seed a budget");
+});
+
+test("update-baseline: the log names which sites' metrics actually moved", () => {
+  // "updated ... for site" reads the same whether the write moved one byte or the whole ledger,
+  // so the log cannot distinguish a justified re-seed from an inflationary one on its own.
+  const moved = budget({ site: { ...canonical(), "total-gzip": 1 } });
+  const { status, out } = run(dist(), { baselinePath: moved, args: ["--update-baseline"] });
+  assert.equal(status, 0, out);
+  assert.match(out, /moved site/, out);
+
+  // The converse: re-seeding to the values already in the ledger changes nothing, and saying
+  // "moved" for a no-op write would train an operator to distrust the word.
+  const still = budget(MEASURED);
+  const same = run(dist(), { baselinePath: still, args: ["--update-baseline"] });
+  assert.equal(same.status, 0, same.out);
+  assert.match(same.out, /no metric moved/, same.out);
+});
+
+test("dry-run: leaves the repo's real ledger untouched when pointed at the repo file", () => {
+  // Every other case points PERF_BASELINE at a scratch file, so a --dry-run that ignored the
+  // seam and wrote the REPO ledger would be invisible to the rest of this suite. So this one runs
+  // the checker with PERF_BASELINE unset, which is what CI does and what an operator does: it
+  // resolves to scripts/perf-baseline.json, the file that actually gates the repository.
+  const real = join(HERE, "perf-baseline.json");
+  const before = readFileSync(real, "utf8");
+  const result = spawnSync(process.execPath, [CHECKER, "--dry-run", `site=${dist()}`], {
+    encoding: "utf8",
+    env: { ...process.env, PERF_BASELINE: undefined },
+  });
+  const out = `${result.stdout}${result.stderr}`;
+  // The fixture site is not in the repo ledger, so it is held to zero and the run fails: the point
+  // is not the verdict but that a FAILING dry run still wrote nothing.
+  assert.equal(result.status, 1, out);
+  assert.match(out, /dry run: nothing written/, out);
+  assert.equal(readFileSync(real, "utf8"), before, "a dry run rewrote the repository's own ledger");
+});
+
 test("every site under sites/ has a perf budget entry", () => {
   // The repo-level half of the contract: check-static.mjs owns the wiring, this pins the ledger
   // so a new site cannot land with no budget at all.
