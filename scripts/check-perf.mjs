@@ -576,12 +576,66 @@ if (updateBaseline) {
     );
     process.exit(1);
   }
-  const merged = {};
+  // MERGE into the existing ledger, never REPLACE it. The first cut built `merged` from the sites
+  // on the command line alone, so re-seeding ONE site rewrote a four-site ledger into a one-site
+  // ledger: the other three were deleted wholesale and the log still read "updated ... for
+  // <site>", which describes a targeted edit. Since a site with no entry is held to zero
+  // (check-perf.mjs:484) the deletion did not go unnoticed at run time — it turned three
+  // production sites red — but it destroyed every budget for them, and the fix for that red was
+  // as destructive as the bug. A budget ledger that can lose three of four entries by a
+  // documented command is the same class as a check that passes while checking nothing.
+  //
+  // Merge is by SITE, never by file: the command line is the set of sites being re-measured, so
+  // those are overwritten, and everything else is carried through byte-for-byte.
+  const merged = { ...baseline };
   for (const [site, counts] of Object.entries(measured)) {
     merged[site] = Object.fromEntries(METRICS.map((m) => [m, counts[m]]));
   }
+  const kept = Object.keys(merged).filter((s) => !(s in measured));
+  if (kept.length) {
+    console.log(`PERF-BASELINE carried over ${kept.length} unmeasured site(s): ${kept.join(", ")}`);
+  }
+  // The drop check is made on the object ABOUT TO BE WRITTEN, before anything is written.
+  //
+  // The first version of this guard read the file back after the write and compared. That sounds
+  // stronger -- it observes the real file -- and it is useless as a guard, because the write has
+  // already happened. Reverting `merged` to a replace made that version print "dropped 3 site(s)"
+  // and exit 1 with the ledger on disk already reduced to ['det.io']: the check named the victims
+  // after destroying them, and the operator's only recovery was the same re-seed-by-hand that was
+  // the original hazard. A check that reports damage after causing it is a report, not a guard.
+  const lost = Object.keys(baseline).filter((s) => !(s in merged));
+  if (lost.length) {
+    console.error(
+      `PERF-FAIL update-baseline would drop ${lost.length} site(s) from the ledger: ${lost.join(", ")}`,
+    );
+    process.exit(1);
+  }
+
   writeFileSync(BASELINE_PATH, `${JSON.stringify(merged, null, 2)}\n`);
-  console.log(`PERF-BASELINE updated ${rel(BASELINE_PATH)} for ${Object.keys(merged).join(", ")}`);
+
+  // Read back as well: the merge can be correct while the write is not (a partial write, a wrong
+  // path), and a claim about what landed on disk should be observed rather than assumed.
+  const written = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
+  const missingOnDisk = Object.keys(merged).filter((s) => !(s in written));
+  if (missingOnDisk.length) {
+    console.error(
+      `PERF-FAIL the written ledger is missing ${missingOnDisk.length} site(s): ${missingOnDisk.join(", ")}`,
+    );
+    process.exit(1);
+  }
+  // Per-site VALUE comparison: "carried over" has to mean "present with its OLD numbers", not
+  // merely "mentioned". Comparing the entries by value is what makes a merge that zeroed, rounded
+  // or re-measured an untouched site fail instead of passing a key-count check.
+  for (const site of kept) {
+    if (JSON.stringify(written[site]) !== JSON.stringify(baseline[site])) {
+      console.error(`PERF-FAIL update-baseline altered carried-over site ${site}`);
+      process.exit(1);
+    }
+  }
+  console.log(
+    `PERF-BASELINE updated ${rel(BASELINE_PATH)} for ${Object.keys(measured).join(", ")}` +
+      (kept.length ? ` (${kept.length} carried over)` : ""),
+  );
   process.exit(0);
 }
 
