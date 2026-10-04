@@ -494,12 +494,14 @@ test("mutation: removing the @font-face scan must turn the checker RED", () => {
   // the budget would admit any font weight forever. Deleting the loop has to turn
   // this suite red, which is what makes the coverage a property of the script.
   const stripped = join(scratch(), "stripped-perf.mjs");
-  const original = readFileSync(CHECKER, "utf8");
-  const src = original.replace(
-    /for \(const sheet of pageStylesheets\) \{[\s\S]*?\n    \}\n/,
-    "",
-  );
-  assert.notEqual(src, original, "the mutation must actually remove the @font-face loop");
+    const original = readFileSync(CHECKER, "utf8");
+    // Match the loop body without demanding a newline after its closing brace. The earlier
+    // pattern required `\n    }\n`, which only matched while nothing followed the loop; #66 added a
+    // statement there, the regex silently stopped matching, and this test failed for the wrong
+    // reason — it reported "the mutation must actually remove the @font-face loop" instead of
+    // testing the checker. A mutation that cannot apply must fail loudly, never pass quietly.
+    const src = original.replace(/for \(const sheet of pageStylesheets\) \{[\s\S]*?\n    \}/, "");
+    assert.notEqual(src, original, "the mutation must actually remove the @font-face loop");
   writeFileSync(stripped, src);
   const root = dist();
   writeFileSync(join(root, "assets", "fat.woff2"), padded(70000));
