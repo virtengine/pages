@@ -7,7 +7,6 @@ import ServiceModelShowcase from "@components/marketplace/ServiceModelShowcase.a
 import BuyingMethods from "@components/marketplace/BuyingMethods.astro";
 import { CURRENT_POSTS } from "@data/blog";
 import { SITE, foundationDetails } from "@data/site";
-import { NETWORK_STATUS } from "@data/status";
 import { SUPPORT } from "@data/partners";
 
 const journalPair = CURRENT_POSTS.slice(0, 2);
@@ -97,7 +96,7 @@ const journalPair = CURRENT_POSTS.slice(0, 2);
     </div>
   </section>
 
-  <!-- 6 — OPEN + STATUS + STEWARDSHIP -->
+  <!-- 6 — OPEN + STEWARDSHIP -->
   <section class="home-dev" id="source">
     <SurfaceWash />
     <div class="container-site home-dev-grid home-dev-grid--slim">
@@ -115,11 +114,6 @@ const journalPair = CURRENT_POSTS.slice(0, 2);
         </div>
       </div>
       <div class="home-side-stack">
-        <p class="eyebrow">Network status</p>
-        <p><strong>Protocol development</strong> · Active<br /><strong>Public TestNet</strong> · Planned<br /><strong>Production MainNet</strong> · Not live</p>
-        <p class="text-xs">Last updated {NETWORK_STATUS.lastUpdated}</p>
-        <a class="btn-quiet" href="/network">View network status <span aria-hidden="true">→</span></a>
-        <hr />
         <p class="text-sm">VirtEngine is stewarded by {foundationDetails.name}, {foundationDetails.structure} ({foundationDetails.acn}), supporting open infrastructure, privacy-preserving identity and public-interest technology.</p>
         <p><a class="btn-quiet" href="/about">About the Foundation</a> <a class="btn-quiet" href="https://det.io" target="_blank" rel="noopener noreferrer">DET.io ↗</a></p>
       </div>
