@@ -2714,6 +2714,13 @@ body.is-home .mega-github {
 }
 body.is-home .mega-github:hover {
   background: rgba(233, 240, 234, 0.08);
+  color: var(--color-green-bright);
+}
+body.is-home .mega-docs {
+  color: var(--color-night-text);
+}
+body.is-home .mega-docs:hover {
+  color: var(--color-green-bright);
 }
 body.is-home .search-trigger {
   border-left-color: rgba(233, 240, 234, 0.14);
