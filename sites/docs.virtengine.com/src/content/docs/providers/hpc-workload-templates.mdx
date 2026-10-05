@@ -6,10 +6,15 @@ description: Publishing custom HPC workload templates — manifest structure, cr
 import { Steps } from '@astrojs/starlight/components';
 
 VirtEngine ships a curated library of preconfigured HPC workload templates
-(`mpi-standard`, `gpu-compute`, `batch-standard`, `data-processing`,
-`interactive-session`) that simplify job submission and enforce security
-compliance. Providers can publish **custom templates** for specialized
-workloads — with signing and governance approval as guardrails.
+that simplify job submission and enforce security compliance. The five
+core ones are `mpi-standard`, `gpu-compute`, `batch-standard`,
+`data-processing` and `interactive-session`, alongside `singularity-container`
+and `batch-array`. They are compiled into the `virtengine` binary by
+`hpc_workload_library` (`pkg/hpc_workload_library/templates.go:17`), not
+stored on chain.
+
+Custom templates can be authored, validated and signed as described below.
+Publishing one on-chain is **not** currently possible — see step 3.
 
 ## Publishing flow
 
@@ -97,36 +102,47 @@ workloads — with signing and governance approval as guardrails.
    }
    ```
 
-3. **Submit for governance approval.** New templates require an on-chain
-   proposal and vote before they can be used:
-
-   :::note
-   The CLI subcommand `virtengine tx hpc template approve [template-id] [version]`
-   exists (`x/hpc/client/cli/tx_template.go:191`) but **cannot succeed when
-   signed by a user key**. It sets `Authority` to the *signing* address
-   (`tx_template.go:206`) and the signer is that same address
-   (`x/hpc/types/msg_template.go:188-194`), while the keeper requires the caller
-   to equal the module authority or it returns `only authority can approve
-   templates` (`x/hpc/keeper/workload_template.go:158-159`). That authority is
-   the x/gov module account (`app/types/app.go:606`), which holds no private
-   key. A user-signed invocation therefore still broadcasts — it fails at
-   execution and pays gas. The message is only reachable carried inside a
-   governance proposal, voted on by validators and delegators.
-   :::
+3. **There is no on-chain submission step.** This chain cannot carry a workload
+   template in a transaction at all, so there is nothing to propose and nothing
+   to vote on. The steps below describe the manifest and signing work that does
+   exist; publishing it on-chain does not.
 
    :::caution
-   Creating a template from the CLI is not exposed. `virtengine tx hpc`
-   registers only `cancel-job`, `create-offering`, `deregister-cluster`,
-   `register-cluster`, `submit-job` and `update-cluster`.
+   **Workload template messages are inert on this chain.** No template can be
+   created, approved, deprecated, revoked, or submitted from, by any
+   transaction. The seven `Msg*WorkloadTemplate` Go types are hand-written, not
+   generated: they carry no `ProtoReflect` method
+   (`x/hpc/types/msg_template.go`, which states "In production, these messages
+   would be generated from protobuf") and none of them appears in
+   `sdk/proto/node/virtengine/hpc/v1/tx.proto`. Their proto type URL is
+   therefore the empty `/`.
+
+   Measured against a full app on `virtengine/virtengine` `develop`, encoding
+   each message through the real tx builder and then decoding it the way a node
+   would:
+
+   ```
+   MsgTypeURL(MsgCreateWorkloadTemplate)     = "/"   encoded 11 B; TxDecoder err=unable to resolve type URL /: tx parse error
+   MsgTypeURL(MsgApproveWorkloadTemplate)    = "/"   encoded 11 B; TxDecoder err=unable to resolve type URL /: tx parse error
+   MsgTypeURL(MsgSubmitJobFromTemplate)      = "/"   encoded 11 B; TxDecoder err=unable to resolve type URL /: tx parse error
+   MsgTypeURL(MsgSubmitJob)   [control]      = "/virtengine.hpc.v1.MsgSubmitJob"   encoded 47 B; DECODES OK
+   ```
+
+   A client cannot transmit these messages: the transaction encodes to 11 bytes
+   of empty `Any` and fails to decode. Registering a Msg service does not make
+   a message routable — `x/hpc/module.go:124` registers the service, but the
+   template messages carry no method in the generated service descriptor.
    :::
 
-   ```bash
-   # Validators and delegators vote on the proposal carrying the approval
-   virtengine tx gov vote <proposal-id> yes --from=validator
-
-   # Track status
-   virtengine query gov proposal <proposal-id>
-   ```
+   :::note
+   The `approve`, `reject`, `deprecate` and `revoke` subcommands are written in
+   `x/hpc/client/cli/tx_template.go` but **are not reachable**. The group that
+   would register them, `GetTxCmdWorkloadTemplates`
+   (`x/hpc/client/cli/tx_template.go:18`), is never added to any parent command:
+   `GetTxCmd` (`x/hpc/client/cli/tx.go:54`) does not call it. So
+   `virtengine tx hpc template approve` does not exist on the CLI, and neither
+   does `virtengine tx hpc template create`.
+   :::
 
 </Steps>
 
@@ -135,16 +151,33 @@ workloads — with signing and governance approval as guardrails.
 The template's `security` section is enforced, not advisory: registry
 allowlists, mandatory image digests, network-access policy, host-mount path
 allowlists, and sandbox level (`strict`) all constrain what tenant jobs can
-do on your nodes. Governance review exists precisely so a malicious or
-sloppy template can't become an escape hatch onto provider infrastructure.
+do on your nodes. Enforcement happens in the **provider daemon**, which reads
+the spec when it maps a template to a container and rejects an image outside
+`allowed_registries` or a missing digest when `require_image_digest` is set
+(`pkg/provider_daemon/hpc_templates/container_mapper.go:300-320`,
+`:251-253`). It is not applied by chain governance, and — per step 3 — no
+template reaches the chain to be reviewed at all. Reviewing a manifest before
+publishing it is the provider's own responsibility.
 
 ## Tenant-side consumption
 
-Tenants discover and use templates through the CLI:
+The template CLI reads templates compiled into the `virtengine` binary. It
+does not query the chain, and it cannot show a published template, because
+nothing can be published (see step 3):
 
 ```bash
+# Lists the built-in templates baked into the binary
 virtengine hpc template list
-virtengine hpc template show my-simulation
+
+# Shows one built-in template, or a local manifest with --file
+virtengine hpc template show mpi-standard
 ```
+
+`list` and `show` serve `hpc_workload_library.GetBuiltinTemplates()`
+(`pkg/hpc_workload_library/templates.go:17`, currently seven built-ins), so a
+template you create with `virtengine hpc template create` appears only if you
+pass that file back with `--file`. There is no chain-side template listing: no
+template query RPC is declared in
+`sdk/proto/node/virtengine/hpc/v1/query.proto`.
 
 See [Submitting HPC Jobs](/tenants/hpc-jobs/) for the parameter-file format.
