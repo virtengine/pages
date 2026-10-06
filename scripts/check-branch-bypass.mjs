@@ -30,6 +30,35 @@
 // budget would make the symptom invisible while the bypass stays just as real, and a
 // reverted media commit would leave the next bypass equally uncaught.
 //
+// TOPOLOGY IS NOT THE SAME QUESTION AS CONTENT — measured 2026-10-06. The first cut of
+// this guard asked only `git rev-list PROD --not REVIEWED`, which is a question about
+// SHA GRAPH SHAPE. It answered that shape correctly and still cried wolf forever: this
+// repo merges with --squash, and a squash merge rewrites every sha it carries, so a
+// commit that HAD been reviewed on develop came back as UNJUDGED with no way to ever
+// satisfy the guard. Measured on origin/develop 4390413:
+//
+//   git cherry -v origin/develop origin/main
+//   - 6cbafae  fix(virtengine): recover stashed homepage and header polish (#64)
+//   + 3bc740a  Polish DET.io typography, privacy map, and diagrams (#65)
+//
+// The `-` is the whole finding: 6cbafae's content is byte-identical to develop's tip
+// (patch-id 80de108f on both) and had been built by the full gate in PR #70 — yet the
+// guard still named it, which kept the develop->main gate red on EVERY pull_request
+// including ones that changed nothing. A guard that is red on unrelated PRs has no
+// signal left for the one real bypass.
+//
+// So both questions are asked. Ancestry says "did this sha travel the reviewed path".
+// Patch equivalence (`git cherry`) says "is this EXACT change already on the reviewed
+// branch, under whatever sha". Content is the thing that was actually built, so a
+// patch-equivalent commit is reported as JUDGED-BY-PATCH rather than as a bypass. This
+// is strictly tighter than the ledger: the ledger is a human writing a reason, whereas
+// this is the CI pipeline's own build proving the identical tree was green.
+//
+// It does NOT widen what counts as judged in the dangerous direction. Patch-id equality
+// is a whole-patch comparison, so a SPLIT commit — site files forward-ported while its
+// gate/baseline edits are held back — is still `+` and still fails. That is deliberate:
+// 3bc740a (PR #65) is exactly that shape, and it is still red, because it still is.
+//
 // TEST SEAMS. BRANCH_PROD / BRANCH_REVIEWED override the two refs (the regression suite
 // builds a tiny synthetic repo and points them at refs it controls); SKIP_BYPASS_GUARD=1
 // is the emergency escape and prints a loud line saying it was used.
@@ -129,13 +158,50 @@ for (const sha of shas) {
 // prefixing it again would print "92fc1c5  92fc1c5 jaeko44 Media Update".
 const tag = (s) => s.subject;
 
+// `git cherry -v REVIEWED PROD` walks the commits PROD has that REVIEWED does not, and
+// marks each `-` when a patch-equivalent change IS reachable from REVIEWED. That is the
+// single call that answers "is this content already judged", and it costs one diff per
+// candidate commit (0.37s against this repo's 21/130 commit graph).
+//
+// A failure here must NOT degrade to "no patch equivalents found": that would silently
+// widen the report back to the topology-only behaviour this section exists to fix, and
+// it would do so without a word. So a `git cherry` that cannot run is a hard failure.
+function patchEquivalentOnReviewed() {
+  let out;
+  try {
+    out = execFileSync("git", ["cherry", "-v", REVIEWED, PROD], {
+      encoding: "utf8",
+      maxBuffer: 1 << 26,
+    });
+  } catch (err) {
+    console.error(
+      `BYPASS-FAIL could not compute patch equivalence — \`git cherry -v ${REVIEWED} ${PROD}\` failed: ${err.message}\n` +
+        "Content equivalence is half of this guard's verdict; without it every squash-merged\n" +
+        "commit would be reported as a bypass and no PR could ever go green.",
+    );
+    process.exit(1);
+  }
+  const equivalent = new Set();
+  for (const line of out.split("\n")) {
+    if (!line.startsWith("- ")) continue;
+    const sha = line.slice(2).split(/\s+/)[0];
+    if (sha) equivalent.add(sha.toLowerCase().slice(0, 7));
+  }
+  return equivalent;
+}
+
 const ledger = readLedger();
 const acceptedBySha = new Map(ledger.map((e) => [e.sha.toLowerCase().slice(0, 7), e]));
+const patchEquivalent = patchEquivalentOnReviewed();
 const unjudged = [];
 const accepted = [];
+const judgedByPatch = [];
 for (const b of bypasses) {
+  // Ledger first: an accepted sha is a human's written disposition and is reported as
+  // such, with its reason. Only then the mechanical content test.
   const hit = acceptedBySha.get(b.sha);
   if (hit) accepted.push({ ...b, entry: hit });
+  else if (patchEquivalent.has(b.sha)) judgedByPatch.push(b);
   else unjudged.push(b);
 }
 
@@ -145,6 +211,14 @@ for (const b of bypasses) {
 for (const a of accepted) {
   console.log(`  ACCEPTED ${tag(a)}  (${a.entry.accepted_by ?? "no acceptor recorded"})`);
   console.log(`           ${a.entry.reason}`);
+}
+
+// Content-equivalent commits are printed too, with the reviewed-branch sha that proves
+// it. An exclusion nobody can see is indistinguishable from a missed bypass, and this
+// repo has already been bitten by a gate that reported nothing.
+for (const b of judgedByPatch) {
+  console.log(`  JUDGED-BY-PATCH ${tag(b)}`);
+  console.log(`           identical patch is already on ${REVIEWED}; no ledger entry needed`);
 }
 
 if (process.env.SKIP_BYPASS_GUARD === "1") {
@@ -158,7 +232,8 @@ if (unjudged.length === 0) {
   // distinguishable from a checker that resolved nothing.
   console.log(
     `BYPASS-OK prod=${PROD} reviewed=${REVIEWED} merge-base=${mergeBase.slice(0, 7)} ` +
-      `compared=${shas.length} merges=${merges.length} accepted=${accepted.length} unjudged=0`,
+      `compared=${shas.length} merges=${merges.length} accepted=${accepted.length} ` +
+      `unjudged=0 judged-by-patch=${judgedByPatch.length}`,
   );
   process.exit(0);
 }

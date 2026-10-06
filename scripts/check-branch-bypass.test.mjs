@@ -228,6 +228,133 @@ test("a shallow history fails loudly rather than reporting zero bypasses", (t) =
   assert.doesNotMatch(`${r.stdout}${r.stderr}`, /unjudged=0/);
 });
 
+// --- patch equivalence: topology vs content ---
+//
+// Measured on origin/develop 4390413 (2026-10-06). `git cherry -v origin/develop
+// origin/main` printed `- 6cbafae` — the same patch-id (80de108f) as develop's tip —
+// yet the topology-only guard still named 6cbafae UNJUDGED, keeping the develop->main
+// gate red on every pull_request including unrelated ones. Because this repo merges with
+// --squash, no forward-port can ever satisfy an ancestry test, so that red was permanent.
+//
+// These cases pin the fix in BOTH directions. The first says a patch-equivalent commit
+// passes; the rest are the guards against that becoming a loophole.
+
+test("a commit whose patch IS already on the reviewed branch passes and is PRINTED", (t) => {
+  // The 6cbafae shape: a commit reached main, and its content later landed on develop
+  // under a different sha (here via a squash-style forward-port on develop).
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  // Step 1 on develop must be the IDENTICAL patch (probe-verified: same patch-id on both
+  // sides), and step 2 moves develop PAST it — so develop cannot become an ancestor of
+  // main by topology and only patch equivalence can clear the commit. That is the real
+  // post-squash shape.
+  const steps = [
+    ["main", "Header\n", "homepage polish (#64)"],
+    ["develop", "Header\n", "forward-port of #64"],  // identical patch
+    ["develop", "Header polished\n", "later work on develop"],
+  ];
+  for (const [branch, content, message] of steps) {
+    git(dir, ["checkout", "-q", branch]);
+    writeFileSync(join(dir, "site.txt"), content);
+    git(dir, ["add", "-A"]);
+    git(dir, ["commit", "-q", "-m", message]);
+  }
+  git(dir, ["checkout", "-q", "main"]);
+
+  const r = runChecker(dir);
+  assert.equal(r.code, 0, `patch-equivalent content must pass, got ${r.code}: ${r.stderr}`);
+  assert.match(r.stdout, /JUDGED-BY-PATCH/);
+  assert.match(r.stdout, /homepage polish/);
+  // The exclusion must be visible AND counted, so a silently-empty pass stays impossible.
+  assert.match(r.stdout, /accepted=0 unjudged=0 judged-by-patch=1/);
+  assert.match(r.stdout, /BYPASS-OK/);
+});
+
+test("a SPLIT commit still FAILS even though most of its content is on develop", (t) => {
+  // The 3bc740a shape, and the case that keeps patch equivalence honest: a commit whose
+  // site-file half was forward-ported while its GATE and BASELINE edits were held back.
+  // Patch-id equality is a whole-patch comparison, so this must stay `+` and stay red —
+  // a partial content match must never buy a pass.
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  // main's commit carries the site restyle AND the perf-baseline edit; develop carries
+  // ONLY the site restyle. Patch-id is a whole-patch comparison, so the halves differ
+  // and the commit must stay a bypass — this is exactly 3bc740a.
+  git(dir, ["checkout", "-q", "main"]);
+  writeFileSync(join(dir, "site.txt"), "restyled\n");
+  writeFileSync(join(dir, "baseline.json"), '{"total-gzip": 892122}\n');
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "det.io typography polish (#65)"]);
+  git(dir, ["checkout", "-q", "develop"]);
+  writeFileSync(join(dir, "site.txt"), "restyled\n");
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "forward-port of #65 (site files only)"]);
+  git(dir, ["checkout", "-q", "main"]);
+
+  const r = runChecker(dir);
+  assert.equal(r.code, 1, `a split commit must still fail, got ${r.code}`);
+  assert.match(r.stderr, /BYPASS-FAIL/);
+  assert.match(r.stderr, /det\.io typography polish/);
+  assert.doesNotMatch(`${r.stdout}${r.stderr}`, /JUDGED-BY-PATCH/);
+});
+
+test("patch equivalence does not rescue a DIFFERENT change that is not on develop", (t) => {
+  // A commit on develop that merely touches the same filename is not the same change.
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  commitOn(dir, "main", "site.txt", "main's content\n", "media update");
+  commitOn(dir, "develop", "site.txt", "develop's different content\n", "unrelated work");
+  const r = runChecker(dir);
+  assert.equal(r.code, 1, `differing content must fail, got ${r.code}`);
+  assert.match(r.stderr, /media update/);
+});
+
+test("an existing ledger entry still wins over patch equivalence and keeps its reason", (t) => {
+  // Ordering is deliberate: a human's written disposition is reported as ACCEPTED with
+  // its reason, not quietly demoted to a mechanical JUDGED-BY-PATCH line.
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  commitOn(dir, "main", "site.txt", "one\n", "Media Update");
+  const sha = git(dir, ["rev-parse", "--short", "HEAD"]).trim();
+  git(dir, ["checkout", "-q", "develop"]);
+  writeFileSync(join(dir, "site.txt"), "one\n");
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "forward-port"]);
+  git(dir, ["checkout", "-q", "main"]);
+  // Written LAST: a ledger file inside the repo gets tracked by `git add -A` on
+  // develop and then deleted by the checkout back to main, which reads as a missing
+  // ledger. The existing suite never checks out after writing one; this one does.
+  const ledger = ledgerFile(dir, {
+    accepted: [{ sha, reason: "live marketplace imagery, reviewed in writing", accepted_by: "test" }],
+  });
+
+  const r = runChecker(dir, { BYPASS_LEDGER: ledger });
+  assert.equal(r.code, 0, `expected pass, got ${r.code}: ${r.stderr}`);
+  assert.match(r.stdout, /ACCEPTED/);
+  assert.match(r.stdout, /reviewed in writing/);
+  // Ledger wins over the mechanical test, so the new counter must read 0 here — if it
+  // read 1 the entry would have been demoted to a mechanical exclusion.
+  assert.match(r.stdout, /accepted=1 unjudged=0 judged-by-patch=0/);
+  assert.doesNotMatch(r.stdout, /JUDGED-BY-PATCH/);
+});
+
+test("SKIP_BYPASS_GUARD=1 still names a patch-equivalent commit as judged", (t) => {
+  // The escape hatch must not make a judged commit look like a live bypass.
+  const dir = makeRepo();
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  commitOn(dir, "main", "site.txt", "a\n", "homepage polish (#64)");
+  git(dir, ["checkout", "-q", "develop"]);
+  writeFileSync(join(dir, "site.txt"), "a\n");
+  git(dir, ["add", "-A"]);
+  git(dir, ["commit", "-q", "-m", "forward-port"]);
+  git(dir, ["checkout", "-q", "main"]);
+
+  const r = runChecker(dir, { SKIP_BYPASS_GUARD: "1" });
+  assert.equal(r.code, 0);
+  assert.match(r.stdout, /BYPASS-SKIPPED/);
+  assert.doesNotMatch(r.stdout, /UNJUDGED homepage polish/);
+});
+
 test("a missing or malformed ledger fails instead of reading as clean", (t) => {
   const dir = makeRepo();
   t.after(() => rmSync(dir, { recursive: true, force: true }));
