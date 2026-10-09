@@ -1,0 +1,53 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import CardLink from "@components/CardLink.astro";
+import { FOR_SERVICES_NAV } from "@data/nav-sections";
+import { SITE } from "@data/site";
+const crumbs = [{ name: "Home", href: "/" }, { name: "For services", href: "/for-services" }, { name: "Pilot proposal", href: "/for-services/pilot" }];
+const contact = `mailto:${SITE.email}?subject=${encodeURIComponent("Reusable verification pilot discussion")}&body=${encodeURIComponent("Organisation:\nWorkflow to improve:\nCredential issuer, if known:\nWhat your service needs to know:\nCurrent verification process:\n\nPlease do not attach identity documents or participant data.")}`;
+---
+<Guide title="A useful fact. Fewer repeated checks." metaTitle="Reusable Verification Pilot | identity.org.au" description="A proposed pilot for membership or eligibility verification: one accountable issuer, two services, explicit consent and measurable outcomes. Download the discussion pack." lede="Help shape a reusable verification experience for an existing service, with an agreed issuer and a narrowly defined eligibility check." eyebrow="Pilot proposal · for discussion" breadcrumbs={crumbs} sectionLabel="For services" sectionNav={FOR_SERVICES_NAV}>
+  <Alert tone="info" title="What is available now">
+    <p>The interactive demonstration uses fictional credentials. The production wallet and verifier service are not available. This proposal seeks discussion; no pilot participants, delivery dates or institutional partnerships are confirmed.</p>
+  </Alert>
+  <div class="mt-6 flex flex-wrap gap-3">
+    <a href="/for-services/demo" class="btn-primary">Try the demonstration</a>
+    <a href={contact} class="btn-secondary">Discuss a pilot by email</a>
+    <a href="/pilot/discussion-pack.md" download class="btn-secondary">Download discussion pack</a>
+  </div>
+  <div class="prose-service mt-10">
+    <h2>The first workflow</h2>
+    <p>An organisation issues an active-membership credential after its existing checks. A person uses it to request a member desk booking at one service and a member workshop at another. Each service agrees to trust the issuer and asks only whether the membership is active. Each presentation needs fresh consent.</p>
+    <p>This is a proposed scenario. It does not establish government identity, legal age, financial KYC or a universal right to access services.</p>
+    <h2>What each participant brings</h2>
+    <ul>
+      <li><strong>Issuer:</strong> an accountable organisation, a documented evidence process, and a way to correct, expire and revoke credentials.</li>
+      <li><strong>Two services:</strong> a real eligibility decision, an existing baseline process and an alternative route for people who cannot use the wallet.</li>
+      <li><strong>Foundation and delivery team:</strong> reference software, proposed integration and consent design; production responsibilities must be agreed before enrolment.</li>
+      <li><strong>Participants:</strong> voluntary involvement, accessible information and the ability to stop future sharing.</li>
+    </ul>
+    <h2>What the pilot should measure</h2>
+    <p>Compare against the same service's current eligibility process using the same requirement. Record completion and abandonment, time to first useful result, repeat-use completion, fields retained, support effort, integration effort and cost per completed check. Report sample size and failed attempts as well as successes.</p>
+    <p>A small usability pilot cannot establish rare-fraud resistance. Security and identity-assurance evidence need their own assessment.</p>
+    <h2>The path to a real pilot</h2>
+    <ol>
+      <li>Agree the workflow, issuer, participants, lawful processing basis, budget and responsible contacts.</li>
+      <li>Finish required production adapters, authentication, credential checks and recovery. Demonstrate them on supported devices.</li>
+      <li>Review privacy, security, accessibility and fraud controls; agree retention and incident handling.</li>
+      <li>Run a synthetic-data rehearsal and independent integration checks. Real data is admitted only after the readiness gate is approved.</li>
+      <li>Run a bounded, voluntary pilot; review measured results before deciding on expansion.</li>
+    </ol>
+    <h2>Policy creates an opportunity, not automatic approval</h2>
+    <p>Australia's announced private-sector opening is an opportunity to evaluate services. It does not mandate adoption of VEID. Accreditation and approval to join AGDIS are separate processes. EU wallet acceptance does not confer recognition on this project.</p>
+    <p><a href="https://ministers.finance.gov.au/financeminister/media-release/2026/06/26/digital-id-expands-private-sector">Australian private-sector announcement</a> · <a href="https://www.digitalidsystem.gov.au/digital-id-accreditation/digital-id-regulator-forms">Current regulator forms</a> · <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202401183">EU digital identity regulation</a></p>
+    <h2>A sustainable service</h2>
+    <p>Service-funded integration, supported verification or enterprise support are possible models to evaluate with pilot participants. No prices are offered here. The proposal does not rely on selling personal information or requiring a new payment system.</p>
+    <h2>Start the discussion</h2>
+    <p>Tell us the workflow you want to improve, what you collect today and who could issue the credential. Please do not send identity documents or participant records. The email link opens your email application; it sends nothing automatically.</p>
+  </div>
+  <div class="grid gap-4 md:grid-cols-2 mt-8">
+    <CardLink href="/for-services/issuer-policy" title="Who should a service trust?" description="Proposed issuer admission, status checks and accountability." />
+    <CardLink href="/for-services/pilot-integration" title="Inspect the proposed flow" description="Data boundaries, example messages and recovery cases." />
+  </div>
+</Guide>
