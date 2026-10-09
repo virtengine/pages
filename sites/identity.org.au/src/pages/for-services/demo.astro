@@ -1,0 +1,18 @@
+---
+import Base from "@layouts/Base.astro";
+import PageHeader from "@components/PageHeader.astro";
+import PilotDemo from "@components/PilotDemo.astro";
+const crumbs = [{ name: "Home", href: "/" }, { name: "For services", href: "/for-services" }, { name: "Interactive demo", href: "/for-services/demo" }];
+---
+<Base title="Reusable Verification Demo | identity.org.au" description="Try a fictional membership credential across two services. Explore consent, refusal, expiry, issuer trust and recovery in a clearly labelled local simulation." breadcrumbs={crumbs}>
+  <PageHeader crumbs={crumbs} title="Try reusable verification" lede="See what changes when a service asks for one useful fact instead of another document upload." eyebrow="Interactive demonstration" />
+  <div class="container-site max-w-[72rem] py-10">
+    <PilotDemo />
+    <div class="prose-service mt-10">
+      <h2>What this helps you evaluate</h2>
+      <p>The same credential can serve different purposes, but each service needs its own accepted issuer, fresh request and user decision. A successful presentation must establish trust as well as cryptographic validity.</p>
+      <p>All organisations and credentials in this demo are fictional. It does not connect to VEID, issue credentials, prove identity, or establish age or financial KYC compliance.</p>
+      <p><a href="/for-services/pilot">Read the pilot proposal</a> · <a href="/for-services/pilot-integration">Inspect the proposed integration</a> · <a href="/for-services/issuer-policy">Review issuer trust</a></p>
+    </div>
+  </div>
+</Base>

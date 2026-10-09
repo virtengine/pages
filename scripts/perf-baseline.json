@@ -27,12 +27,12 @@
     "unresolved-assets": 0
   },
   "identity.org.au": {
-    "max-page-js": 1435,
-    "max-page-css": 10584,
+    "max-page-js": 2389,
+    "max-page-css": 10598,
     "max-page-fonts": 435537,
     "max-page-images": 1753780,
     "largest-asset": 1240030,
-    "total-gzip": 4462981,
+    "total-gzip": 4504670,
     "unresolved-assets": 0
   }
 }

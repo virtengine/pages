@@ -28,34 +28,35 @@ const setupSteps = [
   },
   {
     title: "Review and submit — encrypted",
-    body: "Everything is encrypted on your phone before it leaves. The network verifies your identity and issues your verification level.",
+    body: "The reference design packages approved data for verification. Production encryption and device integrations must be completed and tested before real use.",
   },
 ];
 ---
 
 <Base title={SITE.title} description={SITE.description} path="/" breadcrumbs={[{ name: "Home", href: "/" }]}>
   <ServiceHero
-    eyebrow="The Identity Wallet service"
-    title="Prove what matters. Keep the rest private."
-    lede="The Identity Wallet keeps your identity on your phone, encrypted. When a service needs an answer, such as whether you are over 18, it gets the answer, never your documents."
+    eyebrow="The Identity Wallet · in development"
+    title="Prove what a service needs. Share less of your identity."
+    lede="An open-source wallet powered by VEID for reusable, consent-based verification. Explore the experience and help test it through a service pilot."
+    statusLabel="Reference implementation"
   >
-    <div slot="actions">
-      <a href={SITE.walletPortal} class="btn-primary">
-        Join the launch list
+    <div slot="actions" class="flex flex-wrap gap-3">
+      <a href="/for-services/demo" class="btn-primary">
+        Try the interactive demo
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
       </a>
-      <a href="/get-started" class="btn-secondary">Set up your wallet</a>
+      <a href="/for-services/pilot" class="btn-secondary">Explore a pilot</a>
     </div>
     <p class="mt-6 mb-0 text-[0.95rem] text-muted measure-narrow">
-      Free, open source, and operated by a not-for-profit foundation. Independent of the
-      Australian Government.
+      Production wallet not available. The demo uses fictional credentials. Operated by a
+      not-for-profit foundation, independent of the Australian Government; no accreditation is claimed.
     </p>
     <div slot="media">
-      <ProofCard seed="IDAU-HOME-001" />
+      <ProofCard seed="IDAU-HOME-001" claim="Active membership" level="Membership" status="Example" />
       <p class="mt-3 mb-0 text-[0.8rem] text-muted">
-        Specimen card. The service receives the claim, not the document.
+        Fictional membership specimen. Explore the consent flow in the demo.
       </p>
     </div>
   </ServiceHero>
@@ -63,7 +64,7 @@ const setupSteps = [
   <FactStrip
     label="Service facts"
     facts={[
-      { label: "Launch list", value: "January 2027 updates", href: "/launch" },
+      { label: "Availability", value: "Demo and pilot proposal", href: "/for-services/pilot" },
       { label: "Licence", value: "Apache 2.0 open source", href: "/about/open-source" },
       { label: "Operator", value: "DETIO FOUNDATION LTD", href: "/about/who-runs-it" },
     ]}
@@ -73,8 +74,8 @@ const setupSteps = [
     <Section
       index="01"
       eyebrow="The service"
-      title="One verified identity, two wallet surfaces"
-      lede="Verify once on your phone; manage everything from the browser. Your verification level works everywhere the VirtEngine network is accepted — as an approved client, providers see your tier, never your documents."
+      title="One credential, more than one useful moment"
+      lede="The proposed experience lets people reuse trusted evidence across services that accept its issuer. Each service asks for a specific fact, and each request needs your decision."
     >
       <div class="grid gap-4 md:grid-cols-3">
         <CardLink
@@ -87,7 +88,7 @@ const setupSteps = [
           href="/wallet/web-wallet"
           tag="Manage + present"
           title="Web wallet — my.identity.org.au"
-          description="Present proofs, review every consent, control your sessions — from any browser, passkey sign-in."
+          description="Explore the proposed browser experience for presentation, consent and sessions. The production portal is not available."
         />
         <CardLink
           href="/wallet"
@@ -103,7 +104,7 @@ const setupSteps = [
     <Section
       index="02"
       eyebrow="Everyday uses"
-      title="What you can do with the Identity Wallet"
+      title="What the reference design explores"
     >
       <ol class="credential-index">
         <li>
@@ -155,8 +156,8 @@ const setupSteps = [
           <a href="/help/deleting-your-identity">
             <span>06</span>
             <span>
-              <strong>Leave, completely</strong>
-              <em>Delete your identity data on a published timeline. Encryption keys are destroyed, so deletion is real.</em>
+              <strong>Understand deletion and retention</strong>
+              <em>Review what can be deleted, what a service may retain, and the limits of immutable records.</em>
             </span>
           </a>
         </li>
@@ -169,7 +170,7 @@ const setupSteps = [
     layout="reverse"
     eyebrow="In everyday use"
     title="Prove the thing. Keep the document."
-    lede="A selfie with a live challenge is how the wallet knows a real person is present. The photograph is evidence for one verification — never a profile picture, never shared with the services you use."
+    lede="The reference capture flow explores liveness checks as one part of verification. Production adapters and independent testing are still required; a selfie alone is not proof of identity."
     caption="A live check in ordinary light: what the wallet needs is a moment of presence, not your archive."
   >
     <a href="/how-it-works" class="btn-secondary">See the full pipeline</a>
@@ -179,14 +180,14 @@ const setupSteps = [
     <div class="container-site">
       <Section
         index="03"
-        eyebrow="Get started"
-        title="Set up in about ten minutes"
-        lede="You need a smartphone and a government-issued identity document. The wallet guides you through each step, and you review everything before it is submitted."
+        eyebrow="Reference journey"
+        title="Explore the proposed capture journey"
+        lede="Read the capture design, then try a fictional membership presentation. Setup duration and real-device performance have not been established for production."
       >
         <div class="grid items-start gap-12 lg:grid-cols-12">
           <div class="lg:col-span-7">
             <Steps steps={setupSteps} />
-            <a href="/get-started/set-up-your-wallet" class="btn-primary mt-8">See the full setup guide</a>
+            <a href="/for-services/demo" class="btn-primary mt-8">Try the consent flow</a>
           </div>
           <div class="lg:col-span-5">
             <ServiceFigure
@@ -242,8 +243,8 @@ const setupSteps = [
       <Section
         index="05"
         eyebrow="Your data, in plain terms"
-        title="Locked on your device. Processed in a vault no one can open."
-        lede="Original document images stay on your device. The wallet processes them locally; only minimum, user-approved derived data may leave, encrypted for VEID verification."
+        title="Collect less. Make the data boundaries clear."
+        lede="The design keeps source document images local and limits submitted data. A real pilot must demonstrate the complete data flow, encryption, processing access and retention before admitting participants."
       >
         <ServiceFigure
           rail="Data lifecycle"
@@ -277,7 +278,7 @@ const setupSteps = [
                 </tr>
                 <tr>
                   <th scope="row">Biometric templates</th>
-                  <td>Encrypted before leaving your phone (X25519-XSalsa20-Poly1305)</td>
+                  <td>Production encryption and processing depend on completed, tested adapters</td>
                   <td>Never shared with services. Never sold — prohibited regardless of consent.</td>
                 </tr>
                 <tr>
@@ -343,8 +344,8 @@ const setupSteps = [
         <div class="border-t-4 border-navy pt-4">
           <h3 class="m-0 text-[1.1rem]">Open source</h3>
           <p class="mt-2 text-[0.98rem] text-body">
-            Every line of the wallet and the network is public. Nothing on this site asks you to
-            trust what you cannot inspect.
+            The reference software is public for inspection. Open source supports scrutiny;
+            independent assurance and production testing remain separate requirements.
             <a href="/about/open-source" class="link-plain">About the code</a>
           </p>
         </div>
@@ -366,9 +367,9 @@ const setupSteps = [
       </div>
       <Alert tone="info" title="Honesty first" class="mt-10">
         <p>
-          This wallet is a working, open-source <strong>reference implementation</strong> — the
-          blueprint production wallets build on. There are no app-store listings, and we make no
-          claims of government accreditation. What we publish here is what the code does.
+          This wallet is open-source reference software. Some production adapters remain extension
+          points. The interactive demo models consent using fictional credentials; it performs no
+          cryptographic verification. No app-store availability or government accreditation is claimed.
         </p>
       </Alert>
     </Section>
@@ -392,12 +393,12 @@ const setupSteps = [
   </div>
 
   <ClosingBand
-    eyebrow="Get your wallet"
-    title="Your identity should not live in someone else's database."
-    body="Join the launch list for the January 2027 rollout, follow the build in the open-source repository, or read exactly how your data is protected."
+    eyebrow="Build with us"
+    title="Make verification useful. Keep collection proportionate."
+    body="Explore the demonstration, review the pilot proposal, or follow availability updates. Production release depends on engineering, assurance and operational readiness."
   >
     <a href={SITE.walletPortal} class="btn-inverse">Join the launch list</a>
-    <a href="/get-started" class="btn-inverse-ghost">Set up your wallet</a>
+    <a href="/for-services/pilot" class="btn-inverse-ghost">Explore a pilot</a>
     <a href="/privacy" class="btn-inverse-ghost">Read the privacy model</a>
   </ClosingBand>
 </Base>

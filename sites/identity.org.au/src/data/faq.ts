@@ -143,7 +143,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
       {
         question: "What do I need to set up a wallet?",
         answer:
-          "A smartphone with a camera, a government-issued identity document (passport, driver licence or national ID), and about ten minutes. Higher verification levels also use your phone's fingerprint or face sensor.",
+          "The reference capture design uses a smartphone and identity evidence. The production wallet is not available, and setup duration has not been established. The educational demo uses fictional credentials and needs no identity documents. Production device and biometric support must be tested separately.",
         more: { label: "What you need", href: "/get-started/what-you-need" },
       },
       {

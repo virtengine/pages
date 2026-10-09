@@ -9,7 +9,7 @@ const crumbs = [
   { name: "Media credits", href: "/media-credits" },
 ];
 
-const assets = Object.entries(media).map(([slug, asset]) => ({ slug, ...asset }));
+const assets = (Object.keys(media) as (keyof typeof media)[]).map((slug) => ({ slug, ...media[slug] }));
 ---
 
 <Base

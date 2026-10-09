@@ -12,6 +12,7 @@ import "../styles/media.css";
 import "../styles/credential.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import AvailabilityNotice from "@components/AvailabilityNotice.astro";
 import { SITE } from "@data/site";
 import { fitTitle, metaDescription } from "@lib/meta";
 import {
@@ -161,6 +162,7 @@ const graph = schemaGraph([
   <body class="bg-paper text-body">
     <a href="#main" class="skip-link">Skip to content</a>
     <Header />
+    <AvailabilityNotice />
     <main id="main">
       <slot />
     </main>
