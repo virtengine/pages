@@ -9,11 +9,11 @@ import { itemListNode } from '@lib/schema';
 const breadcrumbs=[{name:'Home',href:'/'},{name:'Learn',href:'/learn'}];
 const categories=['All',...new Set(GUIDES.map(g=>g.category))];
 ---
-<Base title="Learn: Interactive Research Guides | det.io" description="Explore DET.io through nine interactive guides: identity, human–AI economics, economic safeguards, agent safety, compute, reputation, governance, and Bosun engineering." path="/learn" breadcrumbs={breadcrumbs} pageType="CollectionPage" schema={[itemListNode('https://det.io/learn','DET.io learning library',GUIDES.map(g=>({name:g.title,href:`/learn/${g.slug}`,description:g.summary})))]}>
+<Base title="Learn: Interactive Research Guides | det.io" description={`Explore DET.io through ${GUIDES.length} interactive guides: the end-to-end architecture, identity, human–AI economics, agent safety, compute, reputation, governance, and Bosun.`} path="/learn" breadcrumbs={breadcrumbs} pageType="CollectionPage" schema={[itemListNode('https://det.io/learn','DET.io learning library',GUIDES.map(g=>({name:g.title,href:`/learn/${g.slug}`,description:g.summary})))]}>
   <div class="learning-page">
     <Breadcrumbs crumbs={breadcrumbs}/>
-    <PageHero eyebrow="DET.io learning library" title="See the idea. Try the mechanism." lede="Start with a visual explanation, change a condition, and see why the result changes. Nine guides connect the research to the questions people actually ask.">
-      <p class="record-actions"><a class="btn-press" href="/learn/connected-research">Start with the whole system →</a><a class="record-link" href="#guides">Find a guide</a></p>
+    <PageHero eyebrow="DET.io learning library" title="See the idea. Try the mechanism." lede={`Start with a visual explanation, change a condition, and see why the result changes. The library’s ${GUIDES.length} guides connect the research to the questions people actually ask.`}>
+      <p class="record-actions"><a class="btn-press" href="/learn/end-to-end-accountability">Start with one task, end to end →</a><a class="record-link" href="#guides">Find a guide</a></p>
     </PageHero>
     <Section number="01" eyebrow="The big picture" title="Different programs. Shared dependencies." lede="Select a participant to follow what it contributes and what it needs from the others."><TeachingVisual kind="atlas"/></Section>
     <section id="guides" class="container-site record-section" aria-labelledby="library-title">
@@ -21,7 +21,7 @@ const categories=['All',...new Set(GUIDES.map(g=>g.category))];
       <div data-library>
         <label class="library-search">Search the guides<input type="search" data-guide-search placeholder="Try privacy, compute, or oversight" /></label>
         <div class="library-filters" aria-label="Filter guides by topic">{categories.map((c,i)=><button type="button" data-filter={c} aria-pressed={i===0?'true':'false'}>{c}</button>)}</div>
-        <p data-guide-count role="status">8 guides</p>
+        <p data-guide-count role="status">{GUIDES.length} guides</p>
         <div class="library-grid">{GUIDES.map((g,i)=><article class="guide-card" data-guide data-category={g.category} data-search={`${g.title} ${g.summary} ${g.category}`.toLowerCase()}><span class="guide-kind">{String(i+1).padStart(2,'0')} / {g.category} / Interactive</span><h3><a href={`/learn/${g.slug}`}>{g.title}</a></h3><p>{g.summary}</p><p class="guide-kind">{g.status}</p><a href={`/learn/${g.slug}`}>Try the explanation →</a></article>)}</div>
         <p data-empty hidden>No guide matches. Clear your search or choose another topic.</p>
         <noscript><p>All guides are listed above. Searching and filtering require JavaScript.</p></noscript>

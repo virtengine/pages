@@ -1,5 +1,7 @@
 # Design direction 2026 — det.io & identity.org.au
 
+**DET.io typography update (5 October 2026):** DET.io now uses self-hosted Archivo Variable throughout display, body, evidence labels, controls, and diagrams. The font is licensed under the SIL Open Font License 1.1. The requested stack is `"Archivo Variable", Archivo, "Segoe UI", sans-serif`; headings use 500–600 and body copy uses 400. Earlier DET.io type-trio guidance below is historical. Identity.org.au retains its separate typography.
+
 **Status:** Amendment B implemented in `sites/det.io` and `sites/identity.org.au` (2026-09-25). The sweep changes what the pages are made of — never the logo: det.io still ships `public/images/detio-logo.png`. Virtengine.com is out of this pass.
 **Scope:** `sites/det.io`, `sites/identity.org.au` (with a note on `sites/virtengine.com` for family coherence)
 **Method:** measured audits of the live sites, measured audits of Awwwards-winning sites, a published AI-slop taxonomy, and font-availability checks against the actual npm packages this repo can install.

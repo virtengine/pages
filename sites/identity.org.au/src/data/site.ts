@@ -4,7 +4,7 @@ export const SITE = {
   url: "https://identity.org.au",
   title: "Private Digital Identity Wallet Australia | identity.org.au",
   description:
-    "Set up a free privacy-preserving digital Identity Wallet. Prove age or ID without sharing documents. Open-source, nonprofit-run, independent of government.",
+    "Explore an open-source identity wallet in development. Reusable, consent-based verification powered by VEID. See the demo or discuss a service pilot.",
   email: "hello@det.io",
   dpoEmail: "dpo@virtengine.com",
   securityEmail: "security@virtengine.com",
@@ -99,6 +99,8 @@ export const FOOTER_COLUMNS: { heading: string; links: NavItem[] }[] = [
       { label: "Patents", href: "/about/patents" },
       { label: "For individuals", href: "/for-individuals" },
       { label: "For services", href: "/for-services" },
+      { label: "Pilot proposal", href: "/for-services/pilot" },
+      { label: "Interactive demo", href: "/for-services/demo" },
     ],
   },
   {

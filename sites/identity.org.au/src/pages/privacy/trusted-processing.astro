@@ -1,283 +1,42 @@
 ---
-import Base from "@layouts/Base.astro";
-import PageHeader from "@components/PageHeader.astro";
+import Guide from "@layouts/Guide.astro";
 import Alert from "@components/Alert.astro";
-import Callout from "@components/Callout.astro";
-import CardLink from "@components/CardLink.astro";
-import MediaFigure from "@components/media/MediaFigure.astro";
-import ServiceFigure from "@components/ServiceFigure.astro";
-import TableScroll from "@components/TableScroll.astro";
-import LockAndKey from "@components/diagrams/LockAndKey.astro";
-import DataLifecycle from "@components/diagrams/DataLifecycle.astro";
 import { SITE } from "@data/site";
-
-const crumbs = [
-  { name: "Home", href: "/" },
-  { name: "Privacy", href: "/privacy" },
-  { name: "Trusted processing", href: "/privacy/trusted-processing" },
-];
+const crumbs = [{ name: "Home", href: "/" }, { name: "Privacy", href: "/privacy" }, { name: "Trusted processing", href: "/privacy/trusted-processing" }];
 ---
-
-<Base
-  title="Trusted Processing: The Lock & Key | identity.org.au"
-  description="How VEID processes only user-approved derived data: source document images remain on your device, with enclave attestation for protected processing."
-  image="/media/vault-door-1440.webp"
-  breadcrumbs={crumbs}
-  ogType="article"
->
-  <PageHeader
-    crumbs={crumbs}
-    eyebrow="Your data and privacy"
-    title="Trusted processing: the lock and the key"
-    lede="Your evidence is only ever processed inside hardware-sealed vaults that no person can open — and you don't have to take that on faith, because the vault proves what it is before any data enters."
-  />
-
-  <div class="container-site max-w-[68rem] py-12">
-    <section>
-      <h2 class="mt-0 text-[1.6rem]">One verification, start to finish</h2>
-      <p class="text-body measure">
-        Follow one verification through the system. Your data is <strong>locked</strong> on your
-        device, travels sealed, is opened only inside a vault whose <strong>key is forged in the
-        hardware itself</strong>, and is destroyed once the answer exists. Only the answer leaves.
-      </p>
-      <ServiceFigure
-        rail="Trusted processing"
-        railRight="Lock and key"
-        scroll
-        class="mt-8"
-        caption="The journey of one verification: sealed on your device, opaque in transit, admitted through the attestation gate, processed and destroyed inside the vault — only the result reaches the chain."
-      >
-        <LockAndKey />
-      </ServiceFigure>
-    </section>
-
-    <section class="mt-16">
-      <h2 class="mt-0 text-[1.6rem]">What a trusted processing unit is</h2>
-      <div class="prose-service">
-        <p>
-          A trusted processing unit is a <strong>vault built out of the computer's own
-          hardware</strong>. The technical names are trusted execution environments and
-          confidential virtual machines — AMD SEV-SNP, Intel SGX and AWS Nitro are the three the
-          system supports. Inside one, the processor itself encrypts the memory, so even the
-          machine's owner, looking at their own hardware, sees only ciphertext.
-        </p>
-        <p>
-          Ordinary servers have doors: an administrator account, a debug console, a memory dump.
-          A trusted processing unit is <strong>designed with no doors at all</strong> — no
-          operator login, no console, no way to read the memory from outside. That is not a
-          policy that someone promises to follow; it is how the silicon works.
-        </p>
-      </div>
-      <MediaFigure
-        slug="vault-door"
-        ratio="16 / 9"
-        caption="The processing unit borrows the idea from the processor itself: a boundary with no door for the operator."
-        class="mt-8"
-      />
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">The gate: attestation, checked on-chain</h2>
-      <div class="prose-service">
-        <p>
-          Before your encrypted evidence is released to a vault, the vault must prove what it is.
-          It produces an <strong>attestation</strong> — a signed statement from the hardware
-          manufacturer's own certificate chain that says, in effect: <em>"I am genuine sealed
-          hardware, and I am running exactly this code, with this fingerprint."</em>
-        </p>
-        <p>
-          The VirtEngine chain verifies that attestation <strong>on-chain</strong>, in its
-          <code>x/enclave</code> module, checking the signature and comparing the code's
-          measurement — a cryptographic fingerprint of every byte the vault will run — against
-          the approved record. If a single byte of the code were different, the fingerprint would
-          not match and <strong>no data would be released to it</strong>. Because the check is
-          on-chain, it is public: anyone can confirm which enclave measurements the network
-          accepts.
-        </p>
-      </div>
-      <Callout title="What attestation does and does not prove" class="mt-6 max-w-[72ch]">
-        <p>
-          Attestation proves the vault is genuine hardware running exactly the approved code —
-          nothing more. The rest of the protection comes from what that approved code does:
-          verify, report a result, destroy the evidence. Both halves are open source, so both
-          halves can be checked.
-        </p>
-      </Callout>
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">The key: forged inside the vault</h2>
-      <div class="prose-service">
-        <p>
-          The key that decrypts your evidence <strong>never exists outside the vault</strong>. It
-          is derived inside the hardware, from the hardware — the processor's own secrets — and
-          sealed so it can only ever be used by that exact vault running that exact code
-          (hardware key derivation with vTPM sealing, in the technical terms).
-        </p>
-        <p>
-          This is why "no one can open it" is a design fact rather than a promise: there is no
-          key to hand over. Not to an operator with root access, not to the provider hosting the
-          machine, not to the foundation that stewards the project, not in response to a demand.
-          A key that never leaves the silicon cannot be copied, stolen, or surrendered.
-        </p>
-      </div>
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">What happens to your data, stage by stage</h2>
-      <p class="text-body measure">
-        Original document images stay on the user's device. The local client derives approved
-        verification data; only a minimum encrypted payload may enter VEID processing.
-      </p>
-      <DataLifecycle withTable class="mt-8" />
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">How and when data is discarded</h2>
-      <div class="prose-service">
-        <p>
-          Destruction is a commitment in the published Biometric Data Addendum, with actual
-          figures rather than adjectives:
-        </p>
-        <ul>
-          <li>
-            <strong>On your device:</strong> original document images remain local and are never
-            uploaded. Local OCR and document checks produce only the derived data you review.
-          </li>
-          <li>
-            <strong>Approved derived data:</strong> if you submit a scope, its notice states what
-            encrypted derived data is sent, who processes it, and the applicable lifecycle. It
-            never includes the original document image.
-          </li>
-          <li>
-            <strong>On deletion request:</strong> requests apply to data the network actually
-            received. Original document images remain on your device and are controlled there.
-          </li>
-          <li>
-            <strong>Encrypted network data:</strong> deletion and key-destruction limits are
-            explained in the relevant scope notice, including any immutable on-chain records.
-          </li>
-          <li>
-            <strong>Withdraw at any time</strong> by emailing
-            <a href={`mailto:${SITE.dpoEmail}`}>{SITE.dpoEmail}</a>.
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">Who can see what</h2>
-      <TableScroll label="Who can see each category of identity data" class="mt-6 table-scroll--wide">
-        <table class="table-gov">
-          <caption class="sr-only">
-            For each category of identity data, whether you, services, providers, the foundation
-            or operators can see it
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Data</th>
-              <th scope="col">You</th>
-              <th scope="col">Service you use</th>
-              <th scope="col">Providers</th>
-              <th scope="col">Foundation</th>
-              <th scope="col">Operators</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Raw documents</th>
-              <td>Yes — on your device</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never</td>
-            </tr>
-            <tr>
-              <th scope="row">Biometric data</th>
-              <td>Yes — on your device</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never</td>
-            </tr>
-            <tr>
-              <th scope="row">Encryption keys</th>
-              <td>Held in your phone's hardware</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never</td>
-              <td>Never — the vault's key never leaves the silicon</td>
-            </tr>
-            <tr>
-              <th scope="row">Score and tier</th>
-              <td>Yes — in full</td>
-              <td>Only with your consent, per request</td>
-              <td>Tier only, as an approved client</td>
-              <td>Public results only</td>
-              <td>Public results only</td>
-            </tr>
-          </tbody>
-        </table>
-      </TableScroll>
-      <p class="mt-4 mb-0 text-[0.92rem] text-muted measure">
-        "Never" for raw documents is architectural: the source image remains on your device and
-        is not transmitted. The scope notice describes any derived data that is separately approved.
-      </p>
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.6rem]">Verification you can check</h2>
-      <div class="prose-service">
-        <p>
-          Every claim on this page maps to something inspectable. The enclave runtime and the
-          attestation verifier are in the
-          <a href={SITE.github} rel="noopener">open-source repository</a>
-          (<code>pkg/enclave_runtime</code>); the on-chain verification lives in the
-          <code>x/enclave</code> module; the destruction and retention commitments are in the
-          versioned Biometric Data Addendum. The
-          <a href={SITE.docs} rel="noopener">protocol documentation</a> covers the attestation
-          formats in engineering detail.
-        </p>
-      </div>
-      <Alert tone="info" title="The honest limits" class="mt-6 max-w-[72ch]">
-        <p>
-          No security design is beyond all conceivable failure, and we do not claim this one is.
-          What we claim — checkably — is the design: attestation verified before data moves, keys
-          sealed in hardware, no operator access path, and destruction commitments with dates
-          attached. Designed so that no one — not operators, not providers, not the foundation —
-          can open the processing environment.
-        </p>
-      </Alert>
-    </section>
-
-    <section class="mt-14">
-      <h2 class="mt-0 text-[1.5rem]">Keep reading</h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-2">
-        <CardLink
-          href="/privacy"
-          tag="Policy"
-          title="Privacy"
-          description="Everything that exists, where it lives, who can read it, and the full retention table."
-        />
-        <CardLink
-          href="/how-it-works"
-          tag="Guide"
-          title="How it works"
-          description="The whole pipeline in plain language — on-device capture, network verification, consent."
-        />
-        <CardLink
-          href="/wallet/security"
-          tag="The service"
-          title="Wallet security"
-          description="The wallet's security model: on-device processing, key handling, real deletion."
-        />
-        <CardLink
-          href="/help/how-your-biometrics-are-protected"
-          tag="Help"
-          title="How your biometrics are protected"
-          description="The four promises that never change, and the retention schedule in numbers."
-        />
-      </div>
-    </section>
+<Guide title="Trusted processing and its limits" metaTitle="Trusted Processing & Privacy Boundaries | identity.org.au" description="How the reference design aims to limit identity-data access, what attestation establishes, and which deployment and retention evidence a real pilot still needs." lede="Encryption and attestation can limit access. Their protection depends on the implementation, approved code, key controls and the environment actually deployed." eyebrow="Privacy · reference design" breadcrumbs={crumbs} sectionLabel="Privacy and trust" sectionNav={[{ label: "Privacy", href: "/privacy" }, { label: "Trusted processing", href: "/privacy/trusted-processing" }, { label: "Security", href: "/security" }, { label: "Pilot data flow", href: "/for-services/pilot-integration" }]}>
+  <Alert tone="info" title="Design goals and production evidence">
+    <p>The wallet and processing stack are reference software. Production adapters, independent assurance and real-device testing are separate requirements. The educational demo handles fictional data locally and does not use an enclave or verify identity.</p>
+  </Alert>
+  <div class="prose-service mt-8">
+    <h2>Start with less information</h2>
+    <p>The reference design keeps original document images on the user's device and limits approved submissions to the data needed for a particular verification. The proposed membership pilot can instead reuse a credential from an accountable issuer's existing process. Its relying services need a membership answer, not source evidence.</p>
+    <h2>Where confidential processing fits</h2>
+    <p>Trusted execution environments and confidential computing are intended to isolate processing from some infrastructure access. The repository contains enclave-related implementations. Protection must be assessed for the selected hardware, code, key provisioning, logs and operational configuration; it is not a guarantee that no person or vulnerability can ever expose information.</p>
+    <h2>What attestation establishes</h2>
+    <p>An attestation can provide evidence about an environment and its measured software, subject to the platform's verification rules. A deployment must validate authenticity, freshness and the approved measurement before releasing data or keys.</p>
+    <p>Attestation alone does not establish that the code is safe, that its inputs represent a real person, or that all output, telemetry and retained records are harmless. Those need separate review and testing.</p>
+    <h2>Key controls need their own evidence</h2>
+    <p>Document how keys are created, provisioned, sealed, rotated, recovered and destroyed. Identify every authority that can change approved software or release policies. Do not assume every supported platform uses the same key derivation or that a key can never be copied, misused or exposed.</p>
+    <h2>Data and records that remain</h2>
+    <ul>
+      <li><strong>Issuer evidence:</strong> governed by the issuer's lawful process and agreed retention.</li>
+      <li><strong>Wallet credentials and keys:</strong> need device protection, recovery and loss handling.</li>
+      <li><strong>Derived verification data:</strong> requires an explicit inventory, approved processors and lifecycle.</li>
+      <li><strong>Verifier receipts and logs:</strong> need access controls and proportionate retention.</li>
+      <li><strong>Network metadata:</strong> public identifiers and timing may permit correlation; encryption does not conceal every relationship.</li>
+    </ul>
+    <h2>Withdrawal and deletion</h2>
+    <p>Withdrawing consent should stop future sharing under that consent. It does not undo a previous disclosure or automatically erase lawful service records. Deletion and key destruction need verifiable procedures, including backups, copies and any immutable chain records.</p>
+    <p>A real pilot must agree the retention period and deletion limits before taking participant data. The <a href="/privacy">privacy policy</a> provides the policy context; any pilot requires its own accurate scope notice.</p>
+    <h2>What must be demonstrated before a real pilot</h2>
+    <ol>
+      <li>Working encryption and device adapters, with development fallbacks excluded.</li>
+      <li>Validated attestation and key-release controls for the selected deployment, where confidential processing is used.</li>
+      <li>Reviewed software, including issuer/holder binding, proof construction and replay prevention.</li>
+      <li>End-to-end data inventory, logs, backups, retention and deletion tests.</li>
+      <li>Independent security and privacy assessment, incident response and accessible recovery.</li>
+    </ol>
+    <p><a href={SITE.github}>Inspect the reference repository</a> · <a href="/for-services/pilot-integration">Read the proposed pilot data flow</a> · <a href="/for-services/pilot">Review the pilot proposal</a></p>
   </div>
-</Base>
+</Guide>

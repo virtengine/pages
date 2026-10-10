@@ -11,6 +11,7 @@ interface Props {
   result?: string;
   level?: string;
   record?: string;
+  status?: string;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   result = "Yes",
   level = "Standard",
   record = "IDAU-0001",
+  status = "Verified",
 } = Astro.props;
 ---
 
@@ -34,7 +36,7 @@ const {
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M2 6.2 4.6 8.8 10 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
-      <span>Verified · {level}</span>
+      <span>{status} · {level}</span>
     </p>
   </div>
   <dl class="proof-fields">
@@ -56,7 +58,7 @@ const {
     </div>
   </dl>
   <p class="mrz" aria-label="Specimen machine-readable zone. Not a real identity document. It records a sample claim and that documents were not shared.">
-    <span>IDAUASPECIMEN&lt;&lt;PROOF</span><span>CLAIM&lt;OVER18</span><br />
+    <span>IDAUASPECIMEN&lt;&lt;PROOF</span><span>{`CLAIM<${claim.toUpperCase().replace(/[^A-Z0-9]/g, "")}`}</span><br />
     <span>{record.replace("-", "")}&lt;AUS</span><span>RESULT&lt;YES&lt;&lt;DOCS&lt;NONE</span>
   </p>
 </article>

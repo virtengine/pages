@@ -1,0 +1,163 @@
+<div id="pilot-demo" class="pilot-demo">
+  <p class="demo-label">Local simulation · fictional issuer and services</p>
+  <p class="demo-intro">One membership credential. Two services. A separate decision for every request.</p>
+  <p>This demonstration performs no real identity checks or cryptographic verification. It sends no demo selections or claims to a server and saves no demo state after a reload.</p>
+  <noscript><p>Enable JavaScript to try the controls. The <a href="/for-services/pilot-integration">integration guide</a> explains the same flow without JavaScript.</p></noscript>
+  <div class="demo-controls">
+    <div>
+      <label for="demo-service">Which service is asking?</label>
+      <select id="demo-service">
+        <option value="workspace">Example shared workspace</option>
+        <option value="learning">Example learning service</option>
+      </select>
+    </div>
+    <div>
+      <label for="demo-scenario">Try a different situation</label>
+      <select id="demo-scenario">
+        <option value="valid">Available membership credential</option>
+        <option value="expired">Credential expired</option>
+        <option value="revoked">Issuer revoked the credential</option>
+        <option value="unknown">Issuer not accepted by the service</option>
+        <option value="missing">No matching credential</option>
+        <option value="lost">Lost device; recovery required</option>
+        <option value="interrupted">Interrupted request has expired</option>
+      </select>
+    </div>
+  </div>
+  <div class="demo-grid">
+    <section class="demo-panel" aria-labelledby="demo-wallet-heading">
+      <p class="demo-label">01 · In your example wallet</p>
+      <h2 id="demo-wallet-heading">The credential stays with you</h2>
+      <dl class="demo-fields">
+        <div><dt>Issuer</dt><dd>Example Membership Association</dd></div>
+        <div><dt>Credential</dt><dd>Active membership</dd></div>
+        <div><dt>Name</dt><dd>Example member · kept private</dd></div>
+        <div><dt>Member number</dt><dd>DEMO-0042 · kept private</dd></div>
+      </dl>
+      <p id="demo-credential-state">Scenario: available membership credential.</p>
+    </section>
+    <section class="demo-panel" aria-labelledby="demo-request-heading">
+      <p class="demo-label">02 · The request</p>
+      <h2 id="demo-request-heading">Review before sharing</h2>
+      <dl class="demo-fields">
+        <div><dt>Service</dt><dd id="demo-service-name">Example shared workspace</dd></div>
+        <div><dt>Purpose</dt><dd id="demo-purpose">Check eligibility for a member desk booking</dd></div>
+        <div><dt>Requested fact</dt><dd>Is this membership active?</dd></div>
+        <div><dt>Request</dt><dd id="demo-request-id">Create a request to begin</dd></div>
+      </dl>
+      <p>The example receipt contains the service, purpose, request reference and membership result. The pilot must agree a retention period before accepting real participants.</p>
+      <button id="demo-request" type="button" class="btn-primary" disabled>Create a request</button>
+      <div id="demo-consent" hidden>
+        <p><strong>Share only the membership answer with this service?</strong> This choice applies to this request. You can decline.</p>
+        <div class="demo-actions">
+          <button id="demo-approve" type="button" class="btn-primary">Approve this request</button>
+          <button id="demo-decline" type="button" class="btn-secondary">Decline</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <section class="demo-result" aria-labelledby="demo-result-heading">
+    <p class="demo-label">03 · The service receives</p>
+    <h2 id="demo-result-heading" tabindex="-1">No claim shared yet</h2>
+    <p id="demo-result-detail" role="status" aria-live="polite" aria-atomic="true">Create a request and review what the service is asking.</p>
+    <pre id="demo-response" aria-label="Example result" hidden></pre>
+    <p class="demo-boundary">Production checks still needed: issuer signature and trust, holder authentication, fresh request binding, expiry and status. This demo models outcomes; it does not run those checks.</p>
+  </section>
+  <div class="demo-actions demo-lifecycle">
+    <button id="demo-revoke" type="button" class="btn-secondary" disabled>Pause future sharing with this service</button>
+    <button id="demo-restore" type="button" class="btn-secondary" hidden>Allow a new consent request</button>
+    <button id="demo-reset" type="button" class="btn-secondary" disabled>Reset demonstration</button>
+  </div>
+  <section class="demo-history" aria-labelledby="demo-history-heading">
+    <h2 id="demo-history-heading">Your example sharing history</h2>
+    <p>Only successful presentations appear here. Changing services requires a fresh consent request; pausing sharing keeps existing receipts.</p>
+    <ol id="demo-history"><li>No successful presentations yet.</li></ol>
+  </section>
+</div>
+
+<script>
+  import { SERVICES, RESULTS, initialState, request, decide, revoke, restoreConsent, type Service, type Scenario } from "@lib/pilot-demo";
+  const root = document.querySelector<HTMLElement>("#pilot-demo");
+  if (root) {
+    const get = <T extends HTMLElement>(id: string) => root.querySelector<T>(`#${id}`)!;
+    const service = get<HTMLSelectElement>("demo-service");
+    const scenario = get<HTMLSelectElement>("demo-scenario");
+    let state = initialState();
+    const render = () => {
+      const selected = SERVICES[state.service];
+      get("demo-service-name").textContent = selected.name;
+      get("demo-purpose").textContent = selected.purpose;
+      get("demo-credential-state").textContent = `Scenario: ${scenario.selectedOptions[0].textContent}.`;
+      get("demo-request-id").textContent = state.sequence ? `demo-request-${state.sequence}` : "Create a request to begin";
+      get("demo-consent").hidden = !state.pending;
+      get<HTMLButtonElement>("demo-request").disabled = state.pending;
+      get("demo-restore").hidden = !state.revoked.includes(state.service);
+      const result = state.result ? RESULTS[state.result] : null;
+      get("demo-result-heading").textContent = result?.title ?? (state.pending ? "Waiting for your decision" : "No claim shared yet");
+      get("demo-result-detail").textContent = result?.detail ?? (state.pending ? "Review the service and purpose. Approve or decline this request." : "Create a request and review what the service is asking.");
+      const response = get("demo-response");
+      response.hidden = state.result !== "accepted";
+      response.textContent = state.result === "accepted" ? JSON.stringify(state.receipts.at(-1), null, 2) : "";
+      const history = get("demo-history");
+      history.replaceChildren();
+      for (const receipt of state.receipts) {
+        const li = document.createElement("li");
+        li.textContent = `${SERVICES[receipt.service].name} · membership_active: true · ${receipt.requestId}`;
+        history.append(li);
+      }
+      if (!state.receipts.length) {
+        const li = document.createElement("li");
+        li.textContent = "No successful presentations yet.";
+        history.append(li);
+      }
+    };
+    const changeSelection = () => {
+      state = { ...state, service: service.value as Service, scenario: scenario.value as Scenario, pending: false, result: null, sequence: 0 };
+      render();
+    };
+    // Keep a monotonically increasing reference across selection changes.
+    let sequence = 0;
+    service.addEventListener("change", changeSelection);
+    scenario.addEventListener("change", changeSelection);
+    get("demo-request").addEventListener("click", () => {
+      state = request({ ...state, sequence }, service.value as Service, scenario.value as Scenario);
+      sequence = state.sequence;
+      render();
+      get("demo-approve").focus();
+    });
+    get("demo-approve").addEventListener("click", () => { state = decide(state, true); render(); get("demo-result-heading").focus(); });
+    get("demo-decline").addEventListener("click", () => { state = decide(state, false); render(); get("demo-result-heading").focus(); });
+    get("demo-revoke").addEventListener("click", () => { state = revoke(state); render(); });
+    get("demo-restore").addEventListener("click", () => { state = restoreConsent(state); render(); });
+    get("demo-reset").addEventListener("click", () => {
+      state = initialState(); sequence = 0; service.value = "workspace"; scenario.value = "valid"; render();
+    });
+    get<HTMLButtonElement>("demo-revoke").disabled = false;
+    get<HTMLButtonElement>("demo-reset").disabled = false;
+    render();
+  }
+</script>
+
+<style>
+  .pilot-demo { border: 1px solid var(--color-hairline); padding: clamp(1rem, 3vw, 2rem); margin-top: 2rem; }
+  .demo-label { font-family: var(--font-mono); font-size: .78rem; color: var(--color-steel); margin: 0 0 .7rem; }
+  .demo-intro { font-family: var(--font-display); font-size: 1.7rem; line-height: 1.2; color: var(--color-ink); }
+  .demo-controls, .demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .demo-controls label { display: block; font-weight: 700; margin-bottom: .4rem; }
+  .demo-controls select { width: 100%; min-height: 3rem; background: var(--color-paper); color: var(--color-ink); border: 1px solid var(--color-hairline-strong); padding: .65rem; font: inherit; }
+  .demo-panel { background: var(--color-alt); padding: 1.25rem; min-width: 0; }
+  .pilot-demo h2 { font-size: 1.35rem; margin: .5rem 0 1rem; }
+  .demo-fields { margin: 0; }
+  .demo-fields > div { border-top: 1px solid var(--color-hairline); padding: .7rem 0; }
+  .demo-fields dt { font-size: .85rem; color: var(--color-muted); }
+  .demo-fields dd { margin: .2rem 0 0; font-weight: 600; }
+  .demo-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; }
+  .demo-result { border-left: 4px solid var(--color-action); background: var(--color-tint); padding: 1.25rem; margin-top: 1.5rem; }
+  .demo-result pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; border-top: 1px solid var(--color-hairline); padding-top: 1rem; }
+  .demo-boundary { font-size: .9rem; margin-bottom: 0; }
+  .demo-lifecycle { padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-hairline); }
+  .demo-history { margin-top: 1.5rem; }
+  .pilot-demo button:disabled { opacity: .65; cursor: default; }
+  .pilot-demo [hidden] { display: none !important; }
+  @media (max-width: 700px) { .demo-controls, .demo-grid { grid-template-columns: 1fr; } .demo-actions button { width: 100%; } }
+</style>

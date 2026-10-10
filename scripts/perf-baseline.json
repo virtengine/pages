@@ -18,21 +18,21 @@
     "unresolved-assets": 0
   },
   "det.io": {
-    "max-page-js": 5204,
-    "max-page-css": 19104,
-    "max-page-fonts": 217505,
+    "max-page-js": 5265,
+    "max-page-css": 19706,
+    "max-page-fonts": 80860,
     "max-page-images": 20383,
-    "largest-asset": 43503,
-    "total-gzip": 1030258,
+    "largest-asset": 68453,
+    "total-gzip": 987236,
     "unresolved-assets": 0
   },
   "identity.org.au": {
-    "max-page-js": 1435,
-    "max-page-css": 10584,
+    "max-page-js": 2389,
+    "max-page-css": 10598,
     "max-page-fonts": 435537,
     "max-page-images": 1753780,
     "largest-asset": 1240030,
-    "total-gzip": 4462981,
+    "total-gzip": 4504670,
     "unresolved-assets": 0
   }
 }

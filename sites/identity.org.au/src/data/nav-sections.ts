@@ -20,6 +20,10 @@ export const WALLET_NAV: NavItem[] = [
 
 export const FOR_SERVICES_NAV: NavItem[] = [
   { label: "Overview", href: "/for-services" },
+  { label: "Pilot proposal", href: "/for-services/pilot" },
+  { label: "Try the demo", href: "/for-services/demo" },
+  { label: "Issuer trust policy", href: "/for-services/issuer-policy" },
+  { label: "Pilot integration", href: "/for-services/pilot-integration" },
   { label: "Become a verifier", href: "/for-services/become-a-verifier" },
   { label: "Integration overview", href: "/for-services/integration-overview" },
 ];

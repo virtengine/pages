@@ -1,11 +1,13 @@
 # DET.io Brand & Design Guide
 
-> **Amendment B (2026-09-25) is normative for surface and type.**
+> **Amendment B (2026-09-25) governs surfaces; the 2026-10-05 update governs type.**
 > The page is a two-colour research record, not a sticker sheet and not a 3D
 > render. **The logo is brand, not a design surface:** `Lockup` renders
 > `public/images/detio-logo.png` exactly as it is and it is never redrawn,
-> flattened or replaced. Display is Instrument Serif (sentence case, weight
-> 400). Text is Archivo. Evidence is IBM Plex Mono.
+> flattened or replaced. Typography uses Archivo Variable throughout: display,
+> body, evidence labels, controls, and diagrams share the same family. The stack
+> is `"Archivo Variable", Archivo, "Segoe UI", sans-serif`; headings use weight
+> 500–600 and body copy uses 400. Earlier multi-family guidance is historical.
 > Stock `#f1efe9`, ink `#14171c`, spot `#1a6f97`, annotation red `#b4341f`
 > for status only. One shadow: `3px 3px 0` on `.plate`. No lattice, grain,
 > marquees, gradient text, uppercase H1, or backdrop blur.

@@ -19,16 +19,16 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const CHECKER = join(HERE, "check-design.mjs");
 
 /** Build <root>/sites/demo/... and run the checker against it. */
-function run(files) {
+function run(files, site = "demo") {
   const root = mkdtempSync(join(tmpdir(), "design-test-"));
   for (const [name, body] of Object.entries(files)) {
-    const full = join(root, "sites", "demo", name);
+    const full = join(root, "sites", site, name);
     mkdirSync(dirname(full), { recursive: true });
     writeFileSync(full, body);
   }
   const result = spawnSync(process.execPath, [CHECKER, root], {
     encoding: "utf8",
-    env: { ...process.env, CHECK_DESIGN_SITES: "sites/demo" },
+    env: { ...process.env, CHECK_DESIGN_SITES: `sites/${site}` },
   });
   return { status: result.status, out: `${result.stdout}${result.stderr}` };
 }
@@ -68,6 +68,21 @@ test("4: a font outside the allowlist fails", () => {
   const { status, out } = run({ "src/styles/a.css": `.t { font-family: "Space Grotesk", sans-serif; }` });
   assert.equal(status, 1, out);
   assert.match(out, /font/);
+});
+
+test("display weight follows the declared face rather than the token name", () => {
+  const heading = `.title { font-family: var(--font-display); font-weight: 600; }`;
+  const archivo = run({
+    "src/styles/global.css": `:root { --font-display: "Archivo Variable", Archivo, sans-serif; }`,
+    "src/styles/heading.css": heading,
+  }, "det.io");
+  assert.equal(archivo.status, 0, archivo.out);
+  const serif = run({
+    "src/styles/global.css": `:root { --font-display: "Instrument Serif", serif; }`,
+    "src/styles/heading.css": heading,
+  }, "det.io");
+  assert.equal(serif.status, 1, serif.out);
+  assert.match(serif.out, /faux-bold/);
 });
 
 test("5: a soft shadow fails, a hard offset passes", () => {

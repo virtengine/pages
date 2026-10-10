@@ -1,0 +1,23 @@
+---
+import { COMPONENTS, MATURITY } from "@data/architecture";
+import "../../styles/teaching.css";
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<div class="role-grid" data-preserve-acronym>
+  {COMPONENTS.map((c) => (
+    <article class="role-card">
+      <span class="role-name">{c.name}</span>
+      <h3>{c.role}</h3>
+      <p>{c.question}</p>
+      {!compact && (
+        <dl>
+          <dt>Provides</dt><dd>{c.provides}</dd>
+          <dt>Needs from the others</dt><dd>{c.needs}</dd>
+        </dl>
+      )}
+      <p class="role-status"><span class="maturity-badge" data-level={c.maturity}>{MATURITY[c.maturity].label}</span></p>
+      <a class="record-link" href={c.href}>Explore {c.name} →</a>
+    </article>
+  ))}
+</div>
