@@ -1,4 +1,6 @@
-// Publish the optimized social card as JPEG for broad social crawler support.
+// Publish the optimized social card as JPEG for broad social crawler support. q50 + 4:2:0 is
+// visually clean for this flat line art and ~57% smaller than q90 (161 KB -> ~70 KB); the perf
+// ledger counts og.jpg as the site's largest asset.
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -14,7 +16,7 @@ if (!existsSync(src)) {
 
 await sharp(src)
   .resize(1200, 630, { fit: "contain", background: "#fffaf1" })
-  .jpeg({ quality: 90, mozjpeg: true })
+  .jpeg({ quality: 50, mozjpeg: true, chromaSubsampling: "4:2:0" })
   .toFile(out);
 
 console.log("og.mjs: wrote public/og.jpg (1200x630)");
