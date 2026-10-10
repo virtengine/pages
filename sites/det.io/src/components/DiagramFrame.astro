@@ -23,13 +23,5 @@ const { label, caption, class: className } = Astro.props;
 
 <style>
   .diagram-frame > div { min-width: 0; }
-  .diagram-frame :global(svg) { display: block; width: 100%; height: auto; margin-inline: auto; }
-
-  @media (min-width: 1024px) {
-    .diagram-frame :global(svg) { min-width: min(100%, 940px); }
-  }
-
-  @media (max-width: 767px) {
-    .diagram-frame :global(svg) { min-width: 0 !important; max-width: 100%; }
-  }
+  .diagram-frame :global(svg) { display: block; width: 100%; min-width: 0; max-width: 100%; height: auto; margin-inline: auto; }
 </style>

@@ -469,10 +469,16 @@ h2,
 }
 .program-copy .program-meta { grid-column: 1 / -1; width: 100%; justify-content: space-between; gap: 1rem; letter-spacing: 0.06em; }
 .program-status { color: var(--color-spot); text-align: right; }
-.program-copy h3 { grid-column: 1; grid-row: 2 / span 3; align-self: center; margin: 1rem 0; font-size: clamp(2.25rem, 4vw, 3.4rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; }
+.program-copy h3 { grid-column: 1; grid-row: 2 / span 4; align-self: center; margin: 1rem 0; font-size: clamp(2.25rem, 4vw, 3.4rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; }
 .program-copy .program-description { max-width: 39rem; color: var(--color-ink-70); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.7; }
 .program-copy .program-description,
+.program-copy .program-role,
+.program-copy .program-needs,
 .program-copy .program-action { grid-column: 2; }
+.program-copy .program-role { margin-bottom: 0.8rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--color-spot); }
+.program-copy .program-role strong { display: block; margin-top: 0.3rem; font-family: var(--font-display); font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 600; letter-spacing: 0; color: var(--color-ink); }
+.program-copy .program-needs { margin-top: 1rem; max-width: 39rem; padding-left: 0.9rem; border-left: 2px solid var(--color-rule-strong); font-size: 0.95rem; }
+.program-copy .program-needs span { display: block; font: 0.7rem var(--font-mono); color: var(--color-ink-45); }
 .program-action { display: inline-flex; align-items: center; justify-self: start; gap: 1.25rem; margin-top: 1.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--color-spot); color: var(--color-spot); font-weight: 600; text-decoration: none; }
 .program-action span { font-family: var(--font-mono); transition: transform 140ms ease; }
 .program-action:hover span { transform: translate(2px, -2px); }
@@ -678,6 +684,8 @@ h2,
   .program-copy { grid-template-columns: minmax(0, 1fr); padding: 1.6rem; }
   .program-copy h3,
   .program-copy .program-description,
+  .program-copy .program-role,
+  .program-copy .program-needs,
   .program-copy .program-action { grid-column: 1; grid-row: auto; }
   .program-copy h3 { margin: 1rem 0; font-size: clamp(2rem, 9vw, 3rem); }
   .program-source { margin-top: 1.5rem !important; }

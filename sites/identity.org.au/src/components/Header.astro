@@ -42,7 +42,7 @@ const isActive = (href: string) =>
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M2 7h10m0 0L8 3m4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
-            <span class="sr-only">(January 2027)</span>
+            <span class="sr-only">(availability updates)</span>
           </a>
         </li>
       </ul>
@@ -95,7 +95,7 @@ const isActive = (href: string) =>
   const toggle = document.getElementById("nav-toggle");
   const nav = document.getElementById("mobile-nav");
   const desktop = window.matchMedia("(min-width: 1024px)");
-  const setOpen = (open, moveFocus = false) => {
+  const setOpen = (open: boolean, moveFocus = false) => {
     toggle?.setAttribute("aria-expanded", String(open));
     nav?.classList.toggle("hidden", !open);
     nav?.classList.toggle("lg:!hidden", true);

@@ -33,7 +33,7 @@ const crumbs = [
 
   <div class="mt-10 grid gap-6">
     {
-      TIERS.map((tier, i) => (
+      TIERS.map((tier) => (
         <section class="border border-hairline rounded-tile bg-paper">
           <div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-alt px-6 py-4">
             <h2 class="m-0 text-[1.3rem]">
@@ -83,11 +83,10 @@ const crumbs = [
       override and no way to buy a level — for anyone.
     </p>
     <p>
-      However strong the evidence you provide, the scoring itself always runs inside
-      <a href="/privacy/trusted-processing">trusted processing units</a> — hardware-sealed
-      vaults no one can open — while original document images remain on your device and never
-      enter the network. Only minimum, approved derived data may be processed for a verification
-      result.
+      The design explores <a href="/privacy/trusted-processing">trusted processing</a> for approved
+      derived data, while keeping source images local. Actual protection depends on the selected
+      deployment, code and key controls. Production scoring and device integrations need independent
+      assessment before real use.
     </p>
   </div>
 

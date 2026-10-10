@@ -12,6 +12,8 @@ import ProgramIdentityArt from "@components/diagrams/ProgramIdentityArt.astro";
 import { RESEARCH_TOPICS } from "@data/research";
 import { SITE } from "@data/site";
 import { itemListNode } from "@lib/schema";
+import ArchitectureRoles from "@components/architecture/ArchitectureRoles.astro";
+import { CENTRAL_QUESTION } from "@data/architecture";
 
 const breadcrumbs = [
   { name: "Home", href: "/" },
@@ -31,7 +33,7 @@ const researchListSchema = itemListNode(
 
 <Base
   title="Research: Cloud, AI Safety & Identity | det.io"
-  description="DET.io research portfolio: VirtEngine decentralized cloud, DSEMA multi-agent AI safety, Bosun coding agents, VEID identity and six cross-cutting topics."
+  description="One research question, four programs: how identity, governed AI agents, open compute and supervised engineering combine to keep human authority verifiable."
   path="/research"
   breadcrumbs={breadcrumbs}
   pageType="CollectionPage"
@@ -40,20 +42,23 @@ const researchListSchema = itemListNode(
   <Breadcrumbs crumbs={breadcrumbs} />
   <PageHero
     eyebrow="Research portfolio"
-    title="Open research, grounded in working systems"
-    lede="The foundation's education purpose (constitution clause 6.1.1) obliges public research, open specifications, and safety materials. Everything here is grounded in the actual artifacts — the open VirtEngine repository, granted patent AU2024203136B2 (in force until 12 May 2044), the 103-page DSEMA specification, and the signed constitution. Questions and approaches are stated as such; we do not invent results."
-  />
+    title="One research question, four programs"
+    lede={`${CENTRAL_QUESTION} Each program answers part of it. The work is grounded in published artifacts: the open VirtEngine repository, granted patent AU2024203136B2, the 103-page DSEMA specification, Bosun's source, and the signed constitution. Questions are stated as questions; we do not invent results.`}
+  >
+    <p class="record-actions"><a class="btn-press" href="/research/human-machine-symbiosis">Read the research synthesis</a><a class="record-link" href="/research/human-machine-symbiosis#end-to-end">Try one task, end to end →</a><a class="record-link" href="/research/nist-ai-rmf">NIST AI RMF alignment</a></p>
+  </PageHero>
 
-  <Section eyebrow="Connected research" title="How the whole portfolio fits together." lede="Explore the proposed relationships between people, identity, productive agents, physical compute, and stewardship.">
-    <TeachingVisual kind="atlas" />
+  <Section eyebrow="Connected research" title="Each part answers a different question." lede="The programs are designed to depend on one another. Each role below links to the program that carries it; the map shows the proposed dependencies, none of which is yet an integration.">
+    <ArchitectureRoles compact />
+    <div class="mt-10"><TeachingVisual kind="atlas" /></div>
     <p class="record-actions"><a class="btn-press" href="/research/human-machine-symbiosis">Human–machine symbiosis: the research synthesis →</a><a class="record-link" href="/learn">Interactive learning library</a></p>
   </Section>
 
   <Section
     number="01"
     eyebrow="Programs"
-    title="Four programs, one lock"
-    lede="Each program carries its own body of technology, patents and documentation, supported by the same long-term governance framework."
+    title="Four programs, one architecture, one lock"
+    lede="Each program carries its own technology, patents, and documentation. All four are parts of the same research architecture, and all four are held under the same public-benefit lock."
   >
     <div class="grid gap-6 lg:grid-cols-2">
       <ProgramCard

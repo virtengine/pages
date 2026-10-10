@@ -26,17 +26,31 @@ governance, and published research from the site alone.
 
 ## Positioning
 
-A registered Australian not-for-profit publishing primary research on
-decentralised cloud, AI safety, and digital identity, with governance and
-financial reporting published in the open. A commercial vendor would not publish
-its governance and financials alongside advocacy.
+A registered Australian not-for-profit researching one question: can people and
+increasingly autonomous AI systems share infrastructure and make consequential
+decisions within an architecture that keeps human authority verifiable and
+prevents either side from exercising unchecked control? The four programs
+(VEID, DSEMA, VirtEngine, Bosun) are presented as parts of that one
+architecture, not as four separate products. Governance and financial reporting
+are published in the open; a commercial vendor would not publish them alongside
+advocacy.
+
+The single source for the question, each part's role, maturity levels, the
+end-to-end task, capability pairs, related work, and the NIST AI RMF mapping is
+`src/data/architecture.ts`. Every maturity claim must use its ladder: published
+design, in public source, in operating use, institutional instrument,
+integrated end to end (not reached), independently validated (not reached).
+Never describe the integrated system as built, and never cite third-party or
+AI-generated assessments of DET.io as validation.
+
+Private funding-application research and assessments are never published on this site.
 
 ## Operating Context
 
 - Astro site inside the `pages` monorepo; shares the VirtEngine brand system but
   has its own editorial voice and palette.
 - `DESIGN.md` is normative for surface and type (Amendment B, 2026-09-25).
-- Editorial type: Instrument Serif display over warm paper surfaces
+- Consistent Archivo Variable typography over warm paper surfaces
   (`#f1efe9`, `#e7e4db`, `#fbfaf7`), ink `#14171c`.
 - Registration documents and examination reports are part of the evidence base.
 

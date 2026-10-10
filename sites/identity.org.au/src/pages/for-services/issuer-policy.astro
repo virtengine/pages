@@ -1,0 +1,35 @@
+---
+import Guide from "@layouts/Guide.astro";
+import { FOR_SERVICES_NAV } from "@data/nav-sections";
+const crumbs = [{ name: "Home", href: "/" }, { name: "For services", href: "/for-services" }, { name: "Issuer trust policy", href: "/for-services/issuer-policy" }];
+---
+<Guide title="Trust starts with the issuer" metaTitle="Pilot Issuer Trust Policy | identity.org.au" description="Proposed pilot policy for credential issuers: evidence, accepted claims, key control, expiry, revocation, complaints and verifier responsibility." lede="A signature tells you who signed a claim. You still need a reason to rely on what they say." eyebrow="Proposed pilot policy · version 0.1" breadcrumbs={crumbs} sectionLabel="For services" sectionNav={FOR_SERVICES_NAV}>
+  <div class="prose-service">
+    <p>This policy is a proposal for the membership pilot. No issuer is admitted through this page, and no real issuer registry is provided by the demonstration.</p>
+    <h2>Admission before issuance</h2>
+    <ul>
+      <li>Identify the legal organisation, accountable contacts and authority to make the specific membership claim.</li>
+      <li>Document the evidence checked, eligibility rules, exception handling and how the credential binds to its holder.</li>
+      <li>Record allowed credential types, formats, assurance and maximum validity. A membership issuer is not automatically trusted for age, residency or government identity.</li>
+      <li>Establish key custody, rotation, compromise response, status publication and suspension procedures.</li>
+      <li>Agree privacy notices, accessibility, correction and complaint processes, retention and independent assurance requirements.</li>
+    </ul>
+    <h2>Decide trust per service and purpose</h2>
+    <p>Each service accepts specified issuers for specified claims. Avoid a universal “trusted” badge. An issuer may be suitable for a workshop eligibility decision while unsuitable for a regulated financial identity check.</p>
+    <h2>Checks before accepting a presentation</h2>
+    <ol>
+      <li>Verify the issuer signature and approved key using the selected credential profile.</li>
+      <li>Confirm the issuer is currently accepted for this credential type and purpose.</li>
+      <li>Check credential validity and fresh status using the agreed status method. Unavailable required checks fail closed or route to the disclosed alternative process.</li>
+      <li>Verify holder authentication and bind the presentation to the service, fresh challenge, session and intended request.</li>
+      <li>Match the approved claim to the request and confirm the user's decision. Store only the agreed lawful receipt.</li>
+    </ol>
+    <h2>Change, suspension and recovery</h2>
+    <p>Issuers must support corrections and replacement credentials. A suspected compromise suspends affected issuance or acceptance according to the agreed incident process. Revoking a credential is distinct from withdrawing a user's consent; neither silently deletes information already lawfully received.</p>
+    <p>Lost devices require an approved recovery or reissuance route. A successful device unlock alone does not establish the issuer's membership claim.</p>
+    <h2>Responsibilities remain visible</h2>
+    <p>The issuer is accountable for its evidence process. The relying service is accountable for its eligibility decision and retention. Wallet and infrastructure operators need defined operational, privacy and incident responsibilities. Cryptography does not remove those obligations.</p>
+    <p>For broader interoperability, the <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID4VP specification</a> describes presentation validation and issuer-trust considerations. Supporting that protocol would not by itself grant accreditation or government recognition.</p>
+    <p><a href="/for-services/pilot">Return to the pilot proposal</a> · <a href="/pilot/discussion-pack.md" download>Download the proposed policy and readiness checklist</a></p>
+  </div>
+</Guide>

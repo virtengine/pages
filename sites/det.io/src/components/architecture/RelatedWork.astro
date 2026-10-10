@@ -1,0 +1,21 @@
+---
+import { RELATED_WORK } from "@data/architecture";
+import "../../styles/teaching.css";
+---
+<div class="related-list" data-preserve-acronym>
+  {RELATED_WORK.map((r) => (
+    <article>
+      <div>
+        <h3>{r.area}</h3>
+        <ul>{r.work.map((w) => <li><a href={w.href}>{w.label}</a></li>)}</ul>
+      </div>
+      <div>
+        <span class="teach-kicker">What it addresses</span><p>{r.addresses}</p>
+        <span class="teach-kicker">How the DET.io proposal differs</span><p>{r.differs}</p>
+      </div>
+      <div>
+        <span class="teach-kicker">What DET.io has not shown</span><p>{r.notShown}</p>
+      </div>
+    </article>
+  ))}
+</div>

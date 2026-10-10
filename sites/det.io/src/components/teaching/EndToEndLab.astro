@@ -1,0 +1,95 @@
+---
+import { E2E_AUDIT, E2E_PARTS, E2E_STATUS, E2E_STEPS, E2E_TASK, MATURITY } from "@data/architecture";
+const first = E2E_STEPS[0];
+const names = Object.fromEntries(E2E_PARTS.map((p) => [p.id, p.label.toLowerCase()]));
+const data = {
+  n: names,
+  s: E2E_STEPS.map((s) => ({ r: s.requires, a: s.actor, x: s.action, y: s.yields, w: s.without, m: s.maturity, b: MATURITY[s.maturity].label, t: s.status, h: s.source.href, l: s.source.label })),
+  q: E2E_AUDIT.map((a) => a.requires),
+};
+---
+<figure class="teach-figure e2e" data-e2e data-preserve-acronym>
+  <div class="teach-top"><span class="teach-kicker">One task, end to end</span><span>Integration test · not yet performed</span></div>
+  <h3>Switch off a part. Watch a guarantee disappear.</h3>
+  <p class="e2e-task"><strong>The task.</strong> {E2E_TASK}</p>
+
+  <fieldset class="e2e-parts">
+    <legend>Parts of the architecture</legend>
+    {E2E_PARTS.map((p) => <label><input type="checkbox" checked data-part={p.id} /><span><strong>{p.label}</strong><small>{p.program}</small></span></label>)}
+  </fieldset>
+
+  <ol class="sequence-track e2e-track">{E2E_STEPS.map((s, i) => <li><button type="button" data-e2e-step={i} aria-pressed={i === 0 ? "true" : "false"}><span>{String(i + 1).padStart(2, "0")}</span><strong>{s.label}</strong><small data-step-state={i}>Holds</small></button></li>)}</ol>
+
+  <div class="e2e-detail" aria-live="polite" aria-atomic="true">
+    <div>
+      <span class="teach-kicker" data-e2e-actor>{first.actor}</span>
+      <h4 data-e2e-action>{first.action}</h4>
+      <p class="e2e-outcome" data-e2e-outcome><strong data-e2e-lead>Holds.</strong> <span data-e2e-text>{first.yields}</span></p>
+    </div>
+    <div class="e2e-status">
+      <span class="maturity-badge" data-level={first.maturity} data-e2e-badge>{MATURITY[first.maturity].label}</span>
+      <p data-e2e-status>{first.status}</p>
+      <a data-e2e-source href={first.source.href}>{first.source.label}</a>
+    </div>
+  </div>
+
+  <section class="e2e-audit" aria-labelledby="e2e-audit-title">
+    <h4 id="e2e-audit-title">What could an independent reviewer answer from the final record?</h4>
+    <p class="teach-kicker" data-e2e-count role="status">{E2E_AUDIT.length} of {E2E_AUDIT.length} answerable in the design</p>
+    <ul>{E2E_AUDIT.map((a, i) => <li data-audit={i}><span class="e2e-mark" data-audit-mark={i}>Answerable</span>{a.question}</li>)}</ul>
+    <p class="e2e-note" data-e2e-note>Every question is answerable only when every part is present. That is the claim the integration has to prove: no single program provides it.</p>
+  </section>
+
+  <figcaption>{E2E_STATUS} Sources: <a href="https://github.com/virtengine/virtengine">VirtEngine source</a>, <a href="/research/dsema">DSEMA specification</a>, <a href="/constitution">Foundation constitution</a>.</figcaption>
+  <noscript>
+    <ol>{E2E_STEPS.map((s) => <li><strong>{s.label} ({s.actor}).</strong> {s.action} With every part: {s.yields} Without it: {s.without} Status: {s.status}</li>)}</ol>
+    <p>Switching parts off requires JavaScript.</p>
+  </noscript>
+  <script type="application/json" data-e2e-data set:html={JSON.stringify(data).replace(/</g, "\\u003c")} />
+</figure>
+<script>
+  document.querySelectorAll<HTMLElement>("[data-e2e]").forEach((root) => {
+    const d = JSON.parse(root.querySelector("[data-e2e-data]")!.textContent!);
+    const $ = (k: string) => root.querySelector<HTMLElement>(`[data-${k}]`)!;
+    const boxes = [...root.querySelectorAll<HTMLInputElement>("[data-part]")];
+    const all = d.q.length;
+    let index = 0;
+    const render = () => {
+      const off = boxes.filter((b) => !b.checked).map((b) => b.dataset.part!);
+      const lost = (r: string[]) => r.filter((x) => off.includes(x));
+      const names = (r: string[]) => r.map((x) => d.n[x]).join(" and ");
+      d.s.forEach((s: any, i: number) => {
+        const b = $(`e2e-step="${i}"`), gone = lost(s.r).length > 0;
+        b.setAttribute("aria-pressed", String(i === index));
+        b.classList.toggle("stopped", gone);
+        $(`step-state="${i}"`).textContent = gone ? "Guarantee lost" : "Holds";
+      });
+      const s = d.s[index], l = lost(s.r), badge = $("e2e-badge"), src = $("e2e-source") as HTMLAnchorElement;
+      $("e2e-actor").textContent = s.a;
+      $("e2e-action").textContent = s.x;
+      $("e2e-outcome").classList.toggle("blocked", l.length > 0);
+      $("e2e-lead").textContent = l.length ? `Without ${names(l)}.` : "Holds.";
+      $("e2e-text").textContent = l.length ? s.w : s.y;
+      badge.dataset.level = s.m;
+      badge.textContent = s.b;
+      $("e2e-status").textContent = s.t;
+      src.href = s.h;
+      src.textContent = s.l;
+      let ok = 0;
+      d.q.forEach((r: string[], i: number) => {
+        const yes = !lost(r).length, mark = $(`audit-mark="${i}"`);
+        ok += +yes;
+        mark.textContent = yes ? "Answerable" : "Lost";
+        mark.classList.toggle("blocked", !yes);
+        $(`audit="${i}"`).classList.toggle("lost", !yes);
+      });
+      $("e2e-count").textContent = `${ok} of ${all} answerable in the design`;
+      $("e2e-note").textContent = off.length
+        ? `Switching off ${names(off)} removes ${all - ok} of ${all} answers. The remaining parts still work individually, but the record no longer accounts for the whole task.`
+        : "Every question is answerable only when every part is present. That is the claim the integration has to prove: no single program provides it.";
+    };
+    root.querySelectorAll<HTMLElement>("[data-e2e-step]").forEach((b) => b.addEventListener("click", () => { index = +b.dataset.e2eStep!; render(); }));
+    boxes.forEach((b) => b.addEventListener("change", render));
+    render();
+  });
+</script>

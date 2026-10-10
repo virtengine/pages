@@ -1,0 +1,48 @@
+---
+import Guide from "@layouts/Guide.astro";
+import Alert from "@components/Alert.astro";
+import { FOR_SERVICES_NAV } from "@data/nav-sections";
+const crumbs = [{ name: "Home", href: "/" }, { name: "For services", href: "/for-services" }, { name: "Pilot integration", href: "/for-services/pilot-integration" }];
+const request = { demo_only: true, profile: "illustrative-membership-v0.1", request_id: "demo-request-1", verifier: "example-workspace", purpose: "Check eligibility for a member desk booking", claim: "membership_active", accepted_issuer: "example-membership-association", fresh_challenge: "GENERATE_AND_BIND_IN_PRODUCTION", retention: "AGREE_BEFORE_REAL_PILOT" };
+const response = { demo_only: true, request_id: "demo-request-1", outcome: "accepted", disclosed: { membership_active: true }, verification: "SIMULATED_NOT_CRYPTOGRAPHICALLY_VERIFIED" };
+---
+<Guide title="From request to useful answer" metaTitle="Pilot Data Flow & Integration | identity.org.au" description="Inspect an illustrative membership request and response, data boundaries, trust checks, recovery and the production integration gates still required." lede="Agree the claim and trust model first. Choose and test the production protocol before depending on an integration." eyebrow="Illustrative integration · not a production API" breadcrumbs={crumbs} sectionLabel="For services" sectionNav={FOR_SERVICES_NAV}>
+  <Alert tone="info" title="Example messages, not an available API">
+    <p>The JSON below is a discussion fixture, not an OpenID4VP or VEID wire format. It has no signature and cannot verify a person. The demo makes no network requests and does not implement credential issuance.</p>
+  </Alert>
+  <div class="prose-service mt-8">
+    <h2>Where information moves</h2>
+    <ol class="flow">
+      <li><strong>Issuer → wallet.</strong> The issuer checks membership using its existing process, then issues a holder-bound credential. Source evidence follows the issuer's agreed retention policy.</li>
+      <li><strong>Service → wallet.</strong> An authenticated request names the service, purpose, requested claim, fresh challenge and retention notice.</li>
+      <li><strong>User → wallet.</strong> The user reviews and approves or declines. Different services require distinct decisions.</li>
+      <li><strong>Wallet → service.</strong> An approved presentation contains the necessary claim and verification material. Names, member numbers and source documents are excluded from this proposed workflow.</li>
+      <li><strong>Service → receipt.</strong> After validating issuer, holder, freshness and status, the service stores the agreed minimum result and request receipt.</li>
+    </ol>
+    <p>The educational demo keeps its fictional credential and history in browser memory. It has no issuer connection, chain transaction or status service. Production placement of records, including any on-chain metadata, is a design decision requiring privacy review.</p>
+    <h2>Illustrative request</h2>
+    <pre><code>{JSON.stringify(request, null, 2)}</code></pre>
+    <h2>Illustrative accepted response</h2>
+    <pre><code>{JSON.stringify(response, null, 2)}</code></pre>
+    <p>A production verifier must never accept the <code>demo_only</code> fixture. “Accepted” in the demo is an educational outcome, not a signed verification result.</p>
+    <h2>Normal outcomes your service needs to handle</h2>
+    <ul>
+      <li><strong>Declined:</strong> no membership claim; provide a non-wallet route.</li>
+      <li><strong>Expired or revoked:</strong> reject the credential and explain the issuer's renewal or correction route.</li>
+      <li><strong>Unaccepted issuer:</strong> reject even if the signature is mathematically valid.</li>
+      <li><strong>Missing credential:</strong> explain accepted issuers and alternatives.</li>
+      <li><strong>Lost device:</strong> authenticate recovery and reissue where necessary; never skip holder checks.</li>
+      <li><strong>Interrupted or replayed request:</strong> create a fresh request and bind it to the current session.</li>
+      <li><strong>Withdrawn consent:</strong> block new sharing until a new decision; apply agreed retention to past receipts.</li>
+    </ul>
+    <h2>The production integration gate</h2>
+    <p>Select a concrete credential format, issuer trust mechanism and status method. Evaluate <a href="https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html">OpenID4VCI</a> for issuance and <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID4VP</a> for presentation against the target ecosystem. Test between independent implementations and review replay prevention, key rotation, compromise and recovery.</p>
+    <p>Selective disclosure and verifier-to-verifier unlinkability are different properties. Public identifiers, timestamps, receipts and status lookups can still create correlation. A production privacy review must trace them.</p>
+    <p>No interoperability, accredited service or production endpoint is claimed here. <a href="/for-services/demo">Try the local demo</a> or <a href="/for-services/pilot">discuss a pilot</a>.</p>
+  </div>
+</Guide>
+<style>
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--color-alt); border: 1px solid var(--color-hairline); padding: 1rem; font-size: .85rem; }
+  .flow { list-style-position: outside; }
+  .flow li { border-left: 3px solid var(--color-action); padding-left: 1rem; margin-bottom: 1rem; }
+</style>
