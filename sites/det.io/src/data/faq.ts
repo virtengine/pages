@@ -48,6 +48,24 @@ export const FAQ: FaqItem[] = [
     links: [{ label: "Directors and the Permanent Director", href: "/constitution/directors-and-permanent-director" }],
   },
   {
+    question: "What connects DET.io's research programs?",
+    answer:
+      "One research question: can people and increasingly autonomous AI systems share infrastructure and make consequential decisions within an architecture that keeps human authority verifiable and prevents either side from exercising unchecked control? Each program answers part of it. Identity and VEID address who may authorise an action, with minimal disclosure. DSEMA addresses what agents may do and how their rules may change. VirtEngine addresses where work runs and how it is paid for, on terms anyone can inspect. Bosun provides operating experience of supervised agents doing real engineering work. The guarantees the research cares about depend on handoffs between these parts, so they are studied as one architecture.",
+    links: [
+      { label: "Human–machine symbiosis research synthesis", href: "/research/human-machine-symbiosis" },
+      { label: "One task, end to end", href: "/learn/end-to-end-accountability" },
+    ],
+  },
+  {
+    question: "Is the integrated architecture built?",
+    answer:
+      "No. The parts exist at different levels of maturity. VirtEngine's market, escrow, attestation, and dispute paths and VEID's consent records are in public source, on a network that is not live. DSEMA is a published design with a pending patent and no implementation. Bosun is experimental software in operating use by its maintainers, and it is not an implementation of DSEMA. The parts are not integrated with one another, and nothing has been independently validated. The research synthesis publishes the end-to-end test the integration would have to pass.",
+    links: [
+      { label: "What is established, and what is a hypothesis", href: "/research/human-machine-symbiosis#maturity" },
+      { label: "NIST AI RMF alignment", href: "/research/nist-ai-rmf" },
+    ],
+  },
+  {
     question: "What is VirtEngine?",
     answer:
       "VirtEngine is a decentralized cloud computing marketplace: a Cosmos SDK / CometBFT blockchain (written in Go, Apache 2.0, single virtengine binary) that connects tenants who need compute with providers who lease capacity, with identity, encryption, escrow, usage settlement, and provider auditing enforced by the chain itself. It is protected by granted Australian patent AU2024203136B2, in force until 12 May 2044, and includes VEID, a privacy-preserving decentralized identity layer.",

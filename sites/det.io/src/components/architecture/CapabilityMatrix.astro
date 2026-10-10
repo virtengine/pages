@@ -1,0 +1,21 @@
+---
+import { CAPABILITY_PAIRS, MATURITY } from "@data/architecture";
+import "../../styles/teaching.css";
+---
+<div class="table-scroll" data-preserve-acronym>
+  <table class="pair-table">
+    <caption class="sr-only">What each combination of components is meant to make possible, why neither part suffices alone, its status today, and the next evidence needed.</caption>
+    <thead><tr><th scope="col">Combination</th><th scope="col">Meant to make possible</th><th scope="col">Why neither part suffices</th><th scope="col">Status today</th><th scope="col">Next evidence needed</th></tr></thead>
+    <tbody>
+      {CAPABILITY_PAIRS.map((p) => (
+        <tr>
+          <th scope="row">{p.pair}</th>
+          <td data-label="Meant to make possible">{p.enables}</td>
+          <td data-label="Why neither part suffices">{p.whyNeither}</td>
+          <td data-label="Status today"><div>{p.maturity.map((m) => <span class="maturity-badge" data-level={m}>{MATURITY[m].short}</span>)}</div>{p.status}</td>
+          <td data-label="Next evidence needed">{p.next}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

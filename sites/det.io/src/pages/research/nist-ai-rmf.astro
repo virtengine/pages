@@ -1,0 +1,60 @@
+---
+import Base from '@layouts/Base.astro';
+import Breadcrumbs from '@components/Breadcrumbs.astro';
+import PageHero from '@components/PageHero.astro';
+import MaturityLadder from '@components/architecture/MaturityLadder.astro';
+import { ARCHITECTURE_REVIEWED, ARCHITECTURE_REVIEWED_ISO, MATURITY, NIST_CHARACTERISTICS, NIST_FUNCTIONS, NIST_RMF } from '@data/architecture';
+import { articleNode } from '@lib/schema';
+import '../../styles/teaching.css';
+const breadcrumbs=[{name:'Home',href:'/'},{name:'Research',href:'/research'},{name:'NIST AI RMF alignment',href:'/research/nist-ai-rmf'}];
+---
+<Base title="NIST AI RMF Alignment: DET.io Architecture | det.io" description="How DET.io's human–machine research architecture maps to the NIST AI Risk Management Framework's Govern, Map, Measure and Manage functions, including the gaps." path="/research/nist-ai-rmf" breadcrumbs={breadcrumbs} ogType="article" modifiedTime={ARCHITECTURE_REVIEWED_ISO} schema={[articleNode({canonical:'https://det.io/research/nist-ai-rmf',title:'NIST AI RMF alignment',description:'A self-assessed mapping of DET.io research to the NIST AI Risk Management Framework 1.0.',section:'Research synthesis',type:'TechArticle'})]}>
+  <div class="learning-page">
+    <Breadcrumbs crumbs={breadcrumbs}/>
+    <PageHero eyebrow="Framework alignment · Self-assessment" title="The same problem NIST names, approached as architecture." lede="The NIST AI Risk Management Framework sets out how organisations should govern, map, measure, and manage AI risk. This page shows where DET.io’s research architecture addresses each function, the level of evidence behind each point, and where the gaps are.">
+      <p class="teach-kicker">Reviewed {ARCHITECTURE_REVIEWED} · Not a NIST assessment, endorsement, or certification</p>
+      <p class="record-actions"><a class="btn-press" href="#functions">See the four functions</a><a href={NIST_RMF.href}>Read the framework →</a></p>
+    </PageHero>
+
+    <section class="container-site record-section" aria-labelledby="read-title"><p class="folio">01 · How to read this mapping</p><h2 id="read-title">Alignment of purpose, not proof of conformance.</h2>
+      <div class="research-questions mt-8">
+        <article><h3>The framework is voluntary.</h3><p>The <a href={NIST_RMF.href}>AI RMF 1.0 (NIST AI 100-1, January 2023)</a> is guidance for organisations that design, develop, deploy, or use AI. It does not certify systems. Its <a href={NIST_RMF.profile.href}>Generative AI Profile</a> applies the same functions to generative models.</p></article>
+        <article><h3>This is DET.io’s own reading.</h3><p>The category summaries are paraphrased. Matching a research design to a category shows that it addresses the same concern. It does not show that the risk is managed in practice, and no external party has reviewed this mapping.</p></article>
+        <article><h3>Every point carries its evidence level.</h3><p>Each entry is tagged with the same maturity ladder used across the research. Most points are published design. None has reached integration or independent validation.</p></article>
+        <article><h3>Gaps are listed with each function.</h3><p>Where the architecture does not address a category, or addresses it only on paper, the mapping says so rather than leaving the category out.</p></article>
+      </div>
+    </section>
+
+    <section id="functions" class="container-site record-section" aria-labelledby="functions-title"><p class="folio">02 · The four core functions</p><h2 id="functions-title">Govern, map, measure, manage.</h2>
+      <div class="rmf-grid mt-8" data-preserve-acronym>
+        {NIST_FUNCTIONS.map((f)=>(
+          <article class="rmf-card" id={`rmf-${f.id}`}>
+            <span class="teach-kicker">NIST AI RMF function</span>
+            <h3>{f.name}</h3>
+            <p>{f.purpose}</p>
+            <ul>{f.categories.map((c)=><li>{c}</li>)}</ul>
+            <span class="teach-kicker">Where the architecture addresses it</span>
+            <ol>{f.architecture.map((a)=><li><span class="maturity-badge" data-level={a.maturity}>{MATURITY[a.maturity].short}</span><a href={a.href}>{a.text}</a></li>)}</ol>
+            <p class="rmf-gap"><strong>Gap.</strong> {f.gap}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="container-site record-section" aria-labelledby="traits-title"><p class="folio">03 · Characteristics of trustworthy AI</p><h2 id="traits-title">Seven characteristics. Two clear gaps.</h2>
+      <p class="record-stand">The framework describes seven characteristics of trustworthy AI. The architecture says most about safety, security, accountability, and privacy. It says least about explainability and fairness.</p>
+      <div class="table-scroll mt-8">
+        <table class="pair-table">
+          <caption class="sr-only">NIST trustworthiness characteristics, the corresponding DET.io architecture feature, and its status.</caption>
+          <thead><tr><th scope="col">Characteristic</th><th scope="col">Architecture feature</th><th scope="col">Status</th></tr></thead>
+          <tbody>{NIST_CHARACTERISTICS.map((c)=><tr><th scope="row">{c.name}</th><td data-label="Architecture feature">{c.architecture}</td><td data-label="Status">{c.status}</td></tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="container-site record-section" aria-labelledby="ladder-title"><p class="folio">04 · Evidence levels</p><h2 id="ladder-title">What each badge means.</h2>
+      <div class="mt-8"><MaturityLadder/></div>
+      <p class="record-actions"><a class="btn-press" href="/research/human-machine-symbiosis">Read the research synthesis →</a><a href="/research/human-machine-symbiosis#end-to-end">Try the end-to-end task</a><a href="/contact">Discuss an evaluation</a></p>
+    </section>
+  </div>
+</Base>

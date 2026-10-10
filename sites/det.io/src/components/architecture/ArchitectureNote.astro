@@ -1,0 +1,22 @@
+---
+import { COMPONENTS, MATURITY, type ComponentId } from "@data/architecture";
+import "../../styles/teaching.css";
+interface Props { id: ComponentId }
+const { id } = Astro.props;
+const c = COMPONENTS.find((x) => x.id === id)!;
+const others = COMPONENTS.filter((x) => x.id !== id);
+---
+<aside class="container-site arch-note" aria-label={`${c.name} in the research architecture`} data-preserve-acronym>
+  <p class="teach-kicker">One of four parts · Role in the architecture</p>
+  <div class="arch-note-body">
+    <div>
+      <h2>{c.role}</h2>
+      <p>{c.question}</p>
+    </div>
+    <dl>
+      <div><dt>Needs from the others</dt><dd>{c.needs}</dd></div>
+      <div><dt>Status</dt><dd><span class="maturity-badge" data-level={c.maturity}>{MATURITY[c.maturity].label}</span> Not yet integrated with the other parts.</dd></div>
+    </dl>
+  </div>
+  <p class="arch-note-links"><a href="/research/human-machine-symbiosis">The shared research question</a> · <a href="/research/human-machine-symbiosis#end-to-end">See this part in one end-to-end task</a> · Other parts: {others.map((o, i) => <>{i > 0 && ", "}<a href={o.href}>{o.name}</a></>)}</p>
+</aside>

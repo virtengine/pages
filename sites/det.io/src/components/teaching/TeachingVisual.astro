@@ -4,8 +4,9 @@ import EconomicLab from './EconomicLab.astro';
 import SafetyLab from './SafetyLab.astro';
 import SequenceLesson from './SequenceLesson.astro';
 import CouplingLab from './CouplingLab.astro';
+import EndToEndLab from './EndToEndLab.astro';
 import '../../styles/teaching.css';
 interface Props { kind?: string }
 const { kind = 'atlas' } = Astro.props;
 ---
-{kind==='atlas'?<ResearchAtlas/>:kind==='economy'?<EconomicLab/>:kind==='coupling'?<CouplingLab/>:kind==='safety'?<SafetyLab/>:<SequenceLesson kind={kind}/>}
+{kind==='atlas'?<ResearchAtlas/>:kind==='economy'?<EconomicLab/>:kind==='coupling'?<CouplingLab/>:kind==='safety'?<SafetyLab/>:kind==='end-to-end'?<EndToEndLab/>:<SequenceLesson kind={kind}/>}

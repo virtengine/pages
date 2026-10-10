@@ -1,0 +1,14 @@
+---
+import { MATURITY } from "@data/architecture";
+import "../../styles/teaching.css";
+const rungs = Object.entries(MATURITY);
+const unreached = new Set(["integrated", "validated"]);
+---
+<ol class="maturity-ladder">
+  {rungs.map(([key, m]) => (
+    <li class={unreached.has(key) ? "unreached" : undefined}>
+      <span class="maturity-badge" data-level={key}>{m.label}</span>
+      <p>{m.meaning}</p>
+    </li>
+  ))}
+</ol>
