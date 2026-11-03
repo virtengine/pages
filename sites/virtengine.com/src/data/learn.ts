@@ -423,7 +423,7 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "How to read this model",
         paragraphs: [
-          "This is the proposed model for the March 2027 MainNet launch window, not a token offer or a promise of allocation. TestNet is planned for January 2027, but TestNet parameters, tokens, and state are pre-production and are not guaranteed to carry into MainNet. Final parameters and any later amendments should be checked against published governance decisions.",
+          "This is the proposed model for the MainNet launch (20XX; no date set), not a token offer or a promise of allocation. TestNet is also planned for 20XX with no date set, but TestNet parameters, tokens, and state are pre-production and are not guaranteed to carry into MainNet. Final parameters and any later amendments should be checked against published governance decisions.",
         ],
       },
       {
@@ -1017,10 +1017,10 @@ export const LEARN: LearnEntry[] = [
   },
   {
     slug: "mainnet-roadmap",
-    title: "Road to MainNet: TestNet 2027 to Launch",
+    title: "Road to MainNet: TestNet to Launch",
     label: "Mainnet roadmap",
     metaDescription:
-      "Road to VirtEngine MainNet: TestNet January 2027, MainNet March 2027, validation gates and promotion criteria. Track the launch posture.",
+      "Road to VirtEngine MainNet: TestNet and MainNet planned for 20XX (no date set), validation gates and promotion criteria. Track the launch posture.",
     kicker: "Network",
     intro:
       "VirtEngine's launch posture is unusual for the industry: it is a checked-in, versioned decision record, not a marketing countdown. This guide reports exactly what the repository records and shows you how to verify it yourself.",
@@ -1028,15 +1028,15 @@ export const LEARN: LearnEntry[] = [
       {
         heading: "The launch sequence",
         paragraphs: [
-          "TestNet is planned for the January 2027 launch window. It is the public pre-production environment for multi-operator validation and may be reset; its tokens have no production value and its state is not guaranteed to migrate to MainNet.",
-          "MainNet is planned for the March 2027 launch window. It is the persistent production network and requires TestNet exit evidence, final artifacts, and a fresh go/no-go approval. Exact dates will be published through the formal launch process, and neither network should be described as live before confirmation.",
+          "TestNet is planned for 20XX; no launch date has been set. It is the public pre-production environment for multi-operator validation and may be reset; its tokens have no production value and its state is not guaranteed to migrate to MainNet.",
+          "MainNet is planned for 20XX, after TestNet; no launch date has been set. It is the persistent production network and requires TestNet exit evidence, final artifacts, and a fresh go/no-go approval. Exact dates will be published through the formal launch process, and neither network should be described as live before confirmation.",
         ],
       },
       {
-        heading: "Why the windows are separated",
+        heading: "Why the launches are separated",
         paragraphs: [
-          "January provides real public TestNet evidence across consensus, validator and provider operations, VEID, marketplace and settlement flows, upgrades, monitoring, recovery, and incident response.",
-          "February is reserved for observing results, remediating and re-testing defects, completing security and operational reviews, freezing production artifacts, and coordinating validators. March is the MainNet window only after those exit criteria are accepted; TestNet success is not automatic MainNet approval.",
+          "The TestNet phase provides real public evidence across consensus, validator and provider operations, VEID, marketplace and settlement flows, upgrades, monitoring, recovery, and incident response.",
+          "The interval after TestNet is reserved for observing results, remediating and re-testing defects, completing security and operational reviews, freezing production artifacts, and coordinating validators. MainNet opens only after those exit criteria are accepted; TestNet success is not automatic MainNet approval.",
         ],
       },
       {
@@ -1077,8 +1077,8 @@ export const LEARN: LearnEntry[] = [
     media: "hero-infrastructure",
     mediaCaption: "From TestNet to MainNet, stage by stage.",
     takeaways: [
-      "TestNet January 2027: public pre-production validation; state may reset, tokens have no production value.",
-      "February is remediation and review; March MainNet needs fresh go/no-go approval — TestNet success is not automatic promotion.",
+      "TestNet 20XX (no date set): public pre-production validation; state may reset, tokens have no production value.",
+      "The interval after TestNet is remediation and review; MainNet (20XX, no date set) needs fresh go/no-go approval — TestNet success is not automatic promotion.",
       "The decision record is checked in: config/mainnet/, the go/no-go doc, RELEASE.md, VERIFICATION.md.",
       "After genesis, chain state is the truth — and the repo stays the source for releases and posture.",
     ],
@@ -1089,7 +1089,7 @@ export const LEARN: LearnEntry[] = [
           "No guarantee. TestNet is pre-production and may reset; MainNet needs TestNet exit evidence, final artifacts, and a fresh approval.",
       },
       {
-        question: "What happens in February?",
+        question: "What happens between TestNet and MainNet?",
         answer:
           "Observing results, remediating and re-testing defects, completing security and operational reviews, freezing production artifacts, and coordinating validators — the unglamorous work between evidence and approval.",
       },

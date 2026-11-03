@@ -95,7 +95,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "What is the Identity program? Is identity.org.au a government service?",
     answer:
-      "The Identity program is VEID — Verifiable Electronic Identity — the identity layer of the VirtEngine protocol: multi-factor verification (document, selfie with active liveness, biometric hardware attestation, device integrity attestation) processed and encrypted on the user's own device, scored by chain consensus into verification tiers, and presented to services as zero-knowledge proofs of attributes rather than copies of documents. identity.org.au is the Foundation-operated public website; the wallet portal is planned for January 2027. VEID itself is decentralised validator-operated technology, not a Foundation-operated service. identity.org.au is not an Australian Government service.",
+      "The Identity program is VEID — Verifiable Electronic Identity — the identity layer of the VirtEngine protocol: multi-factor verification (document, selfie with active liveness, biometric hardware attestation, device integrity attestation) processed and encrypted on the user's own device, scored by chain consensus into verification tiers, and presented to services as zero-knowledge proofs of attributes rather than copies of documents. identity.org.au is the Foundation-operated public website; the wallet portal is planned for 20XX (no launch date has been set). VEID itself is decentralised validator-operated technology, not a Foundation-operated service. identity.org.au is not an Australian Government service.",
     links: [
       { label: "Identity program page", href: "/research/identity" },
       { label: "identity.org.au", href: "https://identity.org.au" },
@@ -110,7 +110,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the VirtEngine network live?",
     answer:
-      "The network is in development and is not live. The published roadmap plans public TestNet for January 2027 and MainNet for March 2027, subject to successful testing and separate production approval. Exact dates and final parameters must be confirmed through the official launch process. Check https://virtengine.com/network for current status rather than treating an earlier go/no-go record as production approval.",
+      "The network is in development and is not live. The published roadmap plans public TestNet and then MainNet for 20XX; no launch date has been set, and MainNet remains subject to successful testing and separate production approval. Exact dates and final parameters must be confirmed through the official launch process. Check https://virtengine.com/network for current status rather than treating an earlier go/no-go record as production approval.",
     links: [{ label: "virtengine.com", href: "https://virtengine.com" }],
   },
   {

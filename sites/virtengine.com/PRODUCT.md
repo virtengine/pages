@@ -48,8 +48,9 @@ of open-source stewardship plus direct/bid/matched ordering.
 ## Capabilities and Constraints
 
 - **The network is not live.** Copy must state "In development — the network is
-  not live". TestNet is January 2027; MainNet is March 2027. These are fixed
-  facts; grep for `March 202` before changing any date.
+  not live". No launch date is set: TestNet and MainNet are both shown as
+  20XX until a date is formally approved. Never state a launch month or year;
+  grep for `202[6-9]` and `20XX` before changing any launch wording.
 - Zero-JS interaction patterns are a deliberate constraint (`:target` tab
   states), not an oversight.
 - The V icon is a fixed brand asset and is never redrawn or approximated.

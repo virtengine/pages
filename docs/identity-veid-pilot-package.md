@@ -5,7 +5,7 @@ Implemented locally on 9 October 2026 in `sites/identity.org.au`, branch `codex/
 ## Delivered scope
 
 - Main marketing routes lead to a reusable-verification demonstration and pilot discussion, with a site-wide availability notice.
-- Homepage, business onboarding, integration overview and trusted-processing copy distinguish reference design from production evidence. Related setup, FAQ and launch copy no longer promises a ten-minute setup or January 2027 release.
+- Homepage, business onboarding, integration overview and trusted-processing copy distinguish reference design from production evidence. Related setup, FAQ and launch copy no longer promises a ten-minute setup or a fixed release date; the wallet launch is shown as 20XX (no launch date has been set).
 - Four new routes: `/for-services/demo`, `/for-services/pilot`, `/for-services/issuer-policy` and `/for-services/pilot-integration`.
 - Downloadable discussion pack at `/pilot/discussion-pack.md`: proposition, trust policy, data boundaries, illustrative messages, evaluation plan, draft agreement headings, buyer interview guide and evidence register.
 - Local state model and meaningful tests for consent, independent service requests, invalid states, revocation, recovery boundaries and duplicate approvals.

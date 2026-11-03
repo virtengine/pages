@@ -18,6 +18,13 @@ and this project adheres to [Calendar Versioning](https://calver.org/)
   Pages project, production URL, `*.pages.dev` preview) for all four sites and
   the full commit SHA, so a release is a complete rollback reference.
 
+### Changed
+
+- **virtengine.com, docs.virtengine.com, det.io:** Launch timing no longer
+  names a month or year. TestNet, MainNet and the identity wallet portal now
+  read `20XX` with an explicit "no launch date has been set" note across page
+  copy, metadata, the network status source, hero art and the site guides.
+
 ### Fixed
 
 - **pages:** RELEASE.md no longer claims a pushed tag triggers the release

@@ -79,9 +79,9 @@ All protocol content is sourced from the `virtengine` repository
 `x/` module sources, `CONSENT_FRAMEWORK.md`, and operations guides.
 Do **not** invent statistics, network-status claims, or parameters — the
 network launch posture must match `docs/NETWORK_LAUNCH_SCHEDULE.md` and
-`_docs/operations/network-launch-schedule.md`: TestNet is planned for January
-2027 and MainNet for March 2027 after TestNet exit criteria and a fresh
-production go/no-go decision. The April 2026 MainNet windows did not proceed
+`_docs/operations/network-launch-schedule.md`: no launch date is set. TestNet
+and MainNet are both shown as 20XX; MainNet follows TestNet exit criteria and a
+fresh production go/no-go decision. The April 2026 MainNet windows did not proceed
 and are historical only. Neither network may be described as live before
 formal confirmation.
 
