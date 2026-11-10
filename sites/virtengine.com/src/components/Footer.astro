@@ -15,8 +15,8 @@ const year = new Date().getFullYear();
 
   <div class="container-site footer-status">
     <span><i class="lamp" aria-hidden="true"></i><b>In development</b> — the network is not live</span>
-    <span>{NETWORK_STATUS.testnet.label} · {NETWORK_STATUS.testnet.timing.toLowerCase()}</span>
-    <span>{NETWORK_STATUS.mainnet.label} · {NETWORK_STATUS.mainnet.timing.toLowerCase()}</span>
+    <span>{NETWORK_STATUS.testnet.label} · {NETWORK_STATUS.testnet.timing.replace("Planned", "planned")}</span>
+    <span>{NETWORK_STATUS.mainnet.label} · {NETWORK_STATUS.mainnet.timing.replace("Planned", "planned")}</span>
   </div>
 
   <div class="container-site grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.8fr_1fr_1fr_1fr_1fr_1fr] xl:gap-10">

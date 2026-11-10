@@ -164,13 +164,13 @@ const stakeHex = stakeRing.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).
 
   {kind === "network" && (
     <g>
-      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">launch posture · not live</text>
+      <text x="24" y="30" class="art-mono-xs" fill="var(--color-night-muted)">launch posture · not live · no dates set</text>
       <line x1="40" y1="140" x2="420" y2="140" stroke="var(--color-night-line-strong)" stroke-width="1" />
       <line x1="40" y1="140" x2="420" y2="140" stroke="var(--color-green)" stroke-width="1.4" class="rail-cursor" />
       {[
         { x: 84, label: "now", sub: "research & development", state: "now" },
-        { x: 216, label: "jan 2027", sub: "public testnet", state: "plan" },
-        { x: 348, label: "mar 2027", sub: "mainnet · approval", state: "plan" },
+        { x: 216, label: "20XX", sub: "public testnet", state: "plan" },
+        { x: 348, label: "20XX", sub: "mainnet · approval", state: "plan" },
       ].map((m) => (
         <g>
           <circle cx={m.x} cy="140" r="8" fill="var(--color-night-deep)" stroke={m.state === "now" ? "var(--color-green)" : "var(--color-night-line-strong)"} stroke-width="1.6" />

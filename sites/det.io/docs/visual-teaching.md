@@ -30,7 +30,7 @@ Primary sources:
 
 The broader human–machine symbiosis is an inference across these materials. Its research questions require testing purchasing capacity, conversion and VCC settlement, inclusion and recovery, reserve accumulation and outside funding, correlated evaluation failure, enforcement, and capture. Foundation corporate governance, protocol consensus, and proposed DSEMA controls remain separate.
 
-The existing VirtEngine program page and FAQ had an older January MainNet/GO account. Updated both to the [current published roadmap](https://virtengine.com/network): planned January 2027 TestNet and March 2027 MainNet, subject to testing and fresh approval. Fixed mobile grid overflow discovered on the existing program page during the teaching-page checks.
+The existing VirtEngine program page and FAQ had an older MainNet/GO account. Updated both to the [current published roadmap](https://virtengine.com/network): TestNet then MainNet, both 20XX with no launch date set, subject to testing and fresh approval. Fixed mobile grid overflow discovered on the existing program page during the teaching-page checks.
 
 ## Teaching components
 

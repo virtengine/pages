@@ -51,8 +51,8 @@ src/
 
 - Facts come from `repos/virtengine/` (README, docs/) and the shared brief —
   never invent statistics, partners, or team members.
-- Network launch claims must match the repo posture exactly: TestNet is planned
-  for January 2027; MainNet is planned for March 2027 after TestNet exit
+- Network launch claims must match the repo posture exactly: no launch date is
+  set. TestNet and MainNet are both shown as 20XX; MainNet follows TestNet exit
   criteria and a fresh go/no-go approval. The April 2026 MainNet windows did
   not proceed and are historical only. Do not describe either network as live
   before formal confirmation.

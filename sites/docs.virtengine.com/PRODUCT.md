@@ -42,8 +42,8 @@ describe the protocol; this one specifies it.
 - Content must match the implemented protocol. When the two disagree, the code
   is the defect and the docs are corrected.
 - Examples are copy-pasteable and must run as written.
-- Network timelines are fixed facts: TestNet January 2027, MainNet March 2027,
-  and the network is not live.
+- Network timelines: no launch date is set. Write TestNet and MainNet as 20XX
+  (never a month or year), and state that the network is not live.
 - Versioned and deprecated surfaces must stay clearly labelled.
 
 ## Brand Commitments

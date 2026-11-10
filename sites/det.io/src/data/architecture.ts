@@ -174,7 +174,7 @@ export const E2E_STEPS: E2EStep[] = [
     yields: "Resource terms anyone can inspect, from a provider the agent did not have to trust in advance.",
     without: "The agent depends on one operator's private terms. The resource ceiling has no shared record to be enforced against.",
     maturity: "source",
-    status: "Market, escrow, and provider modules are in public source. The network is not live; public TestNet is planned for January 2027.",
+    status: "Market, escrow, and provider modules are in public source. The network is not live; public TestNet is planned for 20XX (no launch date set).",
     source: { label: "x/market and x/escrow", href: `${GH}/x/market` },
   },
   {
@@ -347,7 +347,7 @@ export const RELATED_WORK: RelatedWork[] = [
     work: [{ label: "Akash Network architecture", href: "https://akash.network/docs/architecture/overview" }],
     addresses: "An open market where independent providers lease computing resources through a reverse auction on a Cosmos SDK chain.",
     differs: "VirtEngine is partly derived from Akash. It adds identity, hardware attestation, settlement, and disputes, and is designed to be where agent resource limits are enforced.",
-    notShown: "A live network. Public TestNet is planned for January 2027.",
+    notShown: "A live network. Public TestNet is planned for 20XX (no launch date set).",
   },
   {
     area: "Zero trust and confidential computing",
