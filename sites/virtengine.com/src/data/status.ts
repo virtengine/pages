@@ -2,8 +2,8 @@
  * Canonical network-status source. Every surface that mentions launch posture
  * (header badge, footer rail, marketplace notes, network page) reads from here
  * so the message cannot drift between pages. Wording matches the repository
- * posture: TestNet is planned for January 2027; MainNet is planned for March
- * 2027 after TestNet exit criteria and a fresh go/no-go approval.
+ * posture: no launch date is set. TestNet and MainNet are both shown as 20XX;
+ * MainNet follows TestNet exit criteria and a fresh go/no-go approval.
  *
  * Ownership: /network is the canonical explanation. All other pages render
  * at most one compact StatusBadge linking there.
@@ -18,15 +18,15 @@ export const NETWORK_STATUS = {
     "The network is not live. These pages describe the protocol design; production services depend on testing and a separate launch approval.",
   testnet: {
     label: "Public TestNet",
-    timing: "Planned January 2027",
+    timing: "Planned 20XX (no date set)",
     detail: "Pre-production validation; state may reset and does not automatically carry into MainNet.",
   },
   mainnet: {
     label: "MainNet",
-    timing: "Planned March 2027, subject to approval",
+    timing: "Planned 20XX (no date set), subject to approval",
     detail: "Requires TestNet exit evidence, remediation, final artifacts, and a fresh go/no-go decision.",
   },
-  lastUpdated: "17 Sep 2026",
+  lastUpdated: "4 Nov 2026",
 } as const;
 
 /** Single structured status object consumed by header, footer and /network. */

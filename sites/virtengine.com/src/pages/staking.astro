@@ -155,7 +155,7 @@ const requirements = [
   <Section eyebrow="Network launch" title="TestNet before MainNet">
     <div class="prose-body reveal max-w-3xl space-y-4 text-base">
       <p>
-        {NETWORK_STATUS.testnet.label} — {NETWORK_STATUS.testnet.timing.toLowerCase()}; {NETWORK_STATUS.mainnet.label} — {NETWORK_STATUS.mainnet.timing.toLowerCase()}.
+        {NETWORK_STATUS.testnet.label} — {NETWORK_STATUS.testnet.timing.replace("Planned", "planned")}; {NETWORK_STATUS.mainnet.label} — {NETWORK_STATUS.mainnet.timing.replace("Planned", "planned")}.
         See the <a href="/network">network page</a> for posture, criteria and release materials (last updated {NETWORK_STATUS.lastUpdated}).
       </p>
     </div>

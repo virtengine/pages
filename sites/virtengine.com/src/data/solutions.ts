@@ -497,7 +497,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       ],
     },
     gettingStarted: [
-      { step: "Study the launch posture", detail: "TestNet is planned for January 2027; MainNet is planned for March 2027 after TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating." },
+      { step: "Study the launch posture", detail: "TestNet and MainNet are planned for 20XX; no launch date has been set. MainNet follows TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating." },
       { step: "Provision secure infrastructure", detail: "High-uptime hosts plus hardened key management for consensus and VEID encryption keys." },
       { step: "Plan for identity-network duties", detail: "ML scoring of encrypted scopes runs alongside consensus — size accordingly." },
       { step: "Bond stake and attract delegation", detail: "Self-bond, publish your operational record, and earn delegations." },
@@ -532,7 +532,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         label: "Study",
         title: "Study the launch posture",
-        body: "TestNet is planned for January 2027 and MainNet for March 2027 after TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating.",
+        body: "TestNet and MainNet are planned for 20XX; no launch date has been set. MainNet follows TestNet exit criteria and a separate production approval. Verify formal launch confirmation before operating.",
       },
       {
         label: "Provision",
@@ -576,7 +576,7 @@ export const SOLUTIONS: SolutionEntry[] = [
       {
         question: "When can validators start?",
         answer:
-          "TestNet is planned for January 2027, followed by MainNet in March 2027 subject to testing and separate approval. Confirm the official launch decision before operating — the network page tracks the current posture.",
+          "TestNet and MainNet are planned for 20XX; no launch date has been set. MainNet follows TestNet, subject to testing and separate approval. Confirm the official launch decision before operating — the network page tracks the current posture.",
         links: [{ label: "Network status & genesis", href: "/network" }],
       },
     ],

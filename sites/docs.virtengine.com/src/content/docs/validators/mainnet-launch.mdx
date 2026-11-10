@@ -1,20 +1,21 @@
 ---
 title: Network Launch Schedule
-description: TestNet in January 2027, MainNet in March 2027, and the validation gate between them.
+description: TestNet then MainNet, both 20XX with no launch date set, and the validation gate between them.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-This page states the current public launch posture. Exact UTC dates and times
+This page states the current public launch posture. **No launch date has been
+set**: `20XX` below is a placeholder, not a target year. Exact UTC dates and times
 will be published through the formal launch process. When in doubt, published
 launch confirmations and release materials are authoritative.
 
-## Launch windows
+## Launch dates
 
-| Network | Launch window | Role |
+| Network | Launch date | Role |
 | --- | --- | --- |
-| **TestNet** | **January 2027** | Public pre-production validation and operator rehearsal. |
-| **MainNet** | **March 2027** | Persistent production launch after TestNet exit criteria and a separate go/no-go approval. |
+| **TestNet** | **20XX** (no date set) | Public pre-production validation and operator rehearsal. |
+| **MainNet** | **20XX** (no date set; after TestNet) | Persistent production launch after TestNet exit criteria and a separate go/no-go approval. |
 
 <Aside type="caution" title="Do not overstate liveness">
 Neither TestNet nor MainNet is confirmed live until an official launch
@@ -45,11 +46,11 @@ validator activation.
 
 The gap is an explicit safety and quality gate:
 
-1. January provides real public, multi-operator TestNet evidence.
-2. February is reserved for observation, defect remediation, repeated tests,
-   security and operational reviews, release freeze, genesis finalization, and
-   validator coordination.
-3. March is the MainNet window only after the TestNet exit criteria are met and
+1. The TestNet phase provides real public, multi-operator evidence.
+2. The interval after TestNet is reserved for observation, defect remediation,
+   repeated tests, security and operational reviews, release freeze, genesis
+   finalization, and validator coordination.
+3. MainNet can launch only after the TestNet exit criteria are met and
    release management records a fresh `GO` decision.
 
 Separating the launches prevents rehearsal evidence from being mistaken for
@@ -59,7 +60,7 @@ persistent MainNet state.
 
 ## MainNet entry criteria
 
-Before the March 2027 MainNet window can be activated, the launch package must
+Before MainNet can be activated, the launch package must
 confirm at least:
 
 - stable TestNet consensus and acceptable reliability over the agreed
@@ -114,5 +115,5 @@ before treating any release artifact as production-approved.
 - Complete VEID identity verification for the operator entity ahead of the
   window — validator onboarding is attestation-gated.
 - Have monitoring, key isolation, and failover rehearsed before the window
-  opens; the January TestNet phase must surface hazards before the March
-  MainNet window (see [Slashing Risks](/validators/slashing/)).
+  opens; the TestNet phase must surface hazards before the MainNet
+  launch (see [Slashing Risks](/validators/slashing/)).

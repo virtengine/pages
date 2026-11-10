@@ -259,7 +259,7 @@ narrated via `aria-label`, breadcrumbs with `BreadcrumbList` JSON-LD.
 
 Engineering candor. Claims trace to the repository or the constitution; risk is
 stated plainly (slashing, unbonding, launch posture); network status is quoted
-exactly (TestNet January 2027, MainNet March 2027, separate production approval)
+exactly (TestNet 20XX, MainNet 20XX: no launch date is set; separate production approval)
 and never inflated. No emoji, no exclamation-mark marketing, no "revolutionary".
 
 ## 11. Artwork system

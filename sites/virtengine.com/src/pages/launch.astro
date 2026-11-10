@@ -7,7 +7,7 @@ import { NETWORK_STATUS } from "@data/status";
 
 <Base
   title="Launch Updates: TestNet & MainNet News | VirtEngine"
-  description="Join VirtEngine launch updates: TestNet January 2027, MainNet March 2027, releases and provider news. Get notified when the network opens."
+  description="Join VirtEngine launch updates: TestNet and MainNet 20XX (no date set), releases and provider news. Get notified when the network opens."
   path="/launch"
   image="/media/hero-infrastructure-1440.webp"
   breadcrumbs={[{ name: "Home", href: "/" }, { name: "Launch updates", href: "/launch" }]}
@@ -15,7 +15,7 @@ import { NETWORK_STATUS } from "@data/status";
   <PageHero
     eyebrow="Launch updates"
     title="Follow the VirtEngine launch"
-    lede={`${NETWORK_STATUS.short} ${NETWORK_STATUS.testnet.label} — ${NETWORK_STATUS.testnet.timing.toLowerCase()}; ${NETWORK_STATUS.mainnet.label} — ${NETWORK_STATUS.mainnet.timing.toLowerCase()}.`}
+    lede={`${NETWORK_STATUS.short} ${NETWORK_STATUS.testnet.label} — ${NETWORK_STATUS.testnet.timing.replace("Planned", "planned")}; ${NETWORK_STATUS.mainnet.label} — ${NETWORK_STATUS.mainnet.timing.replace("Planned", "planned")}.`}
     crumbs={[
       { name: "Home", href: "/" },
       { name: "Launch updates", href: "/launch" },
